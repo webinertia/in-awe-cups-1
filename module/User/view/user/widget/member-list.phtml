@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+?>
+<div class="row"><!-- open user grid -->
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Recent Members</h4>
+<?= $this->paginationControl(
+    $this->paginator,
+    'Sliding',
+    'user/widget/controls/pagination',
+    ['route' => 'widgets', 'action' => 'member-list', 'listType' => $this->listType],
+);
+?>
+                <div class="table-responsive">
+                    <table id="user-widget" class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <i class="mdi mdi-image text-large" style="font-size:x-large;"></i>
+                                </th>
+                                <th> Member Name </th>
+                                <th> Member Group </th>
+                                <th> Signup date </th>
+                                <th> Verified </th>
+                                <th> Account Status </th>
+                                <th> Tools </th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-data">
+                            <?php
+                            foreach ($this->paginator as $member) :
+                            ?>
+                                <tr>
+                                    <td>
+                                        <img src="/modules/user/profile/profileImages/<?= $member->profileImage ?>" alt="Not found" />
+                                    </td>
+                                    <td> <?= $member->firstName . ' ' . $member->lastName ?> </td>
+                                    <td> <?= $member->label ?> </td>
+                                    <td> <?= $member->regDate ?> </td>
+                                    <td> </td>
+                                    <td> 04 Dec 2019 </td>
+                                    <td>
+                                        <div class="badge badge-outline-success">Approved</div>
+                                    </td>
+                                </tr>
+                                <?php
+                            endforeach;
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- close user widget grid -->

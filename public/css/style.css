@@ -1,0 +1,10 @@
+:root {
+    --brand-color: #013755;
+}
+.btn-primary {
+    background-color: var(--brand-color);
+    border-color: var(--brand-color);
+}
+.navbar {
+    background-color: var(--brand-color);
+}
