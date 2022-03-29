@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @var PhpRenderer $this
+ */
+echo $this->render($this->memberListWidget);
+echo $this->partial('partials/dashboard/message-portfolio-todo.phtml');

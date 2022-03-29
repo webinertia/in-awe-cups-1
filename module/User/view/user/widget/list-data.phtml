@@ -1,0 +1,31 @@
+
+    <?php
+
+    declare(strict_types=1);
+
+/**
+     * div badge options -
+     * <div class="badge badge-outline-danger">Rejected</div>
+     * <div class="badge badge-outline-warning">Pending</div>
+     * <div class="badge badge-outline-success">Approved</div>
+     */
+    ?>
+    <?php
+    foreach ($this->paginator as $member) :
+        ?>
+        <tr>
+            <td>
+                <img src="/modules/user/profile/profileImages/<?= $member->profileImage ?>" alt="Not found" />
+            </td>
+            <td> <?= $member->firstName . ' ' . $member->lastName ?> </td>
+            <td> <?= $member->label ?> </td>
+            <td> <?= $member->regDate ?> </td>
+            <td> </td>
+            <td> 04 Dec 2019 </td>
+            <td>
+                <div class="badge badge-outline-success">Approved</div>
+            </td>
+        </tr>
+        <?php
+    endforeach;
+    ?>
