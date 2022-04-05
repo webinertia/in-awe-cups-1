@@ -1,0 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ */
+if (isset($this->form)) {
+    $this->form->addSubmit();
+    echo $this->bootstrapForm($this->form);
+}
+?>

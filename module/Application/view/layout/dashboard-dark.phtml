@@ -122,7 +122,7 @@ use Laminas\View\Renderer\PhpRenderer;
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item preview-item">
                     <div class="preview-thumbnail">
-                      <img src="/dashboard/dark/assets/images/faces/face4.jpg" alt="image" class="rounded-circle profile-pic">
+                      <img src="/dashboard/admin/dark/assets/images/faces/face4.jpg" alt="image" class="rounded-circle profile-pic">
                     </div>
                     <div class="preview-item-content">
                       <p class="preview-subject ellipsis mb-1">Mark send you a message</p>
@@ -132,7 +132,7 @@ use Laminas\View\Renderer\PhpRenderer;
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item preview-item">
                     <div class="preview-thumbnail">
-                      <img src="/dashboard/dark/assets/images/faces/face2.jpg" alt="image" class="rounded-circle profile-pic">
+                      <img src="/dashboard/admin/dark/assets/images/faces/face2.jpg" alt="image" class="rounded-circle profile-pic">
                     </div>
                     <div class="preview-item-content">
                       <p class="preview-subject ellipsis mb-1">Cregh send you a message</p>
@@ -142,7 +142,7 @@ use Laminas\View\Renderer\PhpRenderer;
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item preview-item">
                     <div class="preview-thumbnail">
-                      <img src="/dashboard/dark/assets/images/faces/face3.jpg" alt="image" class="rounded-circle profile-pic">
+                      <img src="/dashboard/admin/dark/assets/images/faces/face3.jpg" alt="image" class="rounded-circle profile-pic">
                     </div>
                     <div class="preview-item-content">
                       <p class="preview-subject ellipsis mb-1">Profile picture updated</p>
@@ -203,7 +203,7 @@ use Laminas\View\Renderer\PhpRenderer;
               <li class="nav-item dropdown">
                 <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                   <div class="navbar-profile">
-                    <img class="img-xs rounded-circle" src="/modules/user/profile/profileImages/<?=$this->user->profileImage?>" alt="<?=$this->user->firstName . ' ' . $this->user->lastName?>">
+                    <img class="img-xs rounded-circle" src="/modules/user/profile/profileImages/<?= isset($this->user->profileImage) ? $this->user->profileImage : 'default-profile-picture.png'?>" alt="<?=$this->user->firstName . ' ' . $this->user->lastName?>">
                     <p class="mb-0 d-none d-sm-block navbar-profile-name"><?=$this->user->firstName . ' ' . $this->user->lastName?></p>
                     <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                   </div>

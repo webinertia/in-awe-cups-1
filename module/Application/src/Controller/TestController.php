@@ -9,8 +9,10 @@ use Application\Model\Settings;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Session\SessionManager;
+use Laminas\View\Model\ViewModel;
 use User\Form\UserForm;
 use User\Model\Users;
+use Webinertia\ModelManager\ModelManager;
 
 use function array_merge_recursive;
 
@@ -18,23 +20,24 @@ class TestController extends AbstractController
 {
     /** @var UserForm $form */
     protected $form;
-/**
- * @return void
- * @throws NotFoundExceptionInterface
- * @throws ContainerExceptionInterface
- */
+    /**
+     * @return void
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __construct(ServiceLocatorInterface $sm)
     {
         $fieldsets            = [];
-        $this->usrModel       = $sm->get(Users::class);
-        $this->appSettings    = $sm->get(Settings::class);
+        $modelManager         = $sm->get(ModelManager::class);
+        $this->usrModel       = $modelManager->get(Users::class);
+        $this->appSettings    = $modelManager->get(Settings::class);
         $fm                   = $sm->get(FormElementManager::class);
         $this->form           = $fm->get(UserForm::class);
         $this->config         = $sm->get('config');
         $this->sessionManager = $sm->get(SessionManager::class);
     }
 
-    public function indexAction()
+    public function indexAction(): ViewModel
     {
         $ident = $this->authService->getIdentity();
         if ($this->request->isPost()) {
@@ -43,7 +46,6 @@ class TestController extends AbstractController
                 $data = $this->form->getData();
                 $this->usrModel->exchangeArray(array_merge_recursive($data['acct-data'], $data['profile-data']));
             }
-        } else {
         }
         $this->form->addSubmit();
         $this->view->setVariable('form', $this->form);

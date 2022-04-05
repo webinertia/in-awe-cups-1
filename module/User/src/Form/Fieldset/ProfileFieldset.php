@@ -43,12 +43,12 @@ class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 
     public function init(): void
     {
-        if (isset($this->options['mode']) && $this->options['mode'] === UserForm::EDIT_MODE) {
-            $this->add([
-                'name' => 'id',
-                'type' => Hidden::class,
-            ]);
-        }
+        // if (isset($this->options['mode']) && $this->options['mode'] === UserForm::EDIT_MODE) {
+        //     $this->add([
+        //         'name' => 'id',
+        //         'type' => Hidden::class,
+        //     ]);
+        // }
         $this->add([
             'name'    => 'firstName',
             'type'    => Text::class,

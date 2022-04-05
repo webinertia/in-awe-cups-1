@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace User\Model;
 
-use Application\Model\AbstractModel;
-use Application\Model\ModelTrait;
+use Webinertia\ModelManager\AbstractModel;
+use Webinertia\ModelManager\ModelTrait;
 
 class Profile extends AbstractModel
 {

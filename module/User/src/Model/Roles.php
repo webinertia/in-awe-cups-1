@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace User\Model;
 
-use Application\Model\AbstractModel;
-use Application\Model\ModelTrait;
 use Laminas\Db\Sql\Exception\InvalidArgumentException;
 use Laminas\Db\TableGateway\Exception\RuntimeException as ExceptionRuntimeException;
 use RuntimeException;
+use Webinertia\ModelManager\AbstractModel;
+use Webinertia\ModelManager\ModelTrait;
 
 use function count;
 

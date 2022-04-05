@@ -8,6 +8,7 @@ use Application\Form\Fieldset\SecurityFieldset;
 use Application\Model\Settings;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Webinertia\ModelManager\ModelManager;
 
 class SecurityFieldsetFactory implements FactoryInterface
 {
@@ -17,6 +18,6 @@ class SecurityFieldsetFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): SecurityFieldset
     {
-        return new SecurityFieldset($container->get(Settings::class), $options);
+        return new SecurityFieldset($container->get(ModelManager::class)->get(Settings::class), $options);
     }
 }

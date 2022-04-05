@@ -11,7 +11,7 @@ use function get_parent_class;
 
 abstract class AbstractAdminController extends AbstractController implements ResourceInterface
 {
-    const RESOURCE_ID = 'admin';
+    public const RESOURCE_ID = 'admin';
 /**
  * {@inheritDoc}
  *
@@ -23,7 +23,7 @@ abstract class AbstractAdminController extends AbstractController implements Res
         return self::RESOURCE_ID;
     }
 
-    public function _init()
+    public function init(): self
     {
         if (! $this->acl->isAllowed($this->user, $this, 'admin.access')) {
             $this->redirect()->toRoute('forbidden');
@@ -31,12 +31,12 @@ abstract class AbstractAdminController extends AbstractController implements Res
         $adminParent = self::class;
         switch ($adminParent === get_parent_class(static::class)) {
             case true:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              $this->layout('layout/dashboard-dark');
-
+                $this->layout('layout/dashboard-dark');
                 break;
             default:
                 break;
         }
-        return parent::_init();
+        parent::init();
+        return $this;
     }
 }

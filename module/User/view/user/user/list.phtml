@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use Laminas\View\Renderer\PhpRenderer;
+
+/**
+ * @var PhpRenderer $this
+ */
 $title = 'System Users';
 $this->headTitle($title);
 ?>
@@ -10,63 +15,69 @@ $this->headTitle($title);
 <p>
     <?php
     if ($this->acl->isAllowed($this->user, $this->user, 'user.create.new')) :
-        ?>
-    <span><a href="<?= $this->url('user/register', ['id' => 0]) ?>" class="btn btn-outline-info btn-sm">Add User</a></span>
-        <?php
+    ?>
+        <span><a href="<?= $this->url('user/register', ['id' => 0]) ?>" class="btn btn-outline-info btn-sm">Add User</a></span>
+    <?php
     endif;
     ?>
 </p>
 
 <table class="table">
-<tr>
-    <th>Profile</th>
-    <th>User Name</th>
-    <th>Email</th>
-    <th>Account Status</th>
-    <th>Verification Status</th>
-    <th>Account Actions</th>
-</tr>
-<?php
-foreach ($users as $listUser) :
-    ?>
     <tr>
-    <?php ?>
-        <td><a href="<?=$this->url('user/profile', ['action' => 'view', 'userName' => $listUser->userName]); ?>" class="btn btn-outline-info btn-sm">Profile</a></td>
-        <td><?= $this->escapeHtml($listUser->userName) ?></td>
-        <td><?= $this->escapeHtml($listUser->email) ?></td>
-        <?php
-        if ((bool) $listUser->active) :
-            ?>
-            <td>Active</td>
+        <th>Profile</th>
+        <th>User Name</th>
+        <th>Email</th>
+        <th>Account Status</th>
+        <th>Verification Status</th>
+        <th>Account Actions</th>
+    </tr>
+    <?php
+    foreach ($users as $listUser) :
+    ?>
+        <tr>
+            <?php ?>
+            <td><a href="<?= $this->url('user/profile', ['action' => 'view', 'userName' => $listUser->userName]); ?>" class="btn btn-outline-info btn-sm">Profile</a></td>
+            <td><?= $this->escapeHtml($listUser->userName) ?></td>
+            <td><?= $this->escapeHtml($listUser->email) ?></td>
             <?php
-        else :
+            if ((bool) $listUser->active) :
             ?>
-            <td>Inactive</td>
-                <?php
-        endif;
-        ?>
-        
-        <?php
-        if ((bool) $listUser->verified) :
-            ?>
-            <td>Verified</td>
+                <td>Active</td>
             <?php
-        else :
+            else :
             ?>
-            <td>Not Verified</td>
-                <?php
-        endif;
-        ?>
-        <td>
+                <td>Inactive</td>
             <?php
-            if ($this->acl->isAllowed($this->user, $listUser, 'edit')) :
-                ?>
-            <a href="<?=$this->url('user', ['action' => 'edit', 'userName' => $listUser->userName]); ?>" class="btn btn-outline-warning btn-sm">Edit</a>
-            <a href="<?=$this->url('user', ['action' => 'delete', 'userName' => $listUser->userName]); ?>" class="btn btn-outline-danger btn-sm">Delete</a>
-                <?php
             endif;
             ?>
-        </td>
-    </tr>
-<?php endforeach; ?>
+
+            <?php
+            if ((bool) $listUser->verified) :
+            ?>
+                <td>Verified</td>
+            <?php
+            else :
+            ?>
+                <td>Not Verified</td>
+            <?php
+            endif;
+            ?>
+            <td>
+                <?php
+                if ($this->acl->isAllowed($this->user, $listUser, 'edit')) :
+                ?>
+                    <a href="<?= $this->url('user/account/edit', ['userName' => $listUser->userName]); ?>" class="btn btn-outline-warning btn-sm">Edit</a>
+                    <?php
+                    if($listUser->id !== '1'):
+                    ?>
+                    <a href="<?= $this->url('user/account/delete', ['userName' => $listUser->userName]); ?>" class="btn btn-outline-danger btn-sm">Delete</a>
+                    <?php
+                    endif;
+                    ?>
+                <?php
+                endif;
+                ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
 </table>

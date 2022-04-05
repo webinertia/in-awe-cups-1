@@ -8,11 +8,20 @@ use Application\Form\ContactForm;
 use Application\Model\Settings;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Webinertia\ModelManager\ModelManager;
 
 class ContactFormFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    /**
+     * @param string $requestedName
+     * @param null|mixed[] $options
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): ContactForm
     {
-        return new ContactForm($container->get(Settings::class));
+        return new ContactForm($container->get(ModelManager::class)->get(Settings::class));
     }
 }
