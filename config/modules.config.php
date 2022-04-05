@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 
 return [
+    'Webinertia\ModelManager',
     'Laminas\Paginator\Adapter\LaminasDb',
     'Laminas\Paginator',
     'Laminas\Mail',

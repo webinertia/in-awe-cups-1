@@ -5,31 +5,32 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use Application\Controller\AbstractAdminController;
-use RuntimeException;
+use Laminas\Log\Logger;
+use Laminas\View\Model\ViewModel;
+use Throwable;
 use User\Model\Users as UsrModel;
 
-class AdminController extends AbstractAdminController
+final class AdminController extends AbstractAdminController
 {
-    /**
-     * @var User\Model\Users $usrModel
-     */
-    /**
-     * @return void
-     */
+    /** @var User\Model\Users $usrModel */
+    protected $usrModel;
+    /** @return void */
     public function __construct(UsrModel $usrModel)
     {
         $this->usrModel = $usrModel;
     }
 
-    public function indexAction()
+    public function indexAction(): ViewModel
     {
-        //var_dump($this->user);
+        return $this->view;
     }
 
-    public function widgetAction()
+    public function widgetAction(): ViewModel
     {
-        //$this->view = new JsonModel();
         try {
+            if ($this->request->isXmlHttpRequest()) {
+                $this->view->setTerminal(true);
+            }
             $userName   = $this->params('userName');
             $hasMessage = false;
             if (! empty($userName)) {
@@ -37,10 +38,10 @@ class AdminController extends AbstractAdminController
                 $this->fm->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
                 $hasMessage = true;
             }
-           /// $this->view->setVariable('hasMessage', $hasMessage);
             $this->view->setVariable('users', $this->usrModel->loadMemberContext());
             return $this->view;
-        } catch (RuntimeException $e) {
+        } catch (Throwable $th) {
+            $this->logger->log(Logger::ERR, $th->getMessage());
         }
     }
 }

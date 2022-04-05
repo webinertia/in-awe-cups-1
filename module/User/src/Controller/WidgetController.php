@@ -8,7 +8,8 @@ use Application\Controller\AbstractController;
 use Laminas\Db\Sql\Select;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\Paginator;
-use User\Model\UserTable;
+use Laminas\View\Model\ViewModel;
+use User\Model\Users;
 use Zend\Paginator\AdapterPluginManager;
 
 class WidgetController extends AbstractController
@@ -19,13 +20,13 @@ class WidgetController extends AbstractController
     {
     }
 
-    public function _init()
+    public function init(): self
     {
-            $config = $this->sm->get('Config');
-        $group      = $this->getEvent()->getRouteMatch()->getParam('group', 'all');
-        $table      = $this->sm->get(UserTable::class);
-        $sql        = $table->getSql();
-        $select     = new Select();
+        $config = $this->sm->get('Config');
+        $group  = $this->getEvent()->getRouteMatch()->getParam('group', 'all');
+        $table  = $this->modelManager->get(Users::class);
+        $sql    = $table->getSql();
+        $select = new Select();
         $select
             ->from('user_roles')
             ->join('users', 'users.role = user_roles.role', [
@@ -50,29 +51,33 @@ class WidgetController extends AbstractController
         } else {
             $select->where->equalTo('user_roles.role', $group);
         }
-            $pluginManager = $this->sm->get(AdapterPluginManager::class);
-        $adapter           = $pluginManager->get(DbSelect::class, [$select, $sql, $table->getResultSetPrototype()]);
-        $paginator         = new Paginator($adapter);
+        $pluginManager = $this->sm->get(AdapterPluginManager::class);
+        $adapter       = $pluginManager->get(DbSelect::class, [$select, $sql, $table->getResultSetPrototype()]);
+        $paginator     = new Paginator($adapter);
         $paginator->setDefaultItemCountPerPage($config['widgets']['member_list']['items_per_page']);
         $this->paginator = $paginator;
         $this->view->setTerminal(true);
+        return $this;
     }
 
-    public function memberListAction()
+    public function memberListAction(): ViewModel
     {
         $this->view->setTerminal(true);
         $page = (int) $this->params('page', '1');
-// $this->paginator->setDefaultItemCountPerPage(1);
         $this->paginator->setCurrentPageNumber($page);
-        $this->view->setVariables(['paginator' => $this->paginator, 'listType' => $this->config['widgets']['admin_member_list']['display_groups']]);
+        $this->view->setVariables(
+            [
+                'paginator' => $this->paginator,
+                'listType'  => $this->config['widgets']['admin_member_list']['display_groups'],
+            ]
+        );
         return $this->view;
     }
 
-    public function listDataAction()
+    public function listDataAction(): ViewModel
     {
         $this->view->setTerminal(true);
         $page = (int) $this->params('page', '1');
-//$this->paginator->setDefaultItemCountPerPage(2);
         $this->paginator->setCurrentPageNumber($page);
         $this->view->setVariable('paginator', $this->paginator);
         return $this->view;

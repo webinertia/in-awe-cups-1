@@ -110,10 +110,14 @@ return [
             ],
         ],
     ],
+    'model_manager'   => [
+        'factories' => [
+            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
+        ],
+    ],
     'service_manager' => [
         'factories' => [
             Service\Email::class                        => Service\Factory\EmailFactory::class,
-            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
             Laminas\Session\SessionManager::class       => Laminas\Session\Service\SessionManagerFactory::class,
             Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
         ],

@@ -14,9 +14,11 @@ use Laminas\Log\Formatter\Db as DbFormatter;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\Db as Dbwriter;
 use Laminas\Log\Writer\FirePhp;
+use Laminas\Mvc\MvcEvent;
 use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Laminas\Session\SessionManager;
+use Webinertia\ModelManager\ModelManager;
 
 use function date_default_timezone_set;
 use function explode;
@@ -27,21 +29,21 @@ class Module
 {
     public function getConfig(): array
     {
-        /** @var array $config */
         return include __DIR__ . '/../config/module.config.php';
     }
 
-    public function onBootstrap($e)
+    public function onBootstrap(MvcEvent $e)
     {
-        $sm     = $e->getApplication()->getServiceManager();
-        $config = $sm->get(Settings::class);
+        $sm                 = $e->getApplication()->getServiceManager();
+        $this->modelManager = $sm->get(ModelManager::class);
+        $config             = $this->modelManager->get(Settings::class);
         date_default_timezone_set($config->server->time_zone);
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
     }
 
-    public function boostrapSessions($e)
+    public function boostrapSessions(MvcEvent $e): void
     {
         $sm        = $e->getApplication()->getServiceManager();
         $config    = $sm->get('Config');
@@ -52,20 +54,25 @@ class Module
             'lifetimeColumn' => 'lifetime',
             'dataColumn'     => 'data',
         ];
-/**
+        /**
          * @var SessionManager $sessionManager
          */
         $sessionManager = $sm->get(SessionManager::class);
-        $saveHandler    = new DbTableGateway(new TableGateway($config['db']['sessions_table_name'], $sm->get(AdapterInterface::class)), new DbTableGatewayOptions($dbOptions));
+        $saveHandler    = new DbTableGateway(
+            new TableGateway(
+                $config['db']['sessions_table_name'],
+                $sm->get(AdapterInterface::class)
+            ),
+            new DbTableGatewayOptions($dbOptions)
+        );
         $sessionManager->setSaveHandler($saveHandler);
     }
 
-    // this needs moved to a listener
-    public function boostrapTranslation($e)
+    public function boostrapTranslation(MvcEvent $e): void
     {
         // get an instance of the service manager
         $sm       = $e->getApplication()->getServiceManager();
-        $settings = $sm->get(Settings::class);
+        $settings = $this->modelManager->get(Settings::class);
         if ($settings->server_settings->enable_translation) {
         // var_dump($sm->get('router'));
                 /**
@@ -99,13 +106,13 @@ class Module
         }
     }
 
-    public function bootstrapLogging($e)
+    public function bootstrapLogging(MvcEvent $e): void
     {
         $sm       = $e->getapplication()->getServiceManager();
-        $settings = $sm->get(Settings::class);
+        $settings = $this->modelManager->get(Settings::class);
         $config   = $sm->get('config');
         $logger   = $sm->get(Logger::class);
-//$writer = new Dbwriter(new Adapter($config['db']), 'log');
+        //$writer = new Dbwriter(new Adapter($config['db']), 'log');
         $writer            = new Dbwriter($sm->get(AdapterInterface::class), $config['db']['log_table_name']);
         $standardLogFilter = new Priority(Logger::DEBUG);
         $writer->addFilter($standardLogFilter);

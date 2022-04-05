@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 return [
     // Additional modules to include when in development mode
-    'modules' => [],
+    'modules' => [
+
+    ],
     // Configuration overrides during development mode
     'module_listener_options' => [
         'config_glob_paths'        => [realpath(__DIR__) . '/autoload/{,*.}{global,local}-development.php'],

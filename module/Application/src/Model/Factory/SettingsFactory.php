@@ -10,7 +10,8 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class SettingsFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    /** @param string $requestedName */
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Settings
     {
         $config = $container->get('config');
         return new Settings($config['app_settings']);

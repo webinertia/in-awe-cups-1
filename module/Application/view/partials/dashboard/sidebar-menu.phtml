@@ -23,7 +23,7 @@ $this->navigation()->setRole($this->user);
             <div class="profile-desc">
                 <div class="profile-pic">
                     <div class="count-indicator">
-                        <img class="img-xs rounded-circle " src="/modules/user/profile/profileImages/<?= $this->user->profileImage ?>" alt="<?= $this->user->firstName . ' ' . $this->user->lastName ?>">
+                        <img class="img-xs rounded-circle " src="/modules/user/profile/profileImages/<?= isset($this->user->profileImage) ? $this->user->profileImage : 'default-profile-picture.png'?>">
                         <span class="count bg-success"></span>
                     </div>
                     <div class="profile-name">

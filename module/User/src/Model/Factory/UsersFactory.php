@@ -12,6 +12,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Model\Users;
+use Webinertia\ModelManager\ModelManager;
 
 class UsersFactory implements FactoryInterface
 {
@@ -26,6 +27,7 @@ class UsersFactory implements FactoryInterface
         $config = new Config($container->get('Config'));
         return new Users(
             $config->db->users_table_name,
+            $container->get(ModelManager::class),
             $container->get(EventManager::class),
             $config,
             $container->get(Logger::class)

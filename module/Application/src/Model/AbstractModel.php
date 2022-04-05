@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Application\Model;
 
 use Application\Db\TableGateway\TableGateway;
-use Application\Model\ModelInterface;
 use Laminas\Config\Config;
 use Laminas\Db\ResultSet\Exception\InvalidArgumentException;
 use Laminas\Db\ResultSet\ResultSet;
@@ -16,8 +15,13 @@ use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 use Laminas\Stdlib\ArrayObject;
+use Webinertia\ModelManager\ModelInterface;
 
-abstract class AbstractModel extends ArrayObject implements ResourceInterface, ProprietaryInterface, RoleInterface, ModelInterface
+abstract class AbstractModel extends ArrayObject implements
+    ResourceInterface,
+    ProprietaryInterface,
+    RoleInterface,
+    ModelInterface
 {
     /** @var TableGateway $db; */
     protected $db;
@@ -58,8 +62,8 @@ abstract class AbstractModel extends ArrayObject implements ResourceInterface, P
          * userId is always the foriegn key that points to
          * users.id
          */
-        if (isset($this->userId)) {
-            return $this->userId;
+        if ($this->offsetExists('userId')) {
+            return $this->offsetGet('userId');
         }
     }
 

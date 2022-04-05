@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace User\Model;
 
-use Application\Model\AbstractModel;
-use Application\Model\ModelTrait;
+use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\Sql\Exception\InvalidArgumentException;
 use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Throwable;
-use User\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
+use User\Model\Roles;
+use Webinertia\ModelManager\AbstractModel;
+use Webinertia\ModelManager\ModelTrait;
 
 use function password_verify;
 
@@ -22,8 +24,16 @@ class Users extends AbstractModel
 {
     use ModelTrait;
 
+    /** @var ModelTrait $this */
+
     /** @var string $column */
     protected $column;
+    /**
+     * String column name for the ownerId (usually points at the Users table id column)
+     *
+     * @var string $ownerIdColumn
+     * */
+    protected $ownerIdColumn = 'id';
     /**
      * @param Users $user
      * @return Result|bool
@@ -35,7 +45,13 @@ class Users extends AbstractModel
             $callback    = function ($hash, $password) {
                 return password_verify($password, $hash);
             };
-            $authAdapter = new AuthAdapter($user, $this->db->getAdapter(), $this->config->db->users_table_name, $this->config->db->auth_identity_column, $this->config->db->auth_credential_column, $callback);
+            $authAdapter = new AuthAdapter(
+                $this->db->getAdapter(),
+                $this->config->db->users_table_name,
+                $this->config->db->auth_identity_column,
+                $this->config->db->auth_credential_column,
+                $callback
+            );
             $authAdapter->setIdentity($user->userName)
                         ->setCredential($user->password);
             $select = $authAdapter->getDbSelect();
@@ -75,6 +91,10 @@ class Users extends AbstractModel
     }
 
     /**
+     * Method should only be used to load the User context for the excuting user
+     * DO NOT use for modifying a user as the id will
+     * be incorrect, as it will be the id from the users role from the roles table
+     *
      * @param string $userName
      * @return self
      * @throws InvalidArgumentException
@@ -89,7 +109,10 @@ class Users extends AbstractModel
         $select
             ->from($this->config->db->users_table_name)
             ->where([$this->config->db->users_table_name . '.userName' => $userName])
-            ->join($this->config->db->user_roles_table_name, $this->config->db->users_table_name . '.role =' . $this->config->db->user_roles_table_name . '.role')
+            ->join(
+                $this->config->db->user_roles_table_name,
+                $this->config->db->users_table_name . '.role =' . $this->config->db->user_roles_table_name . '.role'
+            )
             ->columns([
                 'id',
                 'userName',
@@ -135,6 +158,12 @@ class Users extends AbstractModel
         return $this->db->selectWith($select);
     }
 
+    public function fetchRoleLabel(): object
+    {
+        $rModel = $this->modelManager->get(Roles::class);
+        return $rModel->fetchColumns('role', $this->offsetGet('role'), ['label']);
+    }
+
     /** @return array */
     public function getLogData(): array
     {
@@ -154,6 +183,8 @@ class Users extends AbstractModel
      */
     public function update(AbstractModel $model, $where = null, ?array $joins = null): int
     {
+        $where = new Where();
+        $where->equalTo('id', $model->id);
         return $this->db->update($model->getArrayCopy(), $where, $joins);
     }
 
@@ -170,6 +201,29 @@ class Users extends AbstractModel
             'id'       => null,
             'userName' => 'Guest',
             'role'     => 'guest',
+        ];
+    }
+
+    public function getContextColumns(): array
+    {
+        return [
+            'id',
+            'userName',
+            'email',
+            'role',
+            'firstName',
+            'lastName',
+            'profileImage',
+            'age',
+            'birthday',
+            'gender',
+            'race',
+            'bio',
+            'companyName',
+            'sessionLength',
+            'regDate',
+            'active',
+            'verified',
         ];
     }
 }

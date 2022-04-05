@@ -110,14 +110,41 @@ return [
                                 'type'          => Segment::class,
                                 'may_terminate' => true,
                                 'options'       => [
-                                    'route'       => '/user/account[/:action[/:userName]]',
+                                    'route'       => '/user/account/dashboard[/:userName]',
                                     'constraints' => [
-                                        'action'   => '[a-zA-Z][a-zA-Z0-9_-]*',
                                         'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                     ],
                                     'defaults'    => [
                                         'controller' => Controller\AccountController::class,
                                         'action'     => 'dashboard',
+                                    ],
+                                ],
+                            ],
+                            'edit'      => [
+                                'type'          => Segment::class,
+                                'may_terminate' => true,
+                                'options'       => [
+                                    'route'      => '/user/account/edit[/:userName]',
+                                    'constraints' => [
+                                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action'     => 'edit',
+                                    ],
+                                ],
+                            ],
+                            'delete'      => [
+                                'type'          => Segment::class,
+                                'may_terminate' => true,
+                                'options'       => [
+                                    'route'      => '/user/account/delete[/:userName]',
+                                    'constraints' => [
+                                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action'     => 'delete',
                                     ],
                                 ],
                             ],
@@ -256,18 +283,18 @@ return [
             Controller\WidgetController::class   => Controller\Factory\WidgetControllerFactory::class,
         ],
     ],
+    'model_manager' => [
+        'factories' => [
+            Model\Users::class      => Model\Factory\UsersFactory::class,
+            Model\Roles::class      => Model\Factory\RolesFactory::class,
+        ],
+    ],
     'service_manager' => [
         'aliases'   => [
-            //TODO: remove these ASAP
-            'Model\UserTable'       => Model\Users::class,
-            'User\Model\UserTable'  => Model\Users::class,
-            'User\Model\RolesTable' => Model\Roles::class,
             'Acl'                   => Permissions\PermissionsManager::class,
         ],
         'factories' => [
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
-            Model\Roles::class                    => Model\Factory\RolesFactory::class,
-            Model\Users::class                    => Model\Factory\UsersFactory::class,
         ],
     ],
     'filters'         => [

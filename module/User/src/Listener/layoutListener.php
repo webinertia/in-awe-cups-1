@@ -19,7 +19,7 @@ class LayoutListener extends AbstractListenerAggregate
 {
     /** @var TemplateMapResolver */
     private $templateMapResolver;
-/** @var FilterInterface */
+    /** @var FilterInterface */
     private $filter;
     protected $targetController = 'AccountController';
     protected $targetModule     = 'User';
@@ -59,14 +59,14 @@ class LayoutListener extends AbstractListenerAggregate
         }
         // Convert the module name from camel case to a lower string with dashes
         $name = 'layout/' . $this->filter->filter($module);
-// Has the resolver an entry / layout with the given name?
+        // Has the resolver an entry / layout with the given name?
         if (! $this->templateMapResolver->has($name)) {
             return;
         }
 
         // Get root view model
         $layoutViewModel = $event->getViewModel();
-// Rendering without layout?
+        // Rendering without layout?
         if ($layoutViewModel->terminate()) {
             return;
         }

@@ -10,7 +10,7 @@ use User\Listener\LayoutListener;
 
 class Module
 {
-    public function getConfig()
+    public function getConfig(): array
     {
         return include __DIR__ . '/../config/module.config.php';
     }
@@ -18,9 +18,9 @@ class Module
     public function onBootstrap(MvcEvent $e): void
     {
         $application = $e->getApplication();
-/** @var TemplateMapResolver $templateMapResolver */
+        /** @var TemplateMapResolver $templateMapResolver */
         $templateMapResolver = $application->getServiceManager()->get('ViewTemplateMapResolver');
-// Create and register layout listener
+        // Create and register layout listener
         $listener = new LayoutListener($templateMapResolver);
         $listener->attach($application->getEventManager());
     }
