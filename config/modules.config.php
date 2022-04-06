@@ -35,6 +35,7 @@ return [
     'Laminas\Diactoros',
     'Laminas\DeveloperTools',
     'Application',
+    'ContentManager',
     'Uploader',
     'User',
 ];

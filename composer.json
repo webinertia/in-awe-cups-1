@@ -38,6 +38,7 @@
 	"autoload" : {
 		"psr-4" : {
 			"Application\\" : "module/Application/src/",
+			"ContentManager\\" : "module/ContentManager/src/",
 			"Uploader\\" : "module/Uploader/src/",
 			"User\\" : "module/User/src/"
 		}
