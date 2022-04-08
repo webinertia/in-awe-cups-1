@@ -11,7 +11,6 @@ use Laminas\Form\Element\Csrf;
 use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
-use Laminas\Validator\Csrf as CsrfValidator;
 use User\Form\UserForm;
 
 class SecurityFieldset extends Fieldset implements InputFilterProviderInterface

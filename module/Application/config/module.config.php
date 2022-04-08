@@ -7,6 +7,7 @@ namespace Application;
 use Application\Controller\AdminController;
 use Application\Controller\IndexController;
 use Application\Controller\TestController;
+use ContentManager\Controller\ContentController;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -25,7 +26,8 @@ return [
         'router_class' => TranslatorAwareTreeRouteStack::class,
         'routes'       => [
             'home' => [
-                'type' => Segment::class,
+                'type' => Literal::class,
+                //'may_terminate' => true,
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
