@@ -6,9 +6,9 @@ namespace Application\Form\Factory;
 
 use Application\Form\ContactForm;
 use Application\Model\Settings;
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Webinertia\ModelManager\ModelManager;
 

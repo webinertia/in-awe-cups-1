@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace ContentManager;
 
+use ContentManager\Controller\AdminController;
 use ContentManager\Controller\ContentController;
+use ContentManager\Controller\Factory\AdminControllerFactory;
 use ContentManager\Controller\Factory\ContentControllerFactory;
-use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 
@@ -49,11 +50,64 @@ return [
                     ],
                 ],
             ],
+            'admin.content' => [
+                'type' => Placeholder::class,
+                'may_terminate' => true,
+                'options' => [
+                    'route' => '/admin/content',
+                ],
+                'child_routes' => [
+                    'manager' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route' => '/admin/content[/:action[/:title]]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'title'  => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults' => [
+                                'controller' => AdminController::class,
+                                'action'     => 'dashboard',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [
         'factories' => [
+            AdminController::class   => AdminControllerFactory::class,
             ContentController::class => ContentControllerFactory::class,
+        ],
+    ],
+    'navigation' => [
+        'admin'  => [
+            [
+                'label'     => 'Page Manager',
+                'uri'     => '/admin/content',
+                'iconClass' => 'mdi mdi-page-layout-body text-warning',
+                'resource'  => 'admin',
+                'privilege' => 'admin.access',
+                'pages' => [
+                    [
+                        'label'     => 'Content Dashboard',
+                        'route'     => 'admin.content/manager',
+                        //'action'    => 'dashboard',
+                        'resource'  => 'admin',
+                        'privilege' => 'admin.access',
+                        'params'    => ['action' => 'dashboard']
+                    ],
+                    [
+                        'label'     => 'Create New Page',
+                        'route'     => 'admin.content/manager',
+                        'action'    => 'create',
+                        'resource'  => 'admin',
+                        'privilege' => 'admin.access',
+                    ],
+                ],
+            ],
         ],
     ],
     'view_manager' => [

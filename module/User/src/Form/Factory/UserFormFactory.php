@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace User\Form\Factory;
 
 use Application\Model\Settings;
-use Interop\Container\ContainerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use User\Form\UserForm;
 use User\Model\Users;
 use User\Permissions\PermissionsManager;

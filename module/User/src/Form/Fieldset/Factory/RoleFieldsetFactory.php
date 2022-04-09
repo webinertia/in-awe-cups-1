@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset\Factory;
 
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Form\Fieldset\RoleFieldset;
 use User\Model\Roles;

@@ -4,16 +4,24 @@ declare(strict_types=1);
 
 namespace Uploader;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Uploader\Adapter\TableGatewayAdapter;
 use Uploader\AdapterPluginManager;
 
 class UploaderFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    /**
+     * @param string $requestedName
+     * @param null|mixed[] $options
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Uploader
     {
         $pluginManager = $container->get(AdapterPluginManager::class);
         if ($container->has(Acl::class)) {
