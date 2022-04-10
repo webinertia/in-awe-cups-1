@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Application\Form\Fieldset;
 
+use Application\Form\FormInterface;
 use Laminas\Captcha\Image;
 use Laminas\Config\Config;
 use Laminas\Form\Element\Captcha;
@@ -11,7 +12,6 @@ use Laminas\Form\Element\Csrf;
 use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
-use User\Form\UserForm;
 
 class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -42,7 +42,7 @@ class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
                 'priority' => 101,
             ]
         );
-        if ($this->appSettings->security->enable_captcha && $this->options['mode'] === UserForm::CREATE_MODE) {
+        if ($this->appSettings->security->enable_captcha && $this->options['mode'] === FormInterface::CREATE_MODE) {
             $this->add(
                 [
                     'name'    => 'captcha',
