@@ -283,7 +283,7 @@ return [
             Controller\WidgetController::class   => Controller\Factory\WidgetControllerFactory::class,
         ],
     ],
-    'model_manager' => [
+    'model_manager'   => [
         'factories' => [
             Model\Users::class      => Model\Factory\UsersFactory::class,
             Model\Roles::class      => Model\Factory\RolesFactory::class,

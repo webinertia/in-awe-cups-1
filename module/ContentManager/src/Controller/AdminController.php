@@ -8,9 +8,9 @@ use Application\Controller\AbstractAdminController;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
 use ContentManager\Model\Pages;
+use Laminas\Filter\FilterChain;
 use Laminas\filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
-use Laminas\Filter\FilterChain;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use Webinertia\ModelManager\ModelManager;
@@ -35,13 +35,12 @@ class AdminController extends AbstractAdminController
 
     public function createAction(): ViewModel
     {
-        if($this->request->isPost()) {
+        if ($this->request->isPost()) {
             $this->form->setData($this->request->getPost()['page-data']);
-            if($this->form->isValid()) {
-                $filter = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
-                $data = $this->form->getData();
+            if ($this->form->isValid()) {
+                $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
+                $data          = $this->form->getData();
                 $data['title'] = $filter->filter($data['label']);
-
             }
         }
         $this->view->setVariable('form', $this->form);
