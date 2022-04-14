@@ -60,7 +60,7 @@ use Laminas\View\Renderer\PhpRenderer;
                 $this->navigation()->setAcl($this->acl);
                 $this->navigation()->setRole($this->user);
                 $this->navigation()->menu()->setUlClass('navbar-nav');
-                echo $this->navigation('Laminas\Navigation\Static')->menu();
+                echo $this->navigation('Laminas\Navigation\Default')->menu();
                 ?>
 
                 </div>

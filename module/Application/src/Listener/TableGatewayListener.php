@@ -33,6 +33,6 @@ final class TableGatewayListener extends AbstractListenerAggregate
         $insert = $event->getParam('insert');
 
         // Modify values of the insert
-        $insert->values(['age' => 24], Insert::VALUES_MERGE);
+        //$insert->values(['age' => 24], Insert::VALUES_MERGE);
     }
 }

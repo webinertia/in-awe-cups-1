@@ -210,7 +210,7 @@ return [
         ],
     ],
     'navigation'      => [
-        'static' => [
+        'default' => [
             [
                 'label'     => 'Users',
                 'route'     => 'user/list',

@@ -8,6 +8,7 @@ use ContentManager\Model\Pages;
 use Laminas\Config\Config;
 use Laminas\EventManager\EventManager;
 use Laminas\Log\Logger;
+use Laminas\Router\RouteStackInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -25,12 +26,15 @@ final class PagesFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Pages
     {
         $config = new Config($container->get('config'));
-        return new Pages(
+        $router = $container->get(RouteStackInterface::class);
+        $pages  = new Pages(
             $config->db->pages_table_name,
             $container->get(ModelManager::class),
             $container->get(EventManager::class),
             $config,
             $container->get(Logger::class)
         );
+        $pages->setRouter($router);
+        return $pages;
     }
 }

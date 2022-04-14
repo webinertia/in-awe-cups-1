@@ -5,15 +5,21 @@ declare(strict_types=1);
 namespace ContentManager\Controller;
 
 use Application\Controller\AbstractAdminController;
+use Application\Form\FormInterface;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
 use ContentManager\Model\Pages;
 use Laminas\Filter\FilterChain;
-use Laminas\filter\StringToLower;
+use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
 use Laminas\Form\FormElementManager;
+use Laminas\Json\Encoder;
+use Laminas\Log\Logger;
 use Laminas\View\Model\ViewModel;
+use RuntimeException;
 use Webinertia\ModelManager\ModelManager;
+
+use function serialize;
 
 class AdminController extends AbstractAdminController
 {
@@ -22,7 +28,8 @@ class AdminController extends AbstractAdminController
     /** @var PageForm $form */
     public function __construct(ModelManager $modelManager, FormElementManager $formElementManager)
     {
-        $this->form = $formElementManager->get(PageForm::class);
+        $this->formManager = $formElementManager;
+        $this->pages       = $modelManager->get(Pages::class);
     }
 
     public function init(): self
@@ -35,15 +42,37 @@ class AdminController extends AbstractAdminController
 
     public function createAction(): ViewModel
     {
+        $form = $this->formManager->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
+        $form->setAttribute(
+            'action',
+            $this->url()->fromRoute('admin.content/manager', ['action' => 'create'])
+        );
         if ($this->request->isPost()) {
-            $this->form->setData($this->request->getPost()['page-data']);
-            if ($this->form->isValid()) {
-                $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
-                $data          = $this->form->getData();
-                $data['title'] = $filter->filter($data['label']);
+            $form->setData($this->request->getPost());
+            if ($form->isValid()) {
+                $filter       = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
+                $data         = $form->getData();
+                $data->userId = $this->user->id;
+                $data->title  = $filter->filter($data->label);
+                // need to add a parentTitle column to the table so that it can be injected into the select
+                if (! isset($data->parentId)) {
+                    $data->route  = 'content/category';
+                    $data->params = Encoder::encode(['parentTitle' => $data->title]);
+                    //$data->route  = $this->url()->fromRoute('content/page', ['parentTitle' => $data->title]);
+                }
+                // You must call exchangeArray before calling save()
+                //$this->pages->exchangeArray($data);
+                $result = $data->save();
+                try {
+                    if (! $result) {
+                        throw new RuntimeException('Page Not saved');
+                    }
+                } catch (RuntimeException $e) {
+                    $this->logger->log(Logger::EMERG, $e->getMessage(), $this->user->getLogData());
+                }
             }
         }
-        $this->view->setVariable('form', $this->form);
+        $this->view->setVariable('form', $form);
         return $this->view;
     }
 

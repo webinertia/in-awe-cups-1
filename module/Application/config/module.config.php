@@ -144,7 +144,7 @@ return [
         ],
     ],
     'navigation'      => [
-        'static' => [
+        'default' => [
             [
                 'label' => 'Home',
                 'route' => 'home',

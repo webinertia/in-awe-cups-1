@@ -41,8 +41,9 @@ final class PageForm extends BaseForm
 
     public function init()
     {
-        $this->add([
-            'type' => PageFieldset::class,
-        ]);
+        $options = $this->getOptions();
+        $factory = $this->getFormFactory();
+        $manager = $factory->getFormElementManager();
+        $this->add($manager->build(PageFieldset::class, ['mode' => $options['mode']]));
     }
 }

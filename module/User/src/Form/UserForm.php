@@ -83,7 +83,7 @@ class UserForm extends BaseForm
         $profileData = $manager->build(ProfileFieldset::class, ['mode' => $options['mode']]);
         $this->add($profileData);
 
-        if (isset($options['mode']) && $options['mode'] === self::CREATE_MODE) {
+        if (isset($options['mode']) && $options['mode'] === FormInterface::CREATE_MODE) {
             $this->add([
                 'type' => PasswordFieldset::class,
                 ['priority' => 2],
