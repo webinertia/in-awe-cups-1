@@ -10,7 +10,6 @@ use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Date;
-use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
 use Laminas\Form\Exception\InvalidArgumentException;
@@ -19,7 +18,6 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\Between;
 use Laminas\Validator\Digits;
 use Laminas\Validator\StringLength;
-use User\Form\UserForm;
 
 class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -43,12 +41,6 @@ class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 
     public function init(): void
     {
-        // if (isset($this->options['mode']) && $this->options['mode'] === UserForm::EDIT_MODE) {
-        //     $this->add([
-        //         'name' => 'id',
-        //         'type' => Hidden::class,
-        //     ]);
-        // }
         $this->add([
             'name'    => 'firstName',
             'type'    => Text::class,

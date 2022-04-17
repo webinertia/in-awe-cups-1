@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
+use Application\Form\FormInterface;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
@@ -14,7 +15,6 @@ use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\StringLength;
-use User\Form\UserForm;
 
 use function array_merge;
 
@@ -43,7 +43,7 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
             'name' => 'id',
             'type' => Hidden::class,
         ]);
-        if ($this->options['mode'] === UserForm::CREATE_MODE) {
+        if ($this->options['mode'] === FormInterface::CREATE_MODE) {
             $this->add([
                 'name' => 'regDate',
                 'type' => Hidden::class,
@@ -93,7 +93,7 @@ class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
                 ],
             ],
         ];
-        if (isset($this->options['mode']) && $this->options['mode'] === UserForm::CREATE_MODE) {
+        if (isset($this->options['mode']) && $this->options['mode'] === FormInterface::CREATE_MODE) {
             $filter  = [
                 'userName' => [
                     'required'   => true,

@@ -74,6 +74,7 @@ class PermissionsManager implements AclInterface
         $this->acl->addResource('admin');
         $this->acl->addResource('settings');
         $this->acl->addResource('mailService');
+        $this->acl->addResource('pages');
         $this->acl->allow('guest', null, 'view');
         $this->acl->allow('user', null, 'view');
         $this->acl->allow('guest', 'users', ['register.view', 'login.view']);

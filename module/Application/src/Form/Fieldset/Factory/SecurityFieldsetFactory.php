@@ -6,8 +6,8 @@ namespace Application\Form\Fieldset\Factory;
 
 use Application\Form\Fieldset\SecurityFieldset;
 use Application\Model\Settings;
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use Webinertia\ModelManager\ModelManager;
 
 class SecurityFieldsetFactory implements FactoryInterface

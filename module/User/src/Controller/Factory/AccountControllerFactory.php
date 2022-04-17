@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace User\Controller\Factory;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use User\Controller\AccountController;
 use Webinertia\ModelManager\ModelManager;
 

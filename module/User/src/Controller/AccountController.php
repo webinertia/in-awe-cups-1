@@ -6,6 +6,7 @@ namespace User\Controller;
 
 use Application\Controller\AbstractController;
 use Application\Model\Settings;
+use Application\Form\FormInterface;
 use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
@@ -43,7 +44,7 @@ final class AccountController extends AbstractController
     public function editAction()
     {
         try {
-            $form = $this->formManager->build(UserForm::class, ['mode' => UserForm::EDIT_MODE]);
+            $form = $this->formManager->build(UserForm::class, ['mode' => FormInterface::EDIT_MODE]);
             // get the user by userName that is to be edited
             $userName = $this->params()->fromRoute('userName');
             // if they can not edit the user there is no point in preceeding

@@ -13,6 +13,7 @@ namespace User\Form;
 
 use Application\Form\BaseForm;
 use Application\Form\Fieldset\SecurityFieldset;
+use Application\Form\FormInterface;
 use Application\Model\Settings;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Form\Exception\InvalidArgumentException;
@@ -25,8 +26,6 @@ use User\Permissions\PermissionsManager;
 
 class UserForm extends BaseForm
 {
-    public const CREATE_MODE = 'create';
-    public const EDIT_MODE   = 'edit';
     /** @var AuthenticationService $auth */
     protected $auth;
     /** @var PermissionsManager $pm */
@@ -58,7 +57,7 @@ class UserForm extends BaseForm
         if (! empty($options) && isset($options['mode'])) {
             parent::setOptions($options);
         } elseif (empty($options) || ! empty($options) && ! isset($options['mode'])) {
-            $options['mode'] = self::CREATE_MODE;
+            $options['mode'] = FormInterface::CREATE_MODE;
             parent::setOptions($options);
         }
     }
@@ -84,7 +83,7 @@ class UserForm extends BaseForm
         $profileData = $manager->build(ProfileFieldset::class, ['mode' => $options['mode']]);
         $this->add($profileData);
 
-        if (isset($options['mode']) && $options['mode'] === self::CREATE_MODE) {
+        if (isset($options['mode']) && $options['mode'] === FormInterface::CREATE_MODE) {
             $this->add([
                 'type' => PasswordFieldset::class,
                 ['priority' => 2],

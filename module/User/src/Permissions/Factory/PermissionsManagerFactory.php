@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace User\Permissions\Factory;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Config\Config;
 use Laminas\Permissions\Acl\Acl;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use User\Model\Roles;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Uploader;
 
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Config;
-use Laminas\ServiceManager\FactoryInterface;
+use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Uploader\AdapterPluginManager;
 
 use function is_array;
@@ -15,7 +18,12 @@ use function is_array;
 class AdapterPluginManagerFactory implements FactoryInterface
 {
     /**
-     * @return AdapterPluginManager
+     * @param string $name
+     * @param null|mixed[] $options
+     * @return object
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws ContainerModificationsNotAllowedException
      */
     public function __invoke(ContainerInterface $container, $name, ?array $options = null)
     {
@@ -39,7 +47,9 @@ class AdapterPluginManagerFactory implements FactoryInterface
     }
 
     /**
-     * @return AdapterPluginManager
+     * @param mixed $name
+     * @param mixed $requestedName
+     * @return mixed
      */
     public function createService(ServiceLocatorInterface $container, $name = null, $requestedName = null)
     {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace User\Model\Factory;
 
-use Interop\Container\ContainerInterface;
 use Laminas\Config\Config;
 use Laminas\EventManager\EventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Model\Roles;
 use Webinertia\ModelManager\ModelManager;

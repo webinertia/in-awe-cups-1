@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Application;
 
 use Application\Model\Settings;
+use ContentManager\Model\Pages;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\TableGateway;
@@ -18,6 +19,7 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Laminas\Session\SessionManager;
+use Laminas\View\Helper\Navigation;
 use Webinertia\ModelManager\ModelManager;
 
 use function date_default_timezone_set;
@@ -41,6 +43,7 @@ class Module
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
+        $this->bootstrapNavigation($e);
     }
 
     public function boostrapSessions(MvcEvent $e): void
@@ -131,5 +134,16 @@ class Module
         if ($settings->enable_error_log) {
             Logger::registerErrorHandler($logger);
         }
+    }
+
+    public function bootstrapNavigation(MvcEvent $e)
+    {
+        $sm           = $e->getApplication()->getServiceManager();
+        $vhm          = $sm->get('ViewRenderer')->getHelperPluginManager();
+        $modelManager = $sm->get(ModelManager::class);
+        $navigation   = $vhm->get(Navigation::class);
+        $navContainer = $navigation('Laminas\Navigation\Default');
+        $menu         = $modelManager->get(Pages::class)->fetchMenu();
+        $navContainer->addPages($menu);
     }
 }

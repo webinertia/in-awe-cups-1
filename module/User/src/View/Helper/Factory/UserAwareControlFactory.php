@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace User\View\Helper\Factory;
 
-use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use User\View\Helper\UserAwareControl;
 
 class UserAwareControlFactory implements FactoryInterface
