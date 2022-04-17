@@ -17,25 +17,31 @@ use function sprintf;
 class BootstrapFormCollection extends FormCollection
 {
     protected $defaultElementHelper = 'bootstrapFormRow';
-    public function __invoke(?ElementInterface $element = null, $labelPosition = null, $wrap = false)
+
+    public function __invoke(?ElementInterface $element = null, bool $wrap = true)
     {
         if (! $element) {
             return $this;
         }
         $this->setShouldWrap($wrap);
-        return $this->render($element, $labelPosition);
+        return $this->render($element);
     }
 
-    public function render(ElementInterface $element, $labelPosition = null)
+    /**
+     * Render a collection by iterating through all fieldsets and elements
+     */
+    public function render(ElementInterface $element): string
     {
-        $renderer = $this->getView();
+        // todo: fixme $labelPosition set to empty string as a temp fix for moving to 8.1 support
+        $labelPosition = '';
+        $renderer      = $this->getView();
         if (! method_exists($renderer, 'plugin')) {
         //Hold off rendering, if the plugin method does not exists
             return '';
         }
         $markup         = '';
         $templateMarkup = '';
-//$this->setDefaultElementHelper('bootstrapFormRow');
+        //$this->setDefaultElementHelper('bootstrapFormRow');
         $elementHelper  = $this->getElementHelper();
         $fieldsetHelper = $this->getFieldsetHelper();
         if ($element instanceof CollectionElement && $element->shouldCreateTemplate()) {

@@ -11,8 +11,11 @@ use Laminas\Form\Element\MonthSelect;
 use Laminas\Form\Element\MultiCheckbox;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\ElementInterface;
+use Laminas\Form\Exception\DomainException;
+use Laminas\Form\Exception\InvalidArgumentException as ExceptionInvalidArgumentException;
 use Laminas\Form\LabelAwareInterface;
 use Laminas\Form\View\Helper\FormRow;
+use Laminas\View\Exception\InvalidArgumentException;
 
 use function array_merge;
 use function count;
@@ -21,7 +24,12 @@ use function sprintf;
 
 class BootstrapFormRow extends FormRow
 {
-    public function render(ElementInterface $element, $labelPosition = null)
+    /**
+     * @throws DomainException
+     * @throws InvalidArgumentException
+     * @throws ExceptionInvalidArgumentException
+     */
+    public function render(ElementInterface $element, ?string $labelPosition = null): string
     {
         $escapeHtmlHelper         = $this->getEscapeHtmlHelper();
         $labelHelper              = $this->getLabelHelper();
@@ -198,7 +206,7 @@ class BootstrapFormRow extends FormRow
         return $markup;
     }
 
-    public function getInputErrorClass()
+    public function getInputErrorClass(): string
     {
         return 'has-error text-danger';
     }
