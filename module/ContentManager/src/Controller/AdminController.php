@@ -19,8 +19,6 @@ use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use Webinertia\ModelManager\ModelManager;
 
-use function serialize;
-
 class AdminController extends AbstractAdminController
 {
     /** @var Page $page */
@@ -58,10 +56,7 @@ class AdminController extends AbstractAdminController
                 if (! isset($data->parentId)) {
                     $data->route  = 'content/category';
                     $data->params = Encoder::encode(['parentTitle' => $data->title]);
-                    //$data->route  = $this->url()->fromRoute('content/page', ['parentTitle' => $data->title]);
                 }
-                // You must call exchangeArray before calling save()
-                //$this->pages->exchangeArray($data);
                 $result = $data->save();
                 try {
                     if (! $result) {

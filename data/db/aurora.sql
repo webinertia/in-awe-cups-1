@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 10, 2022 at 08:21 PM
+-- Generation Time: Apr 17, 2022 at 06:48 AM
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -20,15 +20,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `aurora`
 --
-CREATE DATABASE IF NOT EXISTS `aurora` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `aurora`;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `log`
---
--- Creation: Mar 14, 2022 at 05:04 PM
 --
 
 DROP TABLE IF EXISTS `log`;
@@ -51,34 +47,39 @@ CREATE TABLE IF NOT EXISTS `log` (
   `fileId` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`logId`),
   KEY `userId` (`extra_userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `log`
+--
+
+INSERT INTO `log` (`logId`, `extra_userId`, `extra_userName`, `extra_role`, `extra_firstName`, `extra_lastName`, `priorityName`, `message`, `timeStamp`, `priority`, `extra_referenceId`, `extra_errno`, `extra_file`, `extra_line`, `extra_trace`, `fileId`) VALUES
+(1, 1, 'jsmith', NULL, 'Joey', 'Smith', 'INFO', 'User jsmith logged in.', '', 6, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `pages`
 --
--- Creation: Apr 08, 2022 at 04:16 AM
--- Last update: Apr 09, 2022 at 06:48 PM
---
 
 DROP TABLE IF EXISTS `pages`;
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parentId` int(11) DEFAULT NULL,
+  `parentTitle` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `userId` int(11) NOT NULL,
   `label` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `class` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `iconClass` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `order` int(11) DEFAULT NULL,
-  `params` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `params` json DEFAULT NULL,
   `rel` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `rev` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `resource` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pages',
+  `resource` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `privilege` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `visible` int(1) NOT NULL DEFAULT '1',
-  `route` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `route` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `uri` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `controller` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `action` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `query` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -87,23 +88,23 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `content` text COLLATE utf8mb4_unicode_ci,
   `isLandingPage` tinyint(1) NOT NULL DEFAULT '1',
   `cmsType` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `createdDate` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `updatedDate` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `pages`
 --
 
-INSERT INTO `pages` (`id`, `parentId`, `userId`, `label`, `title`, `class`, `iconClass`, `order`, `params`, `rel`, `rev`, `resource`, `privilege`, `visible`, `route`, `controller`, `action`, `query`, `isGroupPage`, `allowComments`, `content`, `isLandingPage`, `cmsType`) VALUES
-(1, NULL, 1, 'Services', 'Services', 'nav-link', NULL, 4, NULL, NULL, NULL, 'pages', 'view', 1, '/services', NULL, NULL, NULL, 0, 1, NULL, 1, NULL);
+INSERT INTO `pages` (`id`, `parentTitle`, `userId`, `label`, `title`, `class`, `iconClass`, `order`, `params`, `rel`, `rev`, `resource`, `privilege`, `visible`, `route`, `uri`, `controller`, `action`, `query`, `isGroupPage`, `allowComments`, `content`, `isLandingPage`, `cmsType`, `createdDate`, `updatedDate`) VALUES
+(10, NULL, 1, 'Test Six', 'test-six', 'nav-link', NULL, NULL, '{\"parentTitle\": \"test-six\"}', NULL, NULL, 'pages', 'view', 1, 'content/category', NULL, NULL, 'page', NULL, 0, 1, '<p>yet another test</p>', 1, NULL, NULL, NULL),
+(11, NULL, 1, 'Test Ten', 'test-ten', 'nav-link', NULL, NULL, '{\"parentTitle\": \"test-ten\"}', NULL, NULL, 'pages', 'view', 1, 'content/category', NULL, NULL, 'page', NULL, 0, 1, '<p>yet another test. maybe it will work this time as expected.</p>', 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sessions`
---
--- Creation: Mar 11, 2022 at 01:29 AM
--- Last update: Apr 10, 2022 at 08:14 PM
 --
 
 DROP TABLE IF EXISTS `sessions`;
@@ -120,8 +121,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 --
 -- Table structure for table `users`
---
--- Creation: Mar 11, 2022 at 01:29 AM
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -148,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `resetTimeStamp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `resetHash` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
@@ -164,8 +163,6 @@ INSERT INTO `users` (`id`, `userName`, `email`, `password`, `role`, `firstName`,
 --
 -- Table structure for table `user_roles`
 --
--- Creation: Mar 11, 2022 at 01:29 AM
---
 
 DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE IF NOT EXISTS `user_roles` (
@@ -174,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
   `inheritsFrom` tinytext COLLATE utf8mb4_unicode_ci,
   `label` tinytext COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `user_roles`

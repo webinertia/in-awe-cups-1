@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use Laminas\Form\Element\Select;
 use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
+use User\Form\Element\RoleSelect;
 use User\Model\Roles;
 
 class RoleFieldset extends Fieldset implements InputFilterProviderInterface
@@ -27,11 +27,9 @@ class RoleFieldset extends Fieldset implements InputFilterProviderInterface
     public function init()
     {
         $this->add([
-            'name'    => 'role',
-            'type'    => Select::class,
+            'type'    => RoleSelect::class,
             'options' => [
-                'label'         => 'Assign Group?',
-                'value_options' => $this->roleModel->fetchSelectData(),
+                'label' => 'Assign Group?',
             ],
         ]);
     }

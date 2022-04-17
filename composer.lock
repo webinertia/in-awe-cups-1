@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b80261e95b0ece53bdaa7eccd9e3be1",
+    "content-hash": "eae43683d3426c02ddb70cdb0ce0ee50",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -1608,16 +1608,16 @@
         },
         {
             "name": "laminas/laminas-db",
-            "version": "2.14.1",
+            "version": "2.15.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-db.git",
-                "reference": "7daba1149e69dc828ce083844cde1101c0418afa"
+                "reference": "1125ef2e55108bdfcc1f0030d3a0f9b895e09606"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-db/zipball/7daba1149e69dc828ce083844cde1101c0418afa",
-                "reference": "7daba1149e69dc828ce083844cde1101c0418afa",
+                "url": "https://api.github.com/repos/laminas/laminas-db/zipball/1125ef2e55108bdfcc1f0030d3a0f9b895e09606",
+                "reference": "1125ef2e55108bdfcc1f0030d3a0f9b895e09606",
                 "shasum": ""
             },
             "require": {
@@ -1675,7 +1675,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-03-30T07:37:42+00:00"
+            "time": "2022-04-11T13:26:20+00:00"
         },
         {
             "name": "laminas/laminas-development-mode",
@@ -6541,16 +6541,16 @@
         },
         {
             "name": "webinertia/webinertia-modelmanager",
-            "version": "dev-master",
+            "version": "0.0.4-alpha",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webinertia/modelmanager.git",
-                "reference": "a093a0def050dccc7b47f7e8d480f9541c55d6fb"
+                "reference": "4ea1a95c246bfb666dd424af40fa02e6b21d03d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/a093a0def050dccc7b47f7e8d480f9541c55d6fb",
-                "reference": "a093a0def050dccc7b47f7e8d480f9541c55d6fb",
+                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/4ea1a95c246bfb666dd424af40fa02e6b21d03d4",
+                "reference": "4ea1a95c246bfb666dd424af40fa02e6b21d03d4",
                 "shasum": ""
             },
             "require": {
@@ -6566,7 +6566,6 @@
                 "laminas/laminas-permissions-acl": "^2.9.0, required for acl integration for ownership assertion",
                 "laminas/laminas-servicemanager": "^3.11.1, required to use the model factories or provide services"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -6595,7 +6594,7 @@
                 "issues": "https://github.com/webinertia/modelmanager/issues",
                 "source": "https://github.com/webinertia/modelmanager"
             },
-            "time": "2022-04-05T06:08:13+00:00"
+            "time": "2022-04-16T21:50:36+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -7941,6 +7940,76 @@
                 }
             ],
             "time": "2022-04-01T12:37:26+00:00"
+        },
+        {
+            "name": "rafalli/bjy-profiler",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rafalli/bjy-profiler.git",
+                "reference": "3d588e6a13eb764ea142e4d013e641b36c56303f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rafalli/bjy-profiler/zipball/3d588e6a13eb764ea142e4d013e641b36c56303f",
+                "reference": "3d588e6a13eb764ea142e4d013e641b36c56303f",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-db": "^2.7",
+                "laminas/laminas-log": "^2.7",
+                "laminas/laminas-modulemanager": "^2.7",
+                "laminas/laminas-servicemanager": "^3.0.3",
+                "php": "^5.5 || ^7.0"
+            },
+            "require-dev": {
+                "laminas/laminas-mvc": "^2.7 || ^3.0",
+                "phpunit/phpunit": "^4.0 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "zf": {
+                    "module": "BjyProfiler",
+                    "config-provider": "BjyProfiler\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BjyProfiler\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Youngblood",
+                    "email": "bx.youngblood@gmail.com",
+                    "homepage": "http://bjyoungblood.com/"
+                },
+                {
+                    "name": "Andrey N. Mokhov",
+                    "email": "github@mokhov.com",
+                    "homepage": "https://github.com/andrey-mokhov"
+                },
+                {
+                    "name": "Rafal Linca",
+                    "email": "kontakt@rafalllinca.pl",
+                    "homepage": "https://rafallinca.pl"
+                }
+            ],
+            "description": "Database profiler for Laminas\\Db. Module forked from andrey-mokhov/bjy-profiler",
+            "homepage": "https://github.com/rafalli/BjyProfiler",
+            "keywords": [
+                "db",
+                "laminas",
+                "profiler"
+            ],
+            "support": {
+                "source": "https://github.com/rafalli/bjy-profiler/tree/master"
+            },
+            "time": "2020-02-26T19:12:30+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -9362,7 +9431,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "webinertia/webinertia-modelmanager": 20
+        "webinertia/webinertia-modelmanager": 15
     },
     "prefer-stable": false,
     "prefer-lowest": false,

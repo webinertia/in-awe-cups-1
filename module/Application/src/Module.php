@@ -22,7 +22,6 @@ use Laminas\Session\SessionManager;
 use Laminas\View\Helper\Navigation;
 use Webinertia\ModelManager\ModelManager;
 
-use function array_merge;
 use function date_default_timezone_set;
 use function explode;
 use function strpos;

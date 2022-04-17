@@ -32,6 +32,7 @@ return [
     'Laminas\Router',
     'Laminas\Validator',
     'Laminas\Diactoros',
+    'BjyProfiler',
     'ContentManager',
     'Application',
     'Uploader',
