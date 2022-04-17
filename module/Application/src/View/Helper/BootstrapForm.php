@@ -13,10 +13,11 @@ use function str_replace;
 
 class BootstrapForm extends AbstractHelper
 {
-    const MODE_INLINE     = 'inline';
-    const MODE_HORIZONTAL = 'horizontal';
-    const MODE_VERTICAL   = 'vertical';
+    public const MODE_INLINE     = 'inline';
+    public const MODE_HORIZONTAL = 'horizontal';
+    public const MODE_VERTICAL   = 'vertical';
     protected $formHelper;
+
     public function __invoke(?FormInterface $form = null, $mode = self::MODE_VERTICAL)
     {
         //$this->formHelper = $this->getView()->plugin('form');
@@ -34,7 +35,11 @@ class BootstrapForm extends AbstractHelper
         }
         $formContent     = '';
         $existingClasses = $form->getAttribute('class');
+        if ($existingClasses === null) {
+            $existingClasses = '';
+        }
 //let’s make sure that we don’t have bootstrap form classes
+        //$test = str_replace('form-inline', '', $existingClasses);
         $existingClasses = str_replace('form-horizontal', '', str_replace('form-inline', '', $existingClasses));
         if ($mode == self::MODE_INLINE) {
             $form->setAttribute('class', $existingClasses . ' form-inline');
@@ -44,7 +49,8 @@ class BootstrapForm extends AbstractHelper
 
         foreach ($form as $element) {
             if ($element instanceof FieldsetInterface) {
-                $formContent .= $this->getView()->bootstrapFormCollection($element, $mode);
+                // todo: fixme
+                $formContent .= $this->getView()->bootstrapFormCollection($element);
             } else {
                 $formContent .= $this->getView()->bootstrapFormRow($element, $mode);
             }

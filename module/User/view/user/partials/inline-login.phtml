@@ -10,5 +10,6 @@ use Laminas\View\Renderer\PhpRenderer;
 if (isset($form)) {
     $form->setAttribute('action', $this->url('user/account', ['action' => 'login']));
     $form->addSubmit();
-    echo $this->bootstrapForm($form, 'inline');
+    // todo: fixme
+   // echo $this->bootstrapForm($form, 'inline');
 }

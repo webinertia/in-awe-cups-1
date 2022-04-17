@@ -68,7 +68,8 @@ class Module
             ),
             new DbTableGatewayOptions($dbOptions)
         );
-        $sessionManager->setSaveHandler($saveHandler);
+        // todo: fixme
+        //$sessionManager->setSaveHandler($saveHandler);
     }
 
     public function boostrapTranslation(MvcEvent $e): void

@@ -125,9 +125,9 @@ abstract class AbstractController extends AbstractActionController
             'auth'        => $this->authService,
         ]);
         $rootViewModel = $this->layout();
-        $inlineLogin   = new ViewModel(['form' => ($this->sm->get(FormElementManager::class))->get(LoginForm::class)]);
-        $inlineLogin->setTemplate('user/partials/inline-login');
-        $rootViewModel->addChild($inlineLogin, 'inlineLogin');
+        // $inlineLogin   = new ViewModel(['form' => ($this->sm->get(FormElementManager::class))->get(LoginForm::class)]);
+        // $inlineLogin->setTemplate('user/partials/inline-login');
+        // $rootViewModel->addChild($inlineLogin, 'inlineLogin');
         $this->action = $this->params()->fromRoute('action');
         $this->layout()->setVariables([
             'user'        => $this->user,

@@ -23,24 +23,20 @@ class UserAwareControl extends AbstractHelper
     public $options     = [];
     public $type        = 'button';
     public $buttonClass = 'btn btn-primary';
-/** @var PhpRenderer ; */
+    /** @var PhpRenderer ; */
     protected $view;
     private $iconOptionsConfigKey   = 'icon_options';
     private $buttonOptionsConfigKey = 'button_options';
-/** @var User\Model\User|User\Model\Guest $user */
+    /** @var User\Model\User|User\Model\Guest $user */
     protected $user;
-/**
- * @param User\Model\Users
- * @param Acl $acl
- */
-    // public function __construct(Users $user, AclInterface $acl)
-    // {
-    //     $this->user = $user;
-    //     $this->acl = $acl;
-
-    //  //Debug::dump($user);
-    // }
-    public function buildControl($resource, $type = 'button', $url, array $options = [])
+    /**
+     * @param mixed $resource
+     * @param mixed $url
+     * @param string $type
+     * @param null|array $options
+     * @return string|void
+     */
+    public function buildControl($resource, $url, $type = 'button', ?array $options = [])
     {
         $translator = $this->getTranslator();
         $html       = '';

@@ -67,7 +67,7 @@ class Pages extends AbstractModel
         $result = $this->db->select();
         $pages  = [];
         foreach ($result as $row) {
-            unset($row->content);
+            //unset($row->content);
             if (! empty($row->uri)) {
                 $page = Uri::factory($row->getArrayCopy());
             }
