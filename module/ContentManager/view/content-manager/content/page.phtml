@@ -4,3 +4,11 @@ declare(strict_types=1);
 
 use Laminas\View\Renderer\PhpRenderer;
 /** @var PhpRenderer $this */
+
+$container = $this->navigation()->getContainer();
+$page = $container->findOneBy('title', $this->params['title']);
+if(!empty($page)) :
+?>
+<?=$page->content;?>
+<?php
+endif;

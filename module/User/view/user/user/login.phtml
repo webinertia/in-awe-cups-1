@@ -21,10 +21,10 @@ echo $this->userControl($this->user, $this->acl, 'users', 'button', $this->url('
     'step'   => 'submit-email',
 ]), $buttonOptions);
 
-if (isset($this->form)) {
+if ($this->appSettings->security->enable_login && isset($this->form)) {
     $this->form->addSubmit();
     echo $this->bootstrapForm($this->form);
 }
-
-
-
+else {
+    echo 'Login disabled';
+}
