@@ -8,6 +8,8 @@ use Application\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use Webinertia\ModelManager\ModelManager;
 
+use function count;
+
 final class ContentController extends AbstractController
 {
     public function __construct(ModelManager $modelManager)
@@ -17,8 +19,17 @@ final class ContentController extends AbstractController
 
     public function pageAction(): ViewModel
     {
-        $params = $this->params()->fromRoute();
-        $this->view->setVariable('params', $params);
+        $hasParent = false;
+        $params    = $this->params()->fromRoute();
+        if (count($params) > 3) {
+            $hasParent = true;
+        } else {
+            $params['title'] = $params['parentTitle'];
+        }
+        $this->view->setVariables([
+            'params'    => $params,
+            'hasParent' => $hasParent,
+        ]);
         return $this->view;
     }
 }

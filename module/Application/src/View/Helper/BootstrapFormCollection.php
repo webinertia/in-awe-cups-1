@@ -18,6 +18,16 @@ class BootstrapFormCollection extends FormCollection
 {
     protected $defaultElementHelper = 'bootstrapFormRow';
 
+    /**
+     * Invoke helper as function
+     *
+     * Proxies to {@link render()}.
+     *
+     * @template T as null|ElementInterface
+     * @psalm-param T $element
+     * @psalm-return (T is null ? self : string)
+     * @return string|FormCollection
+     */
     public function __invoke(?ElementInterface $element = null, bool $wrap = true)
     {
         if (! $element) {
