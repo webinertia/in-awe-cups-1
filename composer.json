@@ -33,7 +33,7 @@
 		"laminas/laminas-captcha": "^2.11",
 		"laminas/laminas-paginator": "^2.12",
 		"laminas/laminas-paginator-adapter-laminasdb": "^1.2",
-		"webinertia/webinertia-modelmanager": "^0.0.4-alpha"
+		"webinertia/webinertia-modelmanager": "^0.0.5-alpha"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -80,5 +80,12 @@
 		"laminas/laminas-coding-standard": "^2.3",
 		"rafalli/bjy-profiler": "^1.3"
 	},
-	"replace": { "laminas/laminas-zendframework-bridge": "*" }
+	"replace": { "laminas/laminas-zendframework-bridge": "*" },
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"laminas/laminas-component-installer": true,
+			"laminas/laminas-skeleton-installer": true
+		}
+	}
 }

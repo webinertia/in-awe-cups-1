@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f5571136cdd29c4e2b8c2cc1f53b991",
+    "content-hash": "d3c4599d074e1fa40604b68c3c058e45",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -6618,19 +6618,20 @@
         },
         {
             "name": "webinertia/webinertia-modelmanager",
-            "version": "0.0.4-alpha",
+            "version": "0.0.5-alpha",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webinertia/modelmanager.git",
-                "reference": "4ea1a95c246bfb666dd424af40fa02e6b21d03d4"
+                "reference": "62b268cb47b990a11f45428e1665bbd008af68ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/4ea1a95c246bfb666dd424af40fa02e6b21d03d4",
-                "reference": "4ea1a95c246bfb666dd424af40fa02e6b21d03d4",
+                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/62b268cb47b990a11f45428e1665bbd008af68ec",
+                "reference": "62b268cb47b990a11f45428e1665bbd008af68ec",
                 "shasum": ""
             },
             "require": {
+                "laminas/laminas-component-installer": "^2.6",
                 "laminas/laminas-db": "^2.14.1",
                 "laminas/laminas-eventmanager": "^3.4.0",
                 "laminas/laminas-permissions-acl": "^2.9.0",
@@ -6638,6 +6639,7 @@
                 "php": "^7.3 || ~8.0.0"
             },
             "suggest": {
+                "laminas/laminas-component-installer": "^2.6, required for configuration injection",
                 "laminas/laminas-db": "^2.14.1",
                 "laminas/laminas-eventmanager": "^3.4.0, required for tablegateway event feature",
                 "laminas/laminas-permissions-acl": "^2.9.0, required for acl integration for ownership assertion",
@@ -6671,7 +6673,7 @@
                 "issues": "https://github.com/webinertia/modelmanager/issues",
                 "source": "https://github.com/webinertia/modelmanager"
             },
-            "time": "2022-04-16T21:50:36+00:00"
+            "time": "2022-04-21T03:25:42+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -9516,5 +9518,5 @@
         "php": "^7.3 || ~8.0.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
