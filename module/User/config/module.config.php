@@ -299,7 +299,7 @@ return [
     ],
     'filters'         => [
         'factories' => [
-            Filter\PasswordFilter::class => Filter\factory\PasswordFilterFactory::class,
+            Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
         ],
     ],
     'form_elements'   => [

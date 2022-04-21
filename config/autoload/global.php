@@ -1,11 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
-use Laminas\Session\Storage\SessionArrayStorage;
-use Laminas\Session\Validator\HttpUserAgent;
-use Laminas\Session\Validator\RemoteAddr;
-
 /**
  * Global Configuration Override
  *
@@ -17,6 +11,12 @@ use Laminas\Session\Validator\RemoteAddr;
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
+
+declare(strict_types=1);
+
+use Laminas\Session\Storage\SessionArrayStorage;
+use Laminas\Session\Validator\HttpUserAgent;
+use Laminas\Session\Validator\RemoteAddr;
 
 return [
     'db'                 => [
@@ -31,6 +31,7 @@ return [
         'remember_me_seconds' => 86400 * 14,
         'cookie_httponly'     => true,
         'cookie_samesite'     => 'Strict',
+        'cookie_secure'       => true,
     ],
     'session_storage'    => [
         'type' => SessionArrayStorage::class,
