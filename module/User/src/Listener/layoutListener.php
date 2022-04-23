@@ -21,8 +21,10 @@ class LayoutListener extends AbstractListenerAggregate
     private $templateMapResolver;
     /** @var FilterInterface */
     private $filter;
+    /** @var string */
     protected $targetController = 'AccountController';
-    protected $targetModule     = 'User';
+    /** @var string */
+    protected $targetModule = 'User';
     public function __construct(TemplateMapResolver $templateMapResolver)
     {
         $this->templateMapResolver = $templateMapResolver;
@@ -32,7 +34,10 @@ class LayoutListener extends AbstractListenerAggregate
         $this->moduleNameFilter    = new FqcnToModuleName();
     }
 
-    public function attach(EventManagerInterface $events, $priority = 1)
+    /**
+     * @param int $priority
+     */
+    public function attach(EventManagerInterface $events, $priority = 1): void
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, [$this, 'setLayout']);
     }
