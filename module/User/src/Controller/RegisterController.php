@@ -67,7 +67,7 @@ class RegisterController extends AbstractController
         $acctData     = $this->form->getData()['acct-data'];
         $profileData  = $this->form->getData()['profile-data'];
         $passwordData = $this->form->getData()['password-data'];
-        $roleData     = $this->form->getData()['role-data'];
+        $roleData     = $this->form->getData()['role-data'] ??= 'user';
         unset($passwordData['conf_password']);
         $value  = ['email' => $acctData['email'], 'timestamp' => $acctData['regDate']];
         $filter = new Filter();

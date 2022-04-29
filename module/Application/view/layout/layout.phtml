@@ -10,7 +10,7 @@ use Laminas\View\Renderer\PhpRenderer;
  */
 ?>
 <?= $this->doctype() ?>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
     <head>
         <meta charset="utf-8">
         <?= $this->headTitle($this->appSettings->view->site_name ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
@@ -21,17 +21,16 @@ use Laminas\View\Renderer\PhpRenderer;
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
 
         ?>
-
-        <!-- Le styles -->
-        <?= $this->headLink([
-    'rel'  => 'shortcut icon',
-    'type' => 'image/vnd.microsoft.icon',
-    'href' => $this->basePath() . '/img/favicon.ico',
-])
-            ->prependStylesheet($this->basePath('css/style.css'))
-            ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
-?>
-
+        <!-- Ie styles -->
+        <?= $this->headLink(
+                            [
+                                'rel'  => 'shortcut icon',
+                                'type' => 'image/vnd.microsoft.icon',
+                                'href' => $this->basePath() . '/img/favicon.ico',
+                            ]
+            )->prependStylesheet($this->basePath('css/style.css'))
+             ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
+        ?>
         <!-- Scripts -->
         <?= $this->headScript() ?>
     </head>
@@ -52,20 +51,16 @@ use Laminas\View\Renderer\PhpRenderer;
                     </button>
                     <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate($this->appSettings->view->site_name ?? 'Home'); ?></a>
                 </div>
-
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                <?php
-                //TODO: move this to a delegator
-                $this->navigation()->setAcl($this->acl);
-                $this->navigation()->setRole($this->user);
-                $this->navigation()->menu()->setUlClass('navbar-nav');
-                echo $this->navigation('Laminas\Navigation\Default')->menu();
-                ?>
-
+                    <?php
+                    //TODO: move this to a delegator
+                    $this->navigation()->setAcl($this->acl);
+                    $this->navigation()->setRole($this->user);
+                    $this->navigation()->menu()->setUlClass('navbar-nav');
+                    echo $this->navigation('Laminas\Navigation\Default')->menu();
+                    ?>
                 </div>
             </div>
-
         </nav>
         <div class="container">
             <?php
@@ -78,7 +73,6 @@ use Laminas\View\Renderer\PhpRenderer;
                 ->setMessageSeparatorString('</li><li>')
                 ->setMessageCloseString('</li></ul></div>');
                 $plugin = $this->flashMessenger()->getPluginFlashMessenger();
-
                 if ($plugin->hasCurrentErrorMessages()) {
                     echo $flash->render('error', ['alert', 'alert-dismissible', 'alert-danger']);
                 }

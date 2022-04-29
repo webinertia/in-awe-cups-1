@@ -68,8 +68,7 @@ class Module
             ),
             new DbTableGatewayOptions($dbOptions)
         );
-        // todo: fixme
-        //$sessionManager->setSaveHandler($saveHandler);
+        $sessionManager->setSaveHandler($saveHandler);
     }
 
     public function boostrapTranslation(MvcEvent $e): void
@@ -78,10 +77,6 @@ class Module
         $sm       = $e->getApplication()->getServiceManager();
         $settings = $this->modelManager->get(Settings::class);
         if ($settings->server_settings->enable_translation) {
-        // var_dump($sm->get('router'));
-                /**
-                 * @var $request \Laminas\Http\PhpEnvironment\Request
-                 */
             $request = $sm->get('request');
         // get the laguages sent by the client
             $string = $request->getServer('HTTP_ACCEPT_LANGUAGE');
@@ -95,7 +90,7 @@ class Module
             $locales = explode(',', $substring);
         /**
          * @var $translator \Laminas\I18n\Translator\Translator
-                 */
+        */
             $translator = $sm->get('MvcTranslator');
         // set the primary locale as requested by the client
             $translator->setLocale($locales[0]);
@@ -103,7 +98,7 @@ class Module
             $translator->setFallbackLocale([$locales[1]]);
         /**
          * @var $renderer \Laminas\View\Renderer\PhpRenderer
-                 */
+         */
             $renderer = $sm->get('ViewRenderer');
         // attach the Il8n standard helpers for translation
             $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
@@ -112,11 +107,10 @@ class Module
 
     public function bootstrapLogging(MvcEvent $e): void
     {
-        $sm       = $e->getapplication()->getServiceManager();
-        $settings = $this->modelManager->get(Settings::class);
-        $config   = $sm->get('config');
-        $logger   = $sm->get(Logger::class);
-        //$writer = new Dbwriter(new Adapter($config['db']), 'log');
+        $sm                = $e->getapplication()->getServiceManager();
+        $settings          = $this->modelManager->get(Settings::class);
+        $config            = $sm->get('config');
+        $logger            = $sm->get(Logger::class);
         $writer            = new Dbwriter($sm->get(AdapterInterface::class), $config['db']['log_table_name']);
         $standardLogFilter = new Priority(Logger::DEBUG);
         $writer->addFilter($standardLogFilter);
