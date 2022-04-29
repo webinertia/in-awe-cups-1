@@ -7,7 +7,6 @@ namespace Application\Controller;
 use Application\Model\Settings;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Config\Config;
-use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Exception\DomainException;
@@ -19,7 +18,6 @@ use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use User\Form\LoginForm;
 use User\Model\Users as User;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
@@ -28,7 +26,7 @@ use function dirname;
 
 abstract class AbstractController extends AbstractActionController
 {
-    /** @var FlashMessenger $fm */
+
     public $fm;
 
     /** @var ServiceManager $sm */

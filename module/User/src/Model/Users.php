@@ -68,22 +68,22 @@ class Users extends AbstractModel
                     //$omitColumns = ['password'];
                     //$user = $authAdapter->getResultRowObject(null, $omitColumns);
                     return $result;
-                break;
+               // break;
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
                     /** do stuff for nonexistent identity **/
 
                     return $result;
-                break;
+               // break;
                 case Result::FAILURE_CREDENTIAL_INVALID:
                     /** do stuff for invalid credential **/
 
                     return $result;
-                break;
+               // break;
                 default:
                     /** do stuff for other failure **/
 
                     return false;
-                break;
+               // break;
             }
         } catch (Throwable $th) {
             $this->logger->log(Logger::ERR, $th->getMessage());
