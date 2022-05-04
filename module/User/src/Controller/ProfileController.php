@@ -7,8 +7,9 @@ namespace User\Controller;
 use Application\Controller\AbstractController;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
+use Laminas\View\Model\ViewModel;
 use RuntimeException;
-use User\Form\EditProfileForm;
+use User\Form\ProfileForm;
 use User\Model\Users;
 
 use function array_merge_recursive;
@@ -16,20 +17,27 @@ use function substr;
 
 class ProfileController extends AbstractController
 {
+    /** @var Users $usrModel */
     protected $usrModel;
-    public function __construct(Users $usrModel)
+    /** @var ProfileForm $form */
+    /**
+     * @return void
+     */
+    public function __construct(Users $usrModel, ProfileForm $profileForm)
     {
         $this->usrModel = $usrModel;
+        $this->form     = $profileForm;
     }
 
-    public function _init()
+    public function init(): self
     {
         if (! $this->authService->hasIdentity()) {
             $this->redirect()->toRoute('user/account', ['action' => 'login']);
         }
+        return $this;
     }
 
-    public function viewAction()
+    public function viewAction(): ViewModel
     {
         try {
             $userName              = $this->params()->fromRoute('userName');
@@ -47,32 +55,28 @@ class ProfileController extends AbstractController
         }
     }
 
-    public function editProfileAction()
+    public function editProfileAction(): mixed
     {
-        // Create the form object
-        $form     = new EditProfileForm();
         $userName = $this->params()->fromRoute('userName');
-        $user     = $this->table->fetchByColumn('userName', $this->params()->fromRoute('userName'));
-        $profile  = $this->profileTable->fetchByColumn('userId', $user->id);
+        $user     = $this->usrModel->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         if (! $this->request->isPost()) {
             return [
-                'form' => $form,
+                'form' => $this->form,
             ];
         }
         // is this post?
         if ($this->request->isPost()) {
-// We must merge the $_POST and $_FILES because Laminas\Http\Request remaps the $_FILES array
-            $merged = array_merge_recursive($this->request->getPost()->toArray(), $this->request->getFiles()->toArray());
+            $merged = array_merge_recursive(
+                $this->request->getPost()->toArray(),
+                $this->request->getFiles()->toArray()
+            );
             unset($merged['submit']);
-/**
+            /**
              * setting this data should hydrate the bound $profile rowgateway object
              */
-            $form->setData($merged);
-            if ($form->isValid()) {
-                $profile = $form->getData();
-            // we should get a hydated rowgateway object here
-                //var_dump($profile);
-                // we will need this to rename and move the uploaded file
+            $this->form->setData($merged);
+            if ($this->form->isValid()) {
+                $profile    = $this->form->getData();
                 $fileFilter = new RenameUpload();
             // set it to randomize the file name
                 $fileFilter->setRandomize(true);
@@ -96,7 +100,7 @@ class ProfileController extends AbstractController
                 // $profile->populate($merged, true);
             }
         }
-        $this->view->setVariable('form', $form);
+        $this->view->setVariable('form', $this->form);
         return $this->view;
     }
 }

@@ -191,7 +191,7 @@ class Users extends AbstractModel
     public function getOwnerId(): int
     {
         if (! $this->offsetExists('userId') && $this->offsetExists('userName')) {
-            return $this->offsetGet('id');
+            return (int) $this->offsetGet('id');
         }
     }
 
