@@ -78,21 +78,19 @@ class ProfileController extends AbstractController
             if ($this->form->isValid()) {
                 $profile    = $this->form->getData();
                 $fileFilter = new RenameUpload();
-            // set it to randomize the file name
+                // set it to randomize the file name
                 $fileFilter->setRandomize(true);
-            // notice this sets the path for directory and the base file name used for all profile Images
+                // notice this sets the path for directory and the base file name used for all profile Images
                 $fileFilter->setTarget($this->basePath . '/public/modules/user/profile/profileImages/profileImage');
-            // maintain the original file extension
+                // maintain the original file extension
                 $fileFilter->setUseUploadExtension(true);
-            // perform the move and rename on the file
+                // perform the move and rename on the file
                 $filtered       = $fileFilter->filter($profile->profileImage);
                 $baseNameFilter = new BaseName();
-            // grab just the file name so it can be stored in the profile table
-                $baseName = $baseNameFilter->filter($filtered['tmp_name']);
-            //var_dump($baseName);
+                // grab just the file name so it can be stored in the profile table
+                $baseName              = $baseNameFilter->filter($filtered['tmp_name']);
                 $profile->profileImage = $baseName;
                 try {
-        //$profile true
                     $result = $this->profileTable->update($profile->toArray(), ['userId' => $profile->userId]);
                 } catch (RuntimeException $e) {
                     echo $e->getMessage();
