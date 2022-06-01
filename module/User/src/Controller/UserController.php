@@ -26,6 +26,7 @@ class UserController extends AbstractController
     public function listAction(): ViewModel
     {
         try {
+           // $view       = new ViewModel();
             $userName   = $this->params('userName');
             $hasMessage = false;
             if (! empty($userName)) {

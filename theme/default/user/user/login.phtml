@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+$title = 'Login';
+$this->headTitle($title);
+// echo $this->translate('user', 'user');
+?>
+
+<?php
+// $form->setAttribute('action', $this->url('user', ['action' => 'add']));
+// $form->prepare();
+$buttonOptions = [
+    'button_options' => [
+        'class'     => 'btn btn-primary btn-sm',
+        'link_text' => 'Reset Password',
+    ],
+];
+echo $this->userControl($this->user, $this->acl, 'users', 'button', $this->url('user/account/password', [
+    'action' => 'reset',
+    'step'   => 'submit-email',
+]), $buttonOptions);
+
+if ($this->appSettings->security->enable_login && isset($this->form)) {
+    $this->form->addSubmit();
+    echo $this->bootstrapForm($this->form);
+}
+else {
+    echo 'Login disabled';
+}

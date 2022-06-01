@@ -46,8 +46,8 @@ return [
         'privilege' => 'admin.access',
     ],
     'view_manager'    => [
-        'template_path_stack' => [
-            'uploader' => __DIR__ . '/../view',
-        ],
+        // 'template_path_stack' => [
+        //     'uploader' => __DIR__ . '/../view',
+        // ],
     ],
 ];

@@ -325,10 +325,11 @@ return [
         ],
     ],
     'view_manager'    => [
-        'template_path_stack' => [
-            'user' => __DIR__ . '/../view',
-        ],
+        // 'template_path_stack' => [
+        //     //'user' => __DIR__ . '/../view',
+        // ],
         'template_map'        => [
+            //'user/layout' => __DIR__ . '/../../themes/default/layout/account-dashboard.phtml',
             'layout/user' => __DIR__ . '/../view/layout/account-dashboard.phtml',
         ],
     ],

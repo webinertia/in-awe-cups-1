@@ -1,0 +1,28 @@
+<div id="memberListControl" class="btn-group">
+      <button id="userWidgetButton" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Jump to Page:
+      </button>
+      <div class="userWidgetControl dropdown-menu">
+    <?php
+    /**
+     * to build the correct link when not using javascript
+     * $this->url($this->route, ['page' => $page]);
+     * '/user/widgets[/:action[/:group[/:page[/:itemsPerPage]]]]'
+     */
+    if ($this->pageCount) : ?>
+      <!-- Numbered page links -->
+      <?php foreach ($this->pagesInRange as $page) : ?>
+
+          <a class="dropdown-item text-success" href="<?=$this->url('widgets', 
+          [
+            'action' => 'list-data',
+            'group' => $this->listType, 
+            'page' => $page
+            ])?>">
+            Page: <?= $page ?>
+          </a>
+
+      <?php endforeach; ?>
+    <?php endif; ?>
+          </div>
+</div>

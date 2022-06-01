@@ -15,7 +15,7 @@
 		"laminas/laminas-development-mode" : "^3.2",
 		"laminas/laminas-skeleton-installer" : "^0.3",
 		"laminas/laminas-mvc" : "^3.1.1",
-		"laminas/laminas-cache" : "^2.11.1",
+		"laminas/laminas-cache" : "^3.1.3",
 		"laminas/laminas-db" : "^2.12.0",
 		"laminas/laminas-mvc-form" : "^2.0.0",
 		"laminas/laminas-json" : "^3.2",
@@ -33,8 +33,7 @@
 		"laminas/laminas-captcha": "^2.11",
 		"laminas/laminas-paginator": "^2.12",
 		"laminas/laminas-paginator-adapter-laminasdb": "^1.2",
-		"webinertia/webinertia-modelmanager": "^0.0.6-alpha",
-		"league/plates": "^3.4"
+		"webinertia/webinertia-modelmanager": "^0.0.6-alpha"
 	},
 	"autoload" : {
 		"psr-4" : {
