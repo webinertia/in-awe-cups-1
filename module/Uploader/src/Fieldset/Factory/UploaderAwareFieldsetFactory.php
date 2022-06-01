@@ -19,6 +19,6 @@ class UploaderAwareFieldsetFactory implements FactoryInterface
         $requestedName,
         ?array $options = null
     ): UploaderAwareFieldset {
-        return new UploaderAwareFieldset();
+        return new UploaderAwareFieldset('', $options);
     }
 }

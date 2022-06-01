@@ -130,9 +130,9 @@ return [
             ],
         ],
     ],
-    'view_manager' => [
-        'template_path_stack' => [
-            'content-manager' => __DIR__ . '/../view'
-        ],
-    ],
+    // 'view_manager' => [
+    //     'template_path_stack' => [
+    //         //'content-manager' => __DIR__ . '/../view'
+    //     ],
+    // ],
 ];

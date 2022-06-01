@@ -291,7 +291,7 @@ return [
     ],
     'service_manager' => [
         'aliases'   => [
-            'Acl'                   => Permissions\PermissionsManager::class,
+            'Acl' => Permissions\PermissionsManager::class,
         ],
         'factories' => [
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
@@ -311,6 +311,7 @@ return [
             Form\Fieldset\ProfileFieldset::class  => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
             Form\Fieldset\RoleFieldset::class     => Form\Fieldset\Factory\RoleFieldsetFactory::class,
             Form\UserForm::class                  => Form\Factory\UserFormFactory::class,
+            Form\ProfileForm::class               => Form\Factory\UserFormFactory::class,
         ],
     ],
     'view_helpers'    => [
@@ -324,10 +325,11 @@ return [
         ],
     ],
     'view_manager'    => [
-        'template_path_stack' => [
-            'user' => __DIR__ . '/../view',
-        ],
+        // 'template_path_stack' => [
+        //     //'user' => __DIR__ . '/../view',
+        // ],
         'template_map'        => [
+            //'user/layout' => __DIR__ . '/../../themes/default/layout/account-dashboard.phtml',
             'layout/user' => __DIR__ . '/../view/layout/account-dashboard.phtml',
         ],
     ],
@@ -341,6 +343,25 @@ return [
             'items_per_page' => 5,
             'display_groups' => 'admin',
             'widget_name'    => 'Administrators',
+        ],
+    ],
+    'upload_manager' => [
+        'user' => [
+            'adapter' => TableGatewayAdapter::class,
+            // if not using the type configuration below the uploader will use a image_dir key for the directory name to upload too
+            //'image_dir' => 'images',
+            'type' => [
+                'profile' => [
+                    'upload_path' => '/user/profile/profileImages',
+                ],
+            ],
+            'db_config' => [
+                'table_name' => 'users',
+                'image_column' => 'profileImage', // if the record is to be saved this key must be present and must match the key in the columns below
+                'columns' => [
+                    'profileImage'
+                ],
+            ],
         ],
     ],
 ];

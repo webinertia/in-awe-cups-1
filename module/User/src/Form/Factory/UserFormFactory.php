@@ -29,7 +29,7 @@ class UserFormFactory implements FactoryInterface
             $auth->hasIdentity() ?
             $usrModel->fetchByColumn(self::IDENTITY, $auth->getIdentity())->toArray() : $usrModel->fetchGuestContext()
         );
-        return new UserForm(
+        return new $requestedName(
             $auth,
             $container->get(PermissionsManager::class),
             $usrModel,

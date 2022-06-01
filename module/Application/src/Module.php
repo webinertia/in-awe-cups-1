@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Application;
 
 use Application\Model\Settings;
+use Application\Model\Theme;
 use ContentManager\Model\Pages;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
@@ -44,6 +45,7 @@ class Module
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
         $this->bootstrapNavigation($e);
+        $this->bootstrapTheme($e);
     }
 
     public function boostrapSessions(MvcEvent $e): void
@@ -140,5 +142,13 @@ class Module
         $navContainer = $navigation('Laminas\Navigation\Default');
         $menu         = $modelManager->get(Pages::class)->fetchMenu();
         $navContainer->addPages($menu);
+    }
+    /** DO NOT MODIFY THIS METHOD */
+    public function bootstrapTheme(MvcEvent $e)
+    {
+        $sm                = $e->getApplication()->getServiceManager();
+        $theme             = $sm->get(ModelManager::class)->get(Theme::class);
+        $templatePathStack = $sm->get('ViewTemplatePathStack');
+        $templatePathStack->addPaths($theme->getThemePaths());
     }
 }

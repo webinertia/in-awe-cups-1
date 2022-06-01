@@ -21,6 +21,7 @@ return [
     'db'              => [
         'sessions_table_name' => 'sessions',
         'log_table_name'      => 'log',
+        'theme_table_name'    => 'theme',
     ],
     'router'          => [
         'router_class' => TranslatorAwareTreeRouteStack::class,
@@ -114,7 +115,8 @@ return [
     ],
     'model_manager'   => [
         'factories' => [
-            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
+            Model\Settings::class => Model\Factory\SettingsFactory::class,
+            Model\Theme::class    => Model\Factory\ThemeFactory::class,
         ],
     ],
     'service_manager' => [
@@ -214,13 +216,14 @@ return [
         'exception_template'       => 'error/index',
         'forbidden_template'       => 'error/403',
         'template_map'             => [
-            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+           // 'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+            'index/index'   => __DIR__ . '/../view/index/index.phtml',
             'error/404'     => __DIR__ . '/../view/error/404.phtml',
             'error/index'   => __DIR__ . '/../view/error/index.phtml',
         ],
-        'template_path_stack'      => [
-            __DIR__ . '/../view',
-        ],
+        // 'template_path_stack'      => [
+        //     //__DIR__ . '/../view',
+        // ],
     ],
     'upload_manager'  => [
         'application' => [
