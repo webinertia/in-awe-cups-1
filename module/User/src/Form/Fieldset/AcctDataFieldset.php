@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use Application\Form\FormInterface;
+use App\Form\FormInterface;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;

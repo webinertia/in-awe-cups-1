@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ContentManager\Controller;
 
-use Application\Controller\AbstractController;
+use App\Controller\AbstractController;
 use Laminas\View\Model\ViewModel;
 use Webinertia\ModelManager\ModelManager;
 

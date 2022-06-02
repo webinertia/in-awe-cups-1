@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * List of enabled modules for this application.
+ * List of enabled modules for this app.
  *
- * This should be an array of module namespaces used in the application.
+ * This should be an array of module namespaces used in the app.
  */
 
 return [
@@ -33,7 +33,7 @@ return [
     'Laminas\Validator',
     'Laminas\Diactoros',
     'ContentManager',
-    'Application',
+    'App',
     'Uploader',
     'User',
 ];

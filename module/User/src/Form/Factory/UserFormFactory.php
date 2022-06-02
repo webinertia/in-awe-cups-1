@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form\Factory;
 
-use Application\Model\Settings;
+use App\Model\Settings;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

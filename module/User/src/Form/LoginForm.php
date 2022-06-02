@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form;
 
-use Application\Form\BaseForm;
+use App\Form\BaseForm;
 use User\Form\Fieldset\LoginFieldset;
 
 class LoginForm extends BaseForm

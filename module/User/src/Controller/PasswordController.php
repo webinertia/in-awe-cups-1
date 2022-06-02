@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractController;
-use Application\Service\Email;
+use App\Controller\AbstractController;
+use App\Service\Email;
 use DateTime;
 use RuntimeException;
 use Throwable;
@@ -22,7 +22,7 @@ class PasswordController extends AbstractController
         $this->usrModel = $model;
     }
 
-    public function resetAction()
+    public function resetAction(): object
     {
         try {
             $step = $this->params('step', 'zero');
@@ -104,7 +104,7 @@ class PasswordController extends AbstractController
                     } else {
                         $form->setInputFilter($form->addInputFilter());
                         $form->remove('email');
-                        $form->setValidationGroup('password', 'conf_password');
+                        $form->setValidationGroup(['password', 'conf_password']);
                         $post = $this->request->getPost();
                         $form->setData($post);
                         if ($form->isValid()) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractController;
+use App\Controller\AbstractController;
 use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;

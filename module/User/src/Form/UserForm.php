@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace User\Form;
 
-use Application\Form\BaseForm;
-use Application\Form\Fieldset\SecurityFieldset;
-use Application\Form\FormInterface;
-use Application\Model\Settings;
+use App\Form\BaseForm;
+use App\Form\Fieldset\SecurityFieldset;
+use App\Form\FormInterface;
+use App\Model\Settings;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Form\Exception\InvalidArgumentException;
 use User\Form\Fieldset\AcctDataFieldset;

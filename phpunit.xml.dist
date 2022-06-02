@@ -2,7 +2,7 @@
 <phpunit colors="true">
     <testsuites>
         <testsuite name="Laminas MVC Skeleton Test Suite">
-            <directory>./module/Application/test</directory>
+            <directory>./module/App/test</directory>
         </testsuite>
     </testsuites>
     <filter>

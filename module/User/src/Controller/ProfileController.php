@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractController;
+use App\Controller\AbstractController;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\View\Model\ViewModel;

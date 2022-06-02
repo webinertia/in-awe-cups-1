@@ -55,10 +55,6 @@ class PermissionsManager implements AclInterface
         return $acl->hasResource($resource, $parent);
     }
 
-    /**
-     * @return \Application\Permissions\PermissionsManager
-     * Provides fluent interface
-     */
     public function build(): self
     {
         // create the guest role and register it
