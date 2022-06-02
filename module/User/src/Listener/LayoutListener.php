@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace User\Listener;
 
-use Application\Filter\FqcnToControllerName;
-use Application\Filter\FqcnToModuleName;
+use App\Filter\FqcnToControllerName;
+use App\Filter\FqcnToModuleName;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Filter\FilterChain;
@@ -34,9 +34,7 @@ class LayoutListener extends AbstractListenerAggregate
         $this->moduleNameFilter    = new FqcnToModuleName();
     }
 
-    /**
-     * @param int $priority
-     */
+    /** @param int $priority */
     public function attach(EventManagerInterface $events, $priority = 1): void
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, [$this, 'setLayout']);

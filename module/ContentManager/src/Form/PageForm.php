@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ContentManager\Form;
 
-use Application\Form\BaseForm;
-use Application\Form\FormInterface;
-use Application\Model\Settings;
+use App\Form\BaseForm;
+use App\Form\FormInterface;
+use App\Model\Settings;
 use ContentManager\Form\Fieldset\PageFieldset;
 use Laminas\Authentication\AuthenticationService;
 use User\Model\Users;
@@ -39,7 +39,7 @@ final class PageForm extends BaseForm
         }
     }
 
-    public function init()
+    public function init(): void
     {
         $options = $this->getOptions();
         $factory = $this->getFormFactory();

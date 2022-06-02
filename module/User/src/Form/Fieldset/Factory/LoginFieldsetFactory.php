@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset\Factory;
 
-use Application\Model\Settings;
+use App\Model\Settings;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Form\Fieldset\LoginFieldset;
