@@ -15,30 +15,30 @@ class Uploader
 {
     /** @var Acl $acl; */
     protected $acl;
-/** @var AuthenticationService ; */
+    /** @var AuthenticationService ; */
     protected $auth;
-/**
- * The actual key to match against
- *
- * @var string $fieldsetKey
- */
+    /**
+     * The actual key to match against
+     *
+     * @var string $fieldsetKey
+     */
     protected $fieldsetKey = 'upload-config';
-/** @var AbstractAdapter $adapter */
+    /** @var AbstractAdapter $adapter */
     protected $adapter;
-/**
- * Data to be processed
- * Should contain the $_POST and $_FILES data that has been
- * $data = array_merge_recursive($_POST, $_FILES);
- *
- * @var array $data
- */
+    /**
+     * Data to be processed
+     * Should contain the $_POST and $_FILES data that has been
+     * $data = array_merge_recursive($_POST, $_FILES);
+     *
+     * @var array $data
+     */
     protected $data = [];
-/** @var array $config */
+    /** @var array $config */
     protected $config = [];
-/**
- * @param AbstractAdapter $adapter
- * @return void
- */
+    /**
+     * @param AbstractAdapter $adapter
+     * @return void
+     */
     public function __construct(AdapterInterface $adapter, Acl $acl, AuthenticationService $auth)
     {
         $this->adapter = $adapter;
@@ -65,7 +65,7 @@ class Uploader
         $this->adapter->upload();
     }
 
-    public function getPublicPath()
+    public function getPublicPath(): string
     {
         return $this->adapter->getPublicPath();
     }
