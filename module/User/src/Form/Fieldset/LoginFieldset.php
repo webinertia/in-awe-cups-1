@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use Application\Model\Settings;
+use App\Model\Settings;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
-use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Password;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
-use Laminas\Validator\Csrf as CsrfValidator;
 use Laminas\Validator\StringLength;
 
 class LoginFieldset extends Fieldset implements InputFilterProviderInterface
 {
+    /** @param array $options */
     public function __construct(Settings $appSettings, $options = [])
     {
         $this->appSettings = $appSettings;
@@ -42,7 +41,7 @@ class LoginFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
     }
 
-    public function getInputFilterSpecification()
+    public function getInputFilterSpecification(): array
     {
         return [
             'userName' => [

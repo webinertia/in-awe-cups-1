@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace ContentManager\Form\Fieldset;
 
-use Application\Form\FormInterface;
+use App\Form\FormInterface;
 use ContentManager\Model\Pages;
-use Laminas\Form\Fieldset;
-use Laminas\Form\Element\Checkbox;
-use Laminas\Form\Element\Date;
 use Laminas\Form\Element\Hidden;
-use Laminas\Form\Element\Number;
-use Laminas\Form\Element\Select;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
+use Laminas\Form\Fieldset;
 use Laminas\Hydrator\ArraySerializableHydrator;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
@@ -30,7 +26,7 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
         }
     }
 
-    public function init()
+    public function init(): void
     {
         $this->setUseAsBaseFieldset(true);
         $this->setHydrator(new ArraySerializableHydrator());

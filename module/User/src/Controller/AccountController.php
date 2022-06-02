@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractController;
-use Application\Model\Settings;
-use Application\Form\FormInterface;
+use App\Controller\AbstractController;
+use App\Form\FormInterface;
+use App\Model\Settings;
 use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Exception\InvalidServiceException;

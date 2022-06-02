@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use Application\Model\Settings;
+use App\Model\Settings;
 use Laminas\Filter\DateTimeFormatter;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;

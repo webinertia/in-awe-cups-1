@@ -22,81 +22,82 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
 {
     /** @var EventManager $eventManager */
     protected $eventManager;
-/** @var Logger $logger */
+    /** @var Logger $logger */
     protected $logger;
-/** @var RenameUpload $handler */
+    /** @var RenameUpload $handler */
     protected $handler;
-/** @var BaseName $filter */
+    /** @var BaseName $filter */
     protected $filter;
-/**
- * Base path to application set in application module.config.php
- *
- * @var string $baseDir
- */
+    /**
+     * Base path to app set in app module.config.php
+     *
+     * @var string $baseDir
+     */
     protected $baseDir;
-/**
- * Upload path to the destination directory
- *
- * @var string $targetPath
- */
+    /**
+     * Upload path to the destination directory
+     *
+     * @var string $targetPath
+     */
     protected $targetPath = '';
-/**
- * Identifer for the db table where this record will be stored
- *
- * @var TableGateway $table
- */
+    /**
+     * Identifer for the db table where this record will be stored
+     *
+     * @var TableGateway $table
+     */
     /**
      * Target file name to be used if randomize is true
      *
      * @var string $targetFileName
      */
     protected $targetFileName = 'image';
-/**
- * Identifer for the module name this image is being uploaded for
- *
- * @var string $module
- */
+    /**
+     * Identifer for the module name this image is being uploaded for
+     *
+     * @var string $module
+     */
     protected $module;
+    /** @var string $moduleDirPath */
     protected $moduleDirPath = '/public';
-/**
- * this is to set the type of upload we are handling for a module
- * basically maps to the different types of images/files a module
- * supports
- * ie /public/modules/$module/$type
- *
- * @var string $type
- */
+    /**
+     * this is to set the type of upload we are handling for a module
+     * basically maps to the different types of images/files a module
+     * supports
+     * ie /public/modules/$module/$type
+     *
+     * @var string $type
+     */
     protected $type;
-/**
- * Randomize file names? default true
- *
- * @var bool $randomize
- */
+    /**
+     * Randomize file names? default true
+     *
+     * @var bool $randomize
+     */
     protected $randomize = true;
-/**
- * The uploaded file after being processed
- * Will contain only the basename and extension of the newly
- * uploaded and filtered file name
- *
- * @var string $uploadedFile
- */
+    /**
+     * The uploaded file after being processed
+     * Will contain only the basename and extension of the newly
+     * uploaded and filtered file name
+     *
+     * @var string $uploadedFile
+     */
     protected $uploadedFile;
-/**
- * Do we want to keep the original file extension? default true
- *
- * @var bool $useUploadedExt
- */
+    /**
+     * Do we want to keep the original file extension? default true
+     *
+     * @var bool $useUploadedExt
+     */
     protected $useUploadedExt = true;
-/**
- * @return void
- */
+    /**
+     * @return void
+     */
     public function setEventManager(EventManagerInterface $eventManager)
     {
         $eventManager->setIdentifiers([self::class, static::class]);
         $this->eventManager = $eventManager;
     }
 
-    public function getEventManager()
+    public function getEventManager(): EventManager
     {
         if (! $this->eventManager) {
             $this->setEventManager(new EventManager());
@@ -140,7 +141,7 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
             ) {
                 $this->publicPath .= '/' . $this->module . '/' . $this->config[$this->module]['image_dir'];
             //$this->targetPath .= $this->baseDir . $this->publicPath;
-            } elseif (empty($this->module) || $this->module === 'application' || $this->module === 'app' || $this->module === 'page') {
+            } elseif (empty($this->module) || $this->module === 'app' || $this->module === 'app' || $this->module === 'page') {
             // in this condition we are using /public/images so we just overwrite the path
                 $this->publicPath = '/images';
             }
@@ -152,7 +153,7 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
         }
     }
 
-    public function getPublicPath()
+    public function getPublicPath(): string
     {
         return $this->publicPath . '/' . $this->baseName;
     }
@@ -168,32 +169,34 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
         $this->filter  = new BaseName();
         $this->handler = new RenameUpload();
     }
-
-    public function setTargetFileName($targetFileName)
+    /** @param string $targetFileName */
+    public function setTargetFileName($targetFileName): void
     {
         $this->targetFileName = (string) $targetFileName;
     }
 
-    public function getTargetFileName()
+    public function getTargetFileName(): string
     {
         return $this->targetFileName;
     }
 
-    public function setModule($module)
+    /** @param string $module */
+    public function setModule($module): void
     {
         $this->module = $module;
     }
 
-    public function getModule()
+    public function getModule(): string
     {
         return $this->module;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
 
+    /** @param string $type */
     public function setType($type)
     {
         $this->type = $type;

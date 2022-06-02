@@ -17,11 +17,11 @@ class Module
 
     public function onBootstrap(MvcEvent $e): void
     {
-        $application = $e->getApplication();
+        $app = $e->getApplication();
         /** @var TemplateMapResolver $templateMapResolver */
-        $templateMapResolver = $application->getServiceManager()->get('ViewTemplateMapResolver');
+        $templateMapResolver = $app->getServiceManager()->get('ViewTemplateMapResolver');
         // Create and register layout listener
         $listener = new LayoutListener($templateMapResolver);
-        $listener->attach($application->getEventManager());
+        $listener->attach($app->getEventManager());
     }
 }

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace ContentManager\Form\Factory;
 
-use Application\Model\Settings;
+use App\Model\Settings;
 use ContentManager\Form\PageForm;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use User\Permissions\PermissionsManager;
 use User\Model\Users;
+use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
 final class PageFormFactory implements FactoryInterface

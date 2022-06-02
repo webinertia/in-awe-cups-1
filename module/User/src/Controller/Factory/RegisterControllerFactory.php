@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace User\Controller\Factory;
 
-use Application\Form\FormInterface;
-use Application\Model\Settings;
+use App\Form\FormInterface;
+use App\Model\Settings;
 use Laminas\Form\FormElementManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
