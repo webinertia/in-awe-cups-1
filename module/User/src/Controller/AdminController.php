@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractAdminController;
+use App\Controller\AbstractAdminController;
 use Laminas\Log\Logger;
 use Laminas\View\Model\ViewModel;
 use Throwable;

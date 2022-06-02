@@ -37,7 +37,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"Application\\" : "module/Application/src/",
+			"App\\" : "module/App/src/",
 			"ContentManager\\" : "module/ContentManager/src/",
 			"Uploader\\" : "module/Uploader/src/",
 			"User\\" : "module/User/src/"
@@ -45,7 +45,7 @@
 	},
 	"autoload-dev" : {
 		"psr-4" : {
-			"ApplicationTest\\" : "module/Application/test/"
+			"AppTest\\" : "module/App/test/"
 		}
 	},
 	"scripts" : {

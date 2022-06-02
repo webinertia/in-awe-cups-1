@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractController;
-use Application\Model\Settings;
-use Application\Service\Email;
+use App\Controller\AbstractController;
+use App\Model\Settings;
+use App\Service\Email;
 use DateTime;
 use Laminas\View\Model\ViewModel;
 use User\Filter\RegistrationHash as Filter;

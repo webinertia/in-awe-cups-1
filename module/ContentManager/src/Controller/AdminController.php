@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ContentManager\Controller;
 
-use Application\Controller\AbstractAdminController;
-use Application\Form\FormInterface;
+use App\Controller\AbstractAdminController;
+use App\Form\FormInterface;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
 use ContentManager\Model\Pages;

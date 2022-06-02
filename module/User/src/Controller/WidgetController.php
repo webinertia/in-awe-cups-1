@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use Application\Controller\AbstractController;
+use App\Controller\AbstractController;
 use Laminas\Db\Sql\Select;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\Paginator;
