@@ -143,6 +143,7 @@ class Module
         $menu         = $modelManager->get(Pages::class)->fetchMenu();
         $navContainer->addPages($menu);
     }
+
     /** DO NOT MODIFY THIS METHOD */
     public function bootstrapTheme(MvcEvent $e)
     {
