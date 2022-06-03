@@ -13,7 +13,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Uploader\Adapter\TableGatewayAdapter;
 use Uploader\AdapterPluginManager;
 
-class UploaderFactory implements FactoryInterface
+final class UploaderFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

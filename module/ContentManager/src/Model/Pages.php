@@ -19,13 +19,13 @@ use function is_array;
 use function is_object;
 use function is_string;
 
-class Pages extends AbstractModel
+final class Pages extends AbstractModel
 {
     use ModelTrait;
 
     /** @var RouteStackInterface $router */
     protected $router;
-    public function setRouter(RouteStackInterface $router)
+    public function setRouter(RouteStackInterface $router): void
     {
         $this->router = $router;
     }
@@ -39,9 +39,8 @@ class Pages extends AbstractModel
      * Exchange the array for another one.
      *
      * @param  array|ArrayObject|ArrayIterator|object $data
-     * @return array
      */
-    public function exchangeArray($data)
+    public function exchangeArray($data): array
     {
         if (! is_array($data) && ! is_object($data)) {
             throw new InvalidArgumentException(
@@ -81,11 +80,10 @@ class Pages extends AbstractModel
     }
 
     /**
-     * @return mixed
      * @throws TableGatewayRuntimeException
      * @throws InvalidArgumentException
      */
-    public function save()
+    public function save(): mixed
     {
         if ($this->offsetExists('params') && is_array($this->offsetGet('params'))) {
             $this->offsetSet('params', Encoder::encode($this->offsetGet('params')));
@@ -96,13 +94,4 @@ class Pages extends AbstractModel
             return $this->update($this);
         }
     }
-
-    // public function getArrayCopy(): array
-    // {
-    //     $params = $this->offsetGet('params');
-    //     if ($params !== null) {
-    //         $this->offsetSet('params', unserialize($params));
-    //     }
-    //     return $this->storage;
-    // }
 }

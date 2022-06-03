@@ -20,7 +20,10 @@ use Webinertia\ModelManager\ModelTrait;
 
 use function password_verify;
 
-class Users extends AbstractModel
+// @codingStandardsIgnoreStart
+/** @method \Laminas\Db\ResultSet\ResultSet current() */
+
+final class Users extends AbstractModel
 {
     use ModelTrait;
 

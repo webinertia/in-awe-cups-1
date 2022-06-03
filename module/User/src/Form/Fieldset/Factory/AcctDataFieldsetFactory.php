@@ -8,7 +8,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Form\Fieldset\AcctDataFieldset;
 
-class AcctDataFieldsetFactory implements FactoryInterface
+final class AcctDataFieldsetFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

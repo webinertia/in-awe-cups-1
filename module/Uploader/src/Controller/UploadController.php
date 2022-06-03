@@ -10,7 +10,7 @@ use Uploader\Uploader;
 
 use function array_merge_recursive;
 
-class UploadController extends AbstractActionController
+final class UploadController extends AbstractActionController
 {
     public function __construct(Uploader $uploader)
     {
@@ -19,7 +19,7 @@ class UploadController extends AbstractActionController
         $this->view->setTerminal(true);
     }
 
-    public function adminUploadAction()
+    public function adminUploadAction(): ViewModel
     {
             // $uploader = $this->sm->get(UtilsImageUploader::class);
         if ($this->request->isXmlHttpRequest()) {
@@ -27,13 +27,9 @@ class UploadController extends AbstractActionController
         }
         if ($this->request->isPost()) {
             $data = array_merge_recursive($this->request->getPost()->toArray(), $this->request->getFiles()->toArray());
-// do we have a valid module name in the post data, its required!!!!!
-            if (! isset($data['module'])) {
-//return $this->response->setStatusCode(500);
-            }
+            // do we have a valid module name in the post data, its required!!!!!
             // maybe this needs to be refactored to something more like... setRunTimeConfig($post['upload-config'])
             $this->uploader->setData($data);
-/// The following signature needs to be changed, should not have to pass data here
             $this->uploader->upload();
             $data = ['location' => $this->uploader->getPublicPath()];
             $this->view->setVariable('data', $data);

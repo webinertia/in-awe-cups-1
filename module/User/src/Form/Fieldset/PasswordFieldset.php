@@ -15,7 +15,7 @@ use Laminas\Validator\Identical;
 use Laminas\Validator\StringLength;
 use User\Filter\PasswordFilter;
 
-class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
+final class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
 {
     /** @var array $config */
     protected $config;
@@ -34,7 +34,7 @@ class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
         }
     }
 
-    public function init()
+    public function init(): void
     {
         $this->add([
             'name'    => 'password',

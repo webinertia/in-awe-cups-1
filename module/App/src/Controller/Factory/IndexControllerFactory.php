@@ -12,7 +12,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class IndexControllerFactory implements FactoryInterface
+final class IndexControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

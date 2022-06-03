@@ -10,21 +10,21 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 use User\Form\Element\RoleSelect;
 use User\Model\Roles;
 
-class RoleFieldset extends Fieldset implements InputFilterProviderInterface
+final class RoleFieldset extends Fieldset implements InputFilterProviderInterface
 {
     /** @var Roles $roleModel */
     protected $roleModel;
-/**
- * @return void
- * @throws InvalidArgumentException
- */
+    /**
+     * @return void
+     * @throws InvalidArgumentException
+     */
     public function __construct(Roles $roleModel)
     {
         $this->roleModel = $roleModel;
         parent::__construct('role-data');
     }
 
-    public function init()
+    public function init(): void
     {
         $this->add([
             'type'    => RoleSelect::class,

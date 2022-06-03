@@ -8,7 +8,7 @@ use App\Controller\TestController;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class TestControllerFactory implements FactoryInterface
+final class TestControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

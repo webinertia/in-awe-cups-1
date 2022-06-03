@@ -11,7 +11,7 @@ use Uploader\Adapter\AdapterInterface;
 
 use function get_class;
 
-class Uploader
+final class Uploader
 {
     /** @var Acl $acl; */
     protected $acl;

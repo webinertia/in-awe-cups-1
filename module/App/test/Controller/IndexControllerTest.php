@@ -8,7 +8,7 @@ use App\Controller\IndexController;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
-class IndexControllerTest extends AbstractHttpControllerTestCase
+final class IndexControllerTest extends AbstractHttpControllerTestCase
 {
     public function setUp(): void
     {

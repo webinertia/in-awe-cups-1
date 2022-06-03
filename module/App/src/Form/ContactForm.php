@@ -33,7 +33,7 @@ class ContactForm extends Form implements InputFilterProviderInterface
         parent::setOptions($options);
     }
 
-    public function init()
+    public function init(): void
     {
         $this->add([
             'name'    => 'fullName',

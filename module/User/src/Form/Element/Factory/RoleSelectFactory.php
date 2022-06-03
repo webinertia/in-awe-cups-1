@@ -10,7 +10,7 @@ use User\Form\Element\RoleSelect;
 use User\Model\Roles;
 use Webinertia\ModelManager\ModelManager;
 
-class RoleSelectFactory implements FactoryInterface
+final class RoleSelectFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

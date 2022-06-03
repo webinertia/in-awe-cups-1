@@ -7,22 +7,24 @@ namespace User\Controller;
 use App\Controller\AbstractController;
 use App\Service\Email;
 use DateTime;
+use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use Throwable;
 use User\Filter\RegistrationHash;
 use User\Form\ResetPassword;
 use User\Model\Users;
 
-class PasswordController extends AbstractController
+final class PasswordController extends AbstractController
 {
     /** @var User\Model\Users $usrModel */
     protected $usrModel;
+    /** @return void */
     public function __construct(Users $model)
     {
         $this->usrModel = $model;
     }
 
-    public function resetAction(): object
+    public function resetAction(): ViewModel
     {
         try {
             $step = $this->params('step', 'zero');
@@ -33,18 +35,17 @@ class PasswordController extends AbstractController
             $this->view->setVariable('showForm', true);
             switch ($step) {
                 case 'submit-email':
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $startTime = $dateTime->format($this->appSettings->server->time_format);
-                    $formData = ['resetTimeStamp' => $startTime, 'step' => 'two'];
+                    $startTime = $dateTime->format($this->appSettings->server->time_format);
+                    $formData  = ['resetTimeStamp' => $startTime, 'step' => 'two'];
                     $form->remove('password');
                     $form->remove('conf_password');
                     $form->setAttribute('action', '/user/password/reset/send-email');
                     $form->setData($formData);
-
                     break;
                 case 'send-email':
                     if ($this->request->isPost()) {
                         $this->view->setVariable('showForm', false);
-                        $form->setValidationGroup('email', 'resetTimeStamp');
+                        $form->setValidationGroup(['email', 'resetTimeStamp']);
                         $post = $this->request->getPost();
                         $form->setData($post);
                         if ($form->isValid()) {
@@ -57,18 +58,16 @@ class PasswordController extends AbstractController
                             $user->resetTimeStamp = $post['resetTimeStamp'];
                             $user->resetHash      = $hash;
                             if ($user->update($user)) {
-            // send reset email
-
+                                // send reset email
                                 $mailService = $this->sm->get(Email::class);
                                 try {
-                                        //code...
                                     $mailService->sendMessage($post['email'], Email::RESET_PASSWORD, $hash);
                                 } catch (Throwable $th) {
-                                                    $this->logger->log(2, $th->getMessage());
+                                    $this->logger->log(2, $th->getMessage());
                                 }
                                 // redirect
                                 $this->logger->log(6, 'Password change request', $user->getLogData());
-            // condition is when you have just submitted your email to be sent a link to reset
+                                // condition is when you have just submitted your email to be sent a link to reset
                                 $this->flashMessenger()->addInfoMessage('You have been sent a reset link via the submitted email, please click the provided link to rest your password');
                                 $this->redirect()->toRoute('home');
                             } else {
@@ -76,26 +75,31 @@ class PasswordController extends AbstractController
                             }
                         }
                     }
-
                     break;
                 case 'reset-password':
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                $token = $this->request->getQuery('token');
                     try {
-                        $user = $this->usrModel->fetchByColumn('resetHash', $token);
+                        $token = $this->request->getQuery('token');
+                        $user  = $this->usrModel->fetchByColumn('resetHash', $token);
                     } catch (Throwable $th) {
                         $this->logger->log(5, 'Unknown user from IP:' . $this->request->getServer('REMOTE_ADDR') . ' attempted to reset password with invalid or expired token');
                         $this->flashMessenger()
                         ->addErrorMessage('The supplied reset token is invlaid or expired please contact the site adminitrators. This action has been logged');
-        // this needs to redirect to a contact page.
+                        // this needs to redirect to a contact page.
                         $this->redirect()->toRoute('home');
                     }
-            //$dateTime = new DateTime('NOW');
+                    //$dateTime = new DateTime('NOW');
                     if (! $this->request->isPost()) {
                         $this->view->setVariable('showForm', true);
                         $form->remove('email');
                         $form->setAttribute('action', '/user/password/reset/reset-password?token=' . $token);
-                        $startTime = DateTime::createFromFormat($this->appSettings->server->time_format, $user->resetTimeStamp);
-                        $limit     = DateTime::createFromFormat($this->appSettings->server->time_format, $dateTime->format($this->appSettings->server->time_format));
+                        $startTime = DateTime::createFromFormat(
+                            $this->appSettings->server->time_format,
+                            $user->resetTimeStamp
+                        );
+                        $limit     = DateTime::createFromFormat(
+                            $this->appSettings->server->time_format,
+                            $dateTime->format($this->appSettings->server->time_format)
+                        );
                         $interval  = $startTime->diff($limit);
                         if ($interval->d > 0) {
                             $this->flashmessenger()->addErrorMessage('Your reset link has expired, please submit your email to send a valid reset link');
@@ -121,7 +125,6 @@ class PasswordController extends AbstractController
                             }
                         }
                     }
-
                     break;
             }
             $this->view->setVariable('form', $form);

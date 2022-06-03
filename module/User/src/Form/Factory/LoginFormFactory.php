@@ -12,7 +12,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use User\Form\LoginForm;
 use Webinertia\ModelManager\ModelManager;
 
-class LoginFormFactory implements FactoryInterface
+final class LoginFormFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

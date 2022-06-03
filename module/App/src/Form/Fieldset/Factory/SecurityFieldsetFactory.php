@@ -10,7 +10,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Webinertia\ModelManager\ModelManager;
 
-class SecurityFieldsetFactory implements FactoryInterface
+final class SecurityFieldsetFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

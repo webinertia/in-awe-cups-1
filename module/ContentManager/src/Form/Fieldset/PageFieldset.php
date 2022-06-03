@@ -16,6 +16,7 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 final class PageFieldset extends Fieldset implements InputFilterProviderInterface
 {
     /** @var Pages $model */
+    /** @return void */
     public function __construct(Pages $model, ?array $options = null)
     {
         $this->model = $model;

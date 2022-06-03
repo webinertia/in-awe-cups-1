@@ -13,16 +13,19 @@ use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\StringLength;
 
-class LoginFieldset extends Fieldset implements InputFilterProviderInterface
+final class LoginFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /** @param array $options */
+    /**
+     * @param array $options
+     * @return void
+     * */
     public function __construct(Settings $appSettings, $options = [])
     {
         $this->appSettings = $appSettings;
         parent::__construct('login-data', $options);
     }
 
-    public function init()
+    public function init(): void
     {
         $this
         ->add([

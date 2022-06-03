@@ -25,6 +25,7 @@ class LayoutListener extends AbstractListenerAggregate
     protected $targetController = 'AccountController';
     /** @var string */
     protected $targetModule = 'User';
+    /** @return void */
     public function __construct(TemplateMapResolver $templateMapResolver)
     {
         $this->templateMapResolver = $templateMapResolver;

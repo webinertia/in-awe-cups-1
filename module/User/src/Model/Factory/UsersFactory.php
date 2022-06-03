@@ -14,7 +14,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use User\Model\Users;
 use Webinertia\ModelManager\ModelManager;
 
-class UsersFactory implements FactoryInterface
+final class UsersFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName
