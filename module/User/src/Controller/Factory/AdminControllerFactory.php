@@ -12,7 +12,7 @@ use User\Controller\AdminController;
 use User\Model\Users;
 use Webinertia\ModelManager\ModelManager;
 
-class AdminControllerFactory implements FactoryInterface
+final class AdminControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

@@ -13,7 +13,7 @@ use User\Model\Users;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
-class UserFormFactory implements FactoryInterface
+final class UserFormFactory implements FactoryInterface
 {
     protected const IDENTITY = 'userName';
     /**

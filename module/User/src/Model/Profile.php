@@ -7,7 +7,7 @@ namespace User\Model;
 use Webinertia\ModelManager\AbstractModel;
 use Webinertia\ModelManager\ModelTrait;
 
-class Profile extends AbstractModel
+final class Profile extends AbstractModel
 {
     use ModelTrait;
 }

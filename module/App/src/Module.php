@@ -28,7 +28,7 @@ use function explode;
 use function strpos;
 use function substr;
 
-class Module
+final class Module
 {
     public function getConfig(): array
     {
@@ -80,29 +80,29 @@ class Module
         $settings = $this->modelManager->get(Settings::class);
         if ($settings->server_settings->enable_translation) {
             $request = $sm->get('request');
-        // get the laguages sent by the client
+            // get the laguages sent by the client
             $string = $request->getServer('HTTP_ACCEPT_LANGUAGE');
-        // this should be delimeter for the first two prefrences set in the browser
+            // this should be delimeter for the first two prefrences set in the browser
             $needle = ';';
-        // find its position
+            // find its position
             $position = strpos($string, $needle);
-        // return everything before the needle
+            // return everything before the needle
             $substring = substr($string, 0, $position);
-        // get an array of locales with the primary at offest 0
+            // get an array of locales with the primary at offest 0
             $locales = explode(',', $substring);
-        /**
-         * @var $translator \Laminas\I18n\Translator\Translator
-        */
+            /**
+             * @var $translator \Laminas\I18n\Translator\Translator
+            */
             $translator = $sm->get('MvcTranslator');
-        // set the primary locale as requested by the client
+            // set the primary locale as requested by the client
             $translator->setLocale($locales[0]);
-        // set option two as the fallback
+            // set option two as the fallback
             $translator->setFallbackLocale([$locales[1]]);
-        /**
-         * @var $renderer \Laminas\View\Renderer\PhpRenderer
-         */
+            /**
+             * @var $renderer \Laminas\View\Renderer\PhpRenderer
+             */
             $renderer = $sm->get('ViewRenderer');
-        // attach the Il8n standard helpers for translation
+            // attach the Il8n standard helpers for translation
             $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
         }
     }
@@ -133,7 +133,7 @@ class Module
         }
     }
 
-    public function bootstrapNavigation(MvcEvent $e)
+    public function bootstrapNavigation(MvcEvent $e): void
     {
         $sm           = $e->getApplication()->getServiceManager();
         $vhm          = $sm->get('ViewRenderer')->getHelperPluginManager();
@@ -145,7 +145,7 @@ class Module
     }
 
     /** DO NOT MODIFY THIS METHOD */
-    public function bootstrapTheme(MvcEvent $e)
+    public function bootstrapTheme(MvcEvent $e): void
     {
         $sm                = $e->getApplication()->getServiceManager();
         $theme             = $sm->get(ModelManager::class)->get(Theme::class);

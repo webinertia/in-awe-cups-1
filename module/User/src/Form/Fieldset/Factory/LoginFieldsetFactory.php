@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use User\Form\Fieldset\LoginFieldset;
 use Webinertia\ModelManager\ModelManager;
 
-class LoginFieldsetFactory implements FactoryInterface
+final class LoginFieldsetFactory implements FactoryInterface
 {
     /** @param string $requestedName */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): LoginFieldset

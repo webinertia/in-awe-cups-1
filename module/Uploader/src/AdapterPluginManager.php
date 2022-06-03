@@ -9,23 +9,12 @@ use Uploader\Adapter\AdapterInterface;
 use Uploader\Adapter\Factory\TableGatewayAdapterFactory;
 use Uploader\Adapter\TableGatewayAdapter;
 
-class AdapterPluginManager extends AbstractPluginManager
+final class AdapterPluginManager extends AbstractPluginManager
 {
+    /** @var array $factories */
     protected $factories = [
         TableGatewayAdapter::class => TableGatewayAdapterFactory::class,
     ];
-/** @var string */
+    /** @var string */
     protected $instanceOf = AdapterInterface::class;
-
-    // public function configure(array $config)
-    // {
-    //     if (isset($config['services'])) {
-    //         /** @psalm-suppress MixedAssignment */
-    //         foreach ($config['services'] as $service) {
-    //             $this->validate($service);
-    //         }
-    //     }
-    //     parent::configure($config);
-    //     return $this;
-    // }
 }

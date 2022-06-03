@@ -12,7 +12,7 @@ use User\Model\Roles;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
-class PermissionsManagerFactory implements FactoryInterface
+final class PermissionsManagerFactory implements FactoryInterface
 {
     /** @param string $requestedName */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PermissionsManager

@@ -26,19 +26,23 @@ class TableGatewayAdapter extends AbstractAdapter
          * @var TableGateway $table
          */
     protected $table;
-/** @var TableGateway $relatedTable */
+    /** @var TableGateway $relatedTable */
     protected $relatedTable;
-/**
- * In nearly call cases we should store a userId who uploads this image so they can be tracked
- *
- * @var UserTable $userTable
- */
+    /**
+     * In nearly call cases we should store a userId who uploads this image so they can be tracked
+     *
+     * @var UserTable $userTable
+     */
     protected $userTable;
-/**
- * @return void
- */
-    public function __construct(DbAdapterInterface $dbAdapter, array $config, EventManager $eventManager, ?Logger $logger = null)
-    {
+    /**
+     * @return void
+     */
+    public function __construct(
+        DbAdapterInterface $dbAdapter,
+        array $config,
+        EventManager $eventManager,
+        ?Logger $logger = null
+    ) {
         $this->dbAdapter = $dbAdapter;
         $this->getConfig($config);
         $this->setEventManager($eventManager);
@@ -47,7 +51,7 @@ class TableGatewayAdapter extends AbstractAdapter
         }
     }
 
-    public function loadContext()
+    public function loadContext(): void
     {
         parent::loadContext();
         if (isset($this->config[$this->module]['db_config']['table_name'])) {
@@ -55,7 +59,7 @@ class TableGatewayAdapter extends AbstractAdapter
         }
     }
 
-    public function upload()
+    public function upload(): void
     {
         // make sure $this->setData($data) has been called in user land
         if (! empty($this->data) && is_array($this->data['file'])) {
@@ -64,13 +68,13 @@ class TableGatewayAdapter extends AbstractAdapter
             $this->baseName = $this->filter->filter($uploaded['tmp_name']);
         }
         if ($this->table instanceof TableGateway) {
-// apparently we need to store a record for this image
+            // apparently we need to store a record for this image
             try {
-// first lets find the relevant data
+                // first lets find the relevant data
                 //unset($file);// were done with this so lets clean up alittle
                 $dbConfig = $this->config[$this->module]['db_config'];
                 $data     = [];
-// what were saving
+                // what were saving
                 // does the config tell us which columns we need? it should!!!!
                 if (! is_array($dbConfig['columns'])) {
                     throw new RuntimeException('Missing columns index in uploader configuration!!');

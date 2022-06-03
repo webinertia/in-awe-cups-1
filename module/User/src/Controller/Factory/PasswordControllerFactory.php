@@ -12,7 +12,7 @@ use User\Controller\PasswordController;
 use User\Model\Users;
 use Webinertia\ModelManager\ModelManager;
 
-class PasswordControllerFactory implements FactoryInterface
+final class PasswordControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

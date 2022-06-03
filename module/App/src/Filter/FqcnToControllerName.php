@@ -16,7 +16,7 @@ use function sprintf;
 use function strrpos;
 use function substr;
 
-class FqcnToControllerName implements FilterInterface
+final class FqcnToControllerName implements FilterInterface
 {
     /** @var string $encoding */
     protected $encoding = 'UTF-8';

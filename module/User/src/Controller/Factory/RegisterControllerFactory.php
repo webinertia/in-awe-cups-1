@@ -16,7 +16,7 @@ use User\Form\UserForm;
 use User\Model\Users;
 use Webinertia\ModelManager\ModelManager;
 
-class RegisterControllerFactory implements FactoryInterface
+final class RegisterControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

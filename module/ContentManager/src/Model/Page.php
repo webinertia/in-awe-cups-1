@@ -14,6 +14,7 @@ final class Page implements ModelInterface
     protected $pageModel;
     /** @var Mvc $mvcPage */
     protected $mvcPage;
+    /** @return void */
     public function __construct()
     {
     }

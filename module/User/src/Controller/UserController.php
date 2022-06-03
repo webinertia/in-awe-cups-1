@@ -12,7 +12,7 @@ use RuntimeException;
 use User\Form\LoginForm;
 use User\Model\Users;
 
-class UserController extends AbstractController
+final class UserController extends AbstractController
 {
     /** @var Users $usrModel */
     public $usrModel;
@@ -26,7 +26,6 @@ class UserController extends AbstractController
     public function listAction(): ViewModel
     {
         try {
-           // $view       = new ViewModel();
             $userName   = $this->params('userName');
             $hasMessage = false;
             if (! empty($userName)) {
@@ -59,7 +58,7 @@ class UserController extends AbstractController
         }
     }
 
-    public function loginAction(): object
+    public function loginAction(): ViewModel
     {
         $form = ($this->sm->get(FormElementManager::class))->get(LoginForm::class);
         if (! $this->request->isPost()) {

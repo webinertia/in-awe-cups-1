@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Webinertia\ModelManager\ModelManager;
 
-class ContactFormFactory implements FactoryInterface
+final class ContactFormFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

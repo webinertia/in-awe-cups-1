@@ -88,10 +88,7 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
      * @var bool $useUploadedExt
      */
     protected $useUploadedExt = true;
-    /**
-     * @return void
-     */
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function setEventManager(EventManagerInterface $eventManager): void
     {
         $eventManager->setIdentifiers([self::class, static::class]);
         $this->eventManager = $eventManager;
@@ -105,16 +102,16 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
         return $this->eventManager;
     }
 
-    public function getConfig(array $config)
+    public function getConfig(array $config): mixed
     {
         if (! isset($config['upload_manager'])) {
-            return;
+            $this->config['upload_manager'] = [];
         }
         $this->config = $config['upload_manager'];
         return $this;
     }
 
-    protected function loadContext()
+    protected function loadContext(): void
     {
         try {
             $this->baseDir = dirname(__DIR__, 4);
@@ -158,17 +155,18 @@ abstract class AbstractAdapter implements AdapterInterface, EventManagerAwareInt
         return $this->publicPath . '/' . $this->baseName;
     }
 
-    public function setData(array $data)
+    public function setData(array $data): void
     {
         $this->data = $data;
         $this->loadContext();
     }
 
-    protected function initFilters()
+    protected function initFilters(): void
     {
         $this->filter  = new BaseName();
         $this->handler = new RenameUpload();
     }
+
     /** @param string $targetFileName */
     public function setTargetFileName($targetFileName): void
     {

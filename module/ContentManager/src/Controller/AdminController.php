@@ -19,11 +19,12 @@ use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use Webinertia\ModelManager\ModelManager;
 
-class AdminController extends AbstractAdminController
+final class AdminController extends AbstractAdminController
 {
     /** @var Page $page */
     /** @var Pages $pages */
     /** @var PageForm $form */
+    /** @return void */
     public function __construct(ModelManager $modelManager, FormElementManager $formElementManager)
     {
         $this->formManager = $formElementManager;

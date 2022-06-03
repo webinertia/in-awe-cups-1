@@ -12,12 +12,11 @@ use Webinertia\ModelManager\ModelTrait;
 
 use function count;
 
-class Roles extends AbstractModel
+final class Roles extends AbstractModel
 {
     use ModelTrait;
 
     /**
-     * @return array
      * @throws ExceptionRuntimeException
      * @throws InvalidArgumentException
      * @throws RuntimeException

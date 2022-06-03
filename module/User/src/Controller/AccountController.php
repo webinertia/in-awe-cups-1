@@ -40,8 +40,7 @@ final class AccountController extends AbstractController
         return $this->view;
     }
 
-    /** @return mixed */
-    public function editAction()
+    public function editAction(): mixed
     {
         try {
             $form = $this->formManager->build(UserForm::class, ['mode' => FormInterface::EDIT_MODE]);

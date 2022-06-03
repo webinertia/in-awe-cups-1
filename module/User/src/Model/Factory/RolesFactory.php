@@ -13,7 +13,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use User\Model\Roles;
 use Webinertia\ModelManager\ModelManager;
 
-class RolesFactory implements FactoryInterface
+final class RolesFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

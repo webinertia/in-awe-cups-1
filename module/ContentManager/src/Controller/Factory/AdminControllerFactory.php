@@ -10,7 +10,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Webinertia\ModelManager\ModelManager;
 
-class AdminControllerFactory implements FactoryInterface
+final class AdminControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

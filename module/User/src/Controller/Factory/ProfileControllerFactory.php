@@ -14,7 +14,7 @@ use User\Form\ProfileForm;
 use User\Model\Users;
 use Webinertia\ModelManager\ModelManager;
 
-class ProfileControllerFactory implements FactoryInterface
+final class ProfileControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

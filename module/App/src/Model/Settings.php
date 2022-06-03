@@ -8,7 +8,7 @@ use Laminas\Config\Config;
 use Webinertia\ModelManager\ModelInterface;
 use Webinertia\ModelManager\ModelTrait;
 
-class Settings extends Config implements ModelInterface
+final class Settings extends Config implements ModelInterface
 {
     use ModelTrait;
 
