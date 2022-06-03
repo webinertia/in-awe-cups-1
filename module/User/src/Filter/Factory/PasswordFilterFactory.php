@@ -8,7 +8,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Filter\PasswordFilter;
 
-class PasswordFilterFactory implements FactoryInterface
+final class PasswordFilterFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

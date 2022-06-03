@@ -10,7 +10,7 @@ use User\Controller\UserController;
 use User\Model\Users;
 use Webinertia\ModelManager\ModelManager;
 
-class UserControllerFactory implements FactoryInterface
+final class UserControllerFactory implements FactoryInterface
 {
     /** @param string $requestedName */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): UserController

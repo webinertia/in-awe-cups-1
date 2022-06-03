@@ -5,19 +5,26 @@ declare(strict_types=1);
 namespace Uploader\Fieldset;
 
 use Laminas\Form\Element\File;
+use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\File\ImageSize;
 use Laminas\Validator\File\IsImage;
 
-class UploaderAwareMultiFile extends Fieldset implements InputFilterProviderInterface
+final class UploaderAwareMultiFile extends Fieldset implements InputFilterProviderInterface
 {
+    /**
+     * @param mixed $name
+     * @param mixed $options
+     * @return void
+     * @throws InvalidArgumentException
+     */
     public function __construct($name = null, $options = null)
     {
         parent::__construct('uploader-multi-file');
     }
 
-    public function init()
+    public function init(): void
     {
         $this->add([
             'name'       => 'file-upload',
@@ -34,7 +41,7 @@ class UploaderAwareMultiFile extends Fieldset implements InputFilterProviderInte
         ]);
     }
 
-    public function getInputFilterSpecification()
+    public function getInputFilterSpecification(): array
     {
         return [
             'file-upload' => [

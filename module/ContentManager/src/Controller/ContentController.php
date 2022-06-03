@@ -12,6 +12,7 @@ use function count;
 
 final class ContentController extends AbstractController
 {
+    /** @return void */
     public function __construct(ModelManager $modelManager)
     {
         $this->modelManager = $modelManager;

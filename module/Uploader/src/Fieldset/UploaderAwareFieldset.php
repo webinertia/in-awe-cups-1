@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace Uploader\Fieldset;
 
 use Laminas\Form\Element\Hidden;
+use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Uploader\Fieldset\FieldsetInterface;
 
-class UploaderAwareFieldset extends Fieldset implements InputFilterProviderInterface, FieldsetInterface
+final class UploaderAwareFieldset extends Fieldset implements InputFilterProviderInterface, FieldsetInterface
 {
+    /**
+     * @param null|array $options
+     * @return void
+     * @throws InvalidArgumentException
+     */
     public function __construct(?string $name = null, ?array $options = null)
     {
         parent::__construct('upload-config', $options);
@@ -20,7 +26,7 @@ class UploaderAwareFieldset extends Fieldset implements InputFilterProviderInter
         }
     }
 
-    public function init()
+    public function init(): void
     {
         $this->add([
             'name' => 'module',

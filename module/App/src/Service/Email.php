@@ -24,7 +24,7 @@ use RuntimeException;
 
 use function sprintf;
 
-class Email implements ResourceInterface
+final class Email implements ResourceInterface
 {
     use TranslatorAwareTrait;
 
@@ -74,10 +74,7 @@ class Email implements ResourceInterface
         $this->setTransport($transport);
     }
 
-    /**
-     * @return void
-     */
-    public function setTransport(TransportInterface $transport)
+    public function setTransport(TransportInterface $transport): void
     {
         $this->transport = $transport;
     }
@@ -86,11 +83,10 @@ class Email implements ResourceInterface
      * @param mixed $address
      * @param mixed $type
      * @param mixed $token
-     * @return void
      * @throws DomainException
      * @throws InvalidArgumentException
      */
-    public function sendMessage($address, $type, $token = null)
+    public function sendMessage($address, $type, $token = null): void
     {
         try {
             $message = $this->getMessage();

@@ -12,10 +12,11 @@ use Laminas\View\Model\ViewModel;
 use User\Model\Users;
 use Zend\Paginator\AdapterPluginManager;
 
-class WidgetController extends AbstractController
+final class WidgetController extends AbstractController
 {
     /** @var Paginator $paginator */
     protected $paginator;
+    /** @return void */
     public function __construct()
     {
     }

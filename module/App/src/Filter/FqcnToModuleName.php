@@ -9,7 +9,7 @@ use Laminas\Filter\FilterInterface;
 use function strpos;
 use function substr;
 
-class FqcnToModuleName implements FilterInterface
+final class FqcnToModuleName implements FilterInterface
 {
     /** @param mixed $value */
     public function filter($value): string

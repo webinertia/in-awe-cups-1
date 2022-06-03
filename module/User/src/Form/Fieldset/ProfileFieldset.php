@@ -19,7 +19,7 @@ use Laminas\Validator\Between;
 use Laminas\Validator\Digits;
 use Laminas\Validator\StringLength;
 
-class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
+final class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 {
     /** @var Settings $appSettings */
     protected $appSettings;
@@ -144,7 +144,7 @@ class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true, // Should the input be required?
                 'filters'  => [ // there should be 1 array for each filter
                     [
-                        'name'    => DateTimeFormatter::class, // This is usually the "type" key, not sure why they changed it
+                        'name'    => DateTimeFormatter::class,
                         'options' => [ // This is for any options that will be passed as the filters $options
                             // this sets the filters format to what is set in the app settings file
                             'format' => $this->appSettings->server->time_format,

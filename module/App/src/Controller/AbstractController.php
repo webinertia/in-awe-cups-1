@@ -12,7 +12,6 @@ use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\Exception\RuntimeException;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\View\Exception\InvalidArgumentException;
 use Laminas\View\Model\ViewModel;
@@ -26,8 +25,7 @@ use function dirname;
 
 abstract class AbstractController extends AbstractActionController
 {
-
-    public $fm;
+    //public $fm;
 
     /** @var ServiceManager $sm */
     public $sm;
@@ -67,7 +65,6 @@ abstract class AbstractController extends AbstractActionController
 
     /** @var string $action */
     protected $action;
-    //protected $sessionContainer;
     /**
      * @return mixed
      * @throws NotFoundExceptionInterface
@@ -122,10 +119,6 @@ abstract class AbstractController extends AbstractActionController
             'acl'         => $this->acl,
             'auth'        => $this->authService,
         ]);
-        $rootViewModel = $this->layout();
-        // $inlineLogin   = new ViewModel(['form' => ($this->sm->get(FormElementManager::class))->get(LoginForm::class)]);
-        // $inlineLogin->setTemplate('user/partials/inline-login');
-        // $rootViewModel->addChild($inlineLogin, 'inlineLogin');
         $this->action = $this->params()->fromRoute('action');
         $this->layout()->setVariables([
             'user'        => $this->user,

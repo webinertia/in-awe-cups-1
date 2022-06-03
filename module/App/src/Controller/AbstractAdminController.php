@@ -12,11 +12,11 @@ use function get_parent_class;
 abstract class AbstractAdminController extends AbstractController implements ResourceInterface
 {
     public const RESOURCE_ID = 'admin';
-/**
- * {@inheritDoc}
- *
- * @see \Laminas\Permissions\Acl\Resource\ResourceInterface::getResourceId()
- */
+    /**
+     * {@inheritDoc}
+     *
+     * @see \Laminas\Permissions\Acl\Resource\ResourceInterface::getResourceId()
+     */
     public function getResourceId()
     {
         // TODO Auto-generated method stub

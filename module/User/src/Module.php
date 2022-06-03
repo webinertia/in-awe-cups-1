@@ -8,7 +8,7 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\View\Resolver\TemplateMapResolver;
 use User\Listener\LayoutListener;
 
-class Module
+final class Module
 {
     public function getConfig(): array
     {

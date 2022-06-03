@@ -13,7 +13,7 @@ use Laminas\Permissions\Acl\Role\GenericRole as Role;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 use User\Model\Roles;
 
-class PermissionsManager implements AclInterface
+final class PermissionsManager implements AclInterface
 {
     /** @var Laminas\Config\Config $config */
     protected $config;
@@ -23,7 +23,7 @@ class PermissionsManager implements AclInterface
     protected $model;
     /** @var ResultSet $roles */
     private $roles;
-
+    /** @return $this */
     public function __construct(Acl $acl, Roles $model, Config $config)
     {
         $this->config = $config;

@@ -16,9 +16,8 @@ use User\Controller\WidgetController;
 
 use function strtolower;
 
-class AdminController extends AbstractAdminController
+final class AdminController extends AbstractAdminController
 {
-    protected $uploader;
     public function __construct()
     {
     }
@@ -160,7 +159,7 @@ class AdminController extends AbstractAdminController
         return $this->view;
     }
 
-    public function addsettingAction()
+    public function addsettingAction(): mixed
     {
         //$this->resourceId = 'admin.add.setting';
         if (! $this->acl->isAllowed($this->user, $this, 'admin.add.setting')) {

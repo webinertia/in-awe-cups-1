@@ -13,12 +13,13 @@ class WorkspaceForm extends Form
     /**
      * @param mixed $name
      * @param null|array $fieldsets
+     * @return void
      */
     public function __construct($name = null, ?array $fieldsets = null)
     {
     }
 
-    public function init()
+    public function init(): void
     {
     }
 }

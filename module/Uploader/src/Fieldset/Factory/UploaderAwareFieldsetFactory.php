@@ -8,7 +8,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Uploader\Fieldset\UploaderAwareFieldset;
 
-class UploaderAwareFieldsetFactory implements FactoryInterface
+final class UploaderAwareFieldsetFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

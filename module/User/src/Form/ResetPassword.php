@@ -10,6 +10,8 @@ use Laminas\Filter\StripTags;
 use Laminas\Form\Element\Captcha;
 use Laminas\Form\Element\Email;
 use Laminas\Form\Element\Password;
+use Laminas\Form\Exception\DomainException;
+use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Form;
 use Laminas\InputFilter\InputFilter;
 use Laminas\Validator\Db\RecordExists;
@@ -17,8 +19,15 @@ use Laminas\Validator\Identical;
 use Laminas\Validator\StringLength;
 use User\Filter\PasswordFilter;
 
-class ResetPassword extends Form
+final class ResetPassword extends Form
 {
+    /**
+     * @param string $name
+     * @param array $options
+     * @return void
+     * @throws InvalidArgumentException
+     * @throws DomainException
+     */
     public function __construct($name, $options)
     {
         parent::__construct('reset_password');
@@ -95,7 +104,7 @@ class ResetPassword extends Form
         ]);
     }
 
-    public function addInputFilter()
+    public function addInputFilter(): InputFilter
     {
         $inputFilter = new InputFilter();
 

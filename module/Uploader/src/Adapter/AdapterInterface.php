@@ -6,6 +6,6 @@ namespace Uploader\Adapter;
 
 interface AdapterInterface
 {
-    const EVENT_UPLOAD = 'upload';
+    public const EVENT_UPLOAD = 'upload';
     public function upload();
 }

@@ -8,7 +8,7 @@ use Webinertia\ModelManager\AbstractModel;
 
 use function dirname;
 
-class Theme extends AbstractModel
+final class Theme extends AbstractModel
 {
     public const DEFAULT_THEME = 'default';
     /** @var string $currentTheme */

@@ -20,11 +20,13 @@ use function substr;
 
 class RegisterController extends AbstractController
 {
+    /** @var UserForm $form */
+    protected $form;
+    /** @var Settings $appSettings */
+    protected $appSettings;
     /** @var Users */
     protected $usrModel;
-    /**
-     * @return void
-     */
+    /** @return void */
     public function __construct(Users $usrModel, UserForm $form, Settings $appSettings)
     {
         $this->usrModel    = $usrModel;

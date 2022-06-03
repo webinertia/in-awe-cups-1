@@ -18,10 +18,10 @@ use Laminas\Validator\StringLength;
 
 use function array_merge;
 
-class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
+final class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
 {
     /**
-     * @param mixed $options
+     * @param array $options
      * @return void
      * @throws InvalidArgumentException
      */

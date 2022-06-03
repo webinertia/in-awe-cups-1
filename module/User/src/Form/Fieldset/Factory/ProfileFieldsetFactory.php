@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use User\Form\Fieldset\ProfileFieldset;
 use Webinertia\ModelManager\ModelManager;
 
-class ProfileFieldsetFactory implements FactoryInterface
+final class ProfileFieldsetFactory implements FactoryInterface
 {
     /** @param string $requestedName */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): ProfileFieldset

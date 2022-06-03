@@ -8,7 +8,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Controller\WidgetController;
 
-class WidgetControllerFactory implements FactoryInterface
+final class WidgetControllerFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

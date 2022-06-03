@@ -10,7 +10,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class EmailFactory implements FactoryInterface
+final class EmailFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

@@ -16,7 +16,7 @@ use Webinertia\ModelManager\ModelManager;
 
 use function array_merge_recursive;
 
-class TestController extends AbstractController
+final class TestController extends AbstractController
 {
     /** @var UserForm $form */
     protected $form;

@@ -12,7 +12,7 @@ use User\Form\Fieldset\RoleFieldset;
 use User\Model\Roles;
 use Webinertia\ModelManager\ModelManager;
 
-class RoleFieldsetFactory implements FactoryInterface
+final class RoleFieldsetFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

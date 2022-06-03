@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ContentManager;
 
-class Module
+final class Module
 {
     public function getConfig(): array
     {

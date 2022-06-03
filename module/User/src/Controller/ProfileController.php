@@ -15,14 +15,13 @@ use User\Model\Users;
 use function array_merge_recursive;
 use function substr;
 
-class ProfileController extends AbstractController
+final class ProfileController extends AbstractController
 {
     /** @var Users $usrModel */
     protected $usrModel;
     /** @var ProfileForm $form */
-    /**
-     * @return void
-     */
+    protected $form;
+    /** @return void */
     public function __construct(Users $usrModel, ProfileForm $profileForm)
     {
         $this->usrModel = $usrModel;
@@ -41,7 +40,10 @@ class ProfileController extends AbstractController
     {
         try {
             $userName              = $this->params()->fromRoute('userName');
-            $requestedUser         = $this->usrModel->fetchByColumn('userName', ! empty($userName) ? $userName : $this->user->userName);
+            $requestedUser         = $this->usrModel->fetchByColumn(
+                'userName',
+                ! empty($userName) ? $userName : $this->user->userName
+            );
             $profileData           = $this->usrModel->fetchByColumn('userName', $requestedUser->userName);
             $profileData->userName = $requestedUser->userName;
             $previous              = substr($this->referringUrl, -5);
@@ -95,7 +97,6 @@ class ProfileController extends AbstractController
                 } catch (RuntimeException $e) {
                     echo $e->getMessage();
                 }
-                // $profile->populate($merged, true);
             }
         }
         $this->view->setVariable('form', $this->form);
