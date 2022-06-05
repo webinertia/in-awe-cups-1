@@ -21,6 +21,8 @@ use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Laminas\Session\SessionManager;
 use Laminas\View\Helper\Navigation;
+use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver\TemplatePathStack;
 use Webinertia\ModelManager\ModelManager;
 
 use function date_default_timezone_set;
@@ -136,7 +138,7 @@ final class Module
     public function bootstrapNavigation(MvcEvent $e): void
     {
         $sm           = $e->getApplication()->getServiceManager();
-        $vhm          = $sm->get('ViewRenderer')->getHelperPluginManager();
+        $vhm          = $sm->get(PhpRenderer::class)->getHelperPluginManager();
         $modelManager = $sm->get(ModelManager::class);
         $navigation   = $vhm->get(Navigation::class);
         $navContainer = $navigation('Laminas\Navigation\Default');
@@ -149,7 +151,7 @@ final class Module
     {
         $sm                = $e->getApplication()->getServiceManager();
         $theme             = $sm->get(ModelManager::class)->get(Theme::class);
-        $templatePathStack = $sm->get('ViewTemplatePathStack');
+        $templatePathStack = $sm->get(TemplatePathStack::class);
         $templatePathStack->addPaths($theme->getThemePaths());
     }
 }
