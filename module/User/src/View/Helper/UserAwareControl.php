@@ -68,6 +68,7 @@ class UserAwareControl extends AbstractHelper
             return $html;
         }
         $html .= '<svg class="' . $this->svgClass;
+        return $html;
     }
 
     /**

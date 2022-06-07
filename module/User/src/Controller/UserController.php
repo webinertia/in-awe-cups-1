@@ -4,25 +4,15 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use User\Form\LoginForm;
-use User\Model\Users;
 
-final class UserController extends AbstractController
+final class UserController extends AbstractAppController
 {
-    /** @var Users $usrModel */
-    public $usrModel;
-    /** @return void */
-    public function __construct(Users $usrModel)
-    {
-        // comment for test commit
-        $this->usrModel = $usrModel;
-    }
-
     public function listAction(): ViewModel
     {
         try {

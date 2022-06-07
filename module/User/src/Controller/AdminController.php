@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractAdminController;
+use App\Controller\AbstractAppController;
+use App\Controller\AdminControllerInterface;
 use Laminas\Log\Logger;
 use Laminas\View\Model\ViewModel;
 use Throwable;
-use User\Model\Users as UsrModel;
 
-final class AdminController extends AbstractAdminController
+final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
-    /** @var User\Model\Users $usrModel */
-    protected $usrModel;
-    /** @return void */
-    public function __construct(UsrModel $usrModel)
+    public function getResourceId(): string
     {
-        $this->usrModel = $usrModel;
+        return self::RESOURCE_ID;
     }
 
     public function indexAction(): ViewModel

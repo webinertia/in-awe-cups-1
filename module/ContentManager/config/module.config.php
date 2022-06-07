@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace ContentManager;
 
+use App\Controller\Factory\AppControllerFactory;
 use ContentManager\Controller\AdminController;
 use ContentManager\Controller\ContentController;
-use ContentManager\Controller\Factory\AdminControllerFactory;
-use ContentManager\Controller\Factory\ContentControllerFactory;
 use ContentManager\Form\Fieldset\Factory\PageFieldsetFactory;
 use ContentManager\Form\Fieldset\PageFieldset;
 use ContentManager\Form\PageForm;
@@ -87,8 +86,8 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            AdminController::class   => AdminControllerFactory::class,
-            ContentController::class => ContentControllerFactory::class,
+            AdminController::class   => AppControllerFactory::class,
+            ContentController::class => AppControllerFactory::class,
         ],
     ],
     'form_elements' => [
@@ -130,9 +129,4 @@ return [
             ],
         ],
     ],
-    // 'view_manager' => [
-    //     'template_path_stack' => [
-    //         //'content-manager' => __DIR__ . '/../view'
-    //     ],
-    // ],
 ];

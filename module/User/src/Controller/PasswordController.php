@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use App\Service\Email;
 use DateTime;
 use Laminas\View\Model\ViewModel;
@@ -14,16 +14,8 @@ use User\Filter\RegistrationHash;
 use User\Form\ResetPassword;
 use User\Model\Users;
 
-final class PasswordController extends AbstractController
+final class PasswordController extends AbstractAppController
 {
-    /** @var User\Model\Users $usrModel */
-    protected $usrModel;
-    /** @return void */
-    public function __construct(Users $model)
-    {
-        $this->usrModel = $model;
-    }
-
     public function resetAction(): ViewModel
     {
         try {

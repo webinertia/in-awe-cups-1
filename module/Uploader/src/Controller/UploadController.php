@@ -4,24 +4,28 @@ declare(strict_types=1);
 
 namespace Uploader\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
+use App\Controller\AbstractAppController;
 use Laminas\View\Model\ViewModel;
 use Uploader\Uploader;
 
 use function array_merge_recursive;
 
-final class UploadController extends AbstractActionController
+final class UploadController extends AbstractAppController
 {
-    public function __construct(Uploader $uploader)
+    /** @var Uploader $uploader */
+    protected $uploader;
+    /**
+     * @param mixed $container
+     * @return UploadController
+     */
+    public function init($container): self
     {
-        $this->uploader = $uploader;
-        $this->view     = new ViewModel();
-        $this->view->setTerminal(true);
+        $this->uploader = $container->get(Uploader::class);
+        return $this;
     }
 
     public function adminUploadAction(): ViewModel
     {
-            // $uploader = $this->sm->get(UtilsImageUploader::class);
         if ($this->request->isXmlHttpRequest()) {
             $ajax = true;
         }

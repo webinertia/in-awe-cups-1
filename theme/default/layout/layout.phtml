@@ -53,9 +53,6 @@ use Laminas\View\Renderer\PhpRenderer;
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <?php
-                    //TODO: move this to a delegator
-                    $this->navigation()->setAcl($this->acl);
-                    $this->navigation()->setRole($this->user);
                     $this->navigation()->menu()->setUlClass('navbar-nav');
                     echo $this->navigation('Laminas\Navigation\Default')->menu();
                     ?>
@@ -83,7 +80,6 @@ use Laminas\View\Renderer\PhpRenderer;
                     echo $flash->render('success', ['alert', 'alert-dismissible', 'alert-success']);
                 }
                 ?>
-                default theme layout
             <?= $this->content ?>
             <hr>
             <footer>

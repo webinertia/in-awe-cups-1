@@ -4,10 +4,17 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
+use Laminas\Form\Exception\InvalidElementException;
+use Laminas\Mvc\Exception\DomainException;
+use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
+use Laminas\ServiceManager\Exception\CyclicAliasException;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Model\ViewModel;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use User\Form\ProfileForm;
 use User\Model\Users;
@@ -15,24 +22,28 @@ use User\Model\Users;
 use function array_merge_recursive;
 use function substr;
 
-final class ProfileController extends AbstractController
+final class ProfileController extends AbstractAppController
 {
     /** @var Users $usrModel */
     protected $usrModel;
     /** @var ProfileForm $form */
     protected $form;
-    /** @return void */
-    public function __construct(Users $usrModel, ProfileForm $profileForm)
-    {
-        $this->usrModel = $usrModel;
-        $this->form     = $profileForm;
-    }
-
-    public function init(): self
+    /**
+     * @param ContainerInterface $container
+     * @return ProfileController
+     * @throws DomainException
+     * @throws InvalidElementException
+     * @throws ContainerModificationsNotAllowedException
+     * @throws CyclicAliasException
+     * @throws ServiceNotFoundException
+     * @throws InvalidServiceException
+     */
+    public function init($container): self
     {
         if (! $this->authService->hasIdentity()) {
             $this->redirect()->toRoute('user/account', ['action' => 'login']);
         }
+        $this->form = $this->formManager->get(ProfileForm::class);
         return $this;
     }
 

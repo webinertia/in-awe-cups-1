@@ -62,7 +62,7 @@ class LayoutListener extends AbstractListenerAggregate
             return;
         }
         // Convert the module name from camel case to a lower string with dashes
-        $name = 'layout/' . $this->filter->filter($module);
+        $name = $this->filter->filter($module) . 'layout/account-dashboard';
         // Has the resolver an entry / layout with the given name?
         if (! $this->templateMapResolver->has($name)) {
             return;
