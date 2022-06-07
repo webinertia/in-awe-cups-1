@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\AbstractAdminController;
+use App\Controller\AbstractAppController;
+use App\Controller\AdminControllerInterface;
 use App\Model\Settings;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Text;
@@ -16,10 +17,11 @@ use User\Controller\WidgetController;
 
 use function strtolower;
 
-final class AdminController extends AbstractAdminController
+final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
-    public function __construct()
+    public function getResourceId(): string
     {
+        return self::RESOURCE_ID;
     }
 
     public function indexAction(): ViewModel

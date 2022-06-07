@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractController;
-use App\Model\Settings;
+use App\Controller\AbstractAppController;
 use App\Service\Email;
 use DateTime;
 use Laminas\View\Model\ViewModel;
@@ -18,32 +17,26 @@ use function password_verify;
 use function strpos;
 use function substr;
 
-class RegisterController extends AbstractController
+class RegisterController extends AbstractAppController
 {
     /** @var UserForm $form */
     protected $form;
-    /** @var Settings $appSettings */
-    protected $appSettings;
     /** @var Users */
     protected $usrModel;
     /** @return void */
-    public function __construct(Users $usrModel, UserForm $form, Settings $appSettings)
-    {
-        $this->usrModel    = $usrModel;
-        $this->form        = $form;
-        $this->appSettings = $appSettings;
-    }
 
     /**
      * The default action - show the action
      */
     public function indexAction(): object
     {
+        $this->form = $this->formManager->get(UserForm::class);
+        $sm         = $this->getEvent()->getApplication()->getServiceManager();
         // if registration is disabled return as there is nothing more to do
         if (! $this->appSettings->security->enable_registration) {
             return $this->view;
         }
-        $mailService = $this->sm->get(Email::class);
+        $mailService = $sm->get(Email::class);
         // we need a timestamp based on the server settings
         $now = new DateTime();
         // time format is 02/13/1975

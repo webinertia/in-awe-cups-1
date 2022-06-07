@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 namespace ContentManager\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use Laminas\View\Model\ViewModel;
-use Webinertia\ModelManager\ModelManager;
 
 use function count;
 
-final class ContentController extends AbstractController
+final class ContentController extends AbstractAppController
 {
-    /** @return void */
-    public function __construct(ModelManager $modelManager)
-    {
-        $this->modelManager = $modelManager;
-    }
-
     public function pageAction(): ViewModel
     {
         $hasParent = false;

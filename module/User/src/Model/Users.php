@@ -68,8 +68,8 @@ final class Users extends AbstractModel
             switch ($result->getCode()) {
                 case Result::SUCCESS:
                     /** do stuff for successful authentication **/
-                    //$omitColumns = ['password'];
-                    //$user = $authAdapter->getResultRowObject(null, $omitColumns);
+                    // $omitColumns = ['password'];
+                    // $user = $authAdapter->getResultRowObject(null, $omitColumns);
                     return $result;
                // break;
                 case Result::FAILURE_IDENTITY_NOT_FOUND:

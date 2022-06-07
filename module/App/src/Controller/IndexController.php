@@ -4,35 +4,25 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use App\Form\ContactForm;
 use App\Service\Email;
-use Laminas\Authentication\Storage\Session;
-use Laminas\Session\SessionManager;
+use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\View\Model\ViewModel;
 
-final class IndexController extends AbstractController
+final class IndexController extends AbstractAppController
 {
     /** @var ContactForm $form */
     protected $form;
-    /** @return void */
-    public function __construct(ContactForm $form)
-    {
-        $this->form = $form;
-    }
 
     public function indexAction(): ViewModel
     {
-        if ($this->authService->hasIdentity()) {
-            $storage  = new Session(Session::NAMESPACE_DEFAULT, $this->authService->getIdentity(), $this->sm->get(SessionManager::class));
-            $userName = $this->authService->getIdentity();
-            $user     = $storage->getMember();
-        }
         return $this->view;
     }
 
     public function contactAction(): mixed
     {
+        $this->form = $this->formManager->get(ContactForm::class);
         //todo:: start with this form on the refactoring to fieldsets and delegators
         if ($this->request->isPost()) {
             $validationGroup = ['fullName', 'email', 'message'];
@@ -53,6 +43,11 @@ final class IndexController extends AbstractController
         return $this->view;
     }
 
+    /**
+     * This needs moved into a proper implementation like the not found action
+     *
+     * @throws InvalidArgumentException
+     */
     public function forbiddenAction(): ViewModel
     {
         $this->response->setStatusCode(403);

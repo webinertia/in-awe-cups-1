@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Listener\AdminListener;
+use App\Listener\LayoutVariablesListener;
 use App\Model\Settings;
 use App\Model\Theme;
 use ContentManager\Model\Pages;
+use Laminas\Authentication\AuthenticationService;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\TableGateway;
@@ -22,7 +25,9 @@ use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Laminas\Session\SessionManager;
 use Laminas\View\Helper\Navigation;
 use Laminas\View\Renderer\PhpRenderer;
+use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
+use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
 use function date_default_timezone_set;
@@ -39,7 +44,9 @@ final class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        $sm                 = $e->getApplication()->getServiceManager();
+        $app                = $e->getApplication();
+        $eventManager       = $app->getEventManager();
+        $sm                 = $app->getServiceManager();
         $this->modelManager = $sm->get(ModelManager::class);
         $config             = $this->modelManager->get(Settings::class);
         date_default_timezone_set($config->server->time_zone);
@@ -48,6 +55,21 @@ final class Module
         $this->bootstrapLogging($e);
         $this->bootstrapNavigation($e);
         $this->bootstrapTheme($e);
+        $authService     = $sm->get(AuthenticationService::class);
+        $permManager     = $sm->get(PermissionsManager::class);
+        $layoutVariables = new LayoutVariablesListener(
+            $authService,
+            $this->modelManager,
+            $permManager
+        );
+        $layoutVariables->attach($eventManager);
+        $adminListener = new AdminListener(
+            $permManager,
+            $authService,
+            $this->modelManager,
+            $sm->get(TemplateMapResolver::class)
+        );
+        $adminListener->attach($eventManager);
     }
 
     public function boostrapSessions(MvcEvent $e): void
@@ -111,6 +133,7 @@ final class Module
 
     public function bootstrapLogging(MvcEvent $e): void
     {
+        //TODO move this to config backed factory
         $sm                = $e->getapplication()->getServiceManager();
         $settings          = $this->modelManager->get(Settings::class);
         $config            = $sm->get('config');

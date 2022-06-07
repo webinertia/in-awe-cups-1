@@ -4,27 +4,30 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use Laminas\Db\Sql\Select;
+use Laminas\EventManager\Exception\InvalidArgumentException;
+use Laminas\Mvc\Exception\DomainException;
+use Laminas\Mvc\MvcEvent;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\Paginator;
 use Laminas\View\Model\ViewModel;
 use User\Model\Users;
 use Zend\Paginator\AdapterPluginManager;
 
-final class WidgetController extends AbstractController
+final class WidgetController extends AbstractAppController
 {
     /** @var Paginator $paginator */
     protected $paginator;
-    /** @return void */
-    public function __construct()
+    /**
+     * @throws InvalidArgumentException
+     * @throws DomainException
+     */
+    public function onDispatch(MvcEvent $e): mixed
     {
-    }
+        $this->group = $this->getEvent()->getRouteMatch()->getParam('group', 'all');
 
-    public function init(): self
-    {
-        $config = $this->sm->get('Config');
-        $group  = $this->getEvent()->getRouteMatch()->getParam('group', 'all');
+        $config = $this->config;
         $table  = $this->modelManager->get(Users::class);
         $sql    = $table->getSql();
         $select = new Select();
@@ -47,18 +50,18 @@ final class WidgetController extends AbstractController
                 'verified',
             ])
             ->order(['users.id DSC']);
-        if ($group === 'all') {
+        if ($this->group === 'all') {
             $select->where->greaterThan('user_roles.id', 0);
         } else {
-            $select->where->equalTo('user_roles.role', $group);
+            $select->where->equalTo('user_roles.role', $this->group);
         }
-        $pluginManager = $this->sm->get(AdapterPluginManager::class);
+        $pluginManager = $this->getEvent()->getApplication()->getServiceManager()->get(AdapterPluginManager::class);
         $adapter       = $pluginManager->get(DbSelect::class, [$select, $sql, $table->getResultSetPrototype()]);
         $paginator     = new Paginator($adapter);
         $paginator->setDefaultItemCountPerPage($config['widgets']['member_list']['items_per_page']);
         $this->paginator = $paginator;
         $this->view->setTerminal(true);
-        return $this;
+        return parent::onDispatch($e);
     }
 
     public function memberListAction(): ViewModel

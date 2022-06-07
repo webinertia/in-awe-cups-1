@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace ContentManager\Controller;
 
-use App\Controller\AbstractAdminController;
+use App\Controller\AbstractAppController;
+use App\Controller\AdminControllerInterface;
 use App\Form\FormInterface;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
@@ -12,35 +13,41 @@ use ContentManager\Model\Pages;
 use Laminas\Filter\FilterChain;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
-use Laminas\Form\FormElementManager;
 use Laminas\Json\Encoder;
 use Laminas\Log\Logger;
+use Laminas\ServiceManager\Exception\InvalidServiceException;
+use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Model\ViewModel;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Webinertia\ModelManager\ModelManager;
 
-final class AdminController extends AbstractAdminController
+final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
     /** @var Page $page */
     /** @var Pages $pages */
     /** @var PageForm $form */
-    /** @return void */
-    public function __construct(ModelManager $modelManager, FormElementManager $formElementManager)
+    /**
+     * @param ContainerInterface $container
+     * @return AdminController
+     * @throws ServiceNotFoundException
+     * @throws InvalidServiceException
+     */
+    public function init($container): self
     {
-        $this->formManager = $formElementManager;
-        $this->pages       = $modelManager->get(Pages::class);
+        $this->pages = $this->modelManager->get(Pages::class);
+        return $this;
     }
 
-    public function init(): self
+    public function getResourceId(): string
     {
-        if ($this->request->isXmlHttpRequest()) {
-            $this->view->setTerminal(true);
-        }
-        return $this;
+        return self::RESOURCE_ID;
     }
 
     public function createAction(): ViewModel
     {
+        if ($this->request->isXmlHttpRequest()) {
+            $this->view->setTerminal(true);
+        }
         $form = $this->formManager->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
         $form->setAttribute(
             'action',
@@ -74,11 +81,17 @@ final class AdminController extends AbstractAdminController
 
     public function dashboardAction(): ViewModel
     {
+        if ($this->request->isXmlHttpRequest()) {
+            $this->view->setTerminal(true);
+        }
         return $this->view;
     }
 
     public function updateAction(): ViewModel
     {
+        if ($this->request->isXmlHttpRequest()) {
+            $this->view->setTerminal(true);
+        }
         return $this->view;
     }
 }

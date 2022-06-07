@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Controller\AdminController;
-use App\Controller\IndexController;
-use App\Controller\TestController;
-use ContentManager\Controller\ContentController;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -28,7 +24,6 @@ return [
         'routes'       => [
             'home' => [
                 'type' => Literal::class,
-                //'may_terminate' => true,
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
@@ -128,9 +123,9 @@ return [
     ],
     'controllers'     => [
         'factories' => [
-            AdminController::class => Controller\Factory\AdminControllerFactory::class,
-            IndexController::class => Controller\Factory\IndexControllerFactory::class,
-            TestController::class  => Controller\Factory\TestControllerFactory::class,
+            Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
+            Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
+            Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
         ],
     ],
     'form_elements'   => [
@@ -215,15 +210,7 @@ return [
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'forbidden_template'       => 'error/403',
-        'template_map'             => [
-           // 'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-            'index/index'   => __DIR__ . '/../view/index/index.phtml',
-            'error/404'     => __DIR__ . '/../view/error/404.phtml',
-            'error/index'   => __DIR__ . '/../view/error/index.phtml',
-        ],
-        // 'template_path_stack'      => [
-        //     //__DIR__ . '/../view',
-        // ],
+        'template_map'             => [],
     ],
     'upload_manager'  => [
         'App' => [

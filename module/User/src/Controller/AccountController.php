@@ -4,43 +4,24 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
-use App\Controller\AbstractController;
+use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
-use App\Model\Settings;
-use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Exception\InvalidServiceException;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use Throwable;
 use User\Form\UserForm;
-use User\Model\Users;
-use Webinertia\ModelManager\ModelManager;
 
 use function array_merge;
 
-final class AccountController extends AbstractController
+final class AccountController extends AbstractAppController
 {
-    /**
-     * @return void
-     * @throws ServiceNotFoundException
-     * @throws InvalidServiceException
-     */
-    public function __construct(ModelManager $modelManager, FormElementManager $formManager)
-    {
-        $this->modelManager = $modelManager;
-        $this->formManager  = $formManager;
-        $this->usrModel     = $this->modelManager->get(Users::class);
-        $this->appSettings  = $this->modelManager->get(Settings::class);
-    }
-
     public function dashboardAction(): ViewModel
     {
         return $this->view;
     }
 
-    public function editAction(): mixed
+    public function editAction(): ViewModel
     {
         try {
             $form = $this->formManager->build(UserForm::class, ['mode' => FormInterface::EDIT_MODE]);
@@ -85,7 +66,7 @@ final class AccountController extends AbstractController
 
                 if ($result) {
                     // Redirect to User list
-                    return $this->redirect()->toRoute('user/list', ['page' => 1, 'count' => 5]);
+                    $this->redirect()->toRoute('user/list', ['page' => 1, 'count' => 5]);
                 } else {
                     throw new RuntimeException('The user could not be updated at this time');
                 }
@@ -97,7 +78,7 @@ final class AccountController extends AbstractController
         }
     }
 
-    public function deleteAction(): object
+    public function deleteAction(): void
     {
         // verify that the session cleared during user deletion
         try {
@@ -109,13 +90,9 @@ final class AccountController extends AbstractController
                 if ($result > 0) {
                     $this->logger->info(
                         'User ' . $this->user->userName . ' deleted user: ' . $deletedUser['userName'],
-                        [
-                            'userId'   => $this->user->id,
-                            'userName' => $this->user->userName,
-                            'role'     => $this->user->role,
-                        ]
+                        $this->user->getLogData()
                     );
-                    return $this->redirect()->toRoute(
+                    $this->redirect()->toRoute(
                         'user',
                         ['action' => 'index', 'userName' => $deletedUser['userName']]
                     );
@@ -126,6 +103,7 @@ final class AccountController extends AbstractController
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
             }
         } catch (RuntimeException $e) {
+            $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
         }
     }
 }

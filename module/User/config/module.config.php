@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace User;
 
+use App\Controller\Factory\AppControllerFactory;
+use Laminas\View\Helper\Navigation;
+use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
+use User\Navigation\View\PermissionAclDelegatorFactory;
+use User\Navigation\View\RoleFromAuthenticationIdentityDelegator;
+use User\Permissions\PermissionsManager;
 
 return [
     'db'              => [
@@ -272,15 +278,23 @@ return [
             ],
         ],
     ],
+    'navigation_helpers' => [
+        'delegators' => [
+            Navigation::class => [
+                PermissionAclDelegatorFactory::class,
+                RoleFromAuthenticationIdentityDelegator::class,
+            ],
+        ],
+    ],
     'controllers'     => [
         'factories' => [
-            Controller\AccountController::class  => Controller\Factory\AccountControllerFactory::class,
-            Controller\AdminController::class    => Controller\Factory\AdminControllerFactory::class,
-            Controller\PasswordController::class => Controller\Factory\PasswordControllerFactory::class,
-            Controller\ProfileController::class  => Controller\Factory\ProfileControllerFactory::class,
-            Controller\RegisterController::class => Controller\Factory\RegisterControllerFactory::class,
-            Controller\UserController::class     => Controller\Factory\UserControllerFactory::class,
-            Controller\WidgetController::class   => Controller\Factory\WidgetControllerFactory::class,
+            Controller\AccountController::class  => AppControllerFactory::class,
+            Controller\AdminController::class    => AppControllerFactory::class,
+            Controller\PasswordController::class => AppControllerFactory::class,
+            Controller\ProfileController::class  => AppControllerFactory::class,
+            Controller\RegisterController::class => AppControllerFactory::class,
+            Controller\UserController::class     => AppControllerFactory::class,
+            Controller\WidgetController::class   => AppControllerFactory::class,
         ],
     ],
     'model_manager'   => [
@@ -291,7 +305,7 @@ return [
     ],
     'service_manager' => [
         'aliases'   => [
-            'Acl' => Permissions\PermissionsManager::class,
+            AclInterface::class => PermissionsManager::class, // the navigation helper delegator relies on this alias
         ],
         'factories' => [
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
@@ -330,7 +344,7 @@ return [
         // ],
         'template_map'        => [
             //'user/layout' => __DIR__ . '/../../themes/default/layout/account-dashboard.phtml',
-            'layout/user' => __DIR__ . '/../view/layout/account-dashboard.phtml',
+            //'layout/user' => __DIR__ . '/../view/layout/account-dashboard.phtml',
         ],
     ],
     'widgets'         => [

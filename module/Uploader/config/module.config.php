@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Uploader;
 
+use App\Controller\Factory\AppControllerFactory;
 use Laminas\Router\Http\Segment;
 
 return [
@@ -32,7 +33,7 @@ return [
     ],
     'controllers'     => [
         'factories' => [
-            Controller\UploadController::class => Controller\Factory\UploadControllerFactory::class,
+            Controller\UploadController::class => AppControllerFactory::class,
         ],
     ],
     'form_elements'   => [
@@ -44,10 +45,5 @@ return [
     'upload_manager'  => [
         'role'      => 'admin',
         'privilege' => 'admin.access',
-    ],
-    'view_manager'    => [
-        // 'template_path_stack' => [
-        //     'uploader' => __DIR__ . '/../view',
-        // ],
     ],
 ];
