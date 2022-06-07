@@ -27,7 +27,7 @@ return [
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => IndexController::class,
+                        'controller' => Controller\IndexController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -37,7 +37,7 @@ return [
                 'options' => [
                     'route'    => '/test',
                     'defaults' => [
-                        'controller' => TestController::class,
+                        'controller' => Controller\TestController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -47,7 +47,7 @@ return [
                 'options' => [
                     'route'    => '/site[/:action]',
                     'defaults' => [
-                        'controller' => IndexController::class,
+                        'controller' => Controller\IndexController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -57,7 +57,7 @@ return [
                 'options' => [
                     'route'    => '/site/contact[/:action]',
                     'defaults' => [
-                        'controller' => IndexController::class,
+                        'controller' => Controller\IndexController::class,
                         'action'     => 'contact',
                     ],
                 ],
@@ -72,7 +72,7 @@ return [
                         'options' => [
                             'route'    => '/admin',
                             'defaults' => [
-                                'controller' => AdminController::class,
+                                'controller' => Controller\AdminController::class,
                                 'action'     => 'index',
                             ],
                         ],
@@ -83,7 +83,7 @@ return [
                         'options' => [
                             'route'    => '/admin/addsetting',
                             'defaults' => [
-                                'controller' => AdminController::class,
+                                'controller' => Controller\AdminController::class,
                                 'action'     => 'addsetting',
                             ],
                         ],
@@ -99,7 +99,7 @@ return [
                                 'type'   => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ],
                             'defaults' => [
-                                'controller' => AdminController::class,
+                                'controller' => Controller\AdminController::class,
                                 'action'     => 'upload',
                             ],
                         ],
