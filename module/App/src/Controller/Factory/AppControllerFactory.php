@@ -6,8 +6,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Factory;
 
-use App\Service\Email;
 use App\Model\Settings;
+use App\Service\Email;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Config\Config;
 use Laminas\Form\FormElementManager;
