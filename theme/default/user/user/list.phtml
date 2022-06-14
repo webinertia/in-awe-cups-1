@@ -7,12 +7,12 @@ use Laminas\View\Renderer\PhpRenderer;
 /**
  * @var PhpRenderer $this
  */
-$title = 'System Users';
+$title = 'Member List';
 $this->headTitle($title);
 ?>
-<h1><?= $this->escapeHtml($title) ?></h1>
 
-<p>
+<div class="jumbotron">
+    <h6><?= $this->escapeHtml($title) ?></h6>
     <?php
     if ($this->acl->isAllowed($this->user, $this->user, 'user.create.new')) :
     ?>
@@ -20,64 +20,18 @@ $this->headTitle($title);
     <?php
     endif;
     ?>
-</p>
-default theme
-<table class="table">
-    <tr>
-        <th>Profile</th>
-        <th>User Name</th>
-        <th>Email</th>
-        <th>Account Status</th>
-        <th>Verification Status</th>
-        <th>Account Actions</th>
-    </tr>
-    <?php
-    foreach ($users as $listUser) :
-    ?>
-        <tr>
-            <?php ?>
-            <td><a href="<?= $this->url('user/profile', ['action' => 'view', 'userName' => $listUser->userName]); ?>" class="btn btn-outline-info btn-sm">Profile</a></td>
-            <td><?= $this->escapeHtml($listUser->userName) ?></td>
-            <td><?= $this->escapeHtml($listUser->email) ?></td>
-            <?php
-            if ((bool) $listUser->active) :
-            ?>
-                <td>Active</td>
-            <?php
-            else :
-            ?>
-                <td>Inactive</td>
-            <?php
-            endif;
-            ?>
-
-            <?php
-            if ((bool) $listUser->verified) :
-            ?>
-                <td>Verified</td>
-            <?php
-            else :
-            ?>
-                <td>Not Verified</td>
-            <?php
-            endif;
-            ?>
-            <td>
-                <?php
-                if ($this->acl->isAllowed($this->user, $listUser, 'edit')) :
-                ?>
-                    <a href="<?= $this->url('user/account/edit', ['userName' => $listUser->userName]); ?>" class="btn btn-outline-warning btn-sm">Edit</a>
-                    <?php
-                    if($listUser->id !== '1'):
-                    ?>
-                    <a href="<?= $this->url('user/account/delete', ['userName' => $listUser->userName]); ?>" class="btn btn-outline-danger btn-sm">Delete</a>
-                    <?php
-                    endif;
-                    ?>
-                <?php
-                endif;
-                ?>
-            </td>
-        </tr>
-    <?php endforeach; ?>
-</table>
+    <div class="card-deck">
+        <?php
+        foreach ($users as $listUser) :
+        ?>
+        <div class="card">
+            <div class="card-header"><?=$listUser->firstName . '&nbsp;' . $listUser->lastName?></div>
+            <div class="card-body">
+                <p><?=$listUser->bio?></p>
+            </div>
+        </div>
+        <?php
+        endforeach;
+        ?>
+    </div>
+</div>

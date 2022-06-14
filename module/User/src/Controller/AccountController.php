@@ -101,6 +101,7 @@ final class AccountController extends AbstractAppController
                 }
             } else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->response->setStatusCode('403');
             }
         } catch (RuntimeException $e) {
             $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());

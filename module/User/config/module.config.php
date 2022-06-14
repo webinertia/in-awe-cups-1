@@ -10,6 +10,7 @@ use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use User\Navigation\View\PermissionAclDelegatorFactory;
 use User\Navigation\View\RoleFromAuthenticationIdentityDelegator;
 use User\Permissions\PermissionsManager;
@@ -221,6 +222,7 @@ return [
                 'label'     => 'Users',
                 'route'     => 'user/list',
                 'class'     => 'nav-link',
+                'action'    => 'list',
                 'resource'  => 'users',
                 'privilege' => 'user.view.list',
             ],
@@ -330,22 +332,17 @@ return [
     ],
     'view_helpers'    => [
         'aliases'   => [
-            'userawarecontrol' => View\Helper\UserAwareControl::class,
-            'userAwareControl' => View\Helper\UserAwareControl::class,
-            'userControl'      => View\Helper\UserAwareControl::class,
+            'aclawarecontrol' => View\Helper\AclAwareControl::class,
+            'aclAwareControl' => View\Helper\AclAwareControl::class,
+            'aclControl'      => View\Helper\AclAwareControl::class,
         ],
         'factories' => [
-            View\Helper\UserAwareControl::class => View\Helper\Factory\UserAwareControlFactory::class,
+            View\Helper\AclAwareControl::class => View\Helper\Factory\AclAwareControlFactory::class,
         ],
     ],
     'view_manager'    => [
-        // 'template_path_stack' => [
-        //     //'user' => __DIR__ . '/../view',
-        // ],
-        'template_map'        => [
-            //'user/layout' => __DIR__ . '/../../themes/default/layout/account-dashboard.phtml',
-            //'layout/user' => __DIR__ . '/../view/layout/account-dashboard.phtml',
-        ],
+        'display_forbidden_reason' => true,
+        'forbidden_template'       => 'error/403'
     ],
     'widgets'         => [
         'member_list'       => [

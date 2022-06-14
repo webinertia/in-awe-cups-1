@@ -5,16 +5,26 @@ declare(strict_types=1);
 $title = 'Registration';
 $this->headTitle($title);
 ?>
-<?php
-if (! $this->appSettings->security->enable_registration) :
-    ?>
-    <p>Registration is currently disabled. Please contact the site administrator for assistance. <a href="mailto:<?=$this->appSettings->email->contact_form_email; ?>">Email Administrator</a></p>
-    <?php
-else :
-    ?>
-    <?php
-    if (isset($this->form)) {
-        $this->form->addSubmit();
-    }
-    echo $this->bootstrapForm($this->form);
-endif;
+<div class="jumbotron">
+    <div class="card-deck">
+        <div class="card">
+            <h6 class="card-header"><?=$title?></h6>
+            <div class="card-body">
+                <?php
+                if (! $this->appSettings->security->enable_registration) :
+                    ?>
+                    <p>Registration is currently disabled. Please contact the site administrator for assistance. <a href="mailto:<?=$this->appSettings->email->contact_form_email; ?>">Email Administrator</a></p>
+                    <?php
+                else :
+                    ?>
+                    <?php
+                    if (isset($this->form)) {
+                        $this->form->addSubmit();
+                    }
+                    echo $this->bootstrapForm($this->form);
+                endif;
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

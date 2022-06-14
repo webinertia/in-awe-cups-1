@@ -8,8 +8,6 @@ use ArrayObject;
 use Laminas\Json\Decoder;
 use Laminas\Json\Encoder;
 use Laminas\Json\Json;
-use Laminas\Navigation\Page\Mvc;
-use Laminas\Navigation\Page\Uri;
 use Laminas\Router\RouteStackInterface;
 use Laminas\Stdlib\Exception\InvalidArgumentException;
 use Webinertia\ModelManager\AbstractModel;
@@ -66,15 +64,7 @@ final class Pages extends AbstractModel
         $result = $this->db->select();
         $pages  = [];
         foreach ($result as $row) {
-            //unset($row->content);
-            if (! empty($row->uri)) {
-                $page = Uri::factory($row->getArrayCopy());
-            }
-            if (! empty($row->route)) {
-                $page = Mvc::factory($row->getArrayCopy());
-            }
-            $page->setRouter($this->router);
-            $pages[] = $page;
+            $pages[] = $row->getArrayCopy();
         }
         return $pages;
     }

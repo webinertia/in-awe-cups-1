@@ -147,12 +147,15 @@ return [
                 'route' => 'home',
                 'class' => 'nav-link',
                 'order' => '-10',
+                'action' => 'index',
             ],
             [
                 'label' => 'Contact Us',
                 'route' => 'contact',
                 'class' => 'nav-link',
                 'order' => '20',
+                'active' => false,
+                'action' => 'contact',
             ],
             [
                 'label'     => 'Admin',
@@ -204,12 +207,10 @@ return [
     ],
     'view_manager'    => [
         'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'display_forbidden_notice' => true,
+        'display_exceptions'       => false,
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
-        'forbidden_template'       => 'error/403',
         'template_map'             => [],
     ],
     'upload_manager'  => [

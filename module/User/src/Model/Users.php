@@ -22,6 +22,7 @@ use function password_verify;
 
 // @codingStandardsIgnoreStart
 /** @method \Laminas\Db\ResultSet\ResultSet current() */
+// @codingStandardsIgnoreEnd
 
 final class Users extends AbstractModel
 {

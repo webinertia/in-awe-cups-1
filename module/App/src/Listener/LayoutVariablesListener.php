@@ -13,7 +13,7 @@ use User\Model\Users;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
-class LayoutVariablesListener extends AbstractListenerAggregate
+final class LayoutVariablesListener extends AbstractListenerAggregate
 {
     /** @var PermissionsManager $acl */
     protected $acl;
@@ -72,6 +72,7 @@ class LayoutVariablesListener extends AbstractListenerAggregate
             'appSettings' => $this->appSettings,
             'authService' => $this->authService,
             'user'        => $this->user,
+            'renderPage'  => false,
         ]);
     }
 }

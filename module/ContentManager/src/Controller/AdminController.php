@@ -60,10 +60,9 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $data         = $form->getData();
                 $data->userId = $this->user->id;
                 $data->title  = $filter->filter($data->label);
-                // need to add a parentTitle column to the table so that it can be injected into the select
                 if (! isset($data->parentId)) {
-                    $data->route  = 'content/category';
-                    $data->params = Encoder::encode(['parentTitle' => $data->title]);
+                    $data->route  = 'page';
+                    $data->params = Encoder::encode(['title' => $data->title]);
                 }
                 $result = $data->save();
                 try {
@@ -92,6 +91,33 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
+        $form = $this->formManager->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
+        $form->setAttribute(
+            'action',
+            $this->url()->fromRoute('admin.content/manager', ['action' => 'update'])
+        );
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+            if ($form->isValid()) {
+                $filter       = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
+                $data         = $form->getData();
+                $data->userId = $this->user->id;
+                $data->title  = $filter->filter($data->label);
+                if (! isset($data->parentId)) {
+                    $data->route  = 'page';
+                    $data->params = Encoder::encode(['title' => $data->title]);
+                }
+                $result = $data->save();
+                try {
+                    if (! $result) {
+                        throw new RuntimeException('Page Not saved');
+                    }
+                } catch (RuntimeException $e) {
+                    $this->logger->log(Logger::EMERG, $e->getMessage(), $this->user->getLogData());
+                }
+            }
+        }
+        $this->view->setVariable('form', $form);
         return $this->view;
     }
 }

@@ -53,7 +53,6 @@ final class Module
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
-        $this->bootstrapNavigation($e);
         $this->bootstrapTheme($e);
         $authService     = $sm->get(AuthenticationService::class);
         $permManager     = $sm->get(PermissionsManager::class);
@@ -153,20 +152,9 @@ final class Module
         $dbFormatter->setDateTimeFormat($settings->timeFormat);
         $writer->setFormatter($dbFormatter);
         $logger->addWriter($writer);
-        if ($settings->enable_error_log) {
+        if ($settings->server->enable_error_log) {
             Logger::registerErrorHandler($logger);
         }
-    }
-
-    public function bootstrapNavigation(MvcEvent $e): void
-    {
-        $sm           = $e->getApplication()->getServiceManager();
-        $vhm          = $sm->get(PhpRenderer::class)->getHelperPluginManager();
-        $modelManager = $sm->get(ModelManager::class);
-        $navigation   = $vhm->get(Navigation::class);
-        $navContainer = $navigation('Laminas\Navigation\Default');
-        $menu         = $modelManager->get(Pages::class)->fetchMenu();
-        $navContainer->addPages($menu);
     }
 
     /** DO NOT MODIFY THIS METHOD */

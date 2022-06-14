@@ -1,0 +1,15 @@
+<nav aria-label="breadcrumb">
+    rendering
+  <ol class="breadcrumb">
+    <?php
+    foreach($this->pages as $page):
+    ?>
+
+    <li class="breadcrumb-item"><a href="<?=$page->getHref();?>"><?=$page->label;?></a></li>
+    <!-- <li class="breadcrumb-item active" aria-current="page">Library</li> -->
+
+    <?php
+    endforeach;
+    ?>
+  </ol>
+</nav>
