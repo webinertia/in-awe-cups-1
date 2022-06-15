@@ -10,6 +10,7 @@ use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Date;
+use Laminas\Form\Element\File;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
 use Laminas\Form\Exception\InvalidArgumentException;
@@ -47,29 +48,31 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
             'options' => [
                 'label' => ' First Name',
             ],
-        ]);
-        $this->add([
+        ])->add([
             'name'    => 'lastName',
             'type'    => Text::class,
             'options' => [
                 'label' => 'Last Name',
             ],
-        ]);
-        $this->add([
+        ])->add([
             'name'    => 'age',
             'type'    => Text::class,
             'options' => [
                 'label' => 'Your Age',
             ],
-        ]);
-        $this->add([
+        ])->add([
             'name'    => 'birthday',
             'type'    => Date::class,
             'options' => [
                 'label' => 'Birthday',
             ],
-        ]);
-        $this->add([
+        ])->add([
+            'name'    => 'profileImage',
+            'type'    => File::class,
+            'options' => [
+                'label' => 'Profile Image',
+            ],
+        ])->add([
             'name'    => 'bio',
             'type'    => Textarea::class,
             'options' => [

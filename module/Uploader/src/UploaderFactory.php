@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Uploader;
 
 use Laminas\Authentication\AuthenticationService;
-use Laminas\Permissions\Acl\Acl;
+use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -24,8 +24,8 @@ final class UploaderFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Uploader
     {
         $pluginManager = $container->get(AdapterPluginManager::class);
-        if ($container->has(Acl::class)) {
-            $acl = $container->get(Acl::class);
+        if ($container->has(AclInterface::class)) {
+            $acl = $container->get(AclInterface::class);
         }
         if ($container->has(AuthenticationService::class)) {
             $auth = $container->get(AuthenticationService::class);

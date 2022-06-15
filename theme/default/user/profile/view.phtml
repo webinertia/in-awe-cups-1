@@ -9,14 +9,14 @@ $this->headTitle($title);
 <div class="jumbotron">
     <?php
     if ($this->acl->isAllowed($this->user, $data, 'edit')) {
-        ?>
+    ?>
     <a class="btn btn-primary" href="<?= $this->url('user/profile', ['action' => 'edit-profile', 'userName' => $data->userName]) ?>" role="button">Edit Profile</a>
         <?php
     }
     ?>
     <div class="card-deck">
         <div class="card">
-          <h5 class="card-header"><?= $data->firstName . '&nbsp;' . $data->lastName . '\'s&nbsp;';?><?= $this->escapeHtml($title); ?></h5>
+          <h6 class="card-header"><?= $data->firstName . '&nbsp;' . $data->lastName . '\'s&nbsp;';?><?= $this->escapeHtml($title); ?></h6>
             <div class="card-body">
 
             </div>
