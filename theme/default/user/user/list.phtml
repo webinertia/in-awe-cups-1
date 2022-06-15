@@ -25,7 +25,14 @@ $this->headTitle($title);
         foreach ($users as $listUser) :
         ?>
         <div class="card">
-            <div class="card-header"><?=$listUser->firstName . '&nbsp;' . $listUser->lastName?></div>
+            <div class="card-header">
+                <span class="header-text text-left float-left"><?=$listUser->firstName . '&nbsp;' . $listUser->lastName?></span>
+                <div class="toolbar float-right">
+                    <a class="mdi mdi-logout text-success" href=""></a>
+                    <span class="mdi mdi-logout text-success"></span>
+                    <span class="mdi mdi-logout text-success"></span>
+                </div>
+            </div>
             <div class="card-body">
                 <p><?=$listUser->bio?></p>
             </div>
