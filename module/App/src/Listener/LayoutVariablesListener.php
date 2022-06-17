@@ -28,10 +28,8 @@ final class LayoutVariablesListener extends AbstractListenerAggregate
     /** @return void */
     public function __construct(
         AuthenticationService $authService,
-        ModelManager $modelManager,
-        PermissionsManager $acl
+        ModelManager $modelManager
     ) {
-        $this->acl          = $acl;
         $this->authService  = $authService;
         $this->modelManager = $modelManager;
         $this->appSettings  = $this->modelManager->get(Settings::class);
@@ -68,7 +66,6 @@ final class LayoutVariablesListener extends AbstractListenerAggregate
 
         // Change template
         $layoutViewModel->setVariables([
-            'acl'         => $this->acl,
             'appSettings' => $this->appSettings,
             'authService' => $this->authService,
             'user'        => $this->user,

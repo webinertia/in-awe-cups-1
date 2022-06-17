@@ -53,13 +53,10 @@ use Laminas\View\Renderer\PhpRenderer;
                     </button>
                     <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate($this->appSettings->appName ?? 'Home'); ?></a>
                 </div>
-                
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                
+
                 <?php
-                //TODO: move this to a delegator
-                $this->navigation()->setAcl($this->acl);
-                $this->navigation()->setRole($this->user->role);
                 $this->navigation()->menu()->setUlClass('navbar-nav');
                 echo $this->navigation('Laminas\Navigation\Admin')->menu();
                 ?>
@@ -94,8 +91,8 @@ use Laminas\View\Renderer\PhpRenderer;
                 <p>
                     &copy; <?= date('Y') ?>
                     <a href="<?= $this->appSettings->copyRightLink ?? '#'; ?>">
-                    <?= $this->appSettings->copyRightText ?? 'Default text'; ?></a> 
-                    | 
+                    <?= $this->appSettings->copyRightText ?? 'Default text'; ?></a>
+                    |
                     <?= $this->appSettings->footerText ?? 'Default Text'; ?>
                 </p>
             </footer>

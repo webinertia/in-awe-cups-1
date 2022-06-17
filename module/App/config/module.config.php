@@ -128,6 +128,14 @@ return [
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
         ],
     ],
+    'controller_plugins' => [
+        'aliases' => [
+            'redirectPrev' => Controller\Plugin\RedirectPrev::class,
+        ],
+        'factories' => [
+            Controller\Plugin\RedirectPrev::class => Controller\Plugin\Factory\RedirectPrevFactory::class,
+        ]
+    ],
     'form_elements'   => [
         'factories' => [
             Form\ContactForm::class               => Form\Factory\ContactFormFactory::class,

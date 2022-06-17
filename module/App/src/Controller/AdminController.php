@@ -164,7 +164,7 @@ final class AdminController extends AbstractAppController implements AdminContro
     public function addsettingAction(): mixed
     {
         //$this->resourceId = 'admin.add.setting';
-        if (! $this->acl->isAllowed($this->user, $this, 'admin.add.setting')) {
+        if (! $this->isAllowed($this->user, $this, 'admin.add.setting')) {
             $this->flashMessenger()->addWarningMessage('Access Denied, your attempt to access this area as been logged');
             $this->response->setStatusCode('403');
         }

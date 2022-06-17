@@ -33,6 +33,7 @@ final class TestController extends AbstractAppController
         }
         $this->form->addSubmit();
         $this->view->setVariable('form', $this->form);
+        $this->redirectPrev();
         return $this->view;
     }
 }

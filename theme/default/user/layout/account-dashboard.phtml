@@ -54,9 +54,6 @@ use Laminas\View\Renderer\PhpRenderer;
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
                 <?php
-                //TODO: move this to a delegator
-                $this->navigation()->setAcl($this->acl);
-                $this->navigation()->setRole($this->user);
                 $this->navigation()->menu()->setUlClass('navbar-nav');
                 echo $this->navigation('Laminas\Navigation\Default')->menu();
                 ?>

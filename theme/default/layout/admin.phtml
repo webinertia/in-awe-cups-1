@@ -43,7 +43,7 @@ use Laminas\View\Renderer\PhpRenderer;
       <?php
         $this->navigation()->menu()->setPartial('partials/dashboard/sidebar-menu');
         $this->navigation()->setContainer('Laminas\Navigation\Admin');
-        echo $this->navigation()->menu()->renderPartialWithParams(['appSettings' => $this->appSettings, 'acl' => $this->acl, 'user' => $this->user]);
+        echo $this->navigation()->menu()->renderPartialWithParams(['appSettings' => $this->appSettings, 'user' => $this->user]);
         ?>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">

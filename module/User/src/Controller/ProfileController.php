@@ -14,6 +14,7 @@ use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\Exception\CyclicAliasException;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -45,8 +46,9 @@ final class ProfileController extends AbstractAppController
         if (! $this->authService->hasIdentity()) {
             $this->redirect()->toRoute('user/account', ['action' => 'login']);
         }
-        $this->usrModel = $this->modelManager->get(Users::class);
-        $this->form     = $this->formManager->get(ProfileForm::class);
+        $this->usrModel         = $this->modelManager->get(Users::class);
+        $this->form             = $this->formManager->get(ProfileForm::class);
+        $this->sessionContainer = $container->get(Container::class);
         return $this;
     }
 
@@ -60,7 +62,7 @@ final class ProfileController extends AbstractAppController
             );
             $profileData           = $this->usrModel->fetchByColumn('userName', $requestedUser->userName);
             $profileData->userName = $requestedUser->userName;
-            $previous              = substr($this->referringUrl, -5);
+            $previous              = substr($this->sessionContainer->prevUrl, -5);
             if ($previous === 'login') {
                 $this->logger->info('User ' . $this->user->userName . ' logged in.', $this->user->getLogData());
             }

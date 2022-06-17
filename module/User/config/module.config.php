@@ -299,6 +299,14 @@ return [
             Controller\WidgetController::class   => AppControllerFactory::class,
         ],
     ],
+    'controller_plugins' => [
+        'aliases' => [
+            'isAllowed' => Controller\Plugin\Acl::class,
+        ],
+        'factories' => [
+            Controller\Plugin\Acl::class => Controller\Plugin\Factory\AclFactory::class,
+        ]
+    ],
     'model_manager'   => [
         'factories' => [
             Model\Users::class      => Model\Factory\UsersFactory::class,
@@ -332,11 +340,14 @@ return [
     ],
     'view_helpers'    => [
         'aliases'   => [
+            'acl'             => View\Helper\Acl::class,
+            'isAllowed'       => View\Helper\Acl::class,
             'aclawarecontrol' => View\Helper\AclAwareControl::class,
             'aclAwareControl' => View\Helper\AclAwareControl::class,
             'aclControl'      => View\Helper\AclAwareControl::class,
         ],
         'factories' => [
+            View\Helper\Acl::class             => View\Helper\Factory\AclFactory::class,
             View\Helper\AclAwareControl::class => View\Helper\Factory\AclAwareControlFactory::class,
         ],
     ],

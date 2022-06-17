@@ -83,7 +83,7 @@ class AdminListener extends AbstractListenerAggregate
             $message = $th->getMessage();
             $logger->log(Logger::ERR, $message, $user->getLogData());
             $controller->flashMessenger()->addErrorMessage($message);
-            $controller->redirect()->toRoute('home');
+            $controller->redirectPrev();
         }
     }
 
