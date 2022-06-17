@@ -13,7 +13,7 @@ use User\Model\Users;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
-class LayoutVariablesListener extends AbstractListenerAggregate
+final class LayoutVariablesListener extends AbstractListenerAggregate
 {
     /** @var PermissionsManager $acl */
     protected $acl;
@@ -28,10 +28,8 @@ class LayoutVariablesListener extends AbstractListenerAggregate
     /** @return void */
     public function __construct(
         AuthenticationService $authService,
-        ModelManager $modelManager,
-        PermissionsManager $acl
+        ModelManager $modelManager
     ) {
-        $this->acl          = $acl;
         $this->authService  = $authService;
         $this->modelManager = $modelManager;
         $this->appSettings  = $this->modelManager->get(Settings::class);
@@ -68,10 +66,10 @@ class LayoutVariablesListener extends AbstractListenerAggregate
 
         // Change template
         $layoutViewModel->setVariables([
-            'acl'         => $this->acl,
             'appSettings' => $this->appSettings,
             'authService' => $this->authService,
             'user'        => $this->user,
+            'renderPage'  => false,
         ]);
     }
 }

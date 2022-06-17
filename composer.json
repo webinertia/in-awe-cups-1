@@ -33,8 +33,9 @@
 		"laminas/laminas-captcha": "^2.11",
 		"laminas/laminas-paginator": "^2.12",
 		"laminas/laminas-paginator-adapter-laminasdb": "^1.2",
-		"webinertia/webinertia-modelmanager": "^0.0.6-alpha",
-		"laminas/laminas-authentication": "2.10.1"
+		"webinertia/webinertia-modelmanager": "0.0.7",
+		"laminas/laminas-authentication": "2.10.1",
+		"webinertia/webinertia-utils": "0.0.2"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -76,7 +77,7 @@
 	},
 	"require-dev" : {
 		"laminas/laminas-test" : "^3.4.2",
-		"laminas/laminas-developer-tools" : "^2.1",
+		"laminas/laminas-developer-tools" : "2.3.0",
 		"squizlabs/php_codesniffer": "^3.6",
 		"laminas/laminas-coding-standard": "^2.3",
 		"rafalli/bjy-profiler": "^1.3"

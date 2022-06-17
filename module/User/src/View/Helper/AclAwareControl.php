@@ -8,9 +8,9 @@ use Laminas\Permissions\Acl\AclInterface;
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\View\Helper\TranslatorAwareTrait;
 use Laminas\View\Renderer\PhpRenderer;
-use User\Model\Users;
+use User\Model\Users as User;
 
-class UserAwareControl extends AbstractHelper
+class AclAwareControl extends AbstractHelper
 {
     use TranslatorAwareTrait;
 
@@ -40,14 +40,41 @@ class UserAwareControl extends AbstractHelper
     private $buttonOptionsConfigKey = 'button_options';
     /** @var User\Model\User|User\Model\Guest $user */
     protected $user;
+    public function __construct(AclInterface $acl)
+    {
+        $this->acl = $acl;
+    }
+
     /**
-     * @param mixed $resource
-     * @param mixed $url
+     * @param string $resource
+     * @param string $privilege
+     * @param string $type
+     * @param string $url
+     * @param array $options
+     */
+    public function __invoke(User $user, $resource, $privilege, $type, $url, $options = []): string
+    {
+        $this->user      = $user;
+        $this->resource  = $resource;
+        $this->privilege = $privilege;
+        $this->type      = $type;
+        $this->url       = $url;
+        $this->options   = $options;
+        if (! $this->acl->isAllowed($user, $resource, $privilege)) {
+            return '';
+        }
+        return $this->buildControl($resource, $privilege, $type, $url, $options);
+    }
+
+    /**
+     * @param string $resource
+     * @param string $privilege
+     * @param string $url
      * @param string $type
      * @param null|array $options
      * @return string|void
      */
-    public function buildControl($resource, $url, $type = 'button', ?array $options = []): string
+    public function buildControl($resource, $privilege, $type, $url, $options = []): string
     {
         $translator = $this->getTranslator();
         $html       = '';
@@ -65,23 +92,10 @@ class UserAwareControl extends AbstractHelper
              */
             $html .= '<a class="' . $this->buttonClass . '"';
             $html .= 'href="' . $url . '" role="button">' . $translator->translate($this->options['link_text']) . '</a>';
-            return $html;
+            //return $html;
         }
         $html .= '<svg class="' . $this->svgClass;
         return $html;
-    }
-
-    /**
-     * @param string $resource
-     * @param string $type
-     * @param string $url
-     * @param array $options
-     */
-    public function __invoke(Users $user, AclInterface $acl, $resource, $type, $url, $options = []): string
-    {
-        $this->user = $user;
-        $this->acl  = $acl;
-        return $this->buildControl($resource, $type, $url, $options);
     }
 
     public function getIconPath(): string

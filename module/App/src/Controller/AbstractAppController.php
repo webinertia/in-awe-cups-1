@@ -12,6 +12,7 @@ use Laminas\Form\FormElementManager;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Log\Logger;
 use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
 use User\Model\Users as User;
@@ -84,12 +85,10 @@ abstract class AbstractAppController extends AbstractActionController
         ?FormElementManager $formManager = null,
         ?Logger $logger = null,
         ?ModelManager $modelManager = null,
-        ?PermissionsManager $acl = null,
         ?Settings $appSettings = null,
         ?User $user = null,
         ?Email $emailService = null
     ) {
-        $this->acl          = $acl;
         $this->appSettings  = $appSettings;
         $this->authService  = $authService;
         $this->config       = $config;
@@ -99,7 +98,6 @@ abstract class AbstractAppController extends AbstractActionController
         $this->modelManager = $modelManager;
         $this->user         = $user;
         $this->view         = new ViewModel();
-        $this->referringUrl = $request->getServer()->get('HTTP_REFERER');
         $this->baseUrl      = $request->getBasePath();
         $this->basePath     = dirname(__DIR__, 4);
         $this->usrModel     = $this->modelManager->get(User::class);
@@ -121,7 +119,6 @@ abstract class AbstractAppController extends AbstractActionController
         $this->view->setVariables([
             'appSettings' => $this->appSettings,
             'user'        => $this->user,
-            'acl'         => $this->acl,
             'auth'        => $this->authService,
         ]);
         $this->init($container);
@@ -132,6 +129,8 @@ abstract class AbstractAppController extends AbstractActionController
      */
     public function init(ContainerInterface $container): self
     {
+        $this->sessionContainer = $container->get(Container::class);
+        $this->referringUrl     = $this->sessionContainer->prevUrl;
         return $this;
     }
 }

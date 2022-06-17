@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-if ($this->acl->isAllowed($this->user, 'admin', 'admin.add.setting')) :
+if ($this->isAllowed($this->user, 'admin', 'admin.add.setting')) :
     ?>
 <span>
 <a href="<?= $this->url('app.admin.add.setting') ?>" class="btn btn-primary" role="button">Add New Setting</a>

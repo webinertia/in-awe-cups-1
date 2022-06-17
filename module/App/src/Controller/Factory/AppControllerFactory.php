@@ -16,7 +16,6 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
 use Psr\Container\ContainerInterface;
 use User\Model\Users as User;
-use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
 class AppControllerFactory implements FactoryInterface
@@ -38,7 +37,6 @@ class AppControllerFactory implements FactoryInterface
             $container->get(FormElementManager::class),
             $container->get(Logger::class),
             $container->get(ModelManager::class),
-            $container->get(PermissionsManager::class),
             $container->get(ModelManager::class)->get(Settings::class),
             $container->get(ModelManager::class)->build(User::class),
             $container->get(Email::class)

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c26887e5ccb64795416a3503d1ace93b",
+    "content-hash": "9839d6b6b524fb5126c7aad8a9ff3602",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -3310,16 +3310,16 @@
         },
         {
             "name": "laminas/laminas-servicemanager",
-            "version": "3.11.2",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-servicemanager.git",
-                "reference": "8a1f4d53ec93b2e18174f6f186922ef44d11a75a"
+                "reference": "05ac4b1fb1fe9333313eeafced9b6c7946589487"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-servicemanager/zipball/8a1f4d53ec93b2e18174f6f186922ef44d11a75a",
-                "reference": "8a1f4d53ec93b2e18174f6f186922ef44d11a75a",
+                "url": "https://api.github.com/repos/laminas/laminas-servicemanager/zipball/05ac4b1fb1fe9333313eeafced9b6c7946589487",
+                "reference": "05ac4b1fb1fe9333313eeafced9b6c7946589487",
                 "shasum": ""
             },
             "require": {
@@ -3397,7 +3397,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-04-07T17:21:25+00:00"
+            "time": "2022-06-13T16:20:56+00:00"
         },
         {
             "name": "laminas/laminas-session",
@@ -5741,16 +5741,16 @@
         },
         {
             "name": "webinertia/webinertia-modelmanager",
-            "version": "0.0.6-alpha",
+            "version": "0.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webinertia/modelmanager.git",
-                "reference": "be193a69f06020869bfdc6dcccb754daed393fe4"
+                "reference": "7548f730087c1439cf18e63a014e73872e51560b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/be193a69f06020869bfdc6dcccb754daed393fe4",
-                "reference": "be193a69f06020869bfdc6dcccb754daed393fe4",
+                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/7548f730087c1439cf18e63a014e73872e51560b",
+                "reference": "7548f730087c1439cf18e63a014e73872e51560b",
                 "shasum": ""
             },
             "require": {
@@ -5796,7 +5796,59 @@
                 "issues": "https://github.com/webinertia/modelmanager/issues",
                 "source": "https://github.com/webinertia/modelmanager"
             },
-            "time": "2022-04-28T20:50:47+00:00"
+            "time": "2022-06-16T21:54:13+00:00"
+        },
+        {
+            "name": "webinertia/webinertia-utils",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webinertia/utils.git",
+                "reference": "7bcfb41afdd34b6f959dad8a253c2032e0882592"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webinertia/utils/zipball/7bcfb41afdd34b6f959dad8a253c2032e0882592",
+                "reference": "7bcfb41afdd34b6f959dad8a253c2032e0882592",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-component-installer": "^2.6",
+                "laminas/laminas-servicemanager": "^3.11.1",
+                "php": "^7.3 || ~8.0.0"
+            },
+            "suggest": {
+                "laminas/laminas-component-installer": "^2.6, required for configuration injection"
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Webinertia\\Utils",
+                    "config-provider": "Webinertia\\Utils\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webinertia\\Utils\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Webinertia Org Utilities",
+            "homepage": "https://github.com/webinertia",
+            "keywords": [
+                "utils",
+                "webinertia"
+            ],
+            "support": {
+                "chat": "https://github.com/webinertia/modelmanager/discussions",
+                "docs": "https://github.com/webinertia/modelmanager/wiki",
+                "issues": "https://github.com/webinertia/modelmanager/issues",
+                "source": "https://github.com/webinertia/modelmanager"
+            },
+            "time": "2022-06-16T19:29:58+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -8632,9 +8684,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "webinertia/webinertia-modelmanager": 15
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

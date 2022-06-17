@@ -50,7 +50,7 @@ final class UserController extends AbstractAppController
 
     public function loginAction(): ViewModel
     {
-        $form = ($this->sm->get(FormElementManager::class))->get(LoginForm::class);
+        $form = $this->formManager->get(LoginForm::class);
         if (! $this->request->isPost()) {
             $this->view->setVariable('form', $form);
             return $this->view;

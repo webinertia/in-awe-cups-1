@@ -30,7 +30,7 @@ final class AccountController extends AbstractAppController
             // if they can not edit the user there is no point in preceeding
             // fetch the user data
             $user = $this->usrModel->fetchByColumn('userName', $userName);
-            if (! $this->acl->isAllowed($this->user, $user, $this->action)) {
+            if (! $this->isAllowed($this->user, $user, $this->action)) {
                 $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit users');
                 $this->redirect()->toRoute('home');
             }
@@ -85,7 +85,7 @@ final class AccountController extends AbstractAppController
             $userName    = $this->params()->fromRoute('userName');
             $user        = $this->usrModel->fetchByColumn('userName', $userName);
             $deletedUser = $user->toArray();
-            if ($this->acl->isAllowed($this->user, $user, $this->action)) {
+            if ($this->isAllowed($this->user, $user, $this->action)) {
                 $result = $user->delete();
                 if ($result > 0) {
                     $this->logger->info(
@@ -101,6 +101,8 @@ final class AccountController extends AbstractAppController
                 }
             } else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->response->setStatusCode('403');
+                $this->redirectPrev();
             }
         } catch (RuntimeException $e) {
             $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
+use App\Form\FormInterface;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Form\Exception\InvalidElementException;
@@ -13,12 +14,14 @@ use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
 use Laminas\ServiceManager\Exception\CyclicAliasException;
 use Laminas\ServiceManager\Exception\InvalidServiceException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use User\Form\ProfileForm;
 use User\Model\Users;
 
+use function array_merge;
 use function array_merge_recursive;
 use function substr;
 
@@ -43,7 +46,9 @@ final class ProfileController extends AbstractAppController
         if (! $this->authService->hasIdentity()) {
             $this->redirect()->toRoute('user/account', ['action' => 'login']);
         }
-        $this->form = $this->formManager->get(ProfileForm::class);
+        $this->usrModel         = $this->modelManager->get(Users::class);
+        $this->form             = $this->formManager->get(ProfileForm::class);
+        $this->sessionContainer = $container->get(Container::class);
         return $this;
     }
 
@@ -57,7 +62,7 @@ final class ProfileController extends AbstractAppController
             );
             $profileData           = $this->usrModel->fetchByColumn('userName', $requestedUser->userName);
             $profileData->userName = $requestedUser->userName;
-            $previous              = substr($this->referringUrl, -5);
+            $previous              = substr($this->sessionContainer->prevUrl, -5);
             if ($previous === 'login') {
                 $this->logger->info('User ' . $this->user->userName . ' logged in.', $this->user->getLogData());
             }
@@ -70,9 +75,13 @@ final class ProfileController extends AbstractAppController
 
     public function editProfileAction(): mixed
     {
-        $userName = $this->params()->fromRoute('userName');
-        $user     = $this->usrModel->fetchByColumn('userName', $this->params()->fromRoute('userName'));
+        $this->form = $this->formManager->build(ProfileForm::class, ['mode' => FormInterface::EDIT_MODE]);
+        $userName   = $this->params()->fromRoute('userName');
+        $user       = $this->usrModel->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         if (! $this->request->isPost()) {
+            foreach ($this->form->getFieldsets() as $fieldset) {
+                $fieldset->populateValues($user->getArrayCopy());
+            }
             return [
                 'form' => $this->form,
             ];
@@ -84,12 +93,9 @@ final class ProfileController extends AbstractAppController
                 $this->request->getFiles()->toArray()
             );
             unset($merged['submit']);
-            /**
-             * setting this data should hydrate the bound $profile rowgateway object
-             */
             $this->form->setData($merged);
             if ($this->form->isValid()) {
-                $profile    = $this->form->getData();
+                $data       = $this->form->getData();
                 $fileFilter = new RenameUpload();
                 // set it to randomize the file name
                 $fileFilter->setRandomize(true);
@@ -98,13 +104,17 @@ final class ProfileController extends AbstractAppController
                 // maintain the original file extension
                 $fileFilter->setUseUploadExtension(true);
                 // perform the move and rename on the file
-                $filtered       = $fileFilter->filter($profile->profileImage);
+                $filtered       = $fileFilter->filter($data['profile-data']['profileImage']);
                 $baseNameFilter = new BaseName();
                 // grab just the file name so it can be stored in the profile table
-                $baseName              = $baseNameFilter->filter($filtered['tmp_name']);
-                $profile->profileImage = $baseName;
+                $baseName                             = $baseNameFilter->filter($filtered['tmp_name']);
+                $data['profile-data']['profileImage'] = $baseName;
                 try {
-                    $result = $this->profileTable->update($profile->toArray(), ['userId' => $profile->userId]);
+                    //$result = $user->update($profile->toArray(), ['userId' => $profile->userId]);
+                    $this->usrModel->exchangeArray(
+                        array_merge($data['acct-data'], $data['profile-data'], $data['role-data'])
+                    );
+                    $result = $this->usrModel->update($this->usrModel);
                 } catch (RuntimeException $e) {
                     echo $e->getMessage();
                 }

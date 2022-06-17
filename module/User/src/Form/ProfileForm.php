@@ -16,7 +16,5 @@ class ProfileForm extends UserForm
         $factory = $this->getFormFactory();
         $manager = $factory->getFormElementManager();
         $this->remove('password-data');
-        $uploader = $manager->build(UploaderAwareFieldset::class, $options);
-        $this->add($uploader);
     }
 }

@@ -21,5 +21,6 @@ declare(strict_types=1);
 return [
     'view_manager' => [
         'display_exceptions' => true,
+        'not_found_template' => 'error/404-dev',
     ],
 ];

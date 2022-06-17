@@ -4,11 +4,26 @@ declare(strict_types=1);
 
 use Laminas\View\Renderer\PhpRenderer;
 /** @var PhpRenderer $this */
-
-$container = $this->navigation()->getContainer();
-$page = $container->findOneBy('title', $this->params['title']);
-if(!empty($page)) :
+$this->headMeta()->prependName('keywords', $this->title . ', ' . $this->appSettings->seo->key_words);
+$this->headTitle($page->label);
+$container = $this->navigation('default')->getContainer();
+$page = $container->findOneBy('title', $this->title);
+$status = $page->isActive();
+$this->headTitle($page->label);
 ?>
-<?=$page->content;?>
-<?php
-endif;
+<div class="jumbotron">
+    <div class="card-deck">
+        <div class="card">
+            <h5 class="card-header"><?=$page->label?></h5>
+            <div class="card-body">
+                <?php
+                if(!empty($page)) :
+                ?>
+                    <?=$page->content;?>
+                <?php
+                endif;
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

@@ -107,7 +107,7 @@ class TableGatewayAdapter extends AbstractAdapter
                 $this->table->insert($data);
                 $module   = $this->module;
                 $baseName = $this->baseName;
-                $params   = compact('module', 'baseName');
+                $params   = [$module, $baseName];
                 $this->getEventManager()->trigger(__FUNCTION__, $this, $params);
             } catch (Throwable $th) {
                 $this->logger->log(Logger::ERR, $th->getMessage());

@@ -8,11 +8,11 @@ use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
 use App\Model\Settings;
 use App\Model\Theme;
-use ContentManager\Model\Pages;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Http\PhpEnvironment\Request as PhpRequest;
 use Laminas\I18n\ConfigProvider;
 use Laminas\Log\Filter\Priority;
 use Laminas\Log\Formatter\Db as DbFormatter;
@@ -20,10 +20,10 @@ use Laminas\Log\Logger;
 use Laminas\Log\Writer\Db as Dbwriter;
 use Laminas\Log\Writer\FirePhp;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Session\Container;
 use Laminas\Session\SaveHandler\DbTableGateway;
 use Laminas\Session\SaveHandler\DbTableGatewayOptions;
 use Laminas\Session\SessionManager;
-use Laminas\View\Helper\Navigation;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
@@ -53,14 +53,12 @@ final class Module
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
-        $this->bootstrapNavigation($e);
         $this->bootstrapTheme($e);
         $authService     = $sm->get(AuthenticationService::class);
         $permManager     = $sm->get(PermissionsManager::class);
         $layoutVariables = new LayoutVariablesListener(
             $authService,
-            $this->modelManager,
-            $permManager
+            $this->modelManager
         );
         $layoutVariables->attach($eventManager);
         $adminListener = new AdminListener(
@@ -74,8 +72,9 @@ final class Module
 
     public function boostrapSessions(MvcEvent $e): void
     {
-        $sm        = $e->getApplication()->getServiceManager();
-        $config    = $sm->get('Config');
+        $sm     = $e->getApplication()->getServiceManager();
+        $config = $sm->get('Config');
+        // db options
         $dbOptions = [
             'idColumn'       => 'id',
             'nameColumn'     => 'name',
@@ -83,9 +82,6 @@ final class Module
             'lifetimeColumn' => 'lifetime',
             'dataColumn'     => 'data',
         ];
-        /**
-         * @var SessionManager $sessionManager
-         */
         $sessionManager = $sm->get(SessionManager::class);
         $saveHandler    = new DbTableGateway(
             new TableGateway(
@@ -95,6 +91,10 @@ final class Module
             new DbTableGatewayOptions($dbOptions)
         );
         $sessionManager->setSaveHandler($saveHandler);
+        $container          = $sm->get(Container::class);
+        $phpRequest         = $sm->get(PhpRequest::class);
+        $container->url     = $phpRequest->getServer()->get('REQUEST_URI');
+        $container->prevUrl = $phpRequest->getServer()->get('HTTP_REFERER');
     }
 
     public function boostrapTranslation(MvcEvent $e): void
@@ -125,7 +125,7 @@ final class Module
             /**
              * @var $renderer \Laminas\View\Renderer\PhpRenderer
              */
-            $renderer = $sm->get('ViewRenderer');
+            $renderer = $sm->get(PhpRenderer::class);
             // attach the Il8n standard helpers for translation
             $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
         }
@@ -153,20 +153,9 @@ final class Module
         $dbFormatter->setDateTimeFormat($settings->timeFormat);
         $writer->setFormatter($dbFormatter);
         $logger->addWriter($writer);
-        if ($settings->enable_error_log) {
+        if ($settings->server->enable_error_log) {
             Logger::registerErrorHandler($logger);
         }
-    }
-
-    public function bootstrapNavigation(MvcEvent $e): void
-    {
-        $sm           = $e->getApplication()->getServiceManager();
-        $vhm          = $sm->get(PhpRenderer::class)->getHelperPluginManager();
-        $modelManager = $sm->get(ModelManager::class);
-        $navigation   = $vhm->get(Navigation::class);
-        $navContainer = $navigation('Laminas\Navigation\Default');
-        $menu         = $modelManager->get(Pages::class)->fetchMenu();
-        $navContainer->addPages($menu);
     }
 
     /** DO NOT MODIFY THIS METHOD */

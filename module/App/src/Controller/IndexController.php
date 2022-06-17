@@ -42,15 +42,4 @@ final class IndexController extends AbstractAppController
         $this->view->setVariable('form', $this->form);
         return $this->view;
     }
-
-    /**
-     * This needs moved into a proper implementation like the not found action
-     *
-     * @throws InvalidArgumentException
-     */
-    public function forbiddenAction(): ViewModel
-    {
-        $this->response->setStatusCode(403);
-        return $this->view;
-    }
 }

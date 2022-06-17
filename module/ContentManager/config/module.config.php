@@ -13,6 +13,8 @@ use ContentManager\Form\PageForm;
 use ContentManager\Form\Factory\PageFormFactory;
 use ContentManager\Model\Factory\PagesFactory;
 use ContentManager\Model\Pages;
+use ContentManager\Navigation\Service\DefaultNavigationFactory;
+use Laminas\Navigation\Navigation;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 
@@ -22,39 +24,17 @@ return [
     ],
     'router' => [
         'routes' => [
-            'content' => [
-                'type' => Placeholder::class,
+            'page' => [
+                'type' => Segment::class,
                 'may_terminate' => true,
-                'child_routes' => [
-                    'category' => [
-                        'type' => Segment::class,
-                        'may_terminate' => true,
-                        'options' => [
-                            'route' => '[/:parentTitle]',
-                            'constraints' => [
-                                'parentTitle' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                            'defaults' => [
-                                'controller' => ContentController::class,
-                                'action'     => 'page',
-                            ],
-                        ],
+                'options' => [
+                    'route' => '[/:title]',
+                    'constraints' => [
+                        'title'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
-                    'page' => [
-                        'type' => Segment::class,
-                        'may_terminate' => true,
-                        'options' => [
-                            'route' => '[/:parentTitle[/:title[/:page]]]',
-                            'constraints' => [
-                                'parentTitle'    => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'title'    => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'page'    => '[0-9]',
-                            ],
-                            'defaults' => [
-                                'controller' => ContentController::class,
-                                'action'     => 'page',
-                            ],
-                        ],
+                    'defaults' => [
+                        'controller' => ContentController::class,
+                        'action'     => 'page',
                     ],
                 ],
             ],
@@ -127,6 +107,14 @@ return [
                     ],
                 ],
             ],
+        ],
+    ],
+    'service_manager' => [
+        'aliases' => [
+            'navigation' => Navigation::class,
+        ],
+        'factories' => [
+            Navigation::class => DefaultNavigationFactory::class,
         ],
     ],
 ];

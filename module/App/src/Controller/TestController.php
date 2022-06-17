@@ -21,6 +21,7 @@ final class TestController extends AbstractAppController
 
     public function indexAction(): ViewModel
     {
+        $this->response->setStatusCode(500);
         $ident      = $this->authService->getIdentity();
         $this->form = $this->formManager->get(UserForm::class);
         if ($this->request->isPost()) {
@@ -32,6 +33,7 @@ final class TestController extends AbstractAppController
         }
         $this->form->addSubmit();
         $this->view->setVariable('form', $this->form);
+        $this->redirectPrev();
         return $this->view;
     }
 }

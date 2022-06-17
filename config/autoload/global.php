@@ -14,6 +14,7 @@
 
 declare(strict_types=1);
 
+use Laminas\Session\Container;
 use Laminas\Session\Storage\SessionArrayStorage;
 use Laminas\Session\Validator\HttpUserAgent;
 use Laminas\Session\Validator\RemoteAddr;
@@ -32,6 +33,9 @@ return [
         'cookie_httponly'     => true,
         'cookie_samesite'     => 'Strict',
         'cookie_secure'       => true,
+    ],
+    'session_containers' => [
+        Container::class,
     ],
     'session_storage'    => [
         'type' => SessionArrayStorage::class,

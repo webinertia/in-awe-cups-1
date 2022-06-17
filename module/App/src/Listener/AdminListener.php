@@ -8,10 +8,13 @@ use App\Controller\AdminControllerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
+use Laminas\Log\Logger;
 use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Resolver\TemplateMapResolver;
+use Throwable;
 use User\Model\Users;
+use User\Permissions\Exception\PrivilegeException;
 use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
@@ -49,7 +52,9 @@ class AdminListener extends AbstractListenerAggregate
     {
         // Get and check the route match object
         $routeMatch        = $event->getRouteMatch();
-        $controllerManager = $event->getApplication()->getServiceManager()->get(ControllerManager::class);
+        $sm                = $event->getApplication()->getServiceManager();
+        $controllerManager = $sm->get(ControllerManager::class);
+        $logger            = $sm->get(Logger::class);
         // Get and check the parameter for current controller
         $controller = $routeMatch->getParam('controller');
         $controller = $controllerManager->get($controller);
@@ -70,9 +75,15 @@ class AdminListener extends AbstractListenerAggregate
                 $user->exchangeArray($user->fetchGuestContext());
                 break;
         }
-        if (! $this->acl->isAllowed($user, 'admin', 'admin.access')) {
-            $controller->flashMessenger()->addErrorMessage('The requested action was forbidden');
-            $controller->redirect()->toRoute('home');
+        try {
+            if (! $this->acl->isAllowed($user, 'admin', 'admin.access')) {
+                throw new PrivilegeException('You have insufficient privileges to complete request');
+            }
+        } catch (Throwable $th) {
+            $message = $th->getMessage();
+            $logger->log(Logger::ERR, $message, $user->getLogData());
+            $controller->flashMessenger()->addErrorMessage($message);
+            $controller->redirectPrev();
         }
     }
 
