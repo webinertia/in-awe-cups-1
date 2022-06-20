@@ -30,14 +30,8 @@ class AdminListener extends AbstractListenerAggregate
     private $templateMapResolver;
     /** @return void */
     public function __construct(
-        PermissionsManager $acl,
-        AuthenticationService $authService,
-        ModelManager $modelManager,
         TemplateMapResolver $templateMapResolver
     ) {
-        $this->acl                 = $acl;
-        $this->authService         = $authService;
-        $this->modelManager        = $modelManager;
         $this->templateMapResolver = $templateMapResolver;
     }
 
@@ -61,22 +55,9 @@ class AdminListener extends AbstractListenerAggregate
         if (! $controller instanceof AdminControllerInterface) {
             return;
         }
-        $user = $this->modelManager->get(Users::class);
-        switch ($this->authService->hasIdentity()) {
-            case true:
-                $user = $user->fetchColumns(
-                    'userName',
-                    $this->authService->getIdentity(),
-                    $user->getContextColumns()
-                );
-                break;
-            case false:
-            default:
-                $user->exchangeArray($user->fetchGuestContext());
-                break;
-        }
+        $user = $controller->loadUser();
         try {
-            if (! $this->acl->isAllowed($user, 'admin', 'admin.access')) {
+            if (! $controller->isAllowed('admin', 'admin.access')) {
                 throw new PrivilegeException('You have insufficient privileges to complete request');
             }
         } catch (Throwable $th) {

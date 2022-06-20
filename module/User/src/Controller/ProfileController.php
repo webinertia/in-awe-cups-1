@@ -8,12 +8,8 @@ use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
-use Laminas\Form\Exception\InvalidElementException;
 use Laminas\Mvc\Exception\DomainException;
-use Laminas\ServiceManager\Exception\ContainerModificationsNotAllowedException;
-use Laminas\ServiceManager\Exception\CyclicAliasException;
-use Laminas\ServiceManager\Exception\InvalidServiceException;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\Mvc\MvcEvent;
 use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
@@ -23,7 +19,6 @@ use User\Model\Users;
 
 use function array_merge;
 use function array_merge_recursive;
-use function substr;
 
 final class ProfileController extends AbstractAppController
 {
@@ -32,21 +27,20 @@ final class ProfileController extends AbstractAppController
     /** @var ProfileForm $form */
     protected $form;
     /**
-     * @param ContainerInterface $container
-     * @return ProfileController
+     * @return mixed
      * @throws DomainException
-     * @throws InvalidElementException
-     * @throws ContainerModificationsNotAllowedException
-     * @throws CyclicAliasException
-     * @throws ServiceNotFoundException
-     * @throws InvalidServiceException
      */
-    public function init($container): self
+    public function onDispatch(MvcEvent $e)
     {
         if (! $this->authService->hasIdentity()) {
-            $this->redirect()->toRoute('user/account', ['action' => 'login']);
+            $this->redirect()->toRoute('user/login');
         }
-        $this->usrModel         = $this->modelManager->get(Users::class);
+        return parent::onDispatch($e);
+    }
+
+    /** @param ContainerInterface $container */
+    public function init($container): self
+    {
         $this->form             = $this->formManager->get(ProfileForm::class);
         $this->sessionContainer = $container->get(Container::class);
         return $this;
@@ -55,16 +49,12 @@ final class ProfileController extends AbstractAppController
     public function viewAction(): ViewModel
     {
         try {
-            $userName              = $this->params()->fromRoute('userName');
-            $requestedUser         = $this->usrModel->fetchByColumn(
-                'userName',
-                ! empty($userName) ? $userName : $this->user->userName
-            );
-            $profileData           = $this->usrModel->fetchByColumn('userName', $requestedUser->userName);
-            $profileData->userName = $requestedUser->userName;
-            $previous              = substr($this->sessionContainer->prevUrl, -5);
-            if ($previous === 'login') {
-                $this->logger->info('User ' . $this->user->userName . ' logged in.', $this->user->getLogData());
+            $user     = $this->loadUser();
+            $userName = $this->params()->fromRoute('userName', $user->userName);
+            if ($userName === $user->userName) {
+                $profileData = $user;
+            } else {
+                $profileData = $this->usrModel->fetchByColumn('userName', $userName);
             }
             $this->view->setVariable('data', $profileData);
             return $this->view;

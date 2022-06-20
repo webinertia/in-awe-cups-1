@@ -86,7 +86,6 @@ abstract class AbstractAppController extends AbstractActionController
         ?Logger $logger = null,
         ?ModelManager $modelManager = null,
         ?Settings $appSettings = null,
-        ?User $user = null,
         ?Email $emailService = null
     ) {
         $this->appSettings  = $appSettings;
@@ -96,29 +95,13 @@ abstract class AbstractAppController extends AbstractActionController
         $this->formManager  = $formManager;
         $this->logger       = $logger;
         $this->modelManager = $modelManager;
-        $this->user         = $user;
         $this->view         = new ViewModel();
         $this->baseUrl      = $request->getBasePath();
         $this->basePath     = dirname(__DIR__, 4);
         $this->usrModel     = $this->modelManager->get(User::class);
 
-        switch ($this->authService->hasIdentity()) {
-            case true:
-                $this->user = $this->user->fetchColumns(
-                    'userName',
-                    $this->authService->getIdentity(),
-                    $this->user->getContextColumns()
-                );
-                break;
-            case false:
-            default:
-                $this->user->exchangeArray($this->user->fetchGuestContext());
-                break;
-        }
-
         $this->view->setVariables([
             'appSettings' => $this->appSettings,
-            'user'        => $this->user,
             'auth'        => $this->authService,
         ]);
         $this->init($container);

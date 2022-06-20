@@ -6,6 +6,7 @@ namespace App;
 
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
+use App\Listener\ThemeLoader;
 use App\Model\Settings;
 use App\Model\Theme;
 use Laminas\Authentication\AuthenticationService;
@@ -27,7 +28,7 @@ use Laminas\Session\SessionManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
-use User\Permissions\PermissionsManager;
+use User\Service\UserInterface;
 use Webinertia\ModelManager\ModelManager;
 
 use function date_default_timezone_set;
@@ -53,20 +54,14 @@ final class Module
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
-        $this->bootstrapTheme($e);
-        $authService     = $sm->get(AuthenticationService::class);
-        $permManager     = $sm->get(PermissionsManager::class);
+        $themeLoader = new ThemeLoader($this->modelManager->get(Theme::class), $sm->get(TemplatePathStack::class));
+        $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener(
-            $authService,
-            $this->modelManager
+            $sm->get(UserInterface::class),
+            $this->modelManager->get(Settings::class)
         );
         $layoutVariables->attach($eventManager);
-        $adminListener = new AdminListener(
-            $permManager,
-            $authService,
-            $this->modelManager,
-            $sm->get(TemplateMapResolver::class)
-        );
+        $adminListener = new AdminListener($sm->get(TemplateMapResolver::class));
         $adminListener->attach($eventManager);
     }
 
@@ -93,7 +88,6 @@ final class Module
         $sessionManager->setSaveHandler($saveHandler);
         $container          = $sm->get(Container::class);
         $phpRequest         = $sm->get(PhpRequest::class);
-        $container->url     = $phpRequest->getServer()->get('REQUEST_URI');
         $container->prevUrl = $phpRequest->getServer()->get('HTTP_REFERER');
     }
 
@@ -156,14 +150,5 @@ final class Module
         if ($settings->server->enable_error_log) {
             Logger::registerErrorHandler($logger);
         }
-    }
-
-    /** DO NOT MODIFY THIS METHOD */
-    public function bootstrapTheme(MvcEvent $e): void
-    {
-        $sm                = $e->getApplication()->getServiceManager();
-        $theme             = $sm->get(ModelManager::class)->get(Theme::class);
-        $templatePathStack = $sm->get(TemplatePathStack::class);
-        $templatePathStack->addPaths($theme->getThemePaths());
     }
 }

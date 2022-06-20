@@ -302,23 +302,27 @@ return [
     'controller_plugins' => [
         'aliases' => [
             'isAllowed' => Controller\Plugin\Acl::class,
+            'loadUser'  => Controller\Plugin\LoadUser::class,
         ],
         'factories' => [
-            Controller\Plugin\Acl::class => Controller\Plugin\Factory\AclFactory::class,
+            Controller\Plugin\Acl::class      => Controller\Plugin\Factory\AclFactory::class,
+            Controller\Plugin\LoadUser::class => Controller\Plugin\Factory\LoadUserFactory::class,
         ]
     ],
     'model_manager'   => [
         'factories' => [
-            Model\Users::class      => Model\Factory\UsersFactory::class,
-            Model\Roles::class      => Model\Factory\RolesFactory::class,
+            Model\Users::class => Model\Factory\UsersFactory::class,
+            Model\Roles::class => Model\Factory\RolesFactory::class,
         ],
     ],
     'service_manager' => [
         'aliases'   => [
+            Service\UserInterface::class => Service\UserService::class, // LoadUser controller plugin requires this alias
             AclInterface::class => PermissionsManager::class, // the navigation helper delegator relies on this alias
         ],
         'factories' => [
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
+            Service\UserService::class            => Service\Factory\UserServiceFactory::class,
         ],
     ],
     'filters'         => [
@@ -345,10 +349,12 @@ return [
             'aclawarecontrol' => View\Helper\AclAwareControl::class,
             'aclAwareControl' => View\Helper\AclAwareControl::class,
             'aclControl'      => View\Helper\AclAwareControl::class,
+            'identity'        => View\Helper\Identity::class,
         ],
         'factories' => [
             View\Helper\Acl::class             => View\Helper\Factory\AclFactory::class,
             View\Helper\AclAwareControl::class => View\Helper\Factory\AclAwareControlFactory::class,
+            View\Helper\Identity::class        => View\Helper\Factory\IdentityFactory::class,
         ],
     ],
     'view_manager'    => [

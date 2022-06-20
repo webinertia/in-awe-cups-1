@@ -38,7 +38,6 @@ class AppControllerFactory implements FactoryInterface
             $container->get(Logger::class),
             $container->get(ModelManager::class),
             $container->get(ModelManager::class)->get(Settings::class),
-            $container->get(ModelManager::class)->build(User::class),
             $container->get(Email::class)
         );
     }

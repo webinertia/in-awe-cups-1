@@ -8,3 +8,10 @@
 .navbar {
     background-color: var(--brand-color);
 }
+.img-xs {
+    width: 35px;
+    height: 35px;
+}
+.rounded-circle {
+    border-radius: 50% !important;
+}

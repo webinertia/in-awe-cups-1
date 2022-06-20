@@ -7,7 +7,7 @@ namespace User\View\Helper;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\View\Helper\AbstractHelper;
 
-class Acl extends AbstractHelper
+final class Acl extends AbstractHelper
 {
     /** @var AclInterface $acl */
     /** @return void */

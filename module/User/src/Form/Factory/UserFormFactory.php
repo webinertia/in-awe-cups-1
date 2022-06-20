@@ -6,11 +6,11 @@ namespace User\Form\Factory;
 
 use App\Model\Settings;
 use Laminas\Authentication\AuthenticationService;
+use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Form\UserForm;
-use User\Model\Users;
-use User\Permissions\PermissionsManager;
+use User\Service\UserInterface;
 use Webinertia\ModelManager\ModelManager;
 
 final class UserFormFactory implements FactoryInterface
@@ -23,16 +23,10 @@ final class UserFormFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, $options = []): UserForm
     {
         $modelManager = $container->get(ModelManager::class);
-        $usrModel     = $modelManager->get(Users::class);
         $auth         = $container->get(AuthenticationService::class);
-        $usrModel->exchangeArray(
-            $auth->hasIdentity() ?
-            $usrModel->fetchByColumn(self::IDENTITY, $auth->getIdentity())->toArray() : $usrModel->fetchGuestContext()
-        );
         return new $requestedName(
-            $auth,
-            $container->get(PermissionsManager::class),
-            $usrModel,
+            $container->get(AclInterface::class),
+            $container->get(UserInterface::class),
             $modelManager->get(Settings::class),
             $options
         );
