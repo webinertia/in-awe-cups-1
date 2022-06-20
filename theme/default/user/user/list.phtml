@@ -29,18 +29,35 @@ $this->headTitle($title);
                 <span class="header-text text-left float-left"><?=$listUser->firstName . '&nbsp;' . $listUser->lastName?></span>
                 <div class="toolbar float-right">
                     <?php
-                    if($this->isAllowed($this->user, $listUser, 'edit') && $listUser->id !== '1'):
+                    if($this->isAllowed($this->identity(), $listUser, 'edit') && $listUser->id !== '1'):
                     ?>
-                        <a class="mdi mdi-delete-forever text-danger" href="<?= $this->url('user/account/delete', ['userName' => $listUser->userName]); ?>"></a>
+                        <a class="mdi mdi-delete-forever text-danger align-middle" data-toggle="tooltip" title="Delete User" href="<?= $this->url('user/account/delete', ['userName' => $listUser->userName]); ?>"></a>
                     <?php
                     endif;
                     ?>
-                    <span class="mdi mdi-logout text-success"></span>
-                    <span class="mdi mdi-logout text-success"></span>
+                    <?php
+                    if($this->isAllowed($this->identity(), $listUser, 'edit')): ?>
+                        <a class="mdi mdi-account-edit text-success align-middle" data-toggle="tooltip" title="Edit User" href="<?=$this->url('user/account/edit', ['userName' => $listUser->userName]); ?>"></a>
+                    <?php
+                    endif; ?>
+                    <span> | </span>
+                    <?php
+                    if ($listUser->active) : ?>
+                        <span class="mdi mdi-check-circle text-success align-middle" data-toggle="tooltip" title="Active Account"></span>
+                    <?php
+                    endif;
+                    if ($listUser->verified) : ?>
+                         <span class="mdi mdi-check-decagram text-success align-middle" data-toggle="tooltip" title="Verified Account"></span>
+                    <?php
+                    endif; ?>
                 </div>
             </div>
             <div class="card-body">
+                <div class="text-center">
+                    <img class="img-fluid rounded-circle" src="/modules/user/profile/profileImages/<?=$listUser->profileImage ?? 'default-profile-picture.png';?>"/>
+                </div>
                 <p><?=$listUser->bio?></p>
+                <span class="regdate text-info"><?=$this->translate('Registered On') . ' ' . $listUser->regDate ?? '' ?></span>
             </div>
         </div>
         <?php

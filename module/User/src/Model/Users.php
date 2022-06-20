@@ -14,7 +14,6 @@ use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Throwable;
-use User\Model\Roles;
 use Webinertia\ModelManager\AbstractModel;
 use Webinertia\ModelManager\ModelTrait;
 
@@ -51,9 +50,9 @@ final class Users extends AbstractModel
             };
             $authAdapter = new AuthAdapter(
                 $this->db->getAdapter(),
-                $this->config->db->users_table_name,
-                $this->config->db->auth_identity_column,
-                $this->config->db->auth_credential_column,
+                $this->config->users_table_name,
+                $this->config->auth_identity_column,
+                $this->config->auth_credential_column,
                 $callback
             );
             $authAdapter->setIdentity($user->userName)
@@ -111,11 +110,11 @@ final class Users extends AbstractModel
 
         $select = new Select();
         $select
-            ->from($this->config->db->users_table_name)
-            ->where([$this->config->db->users_table_name . '.userName' => $userName])
+            ->from($this->config->users_table_name)
+            ->where([$this->config->users_table_name . '.userName' => $userName])
             ->join(
-                $this->config->db->user_roles_table_name,
-                $this->config->db->users_table_name . '.role =' . $this->config->db->user_roles_table_name . '.role'
+                $this->config->user_roles_table_name,
+                $this->config->users_table_name . '.role =' . $this->config->db->user_roles_table_name . '.role'
             )
             ->columns([
                 'id',
@@ -137,8 +136,8 @@ final class Users extends AbstractModel
                 'verified',
             ])
             ->order([
-                $this->config->db->user_roles_table_name . '.label ASC',
-                $this->config->db->users_table_name . '.regDate DSC',
+                $this->config->user_roles_table_name . '.label ASC',
+                $this->config->users_table_name . '.regDate DSC',
             ]);
         return $this->db->selectWith($select)->current();
     }
@@ -152,20 +151,14 @@ final class Users extends AbstractModel
     {
         $select = new Select();
         $select
-            ->from($this->config->db->user_roles_table_name)
-            ->join($this->config->db->users_table_name, $this->config->db->users_table_name . '.role =' . $this->config->db->user_roles_table_name . '.role')
+            ->from($this->config->user_roles_table_name)
+            ->join($this->config->users_table_name, $this->config->db->users_table_name . '.role =' . $this->config->db->user_roles_table_name . '.role')
             ->columns($this->userContext)
             ->order([
-                $this->config->db->user_roles_table_name . '.label ASC',
-                $this->config->db->users_table_name . '.regDate DSC',
+                $this->config->user_roles_table_name . '.label ASC',
+                $this->config->users_table_name . '.regDate DSC',
             ]);
         return $this->db->selectWith($select);
-    }
-
-    public function fetchRoleLabel(): object
-    {
-        $rModel = $this->modelManager->get(Roles::class);
-        return $rModel->fetchColumns('role', $this->offsetGet('role'), ['label']);
     }
 
     /** @return array */

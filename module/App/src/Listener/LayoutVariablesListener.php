@@ -9,14 +9,11 @@ use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\MvcEvent;
-use User\Model\Users;
-use User\Permissions\PermissionsManager;
+use User\Service\UserInterface;
 use Webinertia\ModelManager\ModelManager;
 
 final class LayoutVariablesListener extends AbstractListenerAggregate
 {
-    /** @var PermissionsManager $acl */
-    protected $acl;
     /** @var Settings $appSettings */
     protected $appSettings;
     /** @var AuthenticationService $authService */
@@ -26,27 +23,10 @@ final class LayoutVariablesListener extends AbstractListenerAggregate
     /** @var Users $user */
     protected $user;
     /** @return void */
-    public function __construct(
-        AuthenticationService $authService,
-        ModelManager $modelManager
-    ) {
-        $this->authService  = $authService;
-        $this->modelManager = $modelManager;
-        $this->appSettings  = $this->modelManager->get(Settings::class);
-        $this->user         = $this->modelManager->get(Users::class);
-        switch ($this->authService->hasIdentity()) {
-            case true:
-                $this->user = $this->user->fetchColumns(
-                    'userName',
-                    $this->authService->getIdentity(),
-                    $this->user->getContextColumns()
-                );
-                break;
-            case false:
-            default:
-                $this->user->exchangeArray($this->user->fetchGuestContext());
-                break;
-        }
+    public function __construct(UserInterface $userInterface, Settings $appSettings)
+    {
+        $this->user        = $userInterface;
+        $this->appSettings = $appSettings;
     }
 
     /** @param int $priority */
@@ -67,7 +47,6 @@ final class LayoutVariablesListener extends AbstractListenerAggregate
         // Change template
         $layoutViewModel->setVariables([
             'appSettings' => $this->appSettings,
-            'authService' => $this->authService,
             'user'        => $this->user,
             'renderPage'  => false,
         ]);

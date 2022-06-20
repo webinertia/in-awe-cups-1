@@ -17,21 +17,20 @@ use App\Form\FormInterface;
 use App\Model\Settings;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Form\Exception\InvalidArgumentException;
+use Laminas\Permissions\Acl\AclInterface;
 use User\Form\Fieldset\AcctDataFieldset;
 use User\Form\Fieldset\PasswordFieldset;
 use User\Form\Fieldset\ProfileFieldset;
 use User\Form\Fieldset\RoleFieldset;
-use User\Model\Users;
+use User\Service\UserInterface;
 use User\Permissions\PermissionsManager;
 
 class UserForm extends BaseForm
 {
-    /** @var AuthenticationService $auth */
-    protected $auth;
-    /** @var PermissionsManager $pm */
-    protected $pm;
-    /** @var User\Model\Users $usrModel */
-    protected $usrModel;
+    /** @var AclInterface $pm */
+    protected $acl;
+    /** @var UserInterface $userInterface */
+    protected $userInterface;
     /** @var Settings $appSettings */
     protected $appSettings;
     /** @var string $mode */
@@ -43,16 +42,14 @@ class UserForm extends BaseForm
      * @throws InvalidArgumentException
      */
     public function __construct(
-        AuthenticationService $auth,
-        PermissionsManager $pm,
-        Users $usrModel,
+        AclInterface $acl,
+        UserInterface $userInterface,
         Settings $appSettings,
         $options = []
     ) {
-        $this->auth        = $auth;
-        $this->pm          = $pm;
-        $this->usrModel    = $usrModel;
-        $this->appSettings = $appSettings;
+        $this->acl           = $acl;
+        $this->userInterface = $userInterface;
+        $this->appSettings   = $appSettings;
         parent::__construct('user-form');
         if (! empty($options) && isset($options['mode'])) {
             parent::setOptions($options);
@@ -73,7 +70,7 @@ class UserForm extends BaseForm
         $acctData = $manager->build(AcctDataFieldset::class, ['mode' => $options['mode']]);
         $this->add($acctData, ['priority' => 1]);
         // we will use this in both mode(s), but only if the user is already logged in and has privilege
-        if ($this->auth->hasIdentity() && $this->pm->isAllowed($this->usrModel, $this->usrModel, 'admin.access')) {
+        if ($this->acl->isAllowed($this->userInterface, $this->userInterface, 'admin.access')) {
             $this->add([
                 'type' => RoleFieldset::class,
             ]);

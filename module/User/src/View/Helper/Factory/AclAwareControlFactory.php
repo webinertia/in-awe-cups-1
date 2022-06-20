@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use User\Permissions\PermissionsManager;
 use User\View\Helper\AclAwareControl;
 
-class AclAwareControlFactory implements FactoryInterface
+final class AclAwareControlFactory implements FactoryInterface
 {
     /**
      * @param string $requestedName

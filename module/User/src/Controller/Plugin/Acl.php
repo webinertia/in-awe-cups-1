@@ -7,7 +7,7 @@ namespace User\Controller\Plugin;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Permissions\Acl\AclInterface;
 
-class Acl extends AbstractPlugin
+final class Acl extends AbstractPlugin
 {
     public function __construct(AclInterface $acl)
     {
@@ -19,8 +19,9 @@ class Acl extends AbstractPlugin
      * @param mixed $resource
      * @param mixed $privilege
      */
-    public function __invoke($role = null, $resource = null, $privilege = null): bool
+    public function __invoke($resource = null, $privilege = null): bool
     {
-        return $this->acl->isAllowed($role, $resource, $privilege);
+        $controller = $this->getController();
+        return $this->acl->isAllowed($controller->loadUser(), $resource, $privilege);
     }
 }

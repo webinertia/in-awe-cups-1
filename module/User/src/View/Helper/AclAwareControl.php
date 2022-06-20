@@ -10,7 +10,7 @@ use Laminas\View\Helper\TranslatorAwareTrait;
 use Laminas\View\Renderer\PhpRenderer;
 use User\Model\Users as User;
 
-class AclAwareControl extends AbstractHelper
+final class AclAwareControl extends AbstractHelper
 {
     use TranslatorAwareTrait;
 

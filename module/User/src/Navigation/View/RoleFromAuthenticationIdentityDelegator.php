@@ -11,8 +11,7 @@ namespace User\Navigation\View;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\View\Helper\Navigation\AbstractHelper;
 use Psr\Container\ContainerInterface;
-use User\Model\Users;
-use Webinertia\ModelManager\ModelManager;
+use User\Service\UserInterface;
 
 class RoleFromAuthenticationIdentityDelegator
 {
@@ -61,21 +60,7 @@ class RoleFromAuthenticationIdentityDelegator
         if (! $authenticationService instanceof AuthenticationService) {
             return $helper;
         }
-        $modelManager = $container->get(ModelManager::class);
-        $user         = $modelManager->get(Users::class);
-        switch ($authenticationService->hasIdentity()) {
-            case true:
-                $user = $user->fetchColumns(
-                    'userName',
-                    $authenticationService->getIdentity(),
-                    $user->getContextColumns()
-                );
-                break;
-            case false:
-            default:
-                $user->exchangeArray($user->fetchGuestContext());
-                break;
-        }
+        $user = $container->get(UserInterface::class);
         $helper->setRole($user);
         return $helper;
     }

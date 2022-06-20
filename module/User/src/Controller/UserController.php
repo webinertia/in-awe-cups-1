@@ -6,13 +6,13 @@ namespace User\Controller;
 
 use App\Controller\AbstractAppController;
 use Laminas\Authentication\Result;
-use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use User\Form\LoginForm;
 
 final class UserController extends AbstractAppController
 {
+
     public function listAction(): ViewModel
     {
         try {
@@ -50,6 +50,7 @@ final class UserController extends AbstractAppController
 
     public function loginAction(): ViewModel
     {
+        //$this->view->setVariable('user', $this->loadUser());
         $form = $this->formManager->get(LoginForm::class);
         if (! $this->request->isPost()) {
             $this->view->setVariable('form', $form);

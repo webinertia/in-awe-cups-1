@@ -29,9 +29,8 @@ final class PagesFactory implements FactoryInterface
         $router = $container->get(RouteStackInterface::class);
         $pages  = new Pages(
             $config->db->pages_table_name,
-            $container->get(ModelManager::class),
             $container->get(EventManager::class),
-            $config,
+            $config->db,
             $container->get(Logger::class)
         );
         $pages->setRouter($router);

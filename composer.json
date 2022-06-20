@@ -33,7 +33,7 @@
 		"laminas/laminas-captcha": "^2.11",
 		"laminas/laminas-paginator": "^2.12",
 		"laminas/laminas-paginator-adapter-laminasdb": "^1.2",
-		"webinertia/webinertia-modelmanager": "0.0.7",
+		"webinertia/webinertia-modelmanager": "0.0.12",
 		"laminas/laminas-authentication": "2.10.1",
 		"webinertia/webinertia-utils": "0.0.2"
 	},

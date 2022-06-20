@@ -6,6 +6,7 @@ namespace User\Model\Factory;
 
 use Laminas\Config\Config;
 use Laminas\EventManager\EventManager;
+use Laminas\Log\Logger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -26,9 +27,9 @@ final class RolesFactory implements FactoryInterface
         $config = new Config($container->get('Config'));
         return new Roles(
             $config->db->user_roles_table_name,
-            $container->get(ModelManager::class),
             $container->get(EventManager::class),
-            $config
+            $config->db,
+            $container->get(Logger::class)
         );
     }
 }

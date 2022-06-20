@@ -130,9 +130,11 @@ return [
     ],
     'controller_plugins' => [
         'aliases' => [
+            'email'        => Controller\Plugin\Email::class,
             'redirectPrev' => Controller\Plugin\RedirectPrev::class,
         ],
         'factories' => [
+            Controller\Plugin\Email::class        => Controller\Plugin\Factory\EmailFactory::class,
             Controller\Plugin\RedirectPrev::class => Controller\Plugin\Factory\RedirectPrevFactory::class,
         ]
     ],
@@ -215,7 +217,7 @@ return [
     ],
     'view_manager'    => [
         'display_not_found_reason' => true,
-        'display_exceptions'       => false,
+        'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',

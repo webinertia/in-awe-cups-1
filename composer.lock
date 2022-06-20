@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9839d6b6b524fb5126c7aad8a9ff3602",
+    "content-hash": "df978ac62567b448d70ab7e639a6b4b9",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -5741,16 +5741,16 @@
         },
         {
             "name": "webinertia/webinertia-modelmanager",
-            "version": "0.0.7",
+            "version": "0.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webinertia/modelmanager.git",
-                "reference": "7548f730087c1439cf18e63a014e73872e51560b"
+                "reference": "2658b6b83ce65dcc1c10aa5a6e9cabf3f8fef61d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/7548f730087c1439cf18e63a014e73872e51560b",
-                "reference": "7548f730087c1439cf18e63a014e73872e51560b",
+                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/2658b6b83ce65dcc1c10aa5a6e9cabf3f8fef61d",
+                "reference": "2658b6b83ce65dcc1c10aa5a6e9cabf3f8fef61d",
                 "shasum": ""
             },
             "require": {
@@ -5796,7 +5796,7 @@
                 "issues": "https://github.com/webinertia/modelmanager/issues",
                 "source": "https://github.com/webinertia/modelmanager"
             },
-            "time": "2022-06-16T21:54:13+00:00"
+            "time": "2022-06-20T19:21:00+00:00"
         },
         {
             "name": "webinertia/webinertia-utils",
