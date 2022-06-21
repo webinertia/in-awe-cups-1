@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\Settings;
-use App\Service\Email;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\Config\Config;
 use Laminas\Form\FormElementManager;
 use Laminas\Http\PhpEnvironment\Request;
@@ -16,21 +14,14 @@ use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
 use User\Model\Users as User;
-use User\Permissions\PermissionsManager;
 use Webinertia\ModelManager\ModelManager;
 
 use function dirname;
 
 abstract class AbstractAppController extends AbstractActionController
 {
-    /** @var PermissionsManager $acl */
-        public $acl;
-
     /** @var Config $appSettings */
     public $appSettings;
-
-    /** @var AuthenticationService $authService */
-    public $authService;
 
     /** @var string $baseUrl */
     public $baseUrl;
@@ -41,9 +32,6 @@ abstract class AbstractAppController extends AbstractActionController
     /** @var ContainerInterface $container */
     private $container;
 
-    /** @var Email $emailService */
-    protected $emailService;
-
     /** @var FormElementManager $formManager */
     protected $formManager;
 
@@ -52,13 +40,6 @@ abstract class AbstractAppController extends AbstractActionController
 
     /** @var string $referringUrl */
     public $referringUrl;
-
-    /**
-     * Holds the currently executing users info
-     *
-     * @var User\Model\Users $user
-     * */
-    protected $user;
 
     /**
      * Shared instance
@@ -80,18 +61,14 @@ abstract class AbstractAppController extends AbstractActionController
     public function __construct(
         ?ContainerInterface $container = null,
         ?Request $request = null,
-        ?AuthenticationService $authService = null,
         ?Config $config = null,
         ?FormElementManager $formManager = null,
         ?Logger $logger = null,
         ?ModelManager $modelManager = null,
-        ?Settings $appSettings = null,
-        ?Email $emailService = null
+        ?Settings $appSettings = null
     ) {
         $this->appSettings  = $appSettings;
-        $this->authService  = $authService;
         $this->config       = $config;
-        $this->emailService = $emailService;
         $this->formManager  = $formManager;
         $this->logger       = $logger;
         $this->modelManager = $modelManager;
@@ -102,7 +79,6 @@ abstract class AbstractAppController extends AbstractActionController
 
         $this->view->setVariables([
             'appSettings' => $this->appSettings,
-            'auth'        => $this->authService,
         ]);
         $this->init($container);
     }

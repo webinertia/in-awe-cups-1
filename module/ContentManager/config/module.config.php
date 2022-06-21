@@ -5,14 +5,6 @@ declare(strict_types=1);
 namespace ContentManager;
 
 use App\Controller\Factory\AppControllerFactory;
-use ContentManager\Controller\AdminController;
-use ContentManager\Controller\ContentController;
-use ContentManager\Form\Fieldset\Factory\PageFieldsetFactory;
-use ContentManager\Form\Fieldset\PageFieldset;
-use ContentManager\Form\PageForm;
-use ContentManager\Form\Factory\PageFormFactory;
-use ContentManager\Model\Factory\PagesFactory;
-use ContentManager\Model\Pages;
 use ContentManager\Navigation\Service\DefaultNavigationFactory;
 use Laminas\Navigation\Navigation;
 use Laminas\Router\Http\Placeholder;
@@ -33,7 +25,7 @@ return [
                         'title'    => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
                     'defaults' => [
-                        'controller' => ContentController::class,
+                        'controller' => Controller\ContentController::class,
                         'action'     => 'page',
                     ],
                 ],
@@ -55,7 +47,7 @@ return [
                                 'title'  => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ],
                             'defaults' => [
-                                'controller' => AdminController::class,
+                                'controller' => Controller\AdminController::class,
                                 'action'     => 'dashboard',
                             ],
                         ],
@@ -66,19 +58,27 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            AdminController::class   => AppControllerFactory::class,
-            ContentController::class => AppControllerFactory::class,
+            Controller\AdminController::class   => AppControllerFactory::class,
+            Controller\ContentController::class => AppControllerFactory::class,
         ],
     ],
     'form_elements' => [
         'factories' => [
-            PageForm::class     => PageFormFactory::class,
-            PageFieldset::class => PageFieldsetFactory::class,
+            Form\PageForm::class     => Form\Factory\PageFormFactory::class,
+            Form\Fieldset\PageFieldset::class => Form\Fieldset\Factory\PageFieldsetFactory::class,
         ],
     ],
     'model_manager' => [
         'factories' => [
-            Pages::class => PagesFactory::class,
+            Model\Pages::class =>Model\Factory\PagesFactory::class,
+        ],
+    ],
+    'service_manager' => [
+        'aliases' => [
+            'navigation' => Navigation::class,
+        ],
+        'factories' => [
+            Navigation::class => DefaultNavigationFactory::class,
         ],
     ],
     'navigation' => [
@@ -107,14 +107,6 @@ return [
                     ],
                 ],
             ],
-        ],
-    ],
-    'service_manager' => [
-        'aliases' => [
-            'navigation' => Navigation::class,
-        ],
-        'factories' => [
-            Navigation::class => DefaultNavigationFactory::class,
         ],
     ],
 ];

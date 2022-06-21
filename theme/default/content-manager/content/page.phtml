@@ -5,9 +5,9 @@ declare(strict_types=1);
 use Laminas\View\Renderer\PhpRenderer;
 /** @var PhpRenderer $this */
 $this->headMeta()->prependName('keywords', $this->title . ', ' . $this->appSettings->seo->key_words);
-$this->headTitle($page->label);
 $container = $this->navigation('default')->getContainer();
 $page = $container->findOneBy('title', $this->title);
+$this->headTitle($page->label);
 $status = $page->isActive();
 $this->headTitle($page->label);
 ?>

@@ -35,7 +35,7 @@ final class TestController extends AbstractAppController
         $this->form->addSubmit();
         $this->view->setVariable('form', $this->form);
         $user = $this->loadUser();
-        //$this->email()->sendMessage('jsmith@webinertia.net', 'welcome', 'ateststring');
+        $this->email()->sendMessage('jsmith@webinertia.net', 'welcome', 'ateststring');
         return $this->view;
     }
 }

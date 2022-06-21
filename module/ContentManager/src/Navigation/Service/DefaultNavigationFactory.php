@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ContentManager\Navigation\Service;
 
 use ContentManager\Model\Pages;
+use ContentManager\Navigation\Navigation;
 use Laminas\Navigation\Exception\InvalidArgumentException;
-use Laminas\Navigation\Navigation;
 use Laminas\Navigation\Service\AbstractNavigationFactory;
 use Psr\Container\ContainerInterface;
 use Webinertia\ModelManager\ModelManager;
