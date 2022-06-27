@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @method \Laminas\Permissions\Acl\Acl isAllowed($role = null, $resource = null, $privilege = null)
+ */
+
 declare(strict_types=1);
 
 namespace User\View\Helper;
@@ -16,13 +20,20 @@ final class Acl extends AbstractHelper
         $this->acl = $acl;
     }
 
-    /**
-     * @param mixed $role
-     * @param mixed $resource
-     * @param mixed $privilege
-     */
-    public function __invoke($role = null, $resource = null, $privilege = null): bool
+    public function __invoke(): self
     {
-        return $this->acl->isAllowed($role, $resource, $privilege);
+        return $this;
+    }
+
+    /**
+     * Primary call to isAllowed($role, $resource, $privilege)
+     *
+     * @param mixed $name
+     * @param mixed $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return $this->acl->{$name}(...$arguments);
     }
 }

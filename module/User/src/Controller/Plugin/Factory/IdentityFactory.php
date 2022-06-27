@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace User\View\Helper\Factory;
+namespace User\Controller\Plugin\Factory;
 
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use User\Controller\Plugin\Identity;
 use User\Service\UserInterface;
-use User\View\Helper\Identity;
 
 final class IdentityFactory implements FactoryInterface
 {

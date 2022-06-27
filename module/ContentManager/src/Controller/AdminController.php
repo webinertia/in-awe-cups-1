@@ -10,31 +10,19 @@ use App\Form\FormInterface;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
 use ContentManager\Model\Pages;
-use Laminas\Filter\Exception\InvalidArgumentException as FilterExceptionInvalidArgumentException;
 use Laminas\Filter\FilterChain;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
-use Laminas\Http\Header\Exception\RuntimeException as ExceptionRuntimeException;
-use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Json\Encoder;
-use Laminas\Json\Exception\RecursionException;
-use Laminas\Log\Exception\InvalidArgumentException as LogExceptionInvalidArgumentException;
-use Laminas\Log\Exception\RuntimeException as LogExceptionRuntimeException;
 use Laminas\Log\Logger;
-use Laminas\Mvc\Exception\RuntimeException as MvcExceptionRuntimeException;
-use Laminas\Mvc\Exception\InvalidArgumentException as ExceptionInvalidArgumentException;
-use Laminas\Mvc\Exception\DomainException;
-use Laminas\ServiceManager\Exception\InvalidServiceException;
-use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
-use Laminas\Stdlib\Exception\DomainException as ExceptionDomainException;
 use Laminas\View\Model\ViewModel;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
+    /** @var string $resourceId */
+    protected $resourceId = 'pages';
     /** @var Page $page */
     /** @var Pages $pages */
     /** @var PageForm $form */

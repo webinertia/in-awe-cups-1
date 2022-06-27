@@ -20,7 +20,7 @@ final class RoleSelectFactory implements FactoryInterface
     {
         $roles      = ($container->get(ModelManager::class))->get(Roles::class);
         $roleSelect = new RoleSelect('role');
-        $roleSelect->setValueOptions($roles->fetchSelectData());
+        $roleSelect->setValueOptions($roles->getSelectData());
         return $roleSelect;
     }
 }

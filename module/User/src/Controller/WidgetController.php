@@ -31,30 +31,7 @@ final class WidgetController extends AbstractAppController
         $table  = $this->modelManager->get(Users::class);
         $sql    = $table->getSql();
         $select = new Select();
-        $select
-            ->from('user_roles')
-            ->join('users', 'users.role = user_roles.role', [
-                'userName',
-                'email',
-                'firstName',
-                'lastName',
-                'profileImage',
-                'age',
-                'birthday',
-                'gender',
-                'race',
-                'bio',
-                'companyName',
-                'regDate',
-                'active',
-                'verified',
-            ])
-            ->order(['users.id DSC']);
-        if ($this->group === 'all') {
-            $select->where->greaterThan('user_roles.id', 0);
-        } else {
-            $select->where->equalTo('user_roles.role', $this->group);
-        }
+        $select->from('users')->order(['users.role ASC']);
         $pluginManager = $this->getEvent()->getApplication()->getServiceManager()->get(AdapterPluginManager::class);
         $adapter       = $pluginManager->get(DbSelect::class, [$select, $sql, $table->getResultSetPrototype()]);
         $paginator     = new Paginator($adapter);

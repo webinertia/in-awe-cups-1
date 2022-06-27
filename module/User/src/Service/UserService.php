@@ -6,15 +6,36 @@ namespace User\Service;
 
 use Laminas\Stdlib\ArrayObject;
 use Laminas\Stdlib\ArraySerializableInterface;
+use Laminas\Stdlib\Exception\InvalidArgumentException;
+use User\Model\Roles;
 
 final class UserService extends ArrayObject implements UserInterface, ArraySerializableInterface
 {
     /** @var string $resourceId */
     protected $resourceId = 'users';
-
-    public function getOwnerId(): mixed
+    /** @var Roles $roles */
+    protected $roles;
+    /**
+     * @param array $userData
+     * @param int $flags
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    public function __construct(array $userData, Roles $roles, $flags)
     {
-        return $this->offsetGet('id');
+        $this->roles           = $roles;
+        $userData['groupName'] = $this->roles->getGroupName($userData['role']);
+        parent::__construct($userData, $flags);
+    }
+
+    public function getGroupName(): string
+    {
+        return $this->offsetGet('groupName');
+    }
+
+    public function getOwnerId(): int
+    {
+        return (int) $this->offsetGet('id');
     }
 
     public function getRoleId(): string

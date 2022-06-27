@@ -55,9 +55,9 @@ class AdminListener extends AbstractListenerAggregate
         if (! $controller instanceof AdminControllerInterface) {
             return;
         }
-        $user = $controller->loadUser();
+        $user = $controller->identity()->getIdentity();
         try {
-            if (! $controller->isAllowed('admin', 'admin.access')) {
+            if (! $controller->acl()->isAllowed($user, $controller, 'view')) {
                 throw new PrivilegeException('You have insufficient privileges to complete request');
             }
         } catch (Throwable $th) {
@@ -80,13 +80,13 @@ class AdminListener extends AbstractListenerAggregate
         $controller = $routeMatch->getParam('controller');
         $controller = $controllerManager->get($controller);
         $name       = 'layout/admin';
-        // we this is not an admin controller or if we have already got the layout return
+        // if this is not an admin controller or if we have already got the layout return
         if (! $controller instanceof AdminControllerInterface || $this->templateMapResolver->has($name)) {
              return;
         }
         // Get root view model
         $layoutViewModel = $event->getViewModel();
-        // Rendering without layout?
+        // Rendering without layout? This will be the case of all ajax requests
         if ($layoutViewModel->terminate()) {
             return;
         }

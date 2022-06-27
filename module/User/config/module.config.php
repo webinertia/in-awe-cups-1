@@ -13,7 +13,6 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use User\Navigation\View\PermissionAclDelegatorFactory;
 use User\Navigation\View\RoleFromAuthenticationIdentityDelegator;
-use User\Permissions\PermissionsManager;
 
 return [
     'db'              => [
@@ -45,28 +44,6 @@ return [
                                 'action'     => 'list',
                                 'page'       => 1,
                                 'count'      => 10,
-                            ],
-                        ],
-                    ],
-                    'login'    => [
-                        'type'          => Literal::class,
-                        'may_terminate' => false,
-                        'options'       => [
-                            'route'    => '/user/login',
-                            'defaults' => [
-                                'controller' => Controller\UserController::class,
-                                'action'     => 'login',
-                            ],
-                        ],
-                    ],
-                    'logout'   => [
-                        'type'          => Literal::class,
-                        'may_terminate' => false,
-                        'options'       => [
-                            'route'    => '/user/logout',
-                            'defaults' => [
-                                'controller' => Controller\UserController::class,
-                                'action'     => 'logout',
                             ],
                         ],
                     ],
@@ -127,6 +104,17 @@ return [
                                     ],
                                 ],
                             ],
+                            'login'    => [
+                                'type'          => Literal::class,
+                                'may_terminate' => false,
+                                'options'       => [
+                                    'route'    => '/user/account/login',
+                                    'defaults' => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action'     => 'login',
+                                    ],
+                                ],
+                            ],
                             'edit'      => [
                                 'type'          => Segment::class,
                                 'may_terminate' => true,
@@ -152,6 +140,17 @@ return [
                                     'defaults' => [
                                         'controller' => Controller\AccountController::class,
                                         'action'     => 'delete',
+                                    ],
+                                ],
+                            ],
+                            'logout'   => [
+                                'type'          => Literal::class,
+                                'may_terminate' => false,
+                                'options'       => [
+                                    'route'    => '/user/account/logout',
+                                    'defaults' => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action'     => 'logout',
                                     ],
                                 ],
                             ],
@@ -224,7 +223,7 @@ return [
                 'class'     => 'nav-link',
                 'action'    => 'list',
                 'resource'  => 'users',
-                'privilege' => 'user.view.list',
+                'privilege' => 'view',
             ],
             [
                 'label'     => 'Profile',
@@ -236,27 +235,30 @@ return [
             ],
             [
                 'label'     => 'Login',
-                'route'     => 'user/login',
+                'route'     => 'user/account/login',
                 'class'     => 'nav-link',
                 'action'    => 'login',
-                'resource'  => 'users',
-                'privilege' => 'login.view',
+                'resource'  => 'account',
+                'privilege' => 'login',
+                'order'     => 1000,
             ],
             [
                 'label'     => 'Logout',
-                'route'     => 'user/logout',
+                'route'     => 'user/account/logout',
                 'class'     => 'nav-link',
                 'action'    => 'logout',
-                'resource'  => 'users',
+                'resource'  => 'account',
                 'privilege' => 'logout',
+                'order'     => 1000,
             ],
             [
                 'label'     => 'Register',
                 'route'     => 'user/register',
                 'class'     => 'nav-link',
                 'action'    => 'index',
-                'resource'  => 'users',
-                'privilege' => 'register.view',
+                'resource'  => 'account',
+                'privilege' => 'register',
+                'order'     => 999,
             ],
         ],
         'admin'  => [
@@ -264,7 +266,6 @@ return [
                 'label'     => 'Manage Users',
                 'route'     => 'admin.user',
                 'iconClass' => 'mdi mdi-account-multiple text-primary',
-                // 'controller' => 'admin',
                 'action'    => 'index',
                 'resource'  => 'admin',
                 'privilege' => 'admin.access',
@@ -301,24 +302,24 @@ return [
     ],
     'controller_plugins' => [
         'aliases' => [
-            'isAllowed' => Controller\Plugin\Acl::class,
-            'loadUser'  => Controller\Plugin\LoadUser::class,
+            'identity'  => Controller\Plugin\Identity::class,
+            'acl'       => Controller\Plugin\Acl::class,
         ],
         'factories' => [
+            Controller\Plugin\Identity::class => Controller\Plugin\Factory\IdentityFactory::class,
             Controller\Plugin\Acl::class      => Controller\Plugin\Factory\AclFactory::class,
-            Controller\Plugin\LoadUser::class => Controller\Plugin\Factory\LoadUserFactory::class,
         ]
     ],
     'model_manager'   => [
         'factories' => [
             Model\Users::class => Model\Factory\UsersFactory::class,
-            Model\Roles::class => Model\Factory\RolesFactory::class,
+            Model\Roles::class => InvokableFactory::class,
         ],
     ],
     'service_manager' => [
         'aliases'   => [
-            Service\UserInterface::class => Service\UserService::class, // LoadUser controller plugin requires this alias
-            AclInterface::class => PermissionsManager::class, // the navigation helper delegator relies on this alias
+            Service\UserInterface::class => Service\UserService::class, // Identity controller plugin requires this alias
+            AclInterface::class => Permissions\PermissionsManager::class, // the navigation helper delegator relies on this alias
         ],
         'factories' => [
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
@@ -345,7 +346,6 @@ return [
     'view_helpers'    => [
         'aliases'   => [
             'acl'             => View\Helper\Acl::class,
-            'isAllowed'       => View\Helper\Acl::class,
             'aclawarecontrol' => View\Helper\AclAwareControl::class,
             'aclAwareControl' => View\Helper\AclAwareControl::class,
             'aclControl'      => View\Helper\AclAwareControl::class,

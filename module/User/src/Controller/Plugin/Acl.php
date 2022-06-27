@@ -14,14 +14,13 @@ final class Acl extends AbstractPlugin
         $this->acl = $acl;
     }
 
-    /**
-     * @param mixed $role
-     * @param mixed $resource
-     * @param mixed $privilege
-     */
-    public function __invoke($resource = null, $privilege = null): bool
+    public function __invoke(): self
     {
-        $controller = $this->getController();
-        return $this->acl->isAllowed($controller->loadUser(), $resource, $privilege);
+        return $this;
+    }
+
+    public function __call($name, $arguments): mixed
+    {
+        return $this->acl->{$name}(...$arguments);
     }
 }

@@ -21,14 +21,14 @@ final class PermissionsManager implements AclInterface
     public $acl;
     /** @var Roles $model */
     protected $model;
-    /** @var ResultSet $roles */
+    /** @var array $roles */
     private $roles;
     /** @return $this */
     public function __construct(Acl $acl, Roles $model, Config $config)
     {
         $this->config = $config;
         $this->model  = $model;
-        $this->roles  = $this->model->select();
+        $this->roles  = $this->model->getRoles();
         $this->acl    = $acl;
         $this->build();
         return $this;
@@ -60,39 +60,71 @@ final class PermissionsManager implements AclInterface
         // create the guest role and register it
         $guest = new Role('guest');
         $this->acl->addRole($guest);
-        $this->acl->addRole(new Role('users'));
+        // $user = new Role('user');
+        // $this->acl->addRole($user, [$guest]);
+        // $staff = new Role('staff');
+        // $this->acl->addRole($staff, [$guest, $user]);
+        // $admin = new Role('admin');
+        // $this->acl->addRole($admin, [$guest, $user, $staff]);
+        // $this->acl->addRole(new Role('superAdmin'), [$guest, $user, $staff, $admin]);
+
         foreach ($this->roles as $role) {
-            $this->acl->addRole($role->role, $role->inheritsFrom);
+            $this->acl->addRole($role['role'], $role['inheritsFrom']);
         }
-        $this->acl->addRole(new Role('superAdmin', 'admin'));
-        $this->acl->addResource('users');
-        $this->acl->addResource('user_profile');
+        $this->acl->addRole('superAdmin', 'admin');
+        /**
+         * Permission schema:
+         * $resource.$controller.$action.$subactions
+         *
+         *
+         *
+         * users.account.edit, users.account.delete, users.account.login
+         * users.register, users.verify
+         * users.profile.edit, users.profile.view
+         */
         $this->acl->addResource('admin');
-        $this->acl->addResource('settings');
-        $this->acl->addResource('mailService');
-        $this->acl->addResource('pages');
-        $this->acl->allow('guest', null, 'view');
-        $this->acl->allow('user', null, 'view');
-        $this->acl->allow('guest', 'users', ['register.view', 'login.view']);
-        $this->acl->allow('user', 'users', 'logout');
-        $this->acl->allow('user', 'users', 'user.view.list');
-        $this->acl->deny('user', 'users', ['register', 'login', 'user.create.new']);
-        $this->acl->deny(['guest', 'users'], 'admin', 'admin.access');
-        $this->acl->allow('user', null, ['edit', 'delete'], new Owner());
-        //$this->acl->allow('user', 'user', 'edit', new Owner());
-        $this->acl->allow('user', 'user_profile', 'edit', new Owner());
-        //$this->acl->allow('user', 'project', 'edit', new Owner());
-        $this->acl->allow('admin', 'admin', ['admin.access', 'admin.settings', 'admin.user']);
-        $this->acl->allow('admin');
-        //$this->acl->deny('admin', 'user', ['register', 'login']);
-        $this->acl->deny('admin', 'admin', 'admin.add.setting');
+        $this->acl->addResource('settings', 'admin');
+        $this->acl->addResource('features', 'settings');
+        $this->acl->addResource('roles', 'admin');
+        $this->acl->addResource('server', 'settings');
+        $this->acl->addResource('seo', 'settings');
+        $this->acl->addResource('view', 'settings');
+        $this->acl->addResource('theme', 'settings');
+
+        $this->acl->addResource('users');
+        $this->acl->addResource('account', 'users');
+        $this->acl->addResource('profile', 'account');
+        $this->acl->addResource('user_list', 'users');
+
+        $this->acl->addResource('mail');
+        $this->acl->addResource('contact_us', 'mail');
+        $this->acl->addResource('site_message', 'mail');
+
+        $this->acl->addResource('content');
+        $this->acl->addResource('pages', 'content');
+
+        $this->acl->allow('guest', 'content', 'view'); // should allow reading of pages
+        $this->acl->allow('guest', 'account', ['register', 'login']); // should allow showing the register, login tabs
+        $this->acl->deny('guest', 'account', 'logout'); // should prevent guest from seeing the logout
+
+        $this->acl->allow('user', null, ['view', 'edit', 'delete'], new Owner()); // should allow user to view, edit, and delete their own account
+        $this->acl->deny('user', 'account', ['register', 'login']);
+        $this->acl->allow('user', 'account', 'logout');
+        $this->acl->allow('user', 'profile', 'view'); // allow any logged in user to view their profile
+        $this->acl->allow('user', 'profile', ['edit', 'delete'], new Owner());
+        $this->acl->deny(['guest', 'user'], 'admin', 'view'); // should prevent guests and users from seeing the admin page
+
+        $this->acl->allow('staff', ['account', 'profile', 'content'], ['view', 'edit', 'delete']); // should allow staff to view, edit, and delete their own account
+        $this->acl->allow('staff', 'admin', 'view'); // should allow staff to view the admin page
+        $this->acl->deny('staff', ['settings']);
+        $this->acl->allow('admin', null, ['create', 'view', 'edit', 'delete', 'admin.access']); // should allow admin to view, edit, and delete everything
+
         $this->acl->allow('superAdmin');
-        //$this->acl->deny(['admin', 'superAdmin'], 'user', ['register.view', 'login.view']);
 
         return $this;
     }
 
-    public function getRoles(): object
+    public function getRoles(): array
     {
         return $this->roles;
     }

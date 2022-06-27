@@ -1,0 +1,63 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'app_settings' => [
+        'seo'      => [
+            'key_words'   => 'Aurora CMS, Webinertia.net, Laminas, Php, MySQL',
+            'description' => 'Aurora CMS',
+        ],
+        'view'     => [
+            'site_name'        => 'Aurora CMS',
+            'copyright_link'   => 'http://webinertia.net/aurora',
+            'copyright_text'   => 'Aurora CMS',
+            'footer_text'      => 'Developed by Webinertia',
+            'show_breadcrumbs' => false,
+        ],
+        'theme'    => [
+            [
+                'id'         => 1,
+                'name'       => 'default',
+                'fallback'   => 'default',
+                'has_layout' => 1,
+                'active'     => 1,
+            ],
+            [
+                'id'         => 2,
+                'name'       => 'sunrise',
+                'fallback'   => 'default',
+                'has_layout' => 1,
+                'active'     => 0,
+            ],
+        ],
+        'email'    => [
+            'contact_form_email'   => '',
+            'smtp_sender_address'  => '',
+            'smtp_sender_password' => '',
+            'enable_contact_form'  => true,
+        ],
+        'security' => [
+            'enable_login'          => true, // only disable this in case of emergency and if you have database access
+            'enable_registration'   => true,
+            'enable_captcha'        => true,
+            'recaptcha_private_key' => '',
+            'recaptcha_public_key'  => '',
+        ],
+        'server'   => [
+            'host'                 => '',
+            'request_scheme'       => '',
+            'time_format'          => 'm-j-Y g:i:s',
+            'time_zone'            => 'America/Chicago',
+            'enable_error_log'     => true,
+            'enable_firebug_debug' => true,
+            'enable_translation'   => false,
+        ],
+        'api_keys' => [
+            'facebook' => [
+                'app_id'     => '360267229456291',
+                'app_secret' => '3b7d36d4cdea9d1aa584ca15e459916e',
+            ],
+        ],
+    ],
+];

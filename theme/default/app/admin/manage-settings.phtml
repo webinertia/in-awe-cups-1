@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-if ($this->isAllowed($this->user, 'admin', 'admin.add.setting')) :
+if ($this->acl()->isAllowed($this->identity()->getIdentity(), 'admin', 'edit')) :
     ?>
 <span>
-<a href="<?= $this->url('app.admin.add.setting') ?>" class="btn btn-primary" role="button">Add New Setting</a>
+<a href="<?= $this->url('/admin/') ?>" class="btn btn-primary" role="button">Add New Setting</a>
 </span>
     <?php
 endif;
