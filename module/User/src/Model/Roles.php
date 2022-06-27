@@ -4,38 +4,81 @@ declare(strict_types=1);
 
 namespace User\Model;
 
-use Laminas\Db\Sql\Exception\InvalidArgumentException;
-use Laminas\Db\TableGateway\Exception\RuntimeException as ExceptionRuntimeException;
-use RuntimeException;
-use Webinertia\ModelManager\AbstractModel;
-use Webinertia\ModelManager\ModelTrait;
+use Laminas\Config\Reader\Json;
+use Webinertia\ModelManager\ModelInterface;
 
-use function count;
+use function dirname;
 
-final class Roles extends AbstractModel
+final class Roles implements ModelInterface
 {
-    use ModelTrait;
+    /** @var array $roleData */
+    protected $selectData = [];
+    /** @var array $roles */
+    protected $roles = [];
+    /** @var string $configFilename */
+    protected $configFilename = 'roles.json';
 
-    /**
-     * @throws ExceptionRuntimeException
-     * @throws InvalidArgumentException
-     * @throws RuntimeException
-     */
-    public function fetchSelectData(): array
+    public function __construct()
     {
-        $data   = [];
-        $result = $this->db->select();
-        foreach ($result as $row) {
-            $rowData              = $row->getArrayCopy();
-            $data[$rowData['id']] = [
-                'value' => $rowData['role'],
-                'label' => $rowData['label'],
+        $this->configPath = dirname(__DIR__, 4) . '/config/';
+        $reader           = new Json();
+        $this->config     = $reader->fromFile($this->configPath . $this->configFilename);
+        $this->processConfig($this->config);
+    }
+
+    protected function processConfig(array $config)
+    {
+        $selectData = [];
+        $roleData   = [];
+        foreach ($config as $role) {
+            $roleData[] = $role;
+            // The following builds the select data array for the roles dropdown form element
+            $selectData[$role['id']] = [
+                'value' => $role['role'],
+                'label' => $role['label'],
             ];
         }
-        if (count($data) > 0) {
-            return $data;
-        } else {
-            throw new RuntimeException('Roles could not be retrieved');
-        }
+        $this->setRoles($roleData);
+        $this->setSelectData($selectData);
+    }
+
+    /**
+     * @param string $role
+     */
+    public function getRoleData($role): array
+    {
+        return $this->roles[$role];
+    }
+
+    public function getGroupName(string $role): string
+    {
+        return $this->config[$role]['label'];
+    }
+
+    /** @param array $selectData */
+    protected function setSelectData($selectData): void
+    {
+        $this->selectData = $selectData;
+    }
+
+    public function getSelectData(): array
+    {
+        return $this->selectData;
+    }
+
+    /** @param array $roles */
+    protected function setRoles($roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function getResourceId(): string
+    {
+        return 'roles';
     }
 }

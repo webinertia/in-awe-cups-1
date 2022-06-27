@@ -67,8 +67,8 @@ return [
                 'may_terminate' => true,
                 'child_routes'  => [
                     'dashboard' => [
-                        'may_terminate' => true,
                         'type'          => Literal::class,
+                        'may_terminate' => true,
                         'options' => [
                             'route'    => '/admin',
                             'defaults' => [
@@ -77,30 +77,20 @@ return [
                             ],
                         ],
                     ],
-                    'admin.add.setting' => [
+                    'settings' => [
+                        'type'    => Placeholder::class,
                         'may_terminate' => true,
-                        'type'    => Literal::class,
-                        'options' => [
-                            'route'    => '/admin/addsetting',
-                            'defaults' => [
-                                'controller' => Controller\AdminController::class,
-                                'action'     => 'addsetting',
-                            ],
-                        ],
-                    ],
-                    // need to add route for image uploads
-                    'admin.add.setting' => [
-                        'may_terminate' => true,
-                        'type'    => Segment::class,
-                        'options' => [
-                            'route'       => '/admin/upload[/:module[/:type]]',
-                            'constraints' => [
-                                'module' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'type'   => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                            'defaults' => [
-                                'controller' => Controller\AdminController::class,
-                                'action'     => 'upload',
+                        'child_routes'  => [
+                            'create-setting' => [
+                                'may_terminate' => true,
+                                'type'          => Segment::class,
+                                'options' => [
+                                    'route'    => '/admin/addsetting',
+                                    'defaults' => [
+                                        'controller' => Controller\AdminController::class,
+                                        'action'     => 'index',
+                                    ],
+                                ],
                             ],
                         ],
                     ],
@@ -172,7 +162,7 @@ return [
                 'uri'       => '/admin',
                 'class'     => 'nav-link',
                 'resource'  => 'admin',
-                'privilege' => 'admin.access',
+                'privilege' => 'view',
             ],
         ],
         'admin' => [
@@ -192,8 +182,8 @@ return [
                 'label'     => 'Manage Settings',
                 'uri'       => '/admin/manage-settings',
                 'iconClass' => 'mdi mdi-wrench text-danger',
-                'resource'  => 'admin',
-                'privilege' => 'admin.access',
+                'resource'  => 'settings',
+                'privilege' => 'edit',
             ],
         ],
     ],

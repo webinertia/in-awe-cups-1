@@ -14,6 +14,7 @@ use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\Exception\RuntimeException;
 use Laminas\Log\Logger;
 use Throwable;
+use User\Model\Roles;
 use Webinertia\ModelManager\AbstractModel;
 use Webinertia\ModelManager\ModelTrait;
 
@@ -42,6 +43,9 @@ final class Users extends AbstractModel
      * @return Result|bool
      * @throws InvalidArgumentException
      */
+    /** @var string $groupName */
+    protected $groupName;
+
     public function login(self $user): Result
     {
         try {
@@ -134,6 +138,7 @@ final class Users extends AbstractModel
                 'regDate',
                 'active',
                 'verified',
+                'prefs_theme',
             ])
             ->order([
                 $this->config->user_roles_table_name . '.label ASC',
@@ -192,6 +197,20 @@ final class Users extends AbstractModel
         }
     }
 
+    public function setGroupName(string $groupName): void
+    {
+        $this->offsetSet('groupName', $groupName);
+    }
+
+    public function getGroupName(): string
+    {
+        if (! $this->offsetExists('groupName')) {
+            $roles = new Roles();
+            $this->offsetSet('groupName', $roles->getGroupName($this->offsetGet('role')));
+        }
+        return $this->offsetGet('groupName');
+    }
+
     public function fetchGuestContext(): array
     {
         return [
@@ -221,6 +240,7 @@ final class Users extends AbstractModel
             'regDate',
             'active',
             'verified',
+            'prefs_theme',
         ];
     }
 }

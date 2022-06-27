@@ -12,7 +12,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Model\Users;
-use Webinertia\ModelManager\ModelManager;
 
 final class UsersFactory implements FactoryInterface
 {
@@ -29,7 +28,8 @@ final class UsersFactory implements FactoryInterface
             $config->db->users_table_name,
             $container->get(EventManager::class),
             $config->db,
-            $container->get(Logger::class)
+            $container->get(Logger::class),
+            false
         );
     }
 }

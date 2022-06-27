@@ -25,6 +25,6 @@ final class Email extends AbstractPlugin
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->mailService, $name], $arguments);
+        return $this->mailService->{$name}(...$arguments);
     }
 }

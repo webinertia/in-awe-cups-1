@@ -15,7 +15,6 @@ use App\Form\BaseForm;
 use App\Form\Fieldset\SecurityFieldset;
 use App\Form\FormInterface;
 use App\Model\Settings;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Permissions\Acl\AclInterface;
 use User\Form\Fieldset\AcctDataFieldset;
@@ -23,7 +22,6 @@ use User\Form\Fieldset\PasswordFieldset;
 use User\Form\Fieldset\ProfileFieldset;
 use User\Form\Fieldset\RoleFieldset;
 use User\Service\UserInterface;
-use User\Permissions\PermissionsManager;
 
 class UserForm extends BaseForm
 {
@@ -70,7 +68,7 @@ class UserForm extends BaseForm
         $acctData = $manager->build(AcctDataFieldset::class, ['mode' => $options['mode']]);
         $this->add($acctData, ['priority' => 1]);
         // we will use this in both mode(s), but only if the user is already logged in and has privilege
-        if ($this->acl->isAllowed($this->userInterface, $this->userInterface, 'admin.access')) {
+        if ($this->acl->isAllowed($this->userInterface, 'roles', 'edit')) {
             $this->add([
                 'type' => RoleFieldset::class,
             ]);

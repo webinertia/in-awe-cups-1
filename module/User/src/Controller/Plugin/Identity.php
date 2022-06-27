@@ -2,17 +2,19 @@
 
 declare(strict_types=1);
 
-namespace User\View\Helper;
+namespace User\Controller\Plugin;
 
 use Laminas\Authentication\AuthenticationService;
-use Laminas\View\Helper\AbstractHelper;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use User\Service\UserInterface;
 
-final class Identity extends AbstractHelper
+final class Identity extends AbstractPlugin
 {
     /** @var AuthenticationService $authenticationService */
     protected $authenticationService;
     /** @var UserInterface $userInterface */
+    protected $userInterface;
+
     public function __construct(AuthenticationService $authenticationService, UserInterface $userInterface)
     {
         $this->authenticationService = $authenticationService;

@@ -14,7 +14,7 @@ $this->headTitle($title);
 <div class="jumbotron">
     <h6><?= $this->escapeHtml($title) ?></h6>
     <?php
-    if ($this->isAllowed($this->user, $this->user, 'user.create.new')) :
+    if ($this->acl()->isAllowed($this->user, $this->user, 'register')) :
     ?>
         <span><a href="<?= $this->url('user/register', ['id' => 0]) ?>" class="btn btn-outline-info btn-sm">Add User</a></span>
     <?php
@@ -23,20 +23,22 @@ $this->headTitle($title);
     <div class="card-deck">
         <?php
         foreach ($users as $listUser) :
+            $user = $this->identity()->getIdentity();
+            $ownerId = $listUser->getOwnerId();
         ?>
         <div class="card">
             <div class="card-header">
                 <span class="header-text text-left float-left"><?=$listUser->firstName . '&nbsp;' . $listUser->lastName?></span>
                 <div class="toolbar float-right">
                     <?php
-                    if($this->isAllowed($this->identity(), $listUser, 'edit') && $listUser->id !== '1'):
+                    if($this->acl()->isAllowed($this->identity()->getIdentity(), $listUser, 'delete') && $listUser->id !== '1'):
                     ?>
                         <a class="mdi mdi-delete-forever text-danger align-middle" data-toggle="tooltip" title="Delete User" href="<?= $this->url('user/account/delete', ['userName' => $listUser->userName]); ?>"></a>
                     <?php
                     endif;
                     ?>
                     <?php
-                    if($this->isAllowed($this->identity(), $listUser, 'edit')): ?>
+                    if($this->acl()->isAllowed($this->identity()->getIdentity(), $listUser, 'edit')): ?>
                         <a class="mdi mdi-account-edit text-success align-middle" data-toggle="tooltip" title="Edit User" href="<?=$this->url('user/account/edit', ['userName' => $listUser->userName]); ?>"></a>
                     <?php
                     endif; ?>

@@ -10,6 +10,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use User\Model\Roles;
 use User\Model\Users;
 use User\Service\UserService;
 use Webinertia\ModelManager\ModelManager;
@@ -36,6 +37,6 @@ final class UserServiceFactory implements FactoryInterface
             $userModel->exchangeArray($userModel->fetchGuestContext());
             $user = $userModel;
         }
-        return new UserService($user->getArrayCopy(), ArrayObject::ARRAY_AS_PROPS);
+        return new UserService($user->getArrayCopy(), new Roles(), ArrayObject::ARRAY_AS_PROPS);
     }
 }

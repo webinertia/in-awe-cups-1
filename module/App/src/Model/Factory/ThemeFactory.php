@@ -12,7 +12,6 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Webinertia\ModelManager\ModelManager;
 
 final class ThemeFactory implements FactoryInterface
 {

@@ -6,7 +6,6 @@ namespace User\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Mvc\Exception\DomainException;
@@ -33,7 +32,7 @@ final class ProfileController extends AbstractAppController
      */
     public function onDispatch(MvcEvent $e)
     {
-        if (! $this->authService->hasIdentity()) {
+        if (! $this->identity()->hasIdentity()) {
             $this->redirect()->toRoute('user/login');
         }
         return parent::onDispatch($e);
@@ -42,7 +41,6 @@ final class ProfileController extends AbstractAppController
     /** @param ContainerInterface $container */
     public function init($container): self
     {
-        $this->authService      = $container->get(AuthenticationService::class);
         $this->form             = $this->formManager->get(ProfileForm::class);
         $this->sessionContainer = $container->get(Container::class);
         return $this;
@@ -51,7 +49,7 @@ final class ProfileController extends AbstractAppController
     public function viewAction(): ViewModel
     {
         try {
-            $user     = $this->loadUser();
+            $user     = $this->identity()->getIdentity();
             $userName = $this->params()->fromRoute('userName', $user->userName);
             if ($userName === $user->userName) {
                 $profileData = $user;
