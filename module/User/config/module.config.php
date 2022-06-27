@@ -19,7 +19,6 @@ return [
         'auth_identity_column'   => 'userName',
         'auth_credential_column' => 'password',
         'users_table_name'       => 'users',
-        'user_roles_table_name'  => 'user_roles',
     ],
     'router'          => [
         'routes' => [
@@ -310,20 +309,17 @@ return [
             Controller\Plugin\Acl::class      => Controller\Plugin\Factory\AclFactory::class,
         ]
     ],
-    'model_manager'   => [
-        'factories' => [
-            Model\Users::class => Model\Factory\UsersFactory::class,
-            Model\Roles::class => InvokableFactory::class,
-        ],
-    ],
     'service_manager' => [
         'aliases'   => [
+            Model\Users::class           => Db\UserGateway::class,
             Service\UserInterface::class => Service\UserService::class, // Identity controller plugin requires this alias
-            AclInterface::class => Permissions\PermissionsManager::class, // the navigation helper delegator relies on this alias
+            AclInterface::class          => Permissions\PermissionsManager::class, // the navigation helper delegator relies on this alias
         ],
         'factories' => [
             Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
+            Db\UserGateway::class                 => Db\Factory\UserGatewayFactory::class,
             Service\UserService::class            => Service\Factory\UserServiceFactory::class,
+            Model\Roles::class                    => InvokableFactory::class,
         ],
     ],
     'filters'         => [

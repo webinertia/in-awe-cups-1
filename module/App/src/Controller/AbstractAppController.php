@@ -15,7 +15,7 @@ use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use Psr\Container\ContainerInterface;
 use User\Model\Users as User;
-use Webinertia\ModelManager\ModelManager;
+use User\Db\UserGateway;
 
 use function dirname;
 
@@ -63,36 +63,21 @@ abstract class AbstractAppController extends AbstractActionController implements
 
     /** @return void */
     public function __construct(
-        ?ContainerInterface $container = null,
-        ?Request $request = null,
-        ?Config $config = null,
-        ?FormElementManager $formManager = null,
+        ?array $config = null,
         ?Logger $logger = null,
-        ?ModelManager $modelManager = null,
-        ?Settings $appSettings = null
+        ?UserGateway $userGateway = null
     ) {
-        $this->appSettings  = $appSettings;
-        $this->config       = $config;
-        $this->formManager  = $formManager;
-        $this->logger       = $logger;
-        $this->modelManager = $modelManager;
-        $this->view         = new ViewModel();
-        $this->baseUrl      = $request->getBasePath();
-        $this->basePath     = dirname(__DIR__, 4);
-        $this->usrModel     = $this->modelManager->get(User::class);
+        $this->appSettings = new Config($config['app_settings']);
+        $this->config      = $config;
+        $this->logger      = $logger;
+        $this->view        = new ViewModel();
+        $this->basePath    = dirname(__DIR__, 4);
+        $this->usrModel    = $userGateway;
 
         $this->view->setVariables([
             'appSettings' => $this->appSettings,
             'resourceId'  => null,
         ]);
-        $this->init($container);
-    }
-
-    public function init(ContainerInterface $container): self
-    {
-        $this->sessionContainer = $container->get(Container::class);
-        $this->referringUrl     = $this->sessionContainer->prevUrl;
-        return $this;
     }
 
     public function getResourceId(): string

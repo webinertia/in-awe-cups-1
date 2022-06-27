@@ -6,14 +6,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Factory;
 
-use App\Model\Settings;
-use Laminas\Config\Config;
-use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
+use User\Db\UserGateway;
 use Psr\Container\ContainerInterface;
-use Webinertia\ModelManager\ModelManager;
 
 class AppControllerFactory implements FactoryInterface
 {
@@ -27,13 +24,9 @@ class AppControllerFactory implements FactoryInterface
         ?array $options = null
     ): DispatchableInterface {
         return new $requestedName(
-            $container,
-            $container->get('Request'),
-            new Config($container->get('config')),
-            $container->get(FormElementManager::class),
+            $container->get('config'),
             $container->get(Logger::class),
-            $container->get(ModelManager::class),
-            $container->get(ModelManager::class)->get(Settings::class)
+            $container->get(UserGateway::class)
         );
     }
 }

@@ -64,21 +64,18 @@ return [
     ],
     'form_elements' => [
         'factories' => [
-            Form\PageForm::class     => Form\Factory\PageFormFactory::class,
+            Form\PageForm::class              => Form\Factory\PageFormFactory::class,
             Form\Fieldset\PageFieldset::class => Form\Fieldset\Factory\PageFieldsetFactory::class,
-        ],
-    ],
-    'model_manager' => [
-        'factories' => [
-            Model\Pages::class =>Model\Factory\PagesFactory::class,
         ],
     ],
     'service_manager' => [
         'aliases' => [
-            'navigation' => Navigation::class,
+            'navigation'       => Navigation::class,
+            //Model\Pages::class => Db\PageGateway::class,
         ],
         'factories' => [
-            Navigation::class => DefaultNavigationFactory::class,
+            Navigation::class     => DefaultNavigationFactory::class,
+            Db\PageGateway::class => Db\Factory\PageGatewayFactory::class,
         ],
     ],
     'navigation' => [

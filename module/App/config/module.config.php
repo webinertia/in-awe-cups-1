@@ -98,14 +98,10 @@ return [
             ],
         ],
     ],
-    'model_manager'   => [
-        'factories' => [
-            Model\Settings::class => Model\Factory\SettingsFactory::class,
-            Model\Theme::class    => Model\Factory\ThemeFactory::class,
-        ],
-    ],
     'service_manager' => [
         'factories' => [
+            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
+            Model\Theme::class                          => Model\Factory\ThemeFactory::class,
             Service\Email::class                        => Service\Factory\EmailFactory::class,
             Laminas\Session\SessionManager::class       => Laminas\Session\Service\SessionManagerFactory::class,
             Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
@@ -122,10 +118,12 @@ return [
         'aliases' => [
             'email'        => Controller\Plugin\Email::class,
             'redirectPrev' => Controller\Plugin\RedirectPrev::class,
+            'service'      => Controller\Plugin\ServiceLocator::class,
         ],
         'factories' => [
-            Controller\Plugin\Email::class        => Controller\Plugin\Factory\EmailFactory::class,
-            Controller\Plugin\RedirectPrev::class => Controller\Plugin\Factory\RedirectPrevFactory::class,
+            Controller\Plugin\Email::class          => Controller\Plugin\Factory\EmailFactory::class,
+            Controller\Plugin\RedirectPrev::class   => Controller\Plugin\Factory\RedirectPrevFactory::class,
+            Controller\Plugin\ServiceLocator::class => Controller\Plugin\Factory\ServiceLocatorFactory::class,
         ]
     ],
     'form_elements'   => [

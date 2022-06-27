@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace User\Service\Factory;
 
-use ArrayObject;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use User\Model\Roles;
-use User\Model\Users;
+use User\Db\UserGateway;
 use User\Service\UserService;
-use Webinertia\ModelManager\ModelManager;
 
 final class UserServiceFactory implements FactoryInterface
 {
@@ -26,17 +23,16 @@ final class UserServiceFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): UserService
     {
         $authService = $container->get(AuthenticationService::class);
-        $userModel   = $container->get(ModelManager::class)->build(Users::class);
+        $userGateway = $container->get(UserGateway::class);
         if ($authService->hasIdentity()) {
-            $user = $userModel->fetchColumns(
+            $user = $userGateway->fetchColumns(
                 'userName',
                 $authService->getIdentity(),
-                $userModel->getContextColumns()
+                $userGateway->getContextColumns()
             );
         } else {
-            $userModel->exchangeArray($userModel->fetchGuestContext());
-            $user = $userModel;
+            $user = $userGateway->fetchGuestContext();
         }
-        return new UserService($user->getArrayCopy(), new Roles(), ArrayObject::ARRAY_AS_PROPS);
+        return $user;
     }
 }

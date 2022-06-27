@@ -29,7 +29,6 @@ use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
 use User\Service\UserInterface;
-use Webinertia\ModelManager\ModelManager;
 
 use function date_default_timezone_set;
 use function explode;
@@ -45,20 +44,19 @@ final class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        $app                = $e->getApplication();
-        $eventManager       = $app->getEventManager();
-        $sm                 = $app->getServiceManager();
-        $this->modelManager = $sm->get(ModelManager::class);
-        $config             = $this->modelManager->get(Settings::class);
+        $app          = $e->getApplication();
+        $eventManager = $app->getEventManager();
+        $sm           = $app->getServiceManager();
+        $config       = $sm->get(Settings::class);
         date_default_timezone_set($config->server->time_zone);
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
-        $this->bootstrapLogging($e);
-        $themeLoader = new ThemeLoader($this->modelManager->get(Theme::class), $sm->get(TemplatePathStack::class));
+       // $this->bootstrapLogging($e);
+        $themeLoader = new ThemeLoader($sm->get(Theme::class), $sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener(
             $sm->get(UserInterface::class),
-            $this->modelManager->get(Settings::class)
+            $sm->get(Settings::class)
         );
         $layoutVariables->attach($eventManager);
         $adminListener = new AdminListener($sm->get(TemplateMapResolver::class));
@@ -70,7 +68,7 @@ final class Module
         $sm     = $e->getApplication()->getServiceManager();
         $config = $sm->get('Config');
         // db options
-        $dbOptions = [
+        $dbOptions      = [
             'idColumn'       => 'id',
             'nameColumn'     => 'name',
             'modifiedColumn' => 'modified',
@@ -95,7 +93,7 @@ final class Module
     {
         // get an instance of the service manager
         $sm       = $e->getApplication()->getServiceManager();
-        $settings = $this->modelManager->get(Settings::class);
+        $settings = $sm->get(Settings::class);
         if ($settings->server_settings->enable_translation) {
             $request = $sm->get('request');
             // get the laguages sent by the client
@@ -129,7 +127,7 @@ final class Module
     {
         //TODO move this to config backed factory
         $sm                = $e->getapplication()->getServiceManager();
-        $settings          = $this->modelManager->get(Settings::class);
+        $settings          = $sm->get(Settings::class);
         $config            = $sm->get('config');
         $logger            = $sm->get(Logger::class);
         $writer            = new Dbwriter($sm->get(AdapterInterface::class), $config['db']['log_table_name']);

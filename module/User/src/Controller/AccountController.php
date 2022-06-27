@@ -7,6 +7,7 @@ namespace User\Controller;
 use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
 use Laminas\Authentication\Result;
+use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
@@ -25,8 +26,8 @@ final class AccountController extends AbstractAppController
 
     public function loginAction(): ViewModel
     {
-        //$this->view->setVariable('user', $this->loadUser());
-        $form = $this->formManager->get(LoginForm::class);
+        $formManager = $this->service()->get(FormElementManager::class);
+        $form        = $formManager->get(LoginForm::class);
         if (! $this->request->isPost()) {
             $this->view->setVariable('form', $form);
             return $this->view;
@@ -38,13 +39,12 @@ final class AccountController extends AbstractAppController
             $this->view->setVariable('form', $form);
             return $this->view;
         }
-        // we should have valid data that is filtered and validated by this point
-        $this->usrModel->exchangeArray($form->getData()['login-data']);
-        $loginResult = $this->usrModel->login($this->usrModel);
+        $loginData   = $form->getData()['login-data'];
+        $loginResult = $this->usrModel->login($loginData['userName'], $loginData['password']);
         if ($loginResult->isValid()) {
-            $this->usrModel->exchangeArray($this->usrModel->fetchByColumn('userName', $loginResult->getIdentity()));
+            $userInterface = $this->usrModel->fetchByColumn('userName', $loginResult->getIdentity());
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
-            return $this->redirect()->toRoute('user/profile', ['userName' => $this->usrModel->userName]);
+            return $this->redirect()->toRoute('user/profile', ['userName' => $userInterface->userName]);
         } else {
             $messages = $loginResult->getMessages();
             switch ($loginResult->getCode()) {

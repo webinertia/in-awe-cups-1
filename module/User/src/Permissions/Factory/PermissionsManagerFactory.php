@@ -10,15 +10,13 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Model\Roles;
 use User\Permissions\PermissionsManager;
-use Webinertia\ModelManager\ModelManager;
 
 final class PermissionsManagerFactory implements FactoryInterface
 {
     /** @param string $requestedName */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PermissionsManager
     {
-        $config       = new Config($container->get('Config'));
-        $modelManager = $container->get(ModelManager::class);
-        return new PermissionsManager(new Acl(), $modelManager->get(Roles::class), $config);
+        $config = new Config($container->get('Config'));
+        return new PermissionsManager(new Acl(), $container->get(Roles::class), $config);
     }
 }

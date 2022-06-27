@@ -11,9 +11,8 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use User\Model\Users;
+use User\Db\UserGateway;
 use User\Permissions\PermissionsManager;
-use Webinertia\ModelManager\ModelManager;
 
 final class PageFormFactory implements FactoryInterface
 {
@@ -28,8 +27,8 @@ final class PageFormFactory implements FactoryInterface
         return new PageForm(
             $container->get(AuthenticationService::class),
             $container->get(PermissionsManager::class),
-            $container->get(ModelManager::class)->get(Users::class),
-            $container->get(ModelManager::class)->get(Settings::class),
+            $container->get(UserGateway::class),
+            $container->get(Settings::class),
             $options
         );
     }

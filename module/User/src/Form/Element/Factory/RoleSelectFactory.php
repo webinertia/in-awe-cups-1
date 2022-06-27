@@ -8,7 +8,6 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Form\Element\RoleSelect;
 use User\Model\Roles;
-use Webinertia\ModelManager\ModelManager;
 
 final class RoleSelectFactory implements FactoryInterface
 {
@@ -18,7 +17,7 @@ final class RoleSelectFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): RoleSelect
     {
-        $roles      = ($container->get(ModelManager::class))->get(Roles::class);
+        $roles      = $container->get(Roles::class);
         $roleSelect = new RoleSelect('role');
         $roleSelect->setValueOptions($roles->getSelectData());
         return $roleSelect;

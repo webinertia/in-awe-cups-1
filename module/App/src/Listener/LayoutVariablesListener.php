@@ -10,7 +10,6 @@ use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\MvcEvent;
 use User\Service\UserInterface;
-use Webinertia\ModelManager\ModelManager;
 
 final class LayoutVariablesListener extends AbstractListenerAggregate
 {

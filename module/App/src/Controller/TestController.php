@@ -12,7 +12,6 @@ use App\Controller\AbstractAppController;
 use Laminas\View\Model\ViewModel;
 use User\Form\UserForm;
 use User\Model\Users;
-use Webinertia\ModelManager\ModelManager;
 
 use function array_merge_recursive;
 
@@ -20,13 +19,6 @@ final class TestController extends AbstractAppController
 {
     /** @var UserForm $form */
     protected $form;
-
-    public function init($container): self
-    {
-        $this->modelManager = $container->get(ModelManager::class);
-        $this->userModel    = $this->modelManager->get(Users::class);
-        return $this;
-    }
 
     public function indexAction(): ViewModel
     {

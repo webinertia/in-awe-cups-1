@@ -7,6 +7,7 @@ namespace User\Controller;
 use App\Controller\AbstractAppController;
 use App\Service\Email;
 use DateTime;
+use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use User\Filter\RegistrationHash as Filter;
 use User\Form\UserForm;
@@ -30,7 +31,8 @@ class RegisterController extends AbstractAppController
      */
     public function indexAction(): object
     {
-        $this->form = $this->formManager->get(UserForm::class);
+
+        $this->form = $this->service()->get(FormElementManager::class)->get(UserForm::class);
         $sm         = $this->getEvent()->getApplication()->getServiceManager();
         // if registration is disabled return as there is nothing more to do
         if (! $this->appSettings->security->enable_registration) {

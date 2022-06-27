@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb1ea43c5d60e15de15f5c383f2ef851",
+    "content-hash": "515aaab3833d7cd26c96c87ec9037719",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -5738,65 +5738,6 @@
                 }
             ],
             "time": "2021-04-19T16:34:45+00:00"
-        },
-        {
-            "name": "webinertia/webinertia-modelmanager",
-            "version": "0.0.15",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webinertia/modelmanager.git",
-                "reference": "d2a1c53329a7c39ffaa748e908540b0043d22e99"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/modelmanager/zipball/d2a1c53329a7c39ffaa748e908540b0043d22e99",
-                "reference": "d2a1c53329a7c39ffaa748e908540b0043d22e99",
-                "shasum": ""
-            },
-            "require": {
-                "laminas/laminas-component-installer": "^2.6",
-                "laminas/laminas-db": "^2.14.1",
-                "laminas/laminas-eventmanager": "^3.4.0",
-                "laminas/laminas-permissions-acl": "^2.9.0",
-                "laminas/laminas-servicemanager": "^3.11.1",
-                "php": "^7.3 || ~8.0.0"
-            },
-            "suggest": {
-                "laminas/laminas-component-installer": "^2.6, required for configuration injection",
-                "laminas/laminas-db": "^2.14.1",
-                "laminas/laminas-eventmanager": "^3.4.0, required for tablegateway event feature",
-                "laminas/laminas-permissions-acl": "^2.9.0, required for acl integration for ownership assertion",
-                "laminas/laminas-servicemanager": "^3.11.1, required to use the model factories or provide services"
-            },
-            "type": "library",
-            "extra": {
-                "laminas": {
-                    "component": "Webinertia\\ModelManager",
-                    "config-provider": "Webinertia\\ModelManager\\ConfigProvider"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Webinertia\\ModelManager\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Factory Driven Model container",
-            "homepage": "https://github.com/webinertia/modelmanager",
-            "keywords": [
-                "model",
-                "webinertia"
-            ],
-            "support": {
-                "chat": "https://github.com/webinertia/modelmanager/discussions",
-                "docs": "https://github.com/webinertia/modelmanager/wiki",
-                "issues": "https://github.com/webinertia/modelmanager/issues",
-                "source": "https://github.com/webinertia/modelmanager"
-            },
-            "time": "2022-06-26T19:02:13+00:00"
         },
         {
             "name": "webinertia/webinertia-utils",
