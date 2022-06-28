@@ -301,8 +301,8 @@ return [
     ],
     'controller_plugins' => [
         'aliases' => [
-            'identity'  => Controller\Plugin\Identity::class,
-            'acl'       => Controller\Plugin\Acl::class,
+            'identity' => Controller\Plugin\Identity::class,
+            'acl'      => Controller\Plugin\Acl::class,
         ],
         'factories' => [
             Controller\Plugin\Identity::class => Controller\Plugin\Factory\IdentityFactory::class,
@@ -313,13 +313,12 @@ return [
         'aliases'   => [
             Model\Users::class           => Db\UserGateway::class,
             Service\UserInterface::class => Service\UserService::class, // Identity controller plugin requires this alias
-            AclInterface::class          => Permissions\PermissionsManager::class, // the navigation helper delegator relies on this alias
         ],
         'factories' => [
-            Permissions\PermissionsManager::class => Permissions\Factory\PermissionsManagerFactory::class,
-            Db\UserGateway::class                 => Db\Factory\UserGatewayFactory::class,
-            Service\UserService::class            => Service\Factory\UserServiceFactory::class,
-            Model\Roles::class                    => InvokableFactory::class,
+            AclInterface::class        => Acl\AclFactory::class,
+            Db\UserGateway::class      => Db\Factory\UserGatewayFactory::class,
+            Service\UserService::class => Service\Factory\UserServiceFactory::class,
+            Model\Roles::class         => InvokableFactory::class,
         ],
     ],
     'filters'         => [

@@ -39,4 +39,9 @@ final class Identity extends AbstractPlugin
     {
         return $this->userInterface;
     }
+
+    public function getLogData(): array
+    {
+        return $this->userInterface->getLogData();
+    }
 }

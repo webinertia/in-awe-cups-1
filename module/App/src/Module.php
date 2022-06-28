@@ -9,7 +9,6 @@ use App\Listener\LayoutVariablesListener;
 use App\Listener\ThemeLoader;
 use App\Model\Settings;
 use App\Model\Theme;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\TableGateway;
@@ -51,7 +50,7 @@ final class Module
         date_default_timezone_set($config->server->time_zone);
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
-       // $this->bootstrapLogging($e);
+        $this->bootstrapLogging($e);
         $themeLoader = new ThemeLoader($sm->get(Theme::class), $sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener(
@@ -141,8 +140,8 @@ final class Module
             $logger->addWriter($firePhpWriter);
         }
 
-        $dbFormatter = new DbFormatter();
-        $dbFormatter->setDateTimeFormat($settings->timeFormat);
+        $dbFormatter = new DbFormatter($settings->log->time_format);
+       // $dbFormatter->setDateTimeFormat($settings->timeFormat);
         $writer->setFormatter($dbFormatter);
         $logger->addWriter($writer);
         if ($settings->server->enable_error_log) {

@@ -9,8 +9,8 @@ namespace App\Controller\Factory;
 use Laminas\Log\Logger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
-use User\Db\UserGateway;
 use Psr\Container\ContainerInterface;
+use User\Db\UserGateway;
 
 class AppControllerFactory implements FactoryInterface
 {
@@ -23,10 +23,8 @@ class AppControllerFactory implements FactoryInterface
         $requestedName,
         ?array $options = null
     ): DispatchableInterface {
-        return new $requestedName(
-            $container->get('config'),
-            $container->get(Logger::class),
-            $container->get(UserGateway::class)
-        );
+        $controller = new $requestedName($container->get('config'), $container->get(UserGateway::class));
+        $controller->setLogger($container->get(Logger::class));
+        return $controller;
     }
 }

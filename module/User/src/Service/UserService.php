@@ -53,6 +53,7 @@ final class UserService extends ArrayObject implements UserInterface, ModelInter
         return [
             'userId'    => $this->offsetGet('id'),
             'userName'  => $this->offsetGet('userName'),
+            'role'      => $this->getGroupName(),
             'firstName' => $this->offsetExists('firstName') ? $this->offsetGet('firstName') : null,
             'lastName'  => $this->offsetExists('lastName') ? $this->offsetGet('lastName') : null,
         ];
