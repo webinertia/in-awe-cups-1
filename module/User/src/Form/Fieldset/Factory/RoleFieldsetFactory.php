@@ -10,7 +10,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Form\Fieldset\RoleFieldset;
 use User\Model\Roles;
-use Webinertia\ModelManager\ModelManager;
 
 final class RoleFieldsetFactory implements FactoryInterface
 {
@@ -22,6 +21,6 @@ final class RoleFieldsetFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): RoleFieldset
     {
-        return new RoleFieldset($container->get(ModelManager::class)->get(Roles::class));
+        return new RoleFieldset($container->get(Roles::class));
     }
 }

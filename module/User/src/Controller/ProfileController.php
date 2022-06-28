@@ -8,11 +8,11 @@ use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
+use Laminas\Form\FormElementManager;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
-use Psr\Container\ContainerInterface;
 use RuntimeException;
 use User\Form\ProfileForm;
 use User\Model\Users;
@@ -38,14 +38,6 @@ final class ProfileController extends AbstractAppController
         return parent::onDispatch($e);
     }
 
-    /** @param ContainerInterface $container */
-    public function init($container): self
-    {
-        $this->form             = $this->formManager->get(ProfileForm::class);
-        $this->sessionContainer = $container->get(Container::class);
-        return $this;
-    }
-
     public function viewAction(): ViewModel
     {
         try {
@@ -57,23 +49,27 @@ final class ProfileController extends AbstractAppController
                 $profileData = $this->usrModel->fetchByColumn('userName', $userName);
             }
             $this->view->setVariable('data', $profileData);
-            return $this->view;
         } catch (RuntimeException $e) {
-        //$this->logger->err($e->getMessage());
+            $this->getLogger()->err($e->getMessage(), $this->identity()->getLogData());
+            $this->view->setVariables(['message' => 'User not found', 'reason' => null]);
+            $this->response->setStatusCode(404);
         }
+        return $this->view;
     }
 
     public function editProfileAction(): mixed
     {
-        $this->form = $this->formManager->build(ProfileForm::class, ['mode' => FormInterface::EDIT_MODE]);
-        $userName   = $this->params()->fromRoute('userName');
-        $user       = $this->usrModel->fetchByColumn('userName', $this->params()->fromRoute('userName'));
+        $form = $this->service()->get(FormElementManager::class)->build(
+            ProfileForm::class,
+            ['mode' => FormInterface::EDIT_MODE]
+        );
+        $user = $this->usrModel->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         if (! $this->request->isPost()) {
-            foreach ($this->form->getFieldsets() as $fieldset) {
+            foreach ($form->getFieldsets() as $fieldset) {
                 $fieldset->populateValues($user->getArrayCopy());
             }
             return [
-                'form' => $this->form,
+                'form' => $form,
             ];
         }
         // is this post?
@@ -83,9 +79,9 @@ final class ProfileController extends AbstractAppController
                 $this->request->getFiles()->toArray()
             );
             unset($merged['submit']);
-            $this->form->setData($merged);
-            if ($this->form->isValid()) {
-                $data       = $this->form->getData();
+            $form->setData($merged);
+            if ($form->isValid()) {
+                $data       = $form->getData();
                 $fileFilter = new RenameUpload();
                 // set it to randomize the file name
                 $fileFilter->setRandomize(true);
@@ -100,17 +96,17 @@ final class ProfileController extends AbstractAppController
                 $baseName                             = $baseNameFilter->filter($filtered['tmp_name']);
                 $data['profile-data']['profileImage'] = $baseName;
                 try {
-                    //$result = $user->update($profile->toArray(), ['userId' => $profile->userId]);
-                    $this->usrModel->exchangeArray(
-                        array_merge($data['acct-data'], $data['profile-data'], $data['role-data'])
-                    );
-                    $result = $this->usrModel->update($this->usrModel);
+                    $result = $this->usrModel->update(array_merge(
+                        $data['acct-data'],
+                        $data['profile-data'],
+                        $data['role-data']
+                    ));
                 } catch (RuntimeException $e) {
-                    echo $e->getMessage();
+                    $this->getLogger()->err($e->getMessage(), $this->identity()->getLogData());
                 }
             }
         }
-        $this->view->setVariable('form', $this->form);
+        $this->view->setVariable('form', $form);
         return $this->view;
     }
 }

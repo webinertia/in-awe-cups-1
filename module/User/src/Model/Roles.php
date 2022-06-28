@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace User\Model;
 
+use App\Model\ModelInterface;
 use Laminas\Config\Reader\Json;
-use Webinertia\ModelManager\ModelInterface;
 
 use function dirname;
 

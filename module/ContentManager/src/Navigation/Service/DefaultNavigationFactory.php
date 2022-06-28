@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace ContentManager\Navigation\Service;
 
-use ContentManager\Model\Pages;
+use ContentManager\Db\PageGateway;
 use ContentManager\Navigation\Navigation;
 use Laminas\Navigation\Exception\InvalidArgumentException;
 use Laminas\Navigation\Service\AbstractNavigationFactory;
 use Psr\Container\ContainerInterface;
-use Webinertia\ModelManager\ModelManager;
 
 use function array_merge;
 use function sprintf;
@@ -19,8 +18,6 @@ use function sprintf;
  */
 final class DefaultNavigationFactory extends AbstractNavigationFactory
 {
-    /** @var ModelManager $modelManager */
-    protected $modelManager;
     /** @var Pages $pages */
     protected $pageModel;
     /** @var array $pageMenu */
@@ -34,9 +31,8 @@ final class DefaultNavigationFactory extends AbstractNavigationFactory
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        $this->modelManager = $container->get(ModelManager::class);
-        $this->pageModel    = $this->modelManager->get(Pages::class);
-        $this->pageMenu     = $this->pageModel->fetchMenu();
+        $this->pageModel = $container->get(PageGateway::class);
+        $this->pageMenu  = $this->pageModel->fetchMenu();
         return new Navigation($this->getPages($container));
     }
 

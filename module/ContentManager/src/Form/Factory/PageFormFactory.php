@@ -6,14 +6,11 @@ namespace ContentManager\Form\Factory;
 
 use App\Model\Settings;
 use ContentManager\Form\PageForm;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use User\Model\Users;
-use User\Permissions\PermissionsManager;
-use Webinertia\ModelManager\ModelManager;
+use User\Db\UserGateway;
 
 final class PageFormFactory implements FactoryInterface
 {
@@ -26,10 +23,8 @@ final class PageFormFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PageForm
     {
         return new PageForm(
-            $container->get(AuthenticationService::class),
-            $container->get(PermissionsManager::class),
-            $container->get(ModelManager::class)->get(Users::class),
-            $container->get(ModelManager::class)->get(Settings::class),
+            $container->get(UserGateway::class),
+            $container->get(Settings::class),
             $options
         );
     }

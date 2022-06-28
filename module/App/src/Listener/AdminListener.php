@@ -13,15 +13,10 @@ use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Throwable;
-use User\Model\Users;
 use User\Permissions\Exception\PrivilegeException;
-use User\Permissions\PermissionsManager;
-use Webinertia\ModelManager\ModelManager;
 
 class AdminListener extends AbstractListenerAggregate
 {
-    /** @var PermissionsManager $acl */
-    protected $acl;
     /** @var AuthenticationService $authService */
     protected $authService;
     /** @var ModelManager $modelManager */

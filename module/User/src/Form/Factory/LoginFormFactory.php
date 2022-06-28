@@ -10,7 +10,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use User\Form\LoginForm;
-use Webinertia\ModelManager\ModelManager;
 
 final class LoginFormFactory implements FactoryInterface
 {
@@ -22,6 +21,6 @@ final class LoginFormFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): LoginForm
     {
-        return new LoginForm($container->get(ModelManager::class)->get(Settings::class));
+        return new LoginForm($container->get(Settings::class));
     }
 }

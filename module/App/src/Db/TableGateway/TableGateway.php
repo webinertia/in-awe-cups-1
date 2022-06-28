@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace User\Model;
+namespace App\Db\TableGateway;
 
-use Application\Model\AbstractModel;
 use Laminas\Db\ResultSet\ResultSet;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\TableGateway\Exception\RuntimeException;
 use Laminas\Db\TableGateway\Feature\EventFeature;
 use Laminas\Db\TableGateway\Feature\FeatureSet;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\EventManager\EventManagerInterface;
-use Webinertia\ModelManager\TableGateway\TableGateway;
+use Laminas\EventManager\EventManager;
 
-final class UsersTableGateway extends TableGateway
+class TableGateway extends AbstractTableGateway
 {
     /**
      * Name of the database table
@@ -26,12 +25,13 @@ final class UsersTableGateway extends TableGateway
      * @param string $table (database table name)
      * @param AbstractModel $arrayObjectPrototype
      * @param bool $enableEvents
+     * @param null|string $listener
      * @return void
      * @throws RuntimeException
      */
     public function __construct(
         $table,
-        ?EventManagerInterface $eventManagerInterface = null,
+        ?EventManager $eventManager = null,
         ?ResultSet $resultSetPrototype = null,
         $enableEvents = false,
         ?AbstractListenerAggregate $listener = null
@@ -44,8 +44,8 @@ final class UsersTableGateway extends TableGateway
         // Add the desired features
         $this->featureSet->addFeature(new GlobalAdapterFeature());
         // if we have an instance of the events manager and events are enabled, add the event feature
-        if ($enableEvents && $listener instanceof AbstractListenerAggregate) {
-            $eventFeature = new EventFeature($eventManagerInterface);
+        if ($enableEvents && $eventManager instanceof EventManager && $listener instanceof AbstractListenerAggregate) {
+            $eventFeature = new EventFeature($eventManager);
             $eventManager = $eventFeature->getEventManager();
             $listener->attach($eventManager);
             $this->featureSet->addFeature($eventFeature);

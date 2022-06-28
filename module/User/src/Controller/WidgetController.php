@@ -12,7 +12,7 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\Paginator;
 use Laminas\View\Model\ViewModel;
-use User\Model\Users;
+use User\Db\UserGateway;
 use Zend\Paginator\AdapterPluginManager;
 
 final class WidgetController extends AbstractAppController
@@ -26,9 +26,9 @@ final class WidgetController extends AbstractAppController
     public function onDispatch(MvcEvent $e): mixed
     {
         $this->group = $this->getEvent()->getRouteMatch()->getParam('group', 'all');
-
+        $sm = $e->getApplication()->getServiceManager();
         $config = $this->config;
-        $table  = $this->modelManager->get(Users::class);
+        $table  = $sm->get(UserGateway::class);
         $sql    = $table->getSql();
         $select = new Select();
         $select->from('users')->order(['users.role ASC']);

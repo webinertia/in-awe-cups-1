@@ -247,7 +247,7 @@ final class Email implements ResourceInterface
         }
     }
 
-    /** Return the PermissionsManager resourceId */
+    /** Return the AclInterface resourceId */
     public function getResourceId(): string
     {
         return $this->resourceId;

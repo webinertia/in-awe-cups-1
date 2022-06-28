@@ -8,9 +8,7 @@ use App\Form\BaseForm;
 use App\Form\FormInterface;
 use App\Model\Settings;
 use ContentManager\Form\Fieldset\PageFieldset;
-use Laminas\Authentication\AuthenticationService;
-use User\Model\Users;
-use User\Permissions\PermissionsManager;
+use User\Db\UserGateway as User;
 
 final class PageForm extends BaseForm
 {
@@ -20,15 +18,11 @@ final class PageForm extends BaseForm
      * @throws InvalidArgumentException
      */
     public function __construct(
-        AuthenticationService $auth,
-        PermissionsManager $pm,
-        Users $usrModel,
+        User $user,
         Settings $appSettings,
         $options = []
     ) {
-        $this->auth        = $auth;
-        $this->pm          = $pm;
-        $this->usrModel    = $usrModel;
+        $this->user        = $user;
         $this->appSettings = $appSettings;
         parent::__construct('page-form');
         if (! empty($options) && isset($options['mode'])) {

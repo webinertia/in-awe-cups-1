@@ -68,7 +68,7 @@ class UserForm extends BaseForm
         $acctData = $manager->build(AcctDataFieldset::class, ['mode' => $options['mode']]);
         $this->add($acctData, ['priority' => 1]);
         // we will use this in both mode(s), but only if the user is already logged in and has privilege
-        if ($this->acl->isAllowed($this->userInterface, 'roles', 'edit')) {
+        if ($this->acl->isAllowed($this->userInterface, 'roles', 'assign')) {
             $this->add([
                 'type' => RoleFieldset::class,
             ]);
