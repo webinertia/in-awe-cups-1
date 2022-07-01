@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ContentManager\Form\Fieldset;
 
 use App\Form\FormInterface;
-use ContentManager\Model\Pages;
+use ContentManager\Db\PageGateway;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
@@ -17,7 +17,7 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
 {
     /** @var Pages $model */
     /** @return void */
-    public function __construct(Pages $model, ?array $options = null)
+    public function __construct(PageGateway $model, ?array $options = null)
     {
         $this->model = $model;
         parent::__construct('page-data');

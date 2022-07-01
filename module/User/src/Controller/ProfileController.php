@@ -46,7 +46,7 @@ final class ProfileController extends AbstractAppController
             if ($userName === $user->userName) {
                 $profileData = $user;
             } else {
-                $profileData = $this->usrModel->fetchByColumn('userName', $userName);
+                $profileData = $this->usrGateway->fetchByColumn('userName', $userName);
             }
             $this->view->setVariable('data', $profileData);
         } catch (RuntimeException $e) {
@@ -63,7 +63,7 @@ final class ProfileController extends AbstractAppController
             ProfileForm::class,
             ['mode' => FormInterface::EDIT_MODE]
         );
-        $user = $this->usrModel->fetchByColumn('userName', $this->params()->fromRoute('userName'));
+        $user = $this->usrGateway->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         if (! $this->request->isPost()) {
             foreach ($form->getFieldsets() as $fieldset) {
                 $fieldset->populateValues($user->getArrayCopy());
@@ -96,7 +96,7 @@ final class ProfileController extends AbstractAppController
                 $baseName                             = $baseNameFilter->filter($filtered['tmp_name']);
                 $data['profile-data']['profileImage'] = $baseName;
                 try {
-                    $result = $this->usrModel->update(array_merge(
+                    $result = $this->usrGateway->update(array_merge(
                         $data['acct-data'],
                         $data['profile-data'],
                         $data['role-data']

@@ -22,7 +22,7 @@ final class PasswordController extends AbstractAppController
             $step = $this->params('step', 'zero');
             $this->logger->log(6, "$step");
             $dateTime = new DateTime('NOW');
-            $options  = ['db' => $this->usrModel, 'enableCaptcha' => $this->appSettings->security->enable_captcha];
+            $options  = ['db' => $this->usrGateway, 'enableCaptcha' => $this->appSettings->security->enable_captcha];
             $form     = new ResetPassword(null, $options);
             $this->view->setVariable('showForm', true);
             switch ($step) {
@@ -43,7 +43,7 @@ final class PasswordController extends AbstractAppController
                         if ($form->isValid()) {
                             $data = $form->getData();
                         }
-                        $user = $this->usrModel->fetchByColumn('email', $post['email']);
+                        $user = $this->usrGateway->fetchByColumn('email', $post['email']);
                         if ($user instanceof Users) {
                             $filter               = new RegistrationHash();
                             $hash                 = $filter->filter(['email' => $post['email'], 'timestamp' => $post['resetTimeStamp']]);
@@ -71,7 +71,7 @@ final class PasswordController extends AbstractAppController
                 case 'reset-password':
                     try {
                         $token = $this->request->getQuery('token');
-                        $user  = $this->usrModel->fetchByColumn('resetHash', $token);
+                        $user  = $this->usrGateway->fetchByColumn('resetHash', $token);
                     } catch (Throwable $th) {
                         $this->logger->log(5, 'Unknown user from IP:' . $this->request->getServer('REMOTE_ADDR') . ' attempted to reset password with invalid or expired token');
                         $this->flashMessenger()

@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Laminas\Config\Config;
-use Laminas\Form\FormElementManager;
 use Laminas\Log\LoggerAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
-use Psr\Container\ContainerInterface;
 use User\Db\UserGateway;
-use User\Model\Users as User;
 
 use function dirname;
 
@@ -29,15 +26,6 @@ abstract class AbstractAppController extends AbstractActionController implements
     /** @var string $basePath */
     public $basePath;
 
-    /** @var ContainerInterface $container */
-    private $container;
-
-    /** @var FormElementManager $formManager */
-    protected $formManager;
-
-    /** @var ModelManager $modelManager */
-    protected $modelManager;
-
     /** @var string $referringUrl */
     public $referringUrl;
 
@@ -47,9 +35,9 @@ abstract class AbstractAppController extends AbstractActionController implements
     /**
      * Shared instance
      *
-     * @var User\Model\Users $usrModel
+     * @var UserGateway
      * */
-    protected $usrModel;
+    protected $usrGateway;
 
     /** @var Logger $logger */
     protected $logger;
@@ -69,7 +57,7 @@ abstract class AbstractAppController extends AbstractActionController implements
         $this->config      = $config;
         $this->view        = new ViewModel();
         $this->basePath    = dirname(__DIR__, 4);
-        $this->usrModel    = $userGateway;
+        $this->usrGateway  = $userGateway;
 
         $this->view->setVariables([
             'appSettings' => $this->appSettings,

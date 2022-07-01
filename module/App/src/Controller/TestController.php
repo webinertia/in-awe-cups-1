@@ -12,6 +12,7 @@ use App\Controller\AbstractAppController;
 use Laminas\View\Model\ViewModel;
 use User\Form\UserForm;
 use User\Model\Users;
+use Webinertia\Utils\Debug;
 
 use function array_merge_recursive;
 
@@ -23,9 +24,10 @@ final class TestController extends AbstractAppController
     public function indexAction(): ViewModel
     {
        $currentUser = $this->identity()->getIdentity();
-       $testUser = $this->userModel->fetchColumns('userName', 'jsmith', ['id', 'userName', 'role']);
+       $testUser = $this->usrGateway->fetchColumns('userName', 'jsmith');
        $testOwnerOwnerId = $testUser->getOwnerId();
-            echo $this->acl()->isAllowed($this->identity()->getIdentity(), $testUser, 'edit') ? 'allowed' : 'not allowed';
+           // echo $this->acl()->isAllowed($this->identity()->getIdentity(), $testUser, 'edit') ? 'allowed' : 'not allowed';
+            Debug::dump(opcache_get_configuration());
         return $this->view;
     }
 }

@@ -9,12 +9,12 @@ return [
         'BjyProfiler',
     ],
     'view_manager'    => [
-        'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404-dev',
-        'exception_template'       => 'error/index',
-        'template_map'             => [],
+    'display_not_found_reason' => true,
+    'display_exceptions'       => true,
+    'doctype'                  => 'HTML5',
+    'not_found_template'       => 'error/404-dev',
+    'exception_template'       => 'error/index',
+    'template_map'             => [],
     ],
     // Configuration overrides during development mode
     'module_listener_options' => [

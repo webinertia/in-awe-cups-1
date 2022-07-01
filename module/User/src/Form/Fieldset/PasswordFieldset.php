@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use Laminas\Config\Config;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Form\Element\Password;
@@ -17,17 +16,14 @@ use User\Filter\PasswordFilter;
 
 final class PasswordFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /** @var array $config */
-    protected $config;
     /**
      * @param mixed $name
      * @param mixed $options
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct(Config $appSettings, $name = null, $options = null)
+    public function __construct($name = null, $options = null)
     {
-        $this->appSettings = $appSettings;
         parent::__construct('password-data');
         if (! empty($options)) {
             $this->setOptions($options);

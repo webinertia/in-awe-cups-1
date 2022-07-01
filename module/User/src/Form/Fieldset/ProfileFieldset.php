@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use App\Model\Settings;
 use Laminas\Filter\DateTimeFormatter;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
@@ -30,7 +29,7 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct(?Settings $appSettings = null, $options = [])
+    public function __construct(array $appSettings = [], $options = [])
     {
         $this->appSettings = $appSettings;
         parent::__construct('profile-data');
@@ -150,7 +149,7 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
                         'name'    => DateTimeFormatter::class,
                         'options' => [ // This is for any options that will be passed as the filters $options
                             // this sets the filters format to what is set in the app settings file
-                            'format' => $this->appSettings->server->time_format,
+                            'format' => $this->appSettings['server']['time_format'],
                         ],
                     ],
                 ],

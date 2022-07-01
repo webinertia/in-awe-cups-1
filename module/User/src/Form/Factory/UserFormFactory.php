@@ -23,7 +23,6 @@ final class UserFormFactory implements FactoryInterface
         return new $requestedName(
             $container->get(AclInterface::class),
             $container->get(UserInterface::class),
-            $container->get(Settings::class),
             $options
         );
     }

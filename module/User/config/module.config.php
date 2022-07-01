@@ -168,6 +168,20 @@ return [
                                     ],
                                 ],
                             ],
+                            'staff-activate' => [
+                                'type'          => Segment::class,
+                                'may_terminate' => true,
+                                'options'       => [
+                                    'route'       => '/user/account/staff-activate[/:userName]',
+                                    'constraints' => [
+                                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults'    => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action'     => 'staffActivate',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
