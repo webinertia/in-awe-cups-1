@@ -13,11 +13,11 @@ use Laminas\View\Renderer\PhpRenderer;
 <html lang="en" prefix="og: http://ogp.me/ns#">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle($this->appSettings->view->site_name ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($this->appSettings['view']['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php
         if (! $this->renderPage) {
-            $this->headMeta()->prependName('keywords', $this->appSettings->seo->key_words ?? '');
+            $this->headMeta()->prependName('keywords', $this->appSettings['seo']['key_words'] ?? '');
         }
         $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
@@ -52,7 +52,7 @@ use Laminas\View\Renderer\PhpRenderer;
                     >
                      <span class="navbar-toggler-icon"></span>
                     </button>
-                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate($this->appSettings->view->site_name ?? 'Home'); ?></a>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>"><?= $this->translate($this->appSettings['view']['site_name'] ?? 'Home'); ?></a>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <?php
@@ -87,7 +87,7 @@ use Laminas\View\Renderer\PhpRenderer;
                 }
                 ?>
                 <?php
-                if($this->appSettings->view->show_breadcrumbs):
+                if($this->appSettings['view']['show_breadcrumbs']):
                     $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
                 endif;
                 ?>
@@ -96,10 +96,10 @@ use Laminas\View\Renderer\PhpRenderer;
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="<?= $this->appSettings->view->copyright_link ?? '#'; ?>">
-                    <?= $this->appSettings->view->copyright_text ?? 'Default text'; ?></a>
+                    <a href="<?= $this->appSettings['view']['copyright_link'] ?? '#'; ?>">
+                    <?= $this->appSettings['view']['copyright_text'] ?? 'Default text'; ?></a>
                     |
-                    <?= $this->appSettings->view->footer_text ?? 'Default Text'; ?>
+                    <?= $this->appSettings['view']['footer_text'] ?? 'Default Text'; ?>
                 </p>
                 <?php
                 // if(!$this->auth->hasIdentity())

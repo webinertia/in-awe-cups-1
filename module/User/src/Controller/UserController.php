@@ -24,7 +24,7 @@ final class UserController extends AbstractAppController
                 $hasMessage = true;
             }
             $this->view->setVariable('hasMessage', $hasMessage);
-            $this->view->setVariable('users', $this->usrModel->fetchAll());
+            $this->view->setVariable('users', $this->usrGateway->fetchAll());
             return $this->view;
         } catch (RuntimeException $e) {
         }

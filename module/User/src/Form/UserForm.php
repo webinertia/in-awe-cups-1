@@ -14,7 +14,6 @@ namespace User\Form;
 use App\Form\BaseForm;
 use App\Form\Fieldset\SecurityFieldset;
 use App\Form\FormInterface;
-use App\Model\Settings;
 use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Permissions\Acl\AclInterface;
 use User\Form\Fieldset\AcctDataFieldset;
@@ -29,8 +28,6 @@ class UserForm extends BaseForm
     protected $acl;
     /** @var UserInterface $userInterface */
     protected $userInterface;
-    /** @var Settings $appSettings */
-    protected $appSettings;
     /** @var string $mode */
     protected $mode;
 
@@ -42,12 +39,10 @@ class UserForm extends BaseForm
     public function __construct(
         AclInterface $acl,
         UserInterface $userInterface,
-        Settings $appSettings,
         $options = []
     ) {
         $this->acl           = $acl;
         $this->userInterface = $userInterface;
-        $this->appSettings   = $appSettings;
         parent::__construct('user-form');
         if (! empty($options) && isset($options['mode'])) {
             parent::setOptions($options);

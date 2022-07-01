@@ -7,14 +7,15 @@ use Laminas\View\Renderer\PhpRenderer;
 /**
  * @var PhpRenderer $this
  */
+$this->user = $this->identity()->getIdentity();
 ?>
 <?= $this->doctype() ?>
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle($this->appSettings->view->site_name ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($this->appSettings['view']['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
         <?= $this->headMeta()
-            ->prependName('keywords', $this->appSettings->seo->key_words ?? '')
+            ->prependName('keywords', $this->appSettings['seo']['key_words'] ?? '')
             ->appendName('viewport', 'width=device-width, initial-scale=1.0, shrink-to-fit=no')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
@@ -253,7 +254,7 @@ use Laminas\View\Renderer\PhpRenderer;
           <!-- partial:partials/_footer.html -->
           <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">&copy; <?=date('Y')?> <a href="<?= $this->appSettings->view->copyright_link ?? '#'; ?>"><?=$this->appSettings->view->copyright_text ?? 'Default Text'; ?></a> </span>
+              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">&copy; <?=date('Y')?> <a href="<?= $this->appSettings['view']['copyright_link'] ?? '#'; ?>"><?=$this->appSettings['view']['copyright_text'] ?? 'Default Text'; ?></a> </span>
               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
             </div>
           </footer>

@@ -40,9 +40,9 @@ final class AccountController extends AbstractAppController
             return $this->view;
         }
         $loginData   = $form->getData()['login-data'];
-        $loginResult = $this->usrModel->login($loginData['userName'], $loginData['password']);
+        $loginResult = $this->usrGateway->login($loginData['userName'], $loginData['password']);
         if ($loginResult->isValid()) {
-            $userInterface = $this->usrModel->fetchByColumn('userName', $loginResult->getIdentity());
+            $userInterface = $this->usrGateway->fetchByColumn('userName', $loginResult->getIdentity());
             $this->flashMessenger()->addInfoMessage('Welcome back!!');
             return $this->redirect()->toRoute('user/profile', ['userName' => $userInterface->userName]);
         } else {
@@ -74,7 +74,7 @@ final class AccountController extends AbstractAppController
             $userName = $this->params()->fromRoute('userName');
             // if they can not edit the user there is no point in preceeding
             // fetch the user data
-            $user = $this->usrModel->fetchByColumn('userName', $userName);
+            $user = $this->usrGateway->fetchByColumn('userName', $userName);
             if (! $this->acl()->isAllowed($this->identity()->getIdentity(), $user, $this->action)) {
                 $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit users');
                 $this->redirect()->toRoute('home');
@@ -104,9 +104,10 @@ final class AccountController extends AbstractAppController
                     $this->view->setVariable('form', $form);
                     return $this->view;
                 } else {
-                    $valid = $form->getData();
-                    $user->exchangeArray(array_merge($valid['acct-data'], $valid['role-data'], $valid['profile-data']));
-                    $result = $this->usrModel->update($user);
+                    $valid  = $form->getData();
+                    $result = $this->usrGateway->update(
+                        array_merge($valid['acct-data'], $valid['role-data'], $valid['profile-data'])
+                    );
                 }
 
                 if ($result) {
@@ -128,10 +129,10 @@ final class AccountController extends AbstractAppController
         // verify that the session cleared during user deletion
         try {
             $userName    = $this->params()->fromRoute('userName');
-            $user        = $this->usrModel->fetchByColumn('userName', $userName);
+            $user        = $this->usrGateway->fetchByColumn('userName', $userName);
             $deletedUser = $user->toArray();
             if ($this->isAllowed($this->user, $user, $this->action)) {
-                $result = $user->delete();
+                $result = $this->usrGateway->delete(['userName' => $user->userName]);
                 if ($result > 0) {
                     $this->logger->info(
                         'User ' . $this->user->userName . ' deleted user: ' . $deletedUser['userName'],
@@ -166,5 +167,37 @@ final class AccountController extends AbstractAppController
             default:
                 break;
         }
+    }
+
+    public function staffActivateAction(): ViewModel
+    {
+        try {
+            $this->user = $this->identity()->getIdentity();
+            if ($this->acl()->isAllowed($this->identity()->getIdentity(), 'account', 'create')) {
+                if ($this->request->isXmlHttpRequest()) {
+                    $this->view->setTerminal(true);
+                }
+                $userName       = $this->params()->fromRoute('userName');
+                $user           = $this->usrGateway->fetchByColumn('userName', $userName);
+                $user->active   = 1;
+                $user->verified = 1;
+                $result         = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
+                if ($result) {
+                    $this->logger->info(
+                        'User ' . $this->user->userName . ' activated user: ' . $user->userName,
+                        $this->user->getLogData()
+                    );
+                } else {
+                    throw new RuntimeException('The requested action could not be completed');
+                }
+            } else {
+                $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->response->setStatusCode('403');
+            }
+        } catch (RuntimeException $e) {
+            $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
+        }
+        $this->view->setVariables(['user' => $this->user, 'activatedUser' => $user]);
+        return $this->view;
     }
 }

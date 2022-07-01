@@ -50,7 +50,6 @@ return [
             'time_format'          => 'm-j-Y g:i:s',
             'time_zone'            => 'America/Chicago',
             'enable_error_log'     => true,
-            'enable_firebug_debug' => true,
             'enable_translation'   => false,
         ],
         'api_keys' => [

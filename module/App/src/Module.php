@@ -7,7 +7,6 @@ namespace App;
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
 use App\Listener\ThemeLoader;
-use App\Model\Settings;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
@@ -46,17 +45,15 @@ final class Module
         $app          = $e->getApplication();
         $eventManager = $app->getEventManager();
         $sm           = $app->getServiceManager();
-        $config       = $sm->get(Settings::class);
-        date_default_timezone_set($config->server->time_zone);
+        $config       = $sm->get('config')['app_settings'];
+        date_default_timezone_set($config['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
         $this->bootstrapLogging($e);
+        // TODO: add theme loading based on user preference
         $themeLoader = new ThemeLoader($sm->get(Theme::class), $sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
-        $layoutVariables = new LayoutVariablesListener(
-            $sm->get(UserInterface::class),
-            $sm->get(Settings::class)
-        );
+        $layoutVariables = new LayoutVariablesListener($sm->get('config')['app_settings']);
         $layoutVariables->attach($eventManager);
         $adminListener = new AdminListener($sm->get(TemplateMapResolver::class));
         $adminListener->attach($eventManager);
@@ -92,8 +89,8 @@ final class Module
     {
         // get an instance of the service manager
         $sm       = $e->getApplication()->getServiceManager();
-        $settings = $sm->get(Settings::class);
-        if ($settings->server_settings->enable_translation) {
+        $settings = $sm->get('config')['app_settings'];
+        if ($settings['server']['enable_translation']) {
             $request = $sm->get('request');
             // get the laguages sent by the client
             $string = $request->getServer('HTTP_ACCEPT_LANGUAGE');
@@ -126,25 +123,16 @@ final class Module
     {
         //TODO move this to config backed factory
         $sm                = $e->getapplication()->getServiceManager();
-        $settings          = $sm->get(Settings::class);
         $config            = $sm->get('config');
         $logger            = $sm->get(Logger::class);
         $writer            = new Dbwriter($sm->get(AdapterInterface::class), $config['db']['log_table_name']);
         $standardLogFilter = new Priority(Logger::DEBUG);
         $writer->addFilter($standardLogFilter);
-        if ($settings->server->enable_firebug_debug) {
-            $firePhpWriter = new FirePhp();
-            $debugFilter   = new Priority(Logger::DEBUG);
-            $firePhpWriter->addFilter($debugFilter);
-            $writer->addFilter($debugFilter);
-            $logger->addWriter($firePhpWriter);
-        }
 
-        $dbFormatter = new DbFormatter($settings->log->time_format);
-       // $dbFormatter->setDateTimeFormat($settings->timeFormat);
+        $dbFormatter = new DbFormatter($config['app_settings']['log']['time_format']);
         $writer->setFormatter($dbFormatter);
         $logger->addWriter($writer);
-        if ($settings->server->enable_error_log) {
+        if ($config['app_settings']['server']['enable_error_log']) {
             Logger::registerErrorHandler($logger);
         }
     }

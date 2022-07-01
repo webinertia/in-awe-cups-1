@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Db\TableGateway;
 
 use Laminas\Db\ResultSet\ResultSet;
+use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\TableGateway\Exception\RuntimeException;
 use Laminas\Db\TableGateway\Feature\EventFeature;
@@ -32,7 +33,7 @@ class TableGateway extends AbstractTableGateway
     public function __construct(
         $table,
         ?EventManager $eventManager = null,
-        ?ResultSet $resultSetPrototype = null,
+        ?ResultSetInterface $resultSetInterface = null,
         $enableEvents = false,
         ?AbstractListenerAggregate $listener = null
     ) {
@@ -50,7 +51,7 @@ class TableGateway extends AbstractTableGateway
             $listener->attach($eventManager);
             $this->featureSet->addFeature($eventFeature);
         }
-        $this->resultSetPrototype = $resultSetPrototype ?? new ResultSet();
+        $this->resultSetPrototype = $resultSetInterface ?? new ResultSet();
         // inititalize this instance
         $this->initialize();
     }

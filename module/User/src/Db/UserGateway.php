@@ -10,6 +10,8 @@ use App\Model\ModelInterface;
 use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as AuthAdapter;
 use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
+use Laminas\Db\ResultSet\HydratingResultSet;
+use Laminas\Db\ResultSet\ResultSet;
 
 use function password_verify;
 
@@ -73,13 +75,26 @@ final class UserGateway extends TableGateway
     public function fetchGuestContext(): ModelInterface
     {
         $resultSet = $this->getResultSetPrototype();
-        $prototype = $resultSet->getArrayObjectPrototype();
-        $prototype->exchangeArray([
-            'id'       => null,
-            'userName' => 'Guest',
-            'role'     => 'guest',
-        ]);
-        return $prototype;
+        if ($resultSet instanceof ResultSet) {
+            $prototype = $resultSet->getArrayObjectPrototype();
+            $prototype->exchangeArray([
+                'id'       => null,
+                'userName' => 'Guest',
+                'role'     => 'guest',
+            ]);
+            return $prototype;
+        }
+
+        if ($resultSet instanceof HydratingResultSet) {
+            $hydator   = $resultSet->getHydrator();
+            $prototype = $resultSet->getObjectPrototype();
+            $hydator->hydrate([
+                'id'       => null,
+                'userName' => 'Guest',
+                'role'     => 'guest',
+            ], $prototype);
+            return $prototype;
+        }
     }
 
     public function getContextColumns(): array
@@ -102,7 +117,7 @@ final class UserGateway extends TableGateway
             'regDate',
             'active',
             'verified',
-            'prefs_theme',
+            'prefsTheme',
         ];
     }
 }

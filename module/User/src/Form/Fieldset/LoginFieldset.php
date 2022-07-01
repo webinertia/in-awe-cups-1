@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
-use App\Model\Settings;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Form\Element\Password;
@@ -19,10 +18,9 @@ final class LoginFieldset extends Fieldset implements InputFilterProviderInterfa
      * @param array $options
      * @return void
      * */
-    public function __construct(Settings $appSettings, $options = [])
+    public function __construct($options = [])
     {
-        $this->appSettings = $appSettings;
-        parent::__construct('login-data', $options);
+        parent::__construct('login-data', []);
     }
 
     public function init(): void

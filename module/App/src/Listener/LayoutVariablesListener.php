@@ -4,27 +4,18 @@ declare(strict_types=1);
 
 namespace App\Listener;
 
-use App\Model\Settings;
-use Laminas\Authentication\AuthenticationService;
+use Laminas\Config\Config;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\MvcEvent;
-use User\Service\UserInterface;
 
 final class LayoutVariablesListener extends AbstractListenerAggregate
 {
-    /** @var Settings $appSettings */
+    /** @var array $appSettings */
     protected $appSettings;
-    /** @var AuthenticationService $authService */
-    protected $authService;
-    /** @var ModelManager $modelManager */
-    protected $modelManager;
-    /** @var Users $user */
-    protected $user;
     /** @return void */
-    public function __construct(UserInterface $userInterface, Settings $appSettings)
+    public function __construct(array $appSettings = [])
     {
-        $this->user        = $userInterface;
         $this->appSettings = $appSettings;
     }
 
@@ -46,7 +37,6 @@ final class LayoutVariablesListener extends AbstractListenerAggregate
         // Change template
         $layoutViewModel->setVariables([
             'appSettings' => $this->appSettings,
-            'user'        => $this->user,
             'renderPage'  => false,
         ]);
     }

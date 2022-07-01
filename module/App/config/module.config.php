@@ -162,6 +162,13 @@ return [
                 'resource'  => 'admin',
                 'privilege' => 'view',
             ],
+            [
+                'label'     => 'Test',
+                'uri'       => '/test',
+                'class'     => 'nav-link',
+                'resource'  => 'admin',
+                'privilege' => 'view',
+            ],
         ],
         'admin' => [
             [

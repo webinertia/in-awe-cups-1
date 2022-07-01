@@ -71,10 +71,10 @@ class RegisterController extends AbstractAppController
         $hash   = $filter->filter($value);
         $token  = $acctData['email'] . $hash;
         // save the new user, $result should be the new users Id
-        $this->usrModel->exchangeArray(
+        $this->usrGateway->exchangeArray(
             array_merge($acctData, $profileData, $passwordData, $roleData, ['regHash' => $hash])
         );
-        $result    = $this->usrModel->insert($this->usrModel);
+        $result    = $this->usrGateway->insert($this->usrGateway);
         $sendEmail = false;
         if ($result > 0) {
             $sendEmail = true;
@@ -93,7 +93,7 @@ class RegisterController extends AbstractAppController
         if (! empty($token)) {
             $position = strpos($token, '$');
             $email    = substr($token, 0, $position);
-            $user     = $this->usrModel->fetchByColumn('email', $email);
+            $user     = $this->usrGateway->fetchByColumn('email', $email);
             if ($user instanceof Users) {
                 $check = password_verify($email . $user->regDate, $user->regHash);
                 if ($check) {

@@ -41,7 +41,7 @@ trait GatewayTrait
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    public function fetchColumns($column, $value, ?array $columns): ModelInterface
+    public function fetchColumns($column, $value, ?array $columns = ['*']): ModelInterface
     {
         $resultSet = $this->select(function (Select $select) use ($column, $value, $columns) {
             $select->columns($columns)->where([$column => $value]);

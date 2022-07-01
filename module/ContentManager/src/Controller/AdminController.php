@@ -13,9 +13,9 @@ use ContentManager\Model\Pages;
 use Laminas\Filter\FilterChain;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
+use Laminas\Form\FormElementManager;
 use Laminas\Json\Encoder;
 use Laminas\Log\Logger;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 
@@ -26,17 +26,6 @@ final class AdminController extends AbstractAppController implements AdminContro
     /** @var Page $page */
     /** @var Pages $pages */
     /** @var PageForm $form */
-    /**
-     * @param ContainerInterface $container
-     * @return AdminController
-     * @throws ServiceNotFoundException
-     * @throws InvalidServiceException
-     */
-    public function init($container): self
-    {
-        $this->pages = $this->modelManager->get(Pages::class);
-        return $this;
-    }
 
     public function getResourceId(): string
     {
@@ -48,7 +37,7 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $form = $this->formManager->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
+        $form = $this->service()->get(FormElementManager::class)->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
         $form->setAttribute(
             'action',
             $this->url()->fromRoute('admin.content/manager', ['action' => 'create'])
