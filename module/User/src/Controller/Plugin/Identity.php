@@ -32,7 +32,7 @@ final class Identity extends AbstractPlugin
      */
     public function __call($name, $arguments): mixed
     {
-        return $this->authenticationService->{$name}(...$arguments);
+        return $this->authenticationService->$name(...$arguments);
     }
 
     public function getIdentity(): UserInterface

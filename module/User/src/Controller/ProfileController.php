@@ -11,7 +11,6 @@ use Laminas\Filter\File\RenameUpload;
 use Laminas\Form\FormElementManager;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use User\Form\ProfileForm;

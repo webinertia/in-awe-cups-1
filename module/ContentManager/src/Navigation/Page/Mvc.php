@@ -21,4 +21,14 @@ final class Mvc extends MvcPage implements ProprietaryInterface
     {
         $this->ownerId = $ownerId;
     }
+
+    public function exchangeArray(array $array): void
+    {
+        $this->setOptions($array);
+    }
+
+    public function getArrayCopy(): array
+    {
+        return parent::toArray() + ['ownerId' => $this->getOwnerId()];
+    }
 }

@@ -39,8 +39,7 @@ final class UserGateway extends TableGateway
             $authAdapter->setIdentity($identity)
                         ->setCredential($credential);
             $select = $authAdapter->getDbSelect();
-            $select->where('active = 1')
-                   ->where('verified = 1');
+            $select->where('active = 1');
             // Perform the authentication query, saving the result
             $authService = new AuthService();
             $authService->setAdapter($authAdapter);
@@ -116,7 +115,6 @@ final class UserGateway extends TableGateway
             'sessionLength',
             'regDate',
             'active',
-            'verified',
             'prefsTheme',
         ];
     }

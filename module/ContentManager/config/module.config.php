@@ -7,6 +7,7 @@ namespace ContentManager;
 use App\Controller\Factory\AppControllerFactory;
 use ContentManager\Navigation\Service\DefaultNavigationFactory;
 use Laminas\Navigation\Navigation;
+use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 
@@ -38,17 +39,46 @@ return [
                 ],
                 'child_routes' => [
                     'manager' => [
-                        'type' => Segment::class,
+                        'type' => Literal::class,
                         'may_terminate' => true,
                         'options' => [
-                            'route' => '/admin/content[/:action[/:title]]',
-                            'constraints' => [
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'title'  => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
+                            'route' => '/admin/content/manager',
                             'defaults' => [
                                 'controller' => Controller\AdminController::class,
                                 'action'     => 'dashboard',
+                            ],
+                        ],
+                        'child_routes' => [
+                            'create' => [
+                                'type' => Literal::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/create',
+                                    'defaults' => [
+                                        'action' => 'create',
+                                    ],
+                                ],
+                            ],
+                            'edit' => [
+                                'type' => Segment::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/edit[/:title]',
+                                    'defaults' => [
+                                        'controller' => Controller\AdminController::class,
+                                        'action' => 'edit',
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => Literal::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/delete',
+                                    'defaults' => [
+                                        'action' => 'delete',
+                                    ],
+                                ],
                             ],
                         ],
                     ],

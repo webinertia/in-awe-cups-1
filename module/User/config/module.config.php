@@ -182,6 +182,20 @@ return [
                                     ],
                                 ],
                             ],
+                            'staff-deactivate' => [
+                                'type'          => Segment::class,
+                                'may_terminate' => true,
+                                'options'       => [
+                                    'route'       => '/user/account/staff-deactivate[/:userName]',
+                                    'constraints' => [
+                                        'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults'    => [
+                                        'controller' => Controller\AccountController::class,
+                                        'action'     => 'staffDeactivate',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],

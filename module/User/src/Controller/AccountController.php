@@ -180,7 +180,6 @@ final class AccountController extends AbstractAppController
                 $userName       = $this->params()->fromRoute('userName');
                 $user           = $this->usrGateway->fetchByColumn('userName', $userName);
                 $user->active   = 1;
-                $user->verified = 1;
                 $result         = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
                     $this->logger->info(
@@ -198,6 +197,36 @@ final class AccountController extends AbstractAppController
             $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
         }
         $this->view->setVariables(['user' => $this->user, 'activatedUser' => $user]);
+        return $this->view;
+    }
+    public function staffDeactivateAction(): ViewModel
+    {
+        try {
+            $this->user = $this->identity()->getIdentity();
+            if ($this->acl()->isAllowed($this->identity()->getIdentity(), 'account', 'create')) {
+                if ($this->request->isXmlHttpRequest()) {
+                    $this->view->setTerminal(true);
+                }
+                $userName       = $this->params()->fromRoute('userName');
+                $user           = $this->usrGateway->fetchByColumn('userName', $userName);
+                $user->active   = 0;
+                $result         = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
+                if ($result) {
+                    $this->logger->info(
+                        'User ' . $this->user->userName . ' deactivated user: ' . $user->userName,
+                        $this->user->getLogData()
+                    );
+                } else {
+                    throw new RuntimeException('The requested action could not be completed');
+                }
+            } else {
+                $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->response->setStatusCode('403');
+            }
+        } catch (RuntimeException $e) {
+            $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
+        }
+        $this->view->setVariables(['user' => $this->user, 'deactivatedUser' => $user]);
         return $this->view;
     }
 }

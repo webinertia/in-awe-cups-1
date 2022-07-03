@@ -36,8 +36,7 @@ $this->user = $this->identity()->getIdentity();
                         <a class="mdi mdi-delete-forever text-danger align-middle" data-toggle="tooltip" title="Delete User" href="<?= $this->url('user/account/delete', ['userName' => $listUser->userName]); ?>"></a>
                     <?php
                     endif;
-                    ?>
-                    <?php
+
                     if($this->acl()->isAllowed($this->user, $listUser, 'edit') || $this->acl()->isAllowed($this->user, 'account', 'edit')): ?>
                         <a class="mdi mdi-account-edit text-success align-middle" data-toggle="tooltip" title="Edit User" href="<?=$this->url('user/account/edit', ['userName' => $listUser->userName]); ?>"></a>
                     <?php
@@ -45,22 +44,28 @@ $this->user = $this->identity()->getIdentity();
                     <span> | </span>
                     <?php
                     if ($listUser->active) { ?>
-                        <span class="mdi mdi-check-circle text-success align-middle" data-toggle="tooltip" title="Active Account"></span>
+
+                        <?php
+                        if ($this->acl()->isAllowed($this->user, 'account', 'edit')) { ?>
+                            <a class="mdi mdi-check-circle text-success align-middle manage-user"
+                            data-toggle="tooltip" title="Deactivate Account?"
+                            href="<?=$this->url('user/account/staff-deactivate', ['userName' => $listUser->userName]); ?>"></a>
+                        <?php
+                        } else {
+                            ?>
+                            <span class="mdi mdi-check-circle text-success align-middle" data-toggle="tooltip" title="Active Account"></span>
+                        <?php
+                        } ?>
                     <?php
                     } else {
                         if ($this->acl()->isAllowed($this->user, 'account', 'edit')) { ?>
-                            <a class="mdi mdi-check-circle text-danger align-middle activate-user"
+                            <a class="mdi mdi-check-circle text-danger align-middle manage-user"
                             data-toggle="tooltip" title="Activate Account?"
                             href="<?=$this->url('user/account/staff-activate', ['userName' => $listUser->userName]); ?>"></a>
                     <?php
                         }
                     }
                     ?>
-                    <?php
-                    if ($listUser->verified) : ?>
-                         <span class="mdi mdi-check-decagram text-success align-middle" data-toggle="tooltip" title="Verified Account"></span>
-                    <?php
-                    endif; ?>
                 </div>
             </div>
             <div class="card-body">
