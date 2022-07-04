@@ -83,12 +83,12 @@ return [
                         'child_routes'  => [
                             'create-setting' => [
                                 'may_terminate' => true,
-                                'type'          => Segment::class,
+                                'type'          => Literal::class,
                                 'options' => [
-                                    'route'    => '/admin/addsetting',
+                                    'route'    => '/admin/settings',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
-                                        'action'     => 'index',
+                                        'action'     => 'manage-settings',
                                     ],
                                 ],
                             ],
@@ -131,6 +131,7 @@ return [
         'factories' => [
             Form\ContactForm::class               => Form\Factory\ContactFormFactory::class,
             Form\Fieldset\SecurityFieldset::class => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
+            Form\SettingsForm::class              => Form\Factory\SettingsFormFactory::class,
         ],
     ],
     'filters'         => [
@@ -186,7 +187,7 @@ return [
             ],
             [
                 'label'     => 'Manage Settings',
-                'uri'       => '/admin/manage-settings',
+                'uri'       => '/admin/settings',
                 'iconClass' => 'mdi mdi-wrench text-danger',
                 'resource'  => 'settings',
                 'privilege' => 'edit',
@@ -218,11 +219,6 @@ return [
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'template_map'             => [],
-    ],
-    'upload_manager'  => [
-        'App' => [
-            'upload_path' => '/images',
-        ],
     ],
     'translator'      => [
         'locale' => [

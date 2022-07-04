@@ -4,69 +4,57 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Form\BaseForm;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Text;
-use Laminas\Form\Element\Textarea;
-use Laminas\Form\Exception\DomainException;
+use Laminas\Form\Fieldset;
 use Laminas\Form\Exception\InvalidArgumentException;
-use Laminas\Form\Form;
 
+use function gettype;
 use function strtolower;
 
-class SettingsForm extends Form
+class SettingsForm extends BaseForm
 {
+    /** @var array $settings */
+    protected $settings;
     /**
-     * @param mixed $name
      * @param array $options
+     * @param array $settings
      * @return void
      * @throws InvalidArgumentException
      * @throws DomainException
      */
-    public function __construct($name, $options = [])
+    public function __construct($options = [], $settings = [])
     {
-        parent::__construct('appSettings');
+        parent::__construct('app_settings', $options);
         parent::setOptions($options);
-        $appSettings = $this->getOptions();
-        foreach ($appSettings as $setting) {
-            foreach ($setting as $data) {
-                switch (strtolower($data['settingType'])) {
-                    case 'checkbox':
-                        $element = new Checkbox();
-                        $element->setName($data['variable']);
-                        $element->setValue($data['value']);
-                        $element->setLabel($data['label']);
-                        // $element->setAttribute('class', 'form-control');
-                        $element->setLabelAttributes(['class' => 'form-control-sm']);
-                        //$element->setLabelOption('position', 'top');
-                        $this->add($element);
+        $this->settings = $settings;
+    }
 
+    public function init()
+    {
+        foreach ($this->settings as $fieldsetName => $values) {
+            $fieldset = new Fieldset($fieldsetName);
+            foreach ($values as $elementName => $elementValue) {
+                $type = gettype($elementValue);
+                switch ($type) {
+                    case 'string':
+                        $element = new Text($elementName);
                         break;
-                    case 'text':
-                        $element = new Text();
-                        $element->setName($data['variable']);
-                        $element->setValue($data['value']);
-                        $element->setLabel($data['label']);
-                        $element->setAttribute('class', 'form-control');
-                        //$element->setLabelAttributes(['class' => 'form-control']);
-                        //$element->setOption('order', $data['id']);
-                        $this->add($element);
-
-                        break;
-                    case 'textarea':
-                        $element = new Textarea();
-                        $element->setName($data['variable']);
-                        $element->setLabel($data['label']);
-                        //$element->setLabelAttributes(['class' => 'form-control']);
-                        $element->setValue($data['value']);
-                        //$element->setOption('order', $data['id']);
-                        $element->setAttribute('class', 'form-control');
-                        $this->add($element);
-
+                    case 'integer':
+                        // fallthrough
+                    case 'boolean':
+                        $element = new Checkbox($elementName);
                         break;
                     default:
-                        break;
+                        //throw new InvalidArgumentException('Invalid type for element: ' . $type);
                 }
+                $element->setLabel($elementName);
+                $element->setValue($elementValue);
+                $fieldset->add($element);
             }
+            $this->add($fieldset);
+            continue;
         }
     }
 }
