@@ -87,9 +87,13 @@ $('div#workSpace').on("submit", function(event) {
         method: formMethod,
         data: postData,
     });
-    request.done(function(response) {
-        $('div#workSpace').html(response);
-        $(location).attr('href', href);
+    request.done(function(response, textStatus, jqXHR) {
+        if (jqXHR.getResponseHeader("Content-Type") == "text/html; charset=UTF-8") {
+            $('div#workSpace').html(response);
+        }
+        else if(jqXHR.getResponseHeader("Content-Type") == "application/json") {
+            alert(response.message);
+        }
     });
     request.fail(function(){
         alert("Processing failed!!")

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ContentManager\Form\Fieldset\Factory;
 
-use ContentManager\Db\PageGateway;
 use ContentManager\Form\Fieldset\PageFieldset;
+use ContentManager\Navigation\Page\Mvc;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -17,6 +17,6 @@ final class PageFieldsetFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PageFieldset
     {
-        return new PageFieldset($container->get(PageGateway::class), $options);
+        return new $requestedName(new Mvc(), $options);
     }
 }

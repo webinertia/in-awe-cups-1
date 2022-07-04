@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ContentManager\Form\Fieldset;
 
 use App\Form\FormInterface;
-use ContentManager\Db\PageGateway;
+use ContentManager\Navigation\Page\Mvc;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
@@ -15,11 +15,11 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 
 final class PageFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /** @var Pages $model */
+    /** @var Mvc $page */
     /** @return void */
-    public function __construct(PageGateway $model, ?array $options = null)
+    public function __construct(Mvc $page, ?array $options = null)
     {
-        $this->model = $model;
+        $this->page = $page;
         parent::__construct('page-data');
         $this->setAttribute('id', 'page-data');
         if (! empty($options)) {
@@ -31,7 +31,7 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
     {
         $this->setUseAsBaseFieldset(true);
         $this->setHydrator(new ArraySerializableHydrator());
-        $this->setObject($this->model);
+        $this->setObject($this->page);
         if ($this->options['mode'] === FormInterface::EDIT_MODE) {
             $this->add([
                 'name' => 'id',

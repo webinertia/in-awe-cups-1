@@ -55,6 +55,7 @@ return [
                                 'options' => [
                                     'route' => '/create',
                                     'defaults' => [
+                                        'controller' => Controller\AdminController::class,
                                         'action' => 'create',
                                     ],
                                 ],
@@ -139,7 +140,7 @@ return [
                     ],
                     [
                         'label'     => 'Create New Page',
-                        'route'     => 'admin.content/manager',
+                        'route'     => 'admin.content/manager/create',
                         'action'    => 'create',
                         'resource'  => 'admin',
                         'privilege' => 'admin.access',
