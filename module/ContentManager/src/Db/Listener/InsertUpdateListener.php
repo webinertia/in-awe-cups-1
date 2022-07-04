@@ -20,6 +20,7 @@ final class InsertUpdateListener extends AbstractListenerAggregate
     protected $json;
     /** @var DateTimeFormatter $time */
     protected $time;
+    /** @param string $format */
     public function __construct($format = 'm-j-Y g:i:s')
     {
         $this->time = new DateTimeFormatter(['format' => $format]);
@@ -34,9 +35,16 @@ final class InsertUpdateListener extends AbstractListenerAggregate
 
     public function preInsert(TableGatewayEvent $event): void
     {
-        /** @var Insert $insert */
         $insert = $event->getParam('insert');
-        $insert->values(['createdDate' => $this->time->filter(new DateTime())], Insert::VALUES_MERGE);
+        $data   = $insert->getRawState('params');
+        $insert->values(
+            [
+                'class'       => 'nav-link',
+                'createdDate' => $this->time->filter(new DateTime()),
+                'params'      => Json::encode($insert->params),
+            ],
+            Insert::VALUES_MERGE
+        );
     }
 
     public function preUpdate(TableGatewayEvent $event): void

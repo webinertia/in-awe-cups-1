@@ -5,8 +5,11 @@ declare(strict_types=1);
 use Laminas\View\Renderer\PhpRenderer;
 
 /** @var PhpRenderer $this */
-
-if(isset($this->form)) {
-    $this->form->addSubmit();
-    echo $this->bootstrapForm($this->form);
+if (isset($this->success) && $this->success && isset($this->message)) {
+    echo $this->json($this->message);
+} else {
+    if(isset($this->form)) {
+        $this->form->addSubmit();
+        echo $this->bootstrapForm($this->form);
+    }
 }

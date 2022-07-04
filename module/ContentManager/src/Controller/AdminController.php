@@ -7,9 +7,9 @@ namespace ContentManager\Controller;
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Form\FormInterface;
+use ContentManager\Db\PageGateway;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
-use ContentManager\Db\PageGateway;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Filter\FilterChain;
@@ -43,24 +43,26 @@ final class AdminController extends AbstractAppController implements AdminContro
         $form = $this->service()->get(FormElementManager::class)->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
         $form->setAttribute(
             'action',
-            $this->url()->fromRoute('admin.content/manager', ['action' => 'create'])
+            $this->url()->fromRoute('admin.content/manager/create')
         );
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
+                $gateway       = $this->service()->get(PageGateway::class);
                 $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
                 $data          = $form->getData();
-                $data->ownerId = $this->user->id;
+                $data->ownerId = $this->identity()->getIdentity()->id;
                 $data->title   = $filter->filter($data->label);
-                if (! isset($data->parentId)) {
-                    $data->route  = 'page';
-                    $data->params = Encoder::encode(['title' => $data->title]);
-                }
-                $result = $data->save();
+                $data->route   = 'page';
+                $data->params  = ['title' => $data->title];
                 try {
+                    $result = $gateway->insert($data->getArrayCopy());
                     if (! $result) {
                         throw new RuntimeException('Page Not saved');
                     }
+                    $headers = $this->response->getHeaders();
+                    $headers->addHeaderLine('Content-Type', 'application/json');
+                    $this->view->setVariables(['success' => true, 'message' => ['message' => 'Page saved']]);
                 } catch (RuntimeException $e) {
                     $this->logger->log(Logger::EMERG, $e->getMessage(), $this->user->getLogData());
                 }
@@ -105,10 +107,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $data          = $form->getData();
                 $data->ownerId = $this->identity()->getIdentity()->id;
                 $data->title   = $filter->filter($data->label);
-                if (! isset($data->parentId)) {
-                    $data->route  = 'page';
-                    $data->params = Encoder::encode(['title' => $data->title]);
-                }
+                $data->route   = 'page';
                 try {
                     $result = $gateway->update($data->getArrayCopy(), ['id' => $data->id]);
                     if (! $result) {
