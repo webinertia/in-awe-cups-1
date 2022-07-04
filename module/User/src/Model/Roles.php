@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace User\Model;
 
 use App\Model\ModelInterface;
-use Laminas\Config\Reader\Json;
+use Laminas\Config\Factory;
 
 use function dirname;
 
@@ -20,9 +20,8 @@ final class Roles implements ModelInterface
 
     public function __construct()
     {
-        $this->configPath = dirname(__DIR__, 4) . '/config/';
-        $reader           = new Json();
-        $this->config     = $reader->fromFile($this->configPath . $this->configFilename);
+        $this->fileName = dirname(__DIR__, 4) . '/config/roles.php';
+        $this->config   = Factory::fromFile($this->fileName);
         $this->processConfig($this->config);
     }
 

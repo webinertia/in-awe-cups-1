@@ -3,8 +3,21 @@ $(document).bind("ajaxSend", function(){
     $("#progress").show();
 }).bind("ajaxComplete", function(){
     $("#progress").hide();
-}).bind("ajaxError", function(){
-    alert("The requested operation could not be performed due to an error");
+}).bind("ajaxError", function(jqXHR, textStatus, errorThrown) {
+    let json = JSON.parse(textStatus.responseText);
+    console.log(textStatus);
+    switch(textStatus.status) {
+        case 403:
+            alert(json.message);
+            break;
+        case 404:
+            alert('Page not found');
+            break;
+        case 500:
+            alert('Internal server error');
+            break;
+    }
+   // alert("The requested operation could not be performed due to an error");
 });
 // ajax for the member list widget
 $(document).on('click', 'div.userWidgetControl a', function(event) {

@@ -10,6 +10,7 @@ if (isset($this->success) && $this->success && isset($this->message)) {
 else {
     if (isset($this->form)) {
         $this->form->addSubmit();
+        $this->formCollection()->setElementHelper($this->bootstrapFormRow());
         echo $this->bootstrapForm($this->form);
     }
 }

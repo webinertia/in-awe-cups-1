@@ -7,15 +7,18 @@ namespace App\Controller;
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Form\SettingsForm;
+use App\Form\ThemeSettingsForm;
+use App\Model\Theme;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
+use RuntimeException;
 use User\Controller\WidgetController;
-
-use function strtolower;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
+    protected $resourceId = 'admin';
+
     public function getResourceId(): string
     {
         return self::RESOURCE_ID;
@@ -37,30 +40,63 @@ final class AdminController extends AbstractAppController implements AdminContro
         return $this->view;
     }
 
-    public function manageSettingsAction(): ViewModel
+    public function manageThemesAction(): ViewModel
     {
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $settings = $this->service()->get('config')['app_settings'];
-        $form     = $this->service()->get(FormElementManager::class)->get(SettingsForm::class);
-        $form->setAttribute(
-            'action',
-            $this->url()->fromRoute('admin/settings')
-        );
+        $headers = $this->response->getHeaders();
+        if (! $this->acl()->isAllowed($this->identity()->getIdentity(), 'theme', $this->params('action'))) {
+            $headers->addHeaderLine('Content-Type', 'application/json');
+            $this->response->setStatusCode(403);
+            $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
+        }
+        $form = $this->service()->get(FormElementManager::class)->get(ThemeSettingsForm::class);
+        if (! $this->request->isPost()) {
+            $themes = $this->service()->get(Theme::class);
+            $form->setData($themes->getConfig());
+        }
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                foreach ($data as $key => $value) {
-                    $settings[$key] = $value;
-                }
-                $writer = new ConfigWriter();
-                $writer->toFile($this->basePath . '/config/autoload/test.php', $form->getData());
-                $headers = $this->response->getHeaders();
+                $this->service()->get(ConfigWriter::class)->toFile($this->service()->get(Theme::class)->getConfigPath() . 'themes.php', $data);
             }
-        } else {
-            $form->setData($settings);
+        }
+        $this->view->setVariable('form', $form);
+        return $this->view;
+    }
+
+    public function manageSettingsAction(): ViewModel
+    {
+        $this->resourceId = 'settings';
+        $headers          = $this->response->getHeaders();
+        if ($this->request->isXmlHttpRequest()) {
+            $this->view->setTerminal(true);
+        }
+        if (! $this->acl()->isAllowed($this->identity()->getIdentity(), 'settings', $this->params('action'))) {
+            $headers->addHeaderLine('Content-Type', 'application/json');
+            $this->response->setStatusCode(403);
+            $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
+        }
+        $form = $this->service()->get(FormElementManager::class)->get(SettingsForm::class);
+        $form->setAttribute(
+            'action',
+            $this->url()->fromRoute('admin/settings/manage')
+        );
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+            if ($form->isValid()) {
+                $writer = new ConfigWriter();
+                $writer->setUseBracketArraySyntax(true);
+                try {
+                    $writer->toFile($this->basePath . '/config/autoload/appsettings.local.php', $form->getData());
+                } catch (RuntimeException $e) {
+                    $this->getLogger()->crit($e->getMessage(), $this->identity()->getIdentity()->getLogData());
+                }
+                $headers->addHeaderLine('Content-Type', 'application/json');
+                $this->view->setVariables(['success' => true, 'message' => ['message' => 'Settings saved']]);
+            }
         }
         $this->view->setVariable('form', $form);
         return $this->view;

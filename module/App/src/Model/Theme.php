@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use App\Model\ModelInterface;
-use Laminas\Config\Reader\Json;
+use Laminas\Config\Factory;
 
 use function dirname;
 
@@ -19,7 +19,7 @@ final class Theme implements ModelInterface
     /** @var string $configPath */
     protected $configPath;
     /** @var string $configFilename */
-    protected $configFilename = 'theme.json';
+    protected $configFilename = 'themes.php';
     /** @var string $directory */
     protected $directory;
     /** @var array $paths */
@@ -29,8 +29,7 @@ final class Theme implements ModelInterface
     {
         $this->configPath = dirname(__DIR__, 4) . '/config/';
         $this->directory  = dirname(__DIR__, 4) . '/theme/';
-        $reader           = new Json();
-        $this->config     = $reader->fromFile($this->configPath . $this->configFilename);
+        $this->config     = Factory::fromFile($this->configPath . $this->configFilename);
         $this->processConfig($this->config);
     }
 
@@ -93,5 +92,10 @@ final class Theme implements ModelInterface
     public function getResourceId(): string
     {
         return 'theme';
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
     }
 }

@@ -35,6 +35,7 @@ class SettingsForm extends BaseForm
     {
         foreach ($this->settings as $fieldsetName => $values) {
             $fieldset = new Fieldset($fieldsetName);
+            //$fieldset->setLabel($fieldsetName);
             foreach ($values as $elementName => $elementValue) {
                 $type = gettype($elementValue);
                 switch ($type) {
