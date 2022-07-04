@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
-if (isset($this->form)) {
-   echo $this->bootstrapform($this->form);
+if (isset($this->success) && $this->success) {
+    echo $this->json($this->data);
+} else {
+    if (isset($this->form)) {
+        $this->form->addSubmit();
+    echo $this->bootstrapform($this->form);
+    }
 }

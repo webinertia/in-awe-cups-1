@@ -6,9 +6,11 @@ namespace ContentManager\Db\Factory;
 
 use App\Db\TableGateway\AbstractGatewayModel;
 use ContentManager\Db\PageGateway;
+use ContentManager\Db\Listener\InsertUpdateListener;
 use ContentManager\Model\Page;
 use Laminas\Db\ResultSet\Exception\InvalidArgumentException;
 use Laminas\Db\ResultSet\ResultSet;
+use Laminas\EventManager\EventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -30,6 +32,12 @@ final class PageGatewayFactory implements FactoryInterface
         $resultSetPrototype->setArrayObjectPrototype(
             new Page([], AbstractGatewayModel::ARRAY_AS_PROPS)
         );
-        return new PageGateway($config['db']['pages_table_name'], null, $resultSetPrototype);
+        return new PageGateway(
+            $config['db']['pages_table_name'],
+            $container->get(EventManager::class),
+            $resultSetPrototype,
+            true,
+            $container->get(InsertUpdateListener::class)
+        );
     }
 }

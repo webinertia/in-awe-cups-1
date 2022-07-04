@@ -9,7 +9,7 @@ use App\Controller\AdminControllerInterface;
 use App\Form\FormInterface;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
-use ContentManager\Model\Pages;
+use ContentManager\Db\PageGateway;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Filter\FilterChain;
@@ -90,30 +90,39 @@ final class AdminController extends AbstractAppController implements AdminContro
         $form = $this->service()->get(FormElementManager::class)->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
         $form->setAttribute(
             'action',
-            $this->url()->fromRoute('admin.content/manager', ['action' => 'update'])
+            $this->url()->fromRoute('admin.content/manager/edit', ['title' => $this->params('title')])
         );
-        if (! $this->request->isPost()) {
-            $title      = $this->params('title');
-            $navigation = $this->service()->get(Navigation::class);
-            $page       = $navigation->findOneByTitle($title);
-            $form->bind($page);
-        }
+        $title      = $this->params('title');
+        $navigation = $this->service()->get(Navigation::class);
+        $page       = $navigation->findOneByTitle($title);
+        $form->bind($page);
         if ($this->request->isPost()) {
+            $gateway = $this->service()->get(PageGateway::class);
+            // $model   = $this->service()->get(Page::class);
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
-                $filter       = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
-                $data         = $form->getData();
-                $data->userId = $this->user->id;
-                $data->title  = $filter->filter($data->label);
+                $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
+                $data          = $form->getData();
+                $data->ownerId = $this->identity()->getIdentity()->id;
+                $data->title   = $filter->filter($data->label);
                 if (! isset($data->parentId)) {
                     $data->route  = 'page';
                     $data->params = Encoder::encode(['title' => $data->title]);
                 }
-                $result = $data->save();
                 try {
+                    $result = $gateway->update($data->getArrayCopy(), ['id' => $data->id]);
                     if (! $result) {
                         throw new RuntimeException('Page Not saved');
                     }
+                    $this->flashMessenger()->addSuccessMessage('Page saved');
+                    $this->view->setvariables(
+                        [
+                            'success' => true,
+                            'data'    => ['href' => $this->url()->fromRoute('page', ['title' => $data->title])],
+                        ]
+                    );
+                    $headers = $this->response->getHeaders();
+                    $headers->addHeaderLine('Content-Type', 'application/json');
                 } catch (RuntimeException $e) {
                     $this->logger->log(Logger::EMERG, $e->getMessage(), $this->user->getLogData());
                 }

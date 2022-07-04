@@ -80,6 +80,17 @@ return [
                                     ],
                                 ],
                             ],
+                            'upload' => [
+                                'type' => Segment::class,
+                                'may_terminate' => true,
+                                'options' => [
+                                    'route' => '/upload',
+                                    'defaults' => [
+                                        'controller' => Controller\AdminController::class,
+                                        'action' => 'upload-images',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -106,6 +117,7 @@ return [
         'factories' => [
             Navigation::class     => DefaultNavigationFactory::class,
             Db\PageGateway::class => Db\Factory\PageGatewayFactory::class,
+            Db\Listener\InsertUpdateListener::class => Db\Listener\InsertUpdateListenerFactory::class,
         ],
     ],
     'navigation' => [

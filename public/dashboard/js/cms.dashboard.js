@@ -81,7 +81,6 @@ $('div#workSpace').on("submit", function(event) {
     let location = $(f).attr("action");
     let postData = $(f).serialize();
     let formMethod = $(f).attr("method");
-    console.log(postData);
     let request = $.ajax({
         // handle all of the form submissions based on form action and the data
         url: location,
@@ -90,6 +89,7 @@ $('div#workSpace').on("submit", function(event) {
     });
     request.done(function(response) {
         $('div#workSpace').html(response);
+        $(location).attr('href', href);
     });
     request.fail(function(){
         alert("Processing failed!!")
@@ -100,7 +100,7 @@ function imageplugin_upload_handler (blobInfo, success, failure, progress) {
     /////
     xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
-    xhr.open('POST', '/admin/content/upload-images'); // second argument is href to upload to
+    xhr.open('POST', '/admin/content/manager/upload'); // second argument is href to upload to
     xhr.upload.onprogress = function (e) {
       progress(e.loaded / e.total * 100);
     };
@@ -132,3 +132,9 @@ function imageplugin_upload_handler (blobInfo, success, failure, progress) {
     // send the data, including the file
     xhr.send(formData);
   };
+  // Prevent Bootstrap dialog from blocking focusin
+$(document).on('focusin', function(e) {
+    if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
+      e.stopImmediatePropagation();
+    }
+  });
