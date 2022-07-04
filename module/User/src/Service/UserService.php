@@ -46,8 +46,6 @@ final class UserService implements UserInterface, ModelInterface
     public $regDate;
     /** @var int|bool $active */
     public $active;
-    /** @var int|bool $verified */
-    public $verified;
     /** @var string $prefs_theme */
     public $prefsTheme;
     /** @var string $regHash */

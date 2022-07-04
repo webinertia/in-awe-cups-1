@@ -18,7 +18,7 @@
     <?php
     } else {
         if ($this->acl()->isAllowed($this->user, 'account', 'edit')) { ?>
-            <a class="mdi mdi-check-circle text-danger align-middle activate-user"
+            <a class="mdi mdi-check-circle text-danger align-middle manage-user"
             data-toggle="tooltip" title="Activate Account?"
             href="<?=$this->url('user/account/staff-activate', ['userName' => $activatedUser->userName]); ?>"></a>
     <?php

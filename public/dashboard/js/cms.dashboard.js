@@ -30,14 +30,14 @@ $('nav#sidebar').on('click', 'a.nav-link', function(event) {
     /**
      * if this not undefined then we have work to do as it will
      * update the work area inside the div#workSpace which
-     * is basically the work area for the dashboard 
-     * */ 
+     * is basically the work area for the dashboard
+     * */
     if( typeof href !== "undefined") {
         /**
          * This ajax call loads the calls from the main sidebar menu
-         * the .done function parses that data and attaches listeners 
+         * the .done function parses that data and attaches listeners
          * to any forms that are ajaxed into the DOM
-         * prevents default submission and handles the posting 
+         * prevents default submission and handles the posting
          * via ajax
          */
         $.ajax({
@@ -46,12 +46,12 @@ $('nav#sidebar').on('click', 'a.nav-link', function(event) {
         }).done(function(response) {
             /**
              * this call to .html() updates the DOM by replacing the contents
-             * of div#workSpace with the response of the ajax 
+             * of div#workSpace with the response of the ajax
              * request
-             * */ 
+             * */
             $('div#workSpace').html(response);
         });
-    } 
+    }
 });
 $(document).bind("ajaxComplete", function() {
     tinymce.remove();
@@ -81,7 +81,6 @@ $('div#workSpace').on("submit", function(event) {
     let location = $(f).attr("action");
     let postData = $(f).serialize();
     let formMethod = $(f).attr("method");
-    console.log(postData);
     let request = $.ajax({
         // handle all of the form submissions based on form action and the data
         url: location,
@@ -90,6 +89,7 @@ $('div#workSpace').on("submit", function(event) {
     });
     request.done(function(response) {
         $('div#workSpace').html(response);
+        $(location).attr('href', href);
     });
     request.fail(function(){
         alert("Processing failed!!")
@@ -100,7 +100,7 @@ function imageplugin_upload_handler (blobInfo, success, failure, progress) {
     /////
     xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
-    xhr.open('POST', '/upload/admin-upload'); // second argument is href to upload to
+    xhr.open('POST', '/admin/content/manager/upload'); // second argument is href to upload to
     xhr.upload.onprogress = function (e) {
       progress(e.loaded / e.total * 100);
     };
@@ -132,4 +132,9 @@ function imageplugin_upload_handler (blobInfo, success, failure, progress) {
     // send the data, including the file
     xhr.send(formData);
   };
-  
+  // Prevent Bootstrap dialog from blocking focusin
+$(document).on('focusin', function(e) {
+    if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
+      e.stopImmediatePropagation();
+    }
+  });
