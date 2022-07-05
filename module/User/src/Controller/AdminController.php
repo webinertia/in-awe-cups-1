@@ -22,6 +22,11 @@ final class AdminController extends AbstractAppController implements AdminContro
         return $this->view;
     }
 
+    public function manageRolesAction(): ViewModel
+    {
+        return $this->view;
+    }
+
     public function widgetAction(): ViewModel
     {
         try {

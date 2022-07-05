@@ -23,11 +23,10 @@ final class TestController extends AbstractAppController
 
     public function indexAction(): ViewModel
     {
-       $currentUser = $this->identity()->getIdentity();
-       $testUser = $this->usrGateway->fetchColumns('userName', 'jsmith');
-       $testOwnerOwnerId = $testUser->getOwnerId();
-           // echo $this->acl()->isAllowed($this->identity()->getIdentity(), $testUser, 'edit') ? 'allowed' : 'not allowed';
-            Debug::dump(opcache_get_configuration());
+        $config = $this->service()->get('config')['app_settings'];
+        if ($config['server']['enable_error_log']) {
+            Debug::dump($config);
+        }
         return $this->view;
     }
 }

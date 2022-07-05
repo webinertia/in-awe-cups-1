@@ -81,14 +81,31 @@ return [
                         'type'    => Placeholder::class,
                         'may_terminate' => true,
                         'child_routes'  => [
-                            'create-setting' => [
+                            'manage' => [
                                 'may_terminate' => true,
-                                'type'          => Segment::class,
+                                'type'          => Literal::class,
                                 'options' => [
-                                    'route'    => '/admin/addsetting',
+                                    'route'    => '/admin/settings',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
-                                        'action'     => 'index',
+                                        'action'     => 'manage-settings',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'themes' => [
+                        'type'    => Placeholder::class,
+                        'may_terminate' => true,
+                        'child_routes'  => [
+                            'manage' => [
+                                'may_terminate' => true,
+                                'type'          => Literal::class,
+                                'options' => [
+                                    'route'    => '/admin/themes',
+                                    'defaults' => [
+                                        'controller' => Controller\AdminController::class,
+                                        'action'     => 'manage-themes',
                                     ],
                                 ],
                             ],
@@ -101,7 +118,7 @@ return [
     'service_manager' => [
         'factories' => [
             Model\Settings::class                       => Model\Factory\SettingsFactory::class,
-            Model\Theme::class                          => Model\Factory\ThemeFactory::class,
+            Model\Theme::class                          => InvokableFactory::class,
             Service\Email::class                        => Service\Factory\EmailFactory::class,
             Laminas\Session\SessionManager::class       => Laminas\Session\Service\SessionManagerFactory::class,
             Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
@@ -131,6 +148,9 @@ return [
         'factories' => [
             Form\ContactForm::class               => Form\Factory\ContactFormFactory::class,
             Form\Fieldset\SecurityFieldset::class => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
+            Form\SettingsForm::class              => Form\Factory\SettingsFormFactory::class,
+            Form\ThemeSettingsForm::class         => Form\Factory\ThemeSettingsFormFactory::class,
+            Form\Fieldset\ThemeFieldset::class    => InvokableFactory::class,
         ],
     ],
     'filters'         => [
@@ -186,10 +206,17 @@ return [
             ],
             [
                 'label'     => 'Manage Settings',
-                'uri'       => '/admin/manage-settings',
-                'iconClass' => 'mdi mdi-wrench text-danger',
+                'uri'       => '/admin/settings',
+                'iconClass' => 'mdi mdi-cogs text-danger',
                 'resource'  => 'settings',
                 'privilege' => 'edit',
+            ],
+            [
+                'label'     => 'Manage Themes',
+                'uri'       => '/admin/themes',
+                'iconClass' => 'mdi mdi-palette text-success',
+                'resource'  => 'theme',
+                'privilege' => 'manage',
             ],
         ],
     ],
@@ -218,11 +245,6 @@ return [
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'template_map'             => [],
-    ],
-    'upload_manager'  => [
-        'App' => [
-            'upload_path' => '/images',
-        ],
     ],
     'translator'      => [
         'locale' => [

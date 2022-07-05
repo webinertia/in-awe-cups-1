@@ -66,7 +66,8 @@ final class AclFactory implements FactoryInterface
         $acl->allow('staff', ['account', 'profile', 'content'], ['view', 'create', 'edit', 'delete', 'upload.images']); // should allow staff to view, edit, and delete their own account
         $acl->allow('staff', 'admin', 'view'); // should allow staff to view the admin page
         $acl->deny('staff', ['settings']);
-        $acl->allow('admin', null, ['create', 'view', 'edit', 'delete', 'admin.access']); // should allow admin to view, edit, and delete everything
+        $acl->allow('admin', null, ['create', 'view', 'edit', 'delete', 'admin.access', 'manage']); // should allow admin to view, edit, and delete everything
+        $acl->allow('admin', 'settings', ['manage-settings', 'manage-themes']); // should allow admin to manage settings
         $acl->allow('admin', 'roles', 'assign'); // should allow admin to assign roles to users
         $acl->allow('superAdmin');
 

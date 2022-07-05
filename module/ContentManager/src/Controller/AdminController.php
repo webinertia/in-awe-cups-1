@@ -64,7 +64,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Page saved']]);
                 } catch (RuntimeException $e) {
-                    $this->logger->log(Logger::EMERG, $e->getMessage(), $this->user->getLogData());
+                    $this->getLogger()->err($e->getMessage(), $this->identity()->getIdentity()->getLogData());
                 }
             }
         }
