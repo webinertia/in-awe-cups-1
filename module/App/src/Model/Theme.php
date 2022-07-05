@@ -45,6 +45,11 @@ final class Theme implements ModelInterface
         }
     }
 
+    public function getConfigPath(): string
+    {
+        return $this->configPath . $this->configFilename;
+    }
+
     public function getTemplateMap()
     {
     }

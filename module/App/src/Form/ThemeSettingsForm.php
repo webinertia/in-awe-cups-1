@@ -7,9 +7,6 @@ namespace App\Form;
 use App\Form\BaseForm;
 use App\Form\Fieldset\ThemeFieldset;
 use App\Model\Theme;
-use Laminas\Form\Element\Collection;
-
-use function count;
 
 final class ThemeSettingsForm extends BaseForm
 {
@@ -21,12 +18,13 @@ final class ThemeSettingsForm extends BaseForm
 
     public function init()
     {
-        $manager = $this->getFormFactory()->getFormElementManager();
-        $config = $this->themes->getConfig();
-        foreach ($config as $fieldsetName => $values) {
-            $fieldset = new ThemeFieldset($fieldsetName);
+        $data = $this->themes->getConfig();
+        foreach ($data as $theme) {
+           // $fieldset = new ThemeFieldset($theme['name'], $theme);
+            $fieldset = $this->getFormFactory()->getFormElementManager()->get(ThemeFieldset::class);
+            $fieldset->setName($theme['name']);
+            $fieldset->populateValues($theme);
             $this->add($fieldset);
-            continue;
         }
     }
 }

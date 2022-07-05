@@ -17,7 +17,7 @@ final class ThemeFieldset extends Fieldset implements InputFilterProviderInterfa
     /**
      * @return void
      */
-    public function __construct($name, array $options = [])
+    public function __construct($name = null, array $options = [])
     {
         parent::__construct($name, $options);
         parent::setOptions($options);

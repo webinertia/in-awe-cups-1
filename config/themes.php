@@ -1,7 +1,4 @@
 <?php
-
-declare(strict_types=1);
-
 return [
     'default' => [
         'id' => '1',
@@ -12,7 +9,7 @@ return [
     ],
     'sunrise' => [
         'id' => '2',
-        'active' => '1',
+        'active' => '0',
         'name' => 'sunrise',
         'fallback' => 'default',
         'has_layout' => '1',

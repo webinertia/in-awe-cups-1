@@ -52,6 +52,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
         }
         $form = $this->service()->get(FormElementManager::class)->get(ThemeSettingsForm::class);
+        $form->setAttribute('action', $this->url()->fromRoute('admin/themes/manage'));
         if (! $this->request->isPost()) {
             $themes = $this->service()->get(Theme::class);
             $form->setData($themes->getConfig());
@@ -60,7 +61,15 @@ final class AdminController extends AbstractAppController implements AdminContro
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $this->service()->get(ConfigWriter::class)->toFile($this->service()->get(Theme::class)->getConfigPath() . 'themes.php', $data);
+                try {
+                    $writer = $this->service()->get(ConfigWriter::class);
+                    $writer->setUseBracketArraySyntax(true);
+                    $writer->toFile($this->service()->get(Theme::class)->getConfigPath(), $data);
+                    $headers->addHeaderLine('Content-Type', 'application/json');
+                    $this->view->setVariables(['success' => true, 'message' => ['message' => 'Settings Saved']]);
+                } catch (RuntimeException $e) {
+                    $this->getLogger()->err($e->getMessage());
+                }
             }
         }
         $this->view->setVariable('form', $form);
