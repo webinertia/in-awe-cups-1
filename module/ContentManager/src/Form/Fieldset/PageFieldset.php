@@ -6,7 +6,11 @@ namespace ContentManager\Form\Fieldset;
 
 use App\Form\FormInterface;
 use ContentManager\Navigation\Page\Mvc;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\ToInt;
+use Laminas\Filter\ToNull;
 use Laminas\Form\Element\Hidden;
+use Laminas\Form\Element\Number;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
 use Laminas\Form\Fieldset;
@@ -46,6 +50,13 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
             ],
         ])
         ->add([
+            'name'    => 'order',
+            'type'    => Number::class,
+            'options' => [
+                'label' => 'Order - The order in which the page will be shown',
+            ],
+        ])
+        ->add([
             'name' => 'content',
             'type' => Textarea::class,
         ]);
@@ -53,6 +64,21 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
 
     public function getInputFilterSpecification(): array
     {
-        return [];
+        return [
+            'id'    => [
+                'required' => false,
+                'filters'  => [
+                    ['name' => ToInt::class],
+                ],
+            ],
+            'order' => [
+                'required' => false,
+                'filters'  => [
+                    ['name' => StringTrim::class],
+                    ['name' => ToInt::class],
+                    ['name' => ToNull::class],
+                ],
+            ],
+        ];
     }
 }

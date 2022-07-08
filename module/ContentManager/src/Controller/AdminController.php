@@ -46,6 +46,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->url()->fromRoute('admin.content/manager/create')
         );
         if ($this->request->isPost()) {
+            $post = $this->request->getPost();
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $gateway       = $this->service()->get(PageGateway::class);

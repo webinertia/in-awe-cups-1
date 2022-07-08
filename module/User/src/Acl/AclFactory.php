@@ -43,11 +43,11 @@ final class AclFactory implements FactoryInterface
         $acl->addResource('users');
         $acl->addResource('account', 'users');
         $acl->addResource('profile', 'account');
-        $acl->addResource('user_list', 'users');
+        $acl->addResource('user-list', 'users');
 
         $acl->addResource('mail');
-        $acl->addResource('contact_us', 'mail');
-        $acl->addResource('site_message', 'mail');
+        $acl->addResource('contact-us', 'mail');
+        $acl->addResource('site-message', 'mail');
 
         $acl->addResource('content');
         $acl->addResource('pages', 'content');
@@ -58,12 +58,13 @@ final class AclFactory implements FactoryInterface
 
         $acl->allow('user', null, ['view', 'edit', 'delete'], new Owner()); // should allow user to view, edit, and delete their own account
         $acl->deny('user', 'account', ['register', 'login']);
+        $acl->deny('user', 'user-list', 'view'); // should prevent user from seeing the user list
         $acl->allow('user', 'account', 'logout');
         $acl->allow('user', 'profile', 'view'); // allow any logged in user to view their profile
         $acl->allow('user', 'profile', ['edit', 'delete'], new Owner());
         $acl->deny(['guest', 'user'], 'admin', 'view'); // should prevent guests and users from seeing the admin page
 
-        $acl->allow('staff', ['account', 'profile', 'content'], ['view', 'create', 'edit', 'delete', 'upload.images']); // should allow staff to view, edit, and delete their own account
+        $acl->allow('staff', ['account', 'profile', 'user-list', 'content'], ['view', 'create', 'edit', 'delete', 'upload.images']); // should allow staff to view, edit, and delete their own account
         $acl->allow('staff', 'admin', 'view'); // should allow staff to view the admin page
         $acl->deny('staff', ['settings']);
         $acl->allow('admin', null, ['create', 'view', 'edit', 'delete', 'admin.access', 'manage']); // should allow admin to view, edit, and delete everything

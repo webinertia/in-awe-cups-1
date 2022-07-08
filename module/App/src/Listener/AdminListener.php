@@ -11,9 +11,9 @@ use Laminas\EventManager\EventManagerInterface;
 use Laminas\Log\Logger;
 use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Permissions\Acl\Exception\RuntimeException;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Throwable;
-use User\Permissions\Exception\PrivilegeException;
 
 class AdminListener extends AbstractListenerAggregate
 {
@@ -40,20 +40,16 @@ class AdminListener extends AbstractListenerAggregate
     public function authorize(MvcEvent $event)
     {
         // Get and check the route match object
-        $routeMatch        = $event->getRouteMatch();
-        $sm                = $event->getApplication()->getServiceManager();
-        $controllerManager = $sm->get(ControllerManager::class);
-        $logger            = $sm->get(Logger::class);
+        $controller = $event->getTarget();
+        $logger     = $controller->getLogger();
         // Get and check the parameter for current controller
-        $controller = $routeMatch->getParam('controller');
-        $controller = $controllerManager->get($controller);
         if (! $controller instanceof AdminControllerInterface) {
             return;
         }
         $user = $controller->identity()->getIdentity();
         try {
             if (! $controller->acl()->isAllowed($user, $controller, 'view')) {
-                throw new PrivilegeException('You have insufficient privileges to complete request');
+                throw new RuntimeException('You have insufficient privileges to complete request');
             }
         } catch (Throwable $th) {
             $message = $th->getMessage();
