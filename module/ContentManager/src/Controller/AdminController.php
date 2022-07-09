@@ -16,9 +16,9 @@ use Laminas\Filter\FilterChain;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
 use Laminas\Form\FormElementManager;
-use Laminas\Json\Encoder;
 use Laminas\Log\Logger;
 use Laminas\Navigation\Navigation;
+use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 
@@ -130,6 +130,41 @@ final class AdminController extends AbstractAppController implements AdminContro
         }
         $this->view->setVariable('form', $form);
         return $this->view;
+    }
+
+    public function deleteAction()
+    {
+        //$json = ['href' => '', 'message' => ''];
+        if ($this->request->isXmlHttpRequest()) {
+            $headers = $this->response->getHeaders();
+            $headers->addHeaderLine('Content-Type', 'application/json');
+            $this->view->setTerminal(true);
+        }
+        if ($this->acl()->isAllowed($this->identity()->getIdentity(), $this->resourceId, 'delete')) {
+            $id         = $this->params('id');
+            $navigation = $this->service()->get(Navigation::class);
+            $page       = $navigation->findOneById($id);
+            $gateway    = $this->service()->get(PageGateway::class);
+            try {
+                $result = $gateway->delete(['id' => $page->id]);
+                if (! $result) {
+                    $this->getLogger()->err(Logger::EMERG, 'Page Delete error', $this->identity()->getIdentity()->getLogData());
+                    $this->flashMessenger()->addErrorMessage('Page not deleted');
+                    $this->view->setVariable(
+                        'data',
+                        [
+                            'href'    => $this->url('page', ['title' => $page->title]),
+                            'message' => 'Page not deleted',
+                        ]
+                    );
+                }
+                $this->flashMessenger()->addSuccessMessage('Page deleted');
+                $this->view->setVariable('data', ['href' => $this->url()->fromRoute('home')]);
+            } catch (RuntimeException $e) {
+
+            }
+            return $this->view;
+        }
     }
 
     public function uploadImagesAction(): ViewModel

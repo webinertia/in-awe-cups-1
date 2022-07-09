@@ -20,6 +20,20 @@ $(document).on('click', 'div.userlist-toolbar a.manage-user', function(event) {
         $('div#' + parentId).html(response);
     });
 });
+// ajax call to delete page
+$(document).on('click', 'a.delete-page', function(event) {
+    event.preventDefault();
+    let href = $(this).attr("href");
+    $.ajax({
+        url:href,
+        dataType:"json",
+        }).done(function(data, textStatus, jqXHR){
+        console.log(data);
+        if (data.href !== undefined) {
+            $(location).attr('href', data.href);
+        }
+        });
+});
 // This loads the form in the modal to edit a page
 $('#editorModal').on('show.bs.modal', function (event) {
     let button = $(event.relatedTarget); // Button that triggered the modal

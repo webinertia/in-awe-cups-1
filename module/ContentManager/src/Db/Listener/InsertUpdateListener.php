@@ -41,14 +41,15 @@ final class InsertUpdateListener extends AbstractListenerAggregate
             $gateway = $event->getTarget();
             $select  = (new Select())->from($gateway->getTable());
             $select->columns(['order'])->order('order DESC')->limit(1);
-            $lastPage = $gateway->selectWith($select)->current();
+            $lastPage      = $gateway->selectWith($select)->current();
+            $insert->order = empty($lastPage) ? 1 : $lastPage->order + 1;
         }
         $insert->values(
             [
                 'class'       => 'nav-link',
                 'createdDate' => $this->time->filter(new DateTime()),
                 'params'      => Json::encode($insert->params),
-                'order'       => $insert->order ?? ++$lastPage->order,
+                'order'       => $insert->order,
             ],
             Insert::VALUES_MERGE
         );

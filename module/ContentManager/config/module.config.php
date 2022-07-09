@@ -72,7 +72,7 @@ return [
                                 ],
                             ],
                             'delete' => [
-                                'type' => Literal::class,
+                                'type' => Segment::class,
                                 'may_terminate' => true,
                                 'options' => [
                                     'route' => '/delete[/:id]',
