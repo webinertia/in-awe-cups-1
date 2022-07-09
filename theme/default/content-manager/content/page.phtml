@@ -18,12 +18,17 @@ $this->headTitle($page->label);
             <?php
             if($this->acl()->isAllowed($this->identity()->getIdentity(), 'content', 'edit')) :
             ?>
-            <button
-            type="button"
-            class="btn-sm btn-primary mdi mdi-pencil"
+            <a
+            class="mdi mdi-pencil"
             data-toggle="modal"
             data-target="#editorModal"
-            data-href="<?=$this->url('admin.content/manager/edit', ['title' => $page->title])?>"></button>
+            data-href="<?=$this->url('admin.content/manager/edit', ['title' => $page->title])?>"
+            href="#">
+            </a>
+            <a
+            class="delete-page mdi mdi-delete-forever text-danger"
+            href="<?=$this->url('admin.content/manager/delete', ['id' => $page->id])?>">
+            </a>
             <?php endif; ?>
                 <h5><?=$page->label?></h5>
             </div>

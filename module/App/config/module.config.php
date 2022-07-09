@@ -173,7 +173,6 @@ return [
                 'route' => 'contact',
                 'class' => 'nav-link',
                 'order' => 999,
-                'active' => false,
                 'action' => 'contact',
             ],
             [
