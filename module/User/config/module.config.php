@@ -248,14 +248,16 @@ return [
                 'label'     => 'Users',
                 'route'     => 'user/list',
                 'class'     => 'nav-link',
+                'order'     => -900,
                 'action'    => 'list',
-                'resource'  => 'users',
+                'resource'  => 'user-list',
                 'privilege' => 'view',
             ],
             [
                 'label'     => 'Profile',
                 'route'     => 'user/profile',
                 'class'     => 'nav-link',
+                'order'     => -900,
                 'action'    => 'view',
                 'resource'  => 'users',
                 'privilege' => 'view',
@@ -276,7 +278,7 @@ return [
                 'action'    => 'logout',
                 'resource'  => 'account',
                 'privilege' => 'logout',
-                'order'     => 1000,
+                'order'     => 1001,
             ],
             [
                 'label'     => 'Register',
@@ -285,7 +287,7 @@ return [
                 'action'    => 'index',
                 'resource'  => 'account',
                 'privilege' => 'register',
-                'order'     => 999,
+                'order'     => 1000,
             ],
         ],
         'admin'  => [
@@ -304,7 +306,7 @@ return [
                 'action'    => 'logout',
                 'resource'  => 'user',
                 'privilege' => 'logout',
-                'order'     => 100,
+                'order'     => 1001,
             ],
         ],
     ],
@@ -380,10 +382,6 @@ return [
             View\Helper\Identity::class        => View\Helper\Factory\IdentityFactory::class,
         ],
     ],
-    'view_manager'    => [
-        'display_forbidden_reason' => true,
-        'forbidden_template'       => 'error/403'
-    ],
     'widgets'         => [
         'member_list'       => [
             'items_per_page' => 2,
@@ -394,25 +392,6 @@ return [
             'items_per_page' => 5,
             'display_groups' => 'admin',
             'widget_name'    => 'Administrators',
-        ],
-    ],
-    'upload_manager' => [
-        'user' => [
-            'adapter' => TableGatewayAdapter::class,
-            // if not using the type configuration below the uploader will use a image_dir key for the directory name to upload too
-            //'image_dir' => 'images',
-            'type' => [
-                'profile' => [
-                    'upload_path' => '/user/profile/profileImages',
-                ],
-            ],
-            'db_config' => [
-                'table_name' => 'users',
-                'image_column' => 'profileImage', // if the record is to be saved this key must be present and must match the key in the columns below
-                'columns' => [
-                    'profileImage'
-                ],
-            ],
         ],
     ],
 ];

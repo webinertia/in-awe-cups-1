@@ -5,7 +5,6 @@ $(document).bind("ajaxSend", function(){
     $("#progress").hide();
 }).bind("ajaxError", function(jqXHR, textStatus, errorThrown) {
     let json = JSON.parse(textStatus.responseText);
-    console.log(textStatus);
     switch(textStatus.status) {
         case 403:
             alert(json.message);
@@ -149,9 +148,3 @@ function imageplugin_upload_handler (blobInfo, success, failure, progress) {
     // send the data, including the file
     xhr.send(formData);
   };
-  // Prevent Bootstrap dialog from blocking focusin
-$(document).on('focusin', function(e) {
-    if ($(e.target).closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root").length) {
-      e.stopImmediatePropagation();
-    }
-  });

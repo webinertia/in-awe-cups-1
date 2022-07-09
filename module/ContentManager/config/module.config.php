@@ -75,9 +75,13 @@ return [
                                 'type' => Literal::class,
                                 'may_terminate' => true,
                                 'options' => [
-                                    'route' => '/delete',
+                                    'route' => '/delete[/:id]',
                                     'defaults' => [
+                                        'controller' => Controller\AdminController::class,
                                         'action' => 'delete',
+                                    ],
+                                    'constraints' => [
+                                        'id'    => '[0-9]*',
                                     ],
                                 ],
                             ],

@@ -6,6 +6,7 @@ namespace ContentManager\Db\Listener;
 
 use DateTime;
 use Laminas\Db\Sql\Insert;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Update;
 use Laminas\Db\TableGateway\Feature\EventFeature;
 use Laminas\Db\TableGateway\Feature\EventFeature\TableGatewayEvent;
@@ -36,12 +37,18 @@ final class InsertUpdateListener extends AbstractListenerAggregate
     public function preInsert(TableGatewayEvent $event): void
     {
         $insert = $event->getParam('insert');
-        $data   = $insert->getRawState('params');
+        if (empty($insert->order)) {
+            $gateway = $event->getTarget();
+            $select  = (new Select())->from($gateway->getTable());
+            $select->columns(['order'])->order('order DESC')->limit(1);
+            $lastPage = $gateway->selectWith($select)->current();
+        }
         $insert->values(
             [
                 'class'       => 'nav-link',
                 'createdDate' => $this->time->filter(new DateTime()),
                 'params'      => Json::encode($insert->params),
+                'order'       => $insert->order ?? ++$lastPage->order,
             ],
             Insert::VALUES_MERGE
         );
