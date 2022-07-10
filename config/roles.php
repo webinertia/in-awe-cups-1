@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'guest' => [
+        'id' => '0',
+        'role' => 'guest',
+        'inheritsFrom' => null,
+        'label' => 'Guest',
+    ],
     'user' => [
         'id' => '1',
         'role' => 'user',
@@ -19,6 +25,6 @@ return [
         'id' => '3',
         'role' => 'admin',
         'inheritsFrom' => 'staff',
-        'label' => 'Admin',
+        'label' => 'Administrator',
     ],
 ];

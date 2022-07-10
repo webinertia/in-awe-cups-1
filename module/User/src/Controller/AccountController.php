@@ -120,7 +120,7 @@ final class AccountController extends AbstractAppController
             $this->view->setVariable('form', $form);
             return $this->view;
         } catch (Throwable $th) {
-            $this->logger->log(Logger::ERR, $th->getMessage());
+            $this->getLogger()->error($th->getMessage());
         }
     }
 
@@ -134,10 +134,7 @@ final class AccountController extends AbstractAppController
             if ($this->isAllowed($this->user, $user, $this->action)) {
                 $result = $this->usrGateway->delete(['userName' => $user->userName]);
                 if ($result > 0) {
-                    $this->logger->info(
-                        'User ' . $this->user->userName . ' deleted user: ' . $deletedUser['userName'],
-                        $this->user->getLogData()
-                    );
+                    $this->getLogger()->info('User {firstName} {lastName} deleted user ' . $deletedUser['firstName'] . ' ' . $deletedUser['lastName']);
                     $this->redirect()->toRoute(
                         'user',
                         ['action' => 'index', 'userName' => $deletedUser['userName']]
@@ -151,7 +148,7 @@ final class AccountController extends AbstractAppController
                 $this->redirectPrev();
             }
         } catch (RuntimeException $e) {
-            $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
+            $this->getLogger()->error($e->getMessage());
         }
     }
 
@@ -177,15 +174,12 @@ final class AccountController extends AbstractAppController
                 if ($this->request->isXmlHttpRequest()) {
                     $this->view->setTerminal(true);
                 }
-                $userName       = $this->params()->fromRoute('userName');
-                $user           = $this->usrGateway->fetchByColumn('userName', $userName);
-                $user->active   = 1;
-                $result         = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
+                $userName     = $this->params()->fromRoute('userName');
+                $user         = $this->usrGateway->fetchByColumn('userName', $userName);
+                $user->active = 1;
+                $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
-                    $this->logger->info(
-                        'User ' . $this->user->userName . ' activated user: ' . $user->userName,
-                        $this->user->getLogData()
-                    );
+                    $this->getLogger()->info('User {firstName} {lastName} activated user with UserName: ' . $user->userName);
                 } else {
                     throw new RuntimeException('The requested action could not be completed');
                 }
@@ -194,7 +188,7 @@ final class AccountController extends AbstractAppController
                 $this->response->setStatusCode('403');
             }
         } catch (RuntimeException $e) {
-            $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
+            $this->getLogger()->error($e->getMessage());
         }
         $this->view->setVariables(['user' => $this->user, 'activatedUser' => $user]);
         return $this->view;
@@ -207,15 +201,12 @@ final class AccountController extends AbstractAppController
                 if ($this->request->isXmlHttpRequest()) {
                     $this->view->setTerminal(true);
                 }
-                $userName       = $this->params()->fromRoute('userName');
-                $user           = $this->usrGateway->fetchByColumn('userName', $userName);
-                $user->active   = 0;
-                $result         = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
+                $userName     = $this->params()->fromRoute('userName');
+                $user         = $this->usrGateway->fetchByColumn('userName', $userName);
+                $user->active = 0;
+                $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
-                    $this->logger->info(
-                        'User ' . $this->user->userName . ' deactivated user: ' . $user->userName,
-                        $this->user->getLogData()
-                    );
+                    $this->getLogger()->info('User {firstName} {lastName} deactivated UserName: ' . $user->userName);
                 } else {
                     throw new RuntimeException('The requested action could not be completed');
                 }
@@ -224,7 +215,7 @@ final class AccountController extends AbstractAppController
                 $this->response->setStatusCode('403');
             }
         } catch (RuntimeException $e) {
-            $this->logger->log(Logger::ERR, $e->getMessage(), $this->user->getLogData());
+            $this->getLogger()->error($e->getMessage());
         }
         $this->view->setVariables(['user' => $this->user, 'deactivatedUser' => $user]);
         return $this->view;

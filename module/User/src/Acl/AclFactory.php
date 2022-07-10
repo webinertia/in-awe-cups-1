@@ -23,8 +23,8 @@ final class AclFactory implements FactoryInterface
         $roles = $container->get(Roles::class);
         $roles = $roles->getRoles();
 
-        $guest = new Role('guest');
-        $acl->addRole($guest);
+        // $guest = new Role('guest');
+        // $acl->addRole($guest);
 
         foreach ($roles as $role) {
             $acl->addRole($role['role'], $role['inheritsFrom']);

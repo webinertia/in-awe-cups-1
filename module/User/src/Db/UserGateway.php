@@ -12,6 +12,8 @@ use Laminas\Authentication\AuthenticationService as AuthService;
 use Laminas\Authentication\Result;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Db\ResultSet\ResultSet;
+use Throwable;
+use User\Model\Guest;
 
 use function password_verify;
 
@@ -67,31 +69,24 @@ final class UserGateway extends TableGateway
                // break;
             }
         } catch (Throwable $th) {
-            //$this->logger->log(Logger::ERR, $th->getMessage());
+            //$this->getLogger()->error($th->getMessage());
         }
     }
 
     public function fetchGuestContext(): ModelInterface
     {
+        $guest     = (new Guest())->toArray();
         $resultSet = $this->getResultSetPrototype();
         if ($resultSet instanceof ResultSet) {
             $prototype = $resultSet->getArrayObjectPrototype();
-            $prototype->exchangeArray([
-                'id'       => null,
-                'userName' => 'Guest',
-                'role'     => 'guest',
-            ]);
+            $prototype->exchangeArray($guest);
             return $prototype;
         }
 
         if ($resultSet instanceof HydratingResultSet) {
             $hydator   = $resultSet->getHydrator();
             $prototype = $resultSet->getObjectPrototype();
-            $hydator->hydrate([
-                'id'       => null,
-                'userName' => 'Guest',
-                'role'     => 'guest',
-            ], $prototype);
+            $hydator->hydrate($guest, $prototype);
             return $prototype;
         }
     }

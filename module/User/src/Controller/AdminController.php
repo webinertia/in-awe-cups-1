@@ -43,7 +43,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->view->setVariable('users', $this->usrGateway->loadMemberContext());
             return $this->view;
         } catch (Throwable $th) {
-            $this->logger->log(Logger::ERR, $th->getMessage());
+            $this->getLogger()->error($th->getMessage());
         }
     }
 }

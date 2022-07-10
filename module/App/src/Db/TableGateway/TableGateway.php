@@ -16,6 +16,8 @@ use Laminas\EventManager\EventManager;
 
 class TableGateway extends AbstractTableGateway
 {
+    /** @var LoggerInterface $logger */
+    protected $logger;
     /**
      * Name of the database table
      *

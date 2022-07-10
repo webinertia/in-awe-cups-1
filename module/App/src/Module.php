@@ -13,11 +13,6 @@ use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Http\PhpEnvironment\Request as PhpRequest;
 use Laminas\I18n\ConfigProvider;
-use Laminas\Log\Filter\Priority;
-use Laminas\Log\Formatter\Db as DbFormatter;
-use Laminas\Log\Logger;
-use Laminas\Log\Writer\Db as Dbwriter;
-use Laminas\Log\Writer\FirePhp;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\Container;
 use Laminas\Session\SaveHandler\DbTableGateway;
@@ -26,7 +21,7 @@ use Laminas\Session\SessionManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
-use User\Service\UserInterface;
+use Psr\Log\LoggerInterface;
 
 use function date_default_timezone_set;
 use function explode;
@@ -49,7 +44,7 @@ final class Module
         date_default_timezone_set($config['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
         $this->boostrapSessions($e);
-        $this->bootstrapLogging($e);
+        //$this->bootstrapLogging($e);
         // TODO: add theme loading based on user preference
         $themeLoader = new ThemeLoader($sm->get(Theme::class), $sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
@@ -116,24 +111,6 @@ final class Module
             $renderer = $sm->get(PhpRenderer::class);
             // attach the Il8n standard helpers for translation
             $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
-        }
-    }
-
-    public function bootstrapLogging(MvcEvent $e): void
-    {
-        //TODO move this to config backed factory
-        $sm                = $e->getapplication()->getServiceManager();
-        $config            = $sm->get('config');
-        $logger            = $sm->get(Logger::class);
-        $writer            = new Dbwriter($sm->get(AdapterInterface::class), $config['db']['log_table_name']);
-        $standardLogFilter = new Priority(Logger::DEBUG);
-        $writer->addFilter($standardLogFilter);
-
-        $dbFormatter = new DbFormatter($config['app_settings']['log']['time_format']);
-        $writer->setFormatter($dbFormatter);
-        $logger->addWriter($writer);
-        if ($config['app_settings']['server']['enable_error_log']) {
-            Logger::registerErrorHandler($logger);
         }
     }
 }
