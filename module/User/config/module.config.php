@@ -248,7 +248,7 @@ return [
                 'label'     => 'Users',
                 'route'     => 'user/list',
                 'class'     => 'nav-link',
-                'order'     => -900,
+                'order'     => -901,
                 'action'    => 'list',
                 'resource'  => 'user-list',
                 'privilege' => 'view',
@@ -349,6 +349,7 @@ return [
             Db\UserGateway::class      => Db\Factory\UserGatewayFactory::class,
             Service\UserService::class => Service\Factory\UserServiceFactory::class,
             Model\Roles::class         => InvokableFactory::class,
+            Model\Guest::class         => InvokableFactory::class,
         ],
     ],
     'filters'         => [

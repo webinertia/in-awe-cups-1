@@ -101,7 +101,6 @@ final class AdminController extends AbstractAppController implements AdminContro
         $form->bind($page);
         if ($this->request->isPost()) {
             $gateway = $this->service()->get(PageGateway::class);
-            // $model   = $this->service()->get(Page::class);
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
@@ -124,7 +123,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers = $this->response->getHeaders();
                     $headers->addHeaderLine('Content-Type', 'application/json');
                 } catch (RuntimeException $e) {
-                    $this->logger->log(Logger::EMERG, $e->getMessage(), $this->user->getLogData());
+                    $this->getLogger()->critical($e->getMessage());
                 }
             }
         }
@@ -132,7 +131,7 @@ final class AdminController extends AbstractAppController implements AdminContro
         return $this->view;
     }
 
-    public function deleteAction()
+    public function deleteAction(): ViewModel
     {
         //$json = ['href' => '', 'message' => ''];
         if ($this->request->isXmlHttpRequest()) {
@@ -161,7 +160,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $this->flashMessenger()->addSuccessMessage('Page deleted');
                 $this->view->setVariable('data', ['href' => $this->url()->fromRoute('home')]);
             } catch (RuntimeException $e) {
-
+                $this->getLogger()->error($e->getMessage())
             }
             return $this->view;
         }

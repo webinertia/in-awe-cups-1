@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Log\LoggerAwareTrait;
 use Laminas\Config\Config;
-use Laminas\Log\LoggerAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
@@ -38,9 +38,6 @@ abstract class AbstractAppController extends AbstractActionController implements
      * @var UserGateway
      * */
     protected $usrGateway;
-
-    /** @var Logger $logger */
-    protected $logger;
 
     /** @var ViewModel $view */
     protected $view;

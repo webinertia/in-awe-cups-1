@@ -73,7 +73,7 @@ final class UserService implements UserInterface, ModelInterface
         return [
             'userId'    => $this->id,
             'userName'  => $this->userName,
-            'role'      => $this->getGroupName(),
+            'role'      => $this->role,
             'firstName' => $this->firstName,
             'lastName'  => $this->lastName,
         ];

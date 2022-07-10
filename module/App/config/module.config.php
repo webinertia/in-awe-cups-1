@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Log\Processors\PsrPlaceholder;
+use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Log\Logger;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Psr\Log\LoggerInterface;
 
 use function dirname;
 
@@ -113,6 +117,34 @@ return [
                     ],
                 ],
             ],
+        ],
+    ],
+    'psr_log' => [
+        LoggerInterface::class => [
+            'writers' => [
+                'db' => [
+                    'name' => 'db',
+                    'priority' => Logger::INFO,
+                    'options' => [
+                        'table' => 'log',
+                        'db' => AdapterInterface::class,
+                    ],
+                ],
+            ],
+            'processors' => [
+                'psrplaceholder' => [
+                    'name' => PsrPlaceholder::class,
+                    'priority' => Logger::INFO,
+                ],
+            ],
+        ],
+    ],
+    'log_processors' => [
+        'aliases' => [
+            'psrplaceholder' => PsrPlaceholder::class,
+        ],
+        'factories' => [
+            PsrPlaceholder::class => Log\Processors\PsrPlaceholderFactory::class,
         ],
     ],
     'service_manager' => [
