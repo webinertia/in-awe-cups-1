@@ -128,6 +128,12 @@ return [
                     'options' => [
                         'table' => 'log',
                         'db' => AdapterInterface::class,
+                        'formatter' => [
+                            'name' => 'db',
+                            'options' => [
+                                'dateTimeFormat' => 'm-d-Y H:i:s',
+                            ],
+                        ],
                     ],
                 ],
             ],
