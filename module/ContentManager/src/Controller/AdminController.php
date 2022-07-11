@@ -160,7 +160,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $this->flashMessenger()->addSuccessMessage('Page deleted');
                 $this->view->setVariable('data', ['href' => $this->url()->fromRoute('home')]);
             } catch (RuntimeException $e) {
-                $this->getLogger()->error($e->getMessage())
+                $this->getLogger()->error($e->getMessage());
             }
             return $this->view;
         }

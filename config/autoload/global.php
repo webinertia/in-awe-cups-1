@@ -32,7 +32,7 @@ return [
         'remember_me_seconds' => 86400 * 14,
         'cookie_httponly'     => true,
         'cookie_samesite'     => 'Strict',
-        'cookie_secure'       => true,
+        'cookie_secure'       => false,
     ],
     'session_containers' => [
         Container::class,

@@ -6,6 +6,7 @@ namespace App;
 
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
+use App\Listener\LogErrorsExceptionsListener;
 use App\Listener\ThemeLoader;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
@@ -13,6 +14,7 @@ use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Http\PhpEnvironment\Request as PhpRequest;
 use Laminas\I18n\ConfigProvider;
+use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\Container;
 use Laminas\Session\SaveHandler\DbTableGateway;
@@ -21,6 +23,7 @@ use Laminas\Session\SessionManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
+use User\Service\UserInterface;
 use Psr\Log\LoggerInterface;
 
 use function date_default_timezone_set;
@@ -43,9 +46,11 @@ final class Module
         $config       = $sm->get('config')['app_settings'];
         date_default_timezone_set($config['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
+        if ($config['server']['log_errors'] && $sm->has(LoggerInterface::class)) {
+            $log = $sm->get(LoggerInterface::class)->getLogger();
+            $log::registerErrorHandler($log, true);
+        }
         $this->boostrapSessions($e);
-        //$this->bootstrapLogging($e);
-        // TODO: add theme loading based on user preference
         $themeLoader = new ThemeLoader($sm->get(Theme::class), $sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener($sm->get('config')['app_settings']);
