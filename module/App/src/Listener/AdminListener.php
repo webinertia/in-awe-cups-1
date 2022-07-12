@@ -48,12 +48,12 @@ class AdminListener extends AbstractListenerAggregate
         }
         $user = $controller->identity()->getIdentity();
         try {
-            if (! $controller->acl()->isAllowed($user, $controller, 'view')) {
+            if (! $controller->identity()->hasIdentity() || ! $controller->acl()->isAllowed($user, $controller, 'view')) {
                 throw new RuntimeException('You have insufficient privileges to complete request');
             }
         } catch (Throwable $th) {
             $message = $th->getMessage();
-            $logger->log(Logger::ERR, $message, $user->getLogData());
+            $logger->notice($th->getMessage());
             $controller->flashMessenger()->addErrorMessage($message);
             $controller->redirectPrev();
         }

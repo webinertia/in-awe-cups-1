@@ -27,4 +27,10 @@ return [
         'inheritsFrom' => 'staff',
         'label' => 'Administrator',
     ],
+    'superAdmin' => [
+        'id' => '4',
+        'role' => 'superAdmin',
+        'inheritsFrom' => 'admin',
+        'label' => 'Super Administrator',
+    ],
 ];

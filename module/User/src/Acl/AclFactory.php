@@ -27,9 +27,12 @@ final class AclFactory implements FactoryInterface
         // $acl->addRole($guest);
 
         foreach ($roles as $role) {
-            $acl->addRole($role['role'], $role['inheritsFrom']);
+            if ($role['inheritsFrom'] !== null) {
+                $acl->addRole($role['role'], $role['inheritsFrom']);
+            } else {
+                $acl->addRole($role['role']);
+            }
         }
-        $acl->addRole('superAdmin', 'admin');
 
         $acl->addResource('admin');
         $acl->addResource('settings', 'admin');

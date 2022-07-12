@@ -21,7 +21,7 @@ final class AdminController extends AbstractAppController implements AdminContro
 
     public function getResourceId(): string
     {
-        return self::RESOURCE_ID;
+        return $this->resourceId;
     }
 
     public function indexAction(): ViewModel

@@ -12,6 +12,9 @@ use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\Session\Config\ConfigInterface;
+use Laminas\Session\SaveHandler\SaveHandlerInterface;
+use Laminas\Session\SessionManager;
 use Psr\Log\LoggerInterface;
 
 use function dirname;
@@ -115,6 +118,38 @@ return [
                             ],
                         ],
                     ],
+                    'logs' => [
+                        'type' => Placeholder::class,
+                        'may_terminate' =>  true,
+                        'child_routes' => [
+                            'overview' => [
+                                'may_terminate' => true,
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/admin/logs/overview',
+                                    'defaults' => [
+                                        'controller' => Controller\LogController::class,
+                                        'action' => 'overview',
+                                    ],
+                                ],
+                            ],
+                            'error' => [
+                                'may_terminate' => true,
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/admin/logs/error[/:pageNumber[/:itemsPerPage]]',
+                                    'defaults' => [
+                                        'controller' => Controller\LogController::class,
+                                        'action' => 'error',
+                                    ],
+                                    'constraints' => [
+                                        'pageNumber' => '[0-9]',
+                                        'itemsPerPage' => '[0-9]',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
@@ -155,18 +190,18 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
-            Model\Theme::class                          => InvokableFactory::class,
-            Service\Email::class                        => Service\Factory\EmailFactory::class,
-            Laminas\Session\SessionManager::class       => Laminas\Session\Service\SessionManagerFactory::class,
-            Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
+            Model\Settings::class       => Model\Factory\SettingsFactory::class,
+            Model\Theme::class          => InvokableFactory::class,
+            Service\Email::class        => Service\Factory\EmailFactory::class,
+            SaveHandlerInterface::class => Session\SaveHandlerFactory::class,
         ],
     ],
     'controllers'     => [
-        'factories' => [
+        'factories' => [// move this to an abstract factory???
             Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
             Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
+            Controller\LogController::class   => Controller\Factory\AppControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
