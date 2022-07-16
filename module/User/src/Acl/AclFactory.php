@@ -42,6 +42,7 @@ final class AclFactory implements FactoryInterface
         $acl->addResource('seo', 'settings');
         $acl->addResource('view', 'settings');
         $acl->addResource('theme', 'settings');
+        $acl->addResource('logs', 'admin');
 
         $acl->addResource('users');
         $acl->addResource('account', 'users');
@@ -55,25 +56,25 @@ final class AclFactory implements FactoryInterface
         $acl->addResource('content');
         $acl->addResource('pages', 'content');
 
-        $acl->allow('guest', 'content', 'view'); // should allow reading of pages
-        $acl->allow('guest', 'account', ['register', 'login']); // should allow showing the register, login tabs
-        $acl->deny('guest', 'account', 'logout'); // should prevent guest from seeing the logout
+        $acl->allow('Guest', 'content', 'view'); // should allow reading of pages
+        $acl->allow('Guest', 'account', ['register', 'login']); // should allow showing the register, login tabs
+        $acl->deny('Guest', 'account', 'logout'); // should prevent guest from seeing the logout
 
-        $acl->allow('user', null, ['view', 'edit', 'delete'], new Owner()); // should allow user to view, edit, and delete their own account
-        $acl->deny('user', 'account', ['register', 'login']);
-        $acl->deny('user', 'user-list', 'view'); // should prevent user from seeing the user list
-        $acl->allow('user', 'account', 'logout');
-        $acl->allow('user', 'profile', 'view'); // allow any logged in user to view their profile
-        $acl->allow('user', 'profile', ['edit', 'delete'], new Owner());
-        $acl->deny(['guest', 'user'], 'admin', 'view'); // should prevent guests and users from seeing the admin page
+        $acl->allow('Member', null, ['view', 'edit', 'delete'], new Owner()); // should allow user to view, edit, and delete their own account
+        $acl->deny('Member', 'account', ['register', 'login']);
+        $acl->deny('Member', 'user-list', 'view'); // should prevent user from seeing the user list
+        $acl->allow('Member', 'account', 'logout');
+        $acl->allow('Member', 'profile', 'view'); // allow any logged in user to view their profile
+        $acl->allow('Member', 'profile', ['edit', 'delete'], new Owner());
+        $acl->deny(['Guest', 'Member'], 'admin', 'view'); // should prevent guests and users from seeing the admin page
 
-        $acl->allow('staff', ['account', 'profile', 'user-list', 'content'], ['view', 'create', 'edit', 'delete', 'upload.images']); // should allow staff to view, edit, and delete their own account
-        $acl->allow('staff', 'admin', 'view'); // should allow staff to view the admin page
-        $acl->deny('staff', ['settings']);
-        $acl->allow('admin', null, ['create', 'view', 'edit', 'delete', 'admin.access', 'manage']); // should allow admin to view, edit, and delete everything
-        $acl->allow('admin', 'settings', ['manage-settings', 'manage-themes']); // should allow admin to manage settings
-        $acl->allow('admin', 'roles', 'assign'); // should allow admin to assign roles to users
-        $acl->allow('superAdmin');
+        $acl->allow('Staff', ['account', 'profile', 'user-list', 'content'], ['view', 'create', 'edit', 'delete', 'upload.images']); // should allow staff to view, edit, and delete their own account
+        $acl->allow('Staff', 'admin', 'view'); // should allow staff to view the admin page
+        $acl->deny('Staff', ['settings']);
+        $acl->allow('Administrator', null, ['create', 'view', 'edit', 'delete', 'admin.access', 'manage']); // should allow admin to view, edit, and delete everything
+        $acl->allow('Administrator', 'settings', ['manage-settings', 'manage-themes']); // should allow admin to manage settings
+        $acl->allow('Administrator', 'roles', 'assign'); // should allow admin to assign roles to users
+        $acl->allow('Super Administrator');
 
         return $acl;
     }

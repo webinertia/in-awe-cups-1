@@ -6,7 +6,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Factory;
 
-use Laminas\Log\Logger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
 use Psr\Container\ContainerInterface;

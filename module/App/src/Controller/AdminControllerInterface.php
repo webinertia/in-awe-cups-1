@@ -8,5 +8,4 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 interface AdminControllerInterface extends ResourceInterface
 {
-    public const RESOURCE_ID = 'admin';
 }

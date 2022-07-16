@@ -16,7 +16,7 @@ final class PageGateway extends TableGateway
         $result = $this->select();
         $pages  = [];
         foreach ($result as $row) {
-            $pages[] = $row->getArrayCopy();
+            $pages[] = $row->toArray();
         }
         return $pages;
     }

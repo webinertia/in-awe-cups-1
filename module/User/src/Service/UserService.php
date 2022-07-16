@@ -71,11 +71,13 @@ final class UserService implements UserInterface, ModelInterface
     public function getLogData(): array
     {
         return [
-            'userId'    => $this->id,
-            'userName'  => $this->userName,
-            'role'      => $this->role,
-            'firstName' => $this->firstName,
-            'lastName'  => $this->lastName,
+            'userId'       => $this->id,
+            'userName'     => $this->userName,
+            'role'         => $this->role,
+            'firstName'    => $this->firstName,
+            'lastName'     => $this->lastName,
+            'email'        => $this->email,
+            'profileImage' => $this->profileImage,
         ];
     }
 

@@ -11,7 +11,7 @@ use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use User\Filter\RegistrationHash as Filter;
 use User\Form\UserForm;
-use User\Model\Users;
+use User\Service\UserInterface;
 
 use function array_merge;
 use function password_verify;
@@ -64,7 +64,7 @@ class RegisterController extends AbstractAppController
         $acctData     = $this->form->getData()['acct-data'];
         $profileData  = $this->form->getData()['profile-data'];
         $passwordData = $this->form->getData()['password-data'];
-        $roleData     = $this->form->getData()['role-data'] ??= ['role' => 'user'];
+        $roleData     = $this->form->getData()['role-data'] ??= ['role' => 'Member'];
         unset($passwordData['conf_password']);
         $value  = ['email' => $acctData['email'], 'timestamp' => $acctData['regDate']];
         $filter = new Filter();
@@ -94,13 +94,13 @@ class RegisterController extends AbstractAppController
             $position = strpos($token, '$');
             $email    = substr($token, 0, $position);
             $user     = $this->usrGateway->fetchByColumn('email', $email);
-            if ($user instanceof Users) {
+            if ($user instanceof UserInterface) {
                 $check = password_verify($email . $user->regDate, $user->regHash);
                 if ($check) {
                     $user->active   = 1;
                     $user->verified = 1;
                     $user->regHash  = null;
-                    $result         = $user->update($user, ['id' => $user->id]);
+                    $result         = $this->usrGateway->update($user, ['id' => $user->id]);
                     if ($result) {
                         $this->view->setVariable('verified', true);
                     } else {

@@ -34,7 +34,7 @@ final class Roles implements ModelInterface
             // The following builds the select data array for the roles dropdown form element
             $selectData[$role['id']] = [
                 'value' => $role['role'],
-                'label' => $role['label'],
+                'label' => $role['role'],
             ];
         }
         $this->setRoles($roleData);
@@ -51,7 +51,7 @@ final class Roles implements ModelInterface
 
     public function getGroupName(string $role): string
     {
-        return $this->config[$role]['label'];
+        return $this->config[$role]['role'];
     }
 
     /** @param array $selectData */

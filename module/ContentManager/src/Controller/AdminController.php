@@ -18,7 +18,6 @@ use Laminas\Filter\Word\SeparatorToDash;
 use Laminas\Form\FormElementManager;
 use Laminas\Log\Logger;
 use Laminas\Navigation\Navigation;
-use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 
@@ -57,6 +56,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $data->route   = 'page';
                 $data->params  = ['title' => $data->title];
                 try {
+                    //$page   = $data->toArray();
                     $result = $gateway->insert($data->getArrayCopy());
                     if (! $result) {
                         throw new RuntimeException('Page Not saved');
@@ -65,7 +65,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Page saved']]);
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->err($e->getMessage(), $this->identity()->getIdentity()->getLogData());
+                    $this->getLogger()->error($e->getMessage(), $this->identity()->getIdentity()->getLogData());
                 }
             }
         }
@@ -98,7 +98,10 @@ final class AdminController extends AbstractAppController implements AdminContro
         $title      = $this->params('title');
         $navigation = $this->service()->get(Navigation::class);
         $page       = $navigation->findOneByTitle($title);
-        $form->bind($page);
+        $model      = new Page();
+        $bindData   = $page->toArray();
+        $model->exchangeArray($bindData);
+        $form->bind($model);
         if ($this->request->isPost()) {
             $gateway = $this->service()->get(PageGateway::class);
             $form->setData($this->request->getPost());

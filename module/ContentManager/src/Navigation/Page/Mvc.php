@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace ContentManager\Navigation\Page;
 
+use Laminas\Json\Json;
+use Laminas\Json\Decoder;
 use Laminas\Navigation\Page\Mvc as MvcPage;
 use Laminas\Permissions\Acl\ProprietaryInterface;
+
+use function is_array;
+use function is_string;
 
 final class Mvc extends MvcPage implements ProprietaryInterface
 {
@@ -24,36 +29,23 @@ final class Mvc extends MvcPage implements ProprietaryInterface
 
     public function exchangeArray(array $array): void
     {
+        if (isset($array['params']) && is_string($array['params'])) {
+            $array['params'] = Decoder::decode($array['params'], Json::TYPE_ARRAY);
+        }
         $this->setOptions($array);
     }
 
     public function getArrayCopy(): array
     {
-        return [
-            'id'            => $this->id,
-            'parentId'      => $this->parentId,
-            'ownerId'       => $this->getOwnerId(),
-            'label'         => $this->getLabel(),
-            'title'         => $this->getTitle(),
-            'class'         => $this->getClass(),
-            'iconClass'     => $this->iconClass,
-            'order'         => $this->getOrder(),
-            'params'        => $this->getParams(),
-            'rel'           => $this->getRel(),
-            'rev'           => $this->getRev(),
-            'resource'      => $this->getResource(),
-            'privilege'     => $this->getPrivilege(),
-            'visible'       => $this->isVisible(),
-            'route'         => $this->getRoute(),
-            'uri'           => $this->uri,
-            'action'        => $this->getAction(),
-            'query'         => $this->getQuery(),
-            'isGroupPage'   => $this->isGroupPage,
-            'allowComments' => $this->allowComments,
-            'content'       => $this->content,
-            'isLandingPage' => $this->isLandingPage,
-            'createdDate'   => $this->createdDate,
-            'updatedDate'   => $this->updatedDate,
-        ];
+        return $this->toArray();
+    }
+
+    public function getSqlSaveData(): array
+    {
+        $page = $this->toArray();
+        if (is_array($page['params'])) {
+            $page['params'] = Json::encode($page['params'], Json::TYPE_OBJECT);
+        }
+        return $page;
     }
 }

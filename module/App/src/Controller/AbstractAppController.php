@@ -9,6 +9,7 @@ use Laminas\Config\Config;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
+use User\Acl\ResourceAwareTrait;
 use User\Db\UserGateway;
 
 use function dirname;
@@ -16,6 +17,7 @@ use function dirname;
 abstract class AbstractAppController extends AbstractActionController implements ResourceInterface
 {
     use LoggerAwareTrait;
+    use ResourceAwareTrait;
 
     /** @var Config $appSettings */
     public $appSettings;
@@ -60,10 +62,5 @@ abstract class AbstractAppController extends AbstractActionController implements
             'appSettings' => $this->appSettings,
             'resourceId'  => null,
         ]);
-    }
-
-    public function getResourceId(): string
-    {
-        return $this->resourceId;
     }
 }

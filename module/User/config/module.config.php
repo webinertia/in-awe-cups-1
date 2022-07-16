@@ -341,15 +341,15 @@ return [
     ],
     'service_manager' => [
         'aliases'   => [
-            Model\Users::class           => Db\UserGateway::class,
-            Service\UserInterface::class => Service\UserService::class, // Identity controller plugin requires this alias
+            Model\Users::class                    => Db\UserGateway::class,
+            Service\UserInterface::class          => Service\UserService::class, // Identity controller plugin requires this alias
         ],
         'factories' => [
-            AclInterface::class        => Acl\AclFactory::class,
-            Db\UserGateway::class      => Db\Factory\UserGatewayFactory::class,
-            Service\UserService::class => Service\Factory\UserServiceFactory::class,
-            Model\Roles::class         => InvokableFactory::class,
-            Model\Guest::class         => InvokableFactory::class,
+            AclInterface::class          => Acl\AclFactory::class,
+            Db\UserGateway::class        => Db\Factory\UserGatewayFactory::class,
+            Service\UserService::class   => Service\Factory\UserServiceFactory::class,
+            Model\Roles::class           => InvokableFactory::class,
+            Model\Guest::class           => InvokableFactory::class,
         ],
     ],
     'filters'         => [

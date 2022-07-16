@@ -48,8 +48,9 @@ final class InsertUpdateListener extends AbstractListenerAggregate
             [
                 'class'       => 'nav-link',
                 'createdDate' => $this->time->filter(new DateTime()),
-                'params'      => Json::encode($insert->params),
+                'params'      => (string) Json::encode(['title' => $insert->title]),
                 'order'       => $insert->order,
+                'visible'     => $insert->visible ?? 1,
             ],
             Insert::VALUES_MERGE
         );
@@ -60,7 +61,7 @@ final class InsertUpdateListener extends AbstractListenerAggregate
         $update = $event->getParam('update');
         $set    = $update->getRawState('set');
         $data   = [
-            'params'      => Json::encode(['title' => $set['title']]),
+            'params'      => (string) Json::encode(['title' => $set['title']]),
             'updatedDate' => $this->time->filter(new DateTime()),
         ];
         $update->set($data, Update::VALUES_MERGE);
