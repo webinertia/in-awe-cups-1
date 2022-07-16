@@ -6,13 +6,12 @@ namespace App\Model;
 
 use App\Model\ModelInterface;
 use Laminas\Stdlib\ArrayObject;
+use User\Acl\ResourceAwareTrait;
 
 final class Setting extends ArrayObject implements ModelInterface
 {
-    protected $resourceId = 'settings';
+    use ResourceAwareTrait;
 
-    public function getResourceId()
-    {
-        return $this->resourceId;
-    }
+    /** @var string $resourceId */
+    protected $resourceId = 'settings';
 }
