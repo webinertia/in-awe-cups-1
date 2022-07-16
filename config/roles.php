@@ -3,28 +3,34 @@
 declare(strict_types=1);
 
 return [
-    'guest' => [
+    'Guest' => [
         'id' => '0',
-        'role' => 'guest',
+        'role' => 'Guest',
         'inheritsFrom' => null,
         'label' => 'Guest',
     ],
-    'user' => [
+    'Member' => [
         'id' => '1',
-        'role' => 'user',
-        'inheritsFrom' => 'guest',
-        'label' => 'User',
+        'role' => 'Member',
+        'inheritsFrom' => 'Guest',
+        'label' => 'Member',
     ],
-    'staff' => [
+    'Staff' => [
         'id' => '2',
-        'role' => 'staff',
-        'inheritsFrom' => 'user',
+        'role' => 'Staff',
+        'inheritsFrom' => 'Member',
         'label' => 'Staff',
     ],
-    'admin' => [
+    'Administrator' => [
         'id' => '3',
-        'role' => 'admin',
-        'inheritsFrom' => 'staff',
+        'role' => 'Administrator',
+        'inheritsFrom' => 'Staff',
         'label' => 'Administrator',
+    ],
+    'Super Administrator' => [
+        'id' => '4',
+        'role' => 'Super Administrator',
+        'inheritsFrom' => 'Administrator',
+        'label' => 'Super Administrator',
     ],
 ];

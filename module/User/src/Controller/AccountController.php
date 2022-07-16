@@ -24,7 +24,7 @@ final class AccountController extends AbstractAppController
         return $this->view;
     }
 
-    public function loginAction(): ViewModel
+    public function loginAction(): mixed
     {
         $formManager = $this->service()->get(FormElementManager::class);
         $form        = $formManager->get(LoginForm::class);

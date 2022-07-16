@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ContentManager\Form\Fieldset;
 
 use App\Form\FormInterface;
-use ContentManager\Navigation\Page\Mvc;
+use ContentManager\Model\Page;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\ToInt;
 use Laminas\Filter\ToNull;
@@ -21,7 +21,7 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
 {
     /** @var Mvc $page */
     /** @return void */
-    public function __construct(Mvc $page, ?array $options = null)
+    public function __construct(Page $page, ?array $options = null)
     {
         $this->page = $page;
         parent::__construct('page-data');

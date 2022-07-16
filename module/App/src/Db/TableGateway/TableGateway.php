@@ -13,9 +13,12 @@ use Laminas\Db\TableGateway\Feature\FeatureSet;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManager;
+use User\Acl\ResourceAwareTrait;
 
 class TableGateway extends AbstractTableGateway
 {
+    use ResourceAwareTrait;
+
     /** @var LoggerInterface $logger */
     protected $logger;
     /**

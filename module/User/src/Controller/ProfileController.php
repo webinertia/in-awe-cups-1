@@ -25,6 +25,14 @@ final class ProfileController extends AbstractAppController
     protected $usrModel;
     /** @var ProfileForm $form */
     protected $form;
+    /** @var string $resourceId */
+    protected $resourceId = 'profile';
+
+    public function getResourceId(): string
+    {
+        return $this->resourceId;
+    }
+
     /**
      * @return mixed
      * @throws DomainException
@@ -32,7 +40,7 @@ final class ProfileController extends AbstractAppController
     public function onDispatch(MvcEvent $e)
     {
         if (! $this->identity()->hasIdentity()) {
-            $this->redirect()->toRoute('user/login');
+            $this->redirect()->toRoute('user/account/login');
         }
         return parent::onDispatch($e);
     }

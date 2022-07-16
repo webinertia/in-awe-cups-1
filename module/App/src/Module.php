@@ -6,30 +6,22 @@ namespace App;
 
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
-use App\Listener\LogErrorsExceptionsListener;
 use App\Listener\ThemeLoader;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
-use Laminas\Db\TableGateway\TableGateway;
 use Laminas\Http\PhpEnvironment\Request as PhpRequest;
 use Laminas\I18n\ConfigProvider;
-use Laminas\ModuleManager\ModuleManager;
+use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Session\Container;
-use Laminas\Session\SaveHandler\DbTableGateway;
-use Laminas\Session\SaveHandler\DbTableGatewayOptions;
-use Laminas\Session\SessionManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
-use User\Service\UserInterface;
+use Locale;
 use Psr\Log\LoggerInterface;
 
 use function date_default_timezone_set;
-use function explode;
-use function strpos;
-use function substr;
 
 final class Module
 {
@@ -42,78 +34,53 @@ final class Module
     {
         $app          = $e->getApplication();
         $eventManager = $app->getEventManager();
-        $sm           = $app->getServiceManager();
-        $config       = $sm->get('config')['app_settings'];
-        date_default_timezone_set($config['server']['time_zone']);
-        GlobalAdapterFeature::setStaticAdapter($sm->get(AdapterInterface::class));
-        if ($config['server']['log_errors'] && $sm->has(LoggerInterface::class)) {
-            $log = $sm->get(LoggerInterface::class)->getLogger();
+        $this->sm     = $app->getServiceManager();
+        $this->config = $this->sm->get('config');
+        date_default_timezone_set($this->config['app_settings']['server']['time_zone']);
+        GlobalAdapterFeature::setStaticAdapter($this->sm->get(AdapterInterface::class));
+        $this->boostrapSessions($e);
+        if ($this->config['app_settings']['server']['log_errors'] && $this->sm->has(LoggerInterface::class)) {
+            $log = $this->sm->get(LoggerInterface::class)->getLogger();
             $log::registerErrorHandler($log, true);
         }
-        $this->boostrapSessions($e);
-        $themeLoader = new ThemeLoader($sm->get(Theme::class), $sm->get(TemplatePathStack::class));
+        $themeLoader = new ThemeLoader($this->sm->get(Theme::class), $this->sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
-        $layoutVariables = new LayoutVariablesListener($sm->get('config')['app_settings']);
+        $layoutVariables = new LayoutVariablesListener($this->config['app_settings']);
         $layoutVariables->attach($eventManager);
-        $adminListener = new AdminListener($sm->get(TemplateMapResolver::class));
+        $adminListener = new AdminListener($this->sm->get(TemplateMapResolver::class));
         $adminListener->attach($eventManager);
     }
 
     public function boostrapSessions(MvcEvent $e): void
     {
-        $sm     = $e->getApplication()->getServiceManager();
-        $config = $sm->get('Config');
-        // db options
-        $dbOptions      = [
-            'idColumn'       => 'id',
-            'nameColumn'     => 'name',
-            'modifiedColumn' => 'modified',
-            'lifetimeColumn' => 'lifetime',
-            'dataColumn'     => 'data',
-        ];
-        $sessionManager = $sm->get(SessionManager::class);
-        $saveHandler    = new DbTableGateway(
-            new TableGateway(
-                $config['db']['sessions_table_name'],
-                $sm->get(AdapterInterface::class)
-            ),
-            new DbTableGatewayOptions($dbOptions)
-        );
-        $sessionManager->setSaveHandler($saveHandler);
-        $container          = $sm->get(Container::class);
-        $phpRequest         = $sm->get(PhpRequest::class);
+        $phpRequest = $this->sm->get(PhpRequest::class);
+        if (
+            $phpRequest->getServer()->get('REQUEST_SCHEME') === 'https' &&
+            ! $this->config['session_config']['cookie_secure']
+        ) {
+            $this->config['session_config']['cookie_secure'] = true;
+        }
+        $container          = $this->sm->get(Container::class);
         $container->prevUrl = $phpRequest->getServer()->get('HTTP_REFERER');
     }
 
     public function boostrapTranslation(MvcEvent $e): void
     {
         // get an instance of the service manager
-        $sm       = $e->getApplication()->getServiceManager();
-        $settings = $sm->get('config')['app_settings'];
-        if ($settings['server']['enable_translation']) {
-            $request = $sm->get('request');
+        if ($this->config['app_settings']['server']['enable_translation']) {
+            $request = $this->sm->get('request');
             // get the laguages sent by the client
-            $string = $request->getServer('HTTP_ACCEPT_LANGUAGE');
-            // this should be delimeter for the first two prefrences set in the browser
-            $needle = ';';
-            // find its position
-            $position = strpos($string, $needle);
-            // return everything before the needle
-            $substring = substr($string, 0, $position);
-            // get an array of locales with the primary at offest 0
-            $locales = explode(',', $substring);
-            /**
-             * @var $translator \Laminas\I18n\Translator\Translator
-            */
-            $translator = $sm->get('MvcTranslator');
+            $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
+            $translator = $this->sm->get(Translator::class);
             // set the primary locale as requested by the client
-            $translator->setLocale($locales[0]);
-            // set option two as the fallback
-            $translator->setFallbackLocale([$locales[1]]);
-            /**
-             * @var $renderer \Laminas\View\Renderer\PhpRenderer
-             */
-            $renderer = $sm->get(PhpRenderer::class);
+            if ($locale !== null) {
+                $translator->setLocale($locale);
+                // set option two as the fallback
+                $translator->setFallbackLocale('en_US');
+            } else {
+                $translator->setLocale('en_US');
+            }
+            $renderer = $this->sm->get(PhpRenderer::class);
             // attach the Il8n standard helpers for translation
             $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
         }

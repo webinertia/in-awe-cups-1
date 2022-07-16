@@ -13,7 +13,7 @@ final class Guest implements ModelInterface
     /** @var int $userId */
     protected $id = 0;
     /** @var string $role */
-    protected $role = 'guest';
+    protected $role = 'Guest';
     /** @var string $label */
     protected $label = 'Guest';
     /** @var string $inheritsFrom */
@@ -25,7 +25,7 @@ final class Guest implements ModelInterface
     /** @var string $lastName */
     protected $lastName;
     /** @var string $resourceId */
-    protected $resourceId = 'guest';
+    protected $resourceId = 'Guest';
 
     public function getResourceId(): string
     {

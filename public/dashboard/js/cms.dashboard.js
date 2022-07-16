@@ -1,22 +1,38 @@
+let messages = {
+    'permissionDenied': 'Permission denied!',
+    'success': 'Record deleted successfully!',
+    'error': 'An Unknown error occurred!',
+    'notFound': 'Page not found!',
+};
+function handleAjaxDelete(path) {
+    $.ajax({
+        url: path,
+        statusCode: {
+            200: function() {
+                alert(messages.success);
+            },
+            403: function() {
+                alert(messages.permissionDenied);
+                //return false;
+            },
+            404: function() {
+              alert(messages.notFound);
+                //return false;
+            },
+            500: function() {
+                alert(messages.error);
+               // return false;
+            }
+        }
+    });
+}
 // This is for the dashboard ajax in progress bar
 $(document).bind("ajaxSend", function(){
     $("#progress").show();
 }).bind("ajaxComplete", function(){
     $("#progress").hide();
 }).bind("ajaxError", function(jqXHR, textStatus, errorThrown) {
-    let json = JSON.parse(textStatus.responseText);
-    switch(textStatus.status) {
-        case 403:
-            alert(json.message);
-            break;
-        case 404:
-            alert('Page not found');
-            break;
-        case 500:
-            alert('Internal server error');
-            break;
-    }
-   // alert("The requested operation could not be performed due to an error");
+
 });
 // ajax for the member list widget
 $(document).on('click', 'div.userWidgetControl a', function(event) {
@@ -147,4 +163,11 @@ function imageplugin_upload_handler (blobInfo, success, failure, progress) {
     formData.append('file', blobInfo.blob(), blobInfo.filename());
     // send the data, including the file
     xhr.send(formData);
-  };
+};
+
+// incorrect selector for the log-message close button
+$(document).on('click', 'div.log-message a.delete-log', function() {
+    let path = $(this).attr("data-href");
+    console.log($(this).parent());
+    handleAjaxDelete(path);
+});

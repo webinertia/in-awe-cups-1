@@ -13,15 +13,18 @@ use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
+use User\Acl\ResourceAwareTrait;
 use User\Controller\WidgetController;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
+    use ResourceAwareTrait;
+
     protected $resourceId = 'admin';
 
     public function getResourceId(): string
     {
-        return self::RESOURCE_ID;
+        return $this->resourceId;
     }
 
     public function indexAction(): ViewModel

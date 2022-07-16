@@ -12,6 +12,7 @@ use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\Session\SaveHandler\SaveHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 use function dirname;
@@ -115,6 +116,52 @@ return [
                             ],
                         ],
                     ],
+                    'logs' => [
+                        'type' => Placeholder::class,
+                        'may_terminate' =>  true,
+                        'child_routes' => [
+                            'overview' => [
+                                'may_terminate' => true,
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/admin/logs/view',
+                                    'defaults' => [
+                                        'controller' => Controller\LogController::class,
+                                        'action' => 'view',
+                                    ],
+                                ],
+                            ],
+                            'error' => [
+                                'may_terminate' => true,
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/admin/logs/error[/:pageNumber[/:itemsPerPage]]',
+                                    'defaults' => [
+                                        'controller' => Controller\LogController::class,
+                                        'action' => 'error',
+                                    ],
+                                    'constraints' => [
+                                        'pageNumber' => '[0-9]',
+                                        'itemsPerPage' => '[0-9]',
+                                    ],
+                                ],
+                            ],
+                            'delete' => [
+                                'may_terminate' => true,
+                                'type' => Segment::class,
+                                'options' => [
+                                    'route' => '/admin/logs/delete[/:id]',
+                                    'defaults' => [
+                                        'controller' => Controller\LogController::class,
+                                        'action' => 'delete',
+                                    ],
+                                    'constraints' => [
+                                        'id' => '[0-9]',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
@@ -155,25 +202,26 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            Model\Settings::class                       => Model\Factory\SettingsFactory::class,
-            Model\Theme::class                          => InvokableFactory::class,
-            Service\Email::class                        => Service\Factory\EmailFactory::class,
-            Laminas\Session\SessionManager::class       => Laminas\Session\Service\SessionManagerFactory::class,
-            Laminas\Session\Config\SessionConfig::class => Laminas\Session\Service\SessionConfigFactory::class,
+            Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
+            Model\Settings::class          => Model\Factory\SettingsFactory::class,
+            Model\Theme::class             => InvokableFactory::class,
+            Service\Email::class           => Service\Factory\EmailFactory::class,
+            SaveHandlerInterface::class    => Session\SaveHandlerFactory::class,
         ],
     ],
     'controllers'     => [
-        'factories' => [
+        'factories' => [// move this to an abstract factory???
             Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
             Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
+            Controller\LogController::class   => Controller\Factory\AppControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
         'aliases' => [
-            'email'        => Controller\Plugin\Email::class,
-            'redirectPrev' => Controller\Plugin\RedirectPrev::class,
-            'service'      => Controller\Plugin\ServiceLocator::class,
+            'email'          => Controller\Plugin\Email::class,
+            'redirectPrev'   => Controller\Plugin\RedirectPrev::class,
+            'service'        => Controller\Plugin\ServiceLocator::class,
             'serviceManager' => Controller\Plugin\ServiceLocator::class,
         ],
         'factories' => [
@@ -249,20 +297,27 @@ return [
                 'resource'  => 'theme',
                 'privilege' => 'manage',
             ],
+            [
+                'label'     => 'Logs',
+                'uri'       => '/admin/logs/view',
+                'iconClass' => 'mdi mdi-alarm text-warning',
+                'resource'  => 'logs',
+                'privilege' => 'view',
+                'order'     => 1000,
+            ],
         ],
     ],
     'view_helpers'    => [
         'aliases'   => [
-            'bootstrapform'           => View\Helper\BootstrapForm::class,
             'bootstrapForm'           => View\Helper\BootstrapForm::class,
-            'bootstrapformcollection' => View\Helper\BootstrapFormCollection::class,
             'bootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
-            'bootstrapformrow'        => View\Helper\BootstrapFormRow::class,
             'bootstrapFormRow'        => View\Helper\BootstrapFormRow::class,
             'iconifiedcontrol'        => View\Helper\IconifiedControl::class,
             'iconifiedControl'        => View\Helper\IconifiedControl::class,
+            'mapPriority'             => View\Helper\MapLogPriority::class,
         ],
         'factories' => [
+            View\Helper\MapLogPriority::class          => InvokableFactory::class,
             View\Helper\BootstrapForm::class           => InvokableFactory::class,
             View\Helper\BootstrapFormCollection::class => InvokableFactory::class,
             View\Helper\BootstrapFormRow::class        => InvokableFactory::class,

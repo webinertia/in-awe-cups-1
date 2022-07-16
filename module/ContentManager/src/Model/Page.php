@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Intermediate Object that allows saving a Mvc Navigation page into a MySQL table
+ */
+
 declare(strict_types=1);
 
 namespace ContentManager\Model;
@@ -16,8 +20,6 @@ use function is_string;
 
 final class Page extends AbstractGatewayModel
 {
-    protected $ownerIdColumn = 'ownerId';
-
     /**
      * Exchange the array for another one.
      *
@@ -37,10 +39,52 @@ final class Page extends AbstractGatewayModel
             $data = (array) $data;
         }
         $storage = $this->storage;
-        if (! empty($data['params']) && is_string($data['params'])) {
+        if (isset($data['params']) && is_string($data['params'])) {
             $data['params'] = Decoder::decode($data['params'], Json::TYPE_ARRAY);
         }
         $this->storage = $data;
         return $storage;
+    }
+
+    public function getArrayCopy(): array
+    {
+        return [ // The are the only currently supported options
+            'id'            => $this->offsetGet('id'),
+            'parentId'      => $this->offsetGet('parentId'),
+            'ownerId'       => $this->offsetGet('ownerId'),
+            'label'         => $this->offsetGet('label'),
+            'title'         => $this->offsetGet('title'),
+            'class'         => $this->offsetGet('class'),
+            'iconClass'     => $this->offsetGet('iconClass'),
+            'order'         => $this->offsetGet('order'),
+            'params'        => $this->offsetGet('params'),
+            'resource'      => $this->offsetGet('resource'),
+            'privilege'     => $this->offsetGet('privilege'),
+            'visible'       => $this->offsetGet('visible'),
+            'route'         => $this->offsetGet('route'),
+            'uri'           => $this->offsetGet('uri'),
+            'action'        => $this->offsetGet('action'),
+            'query'         => $this->offsetGet('query'),
+            'isGroupPage'   => $this->offsetGet('isGroupPage'),
+            'allowComments' => $this->offsetGet('allowComments'),
+            'content'       => $this->offsetGet('content'),
+            'isLandingPage' => $this->offsetGet('isLandingPage'),
+            'cmsType'       => $this->offsetGet('cmsType'),
+            'createdDate'   => $this->offsetGet('createdDate'),
+            'updatedDate'   => $this->offsetGet('updatedDate'),
+        ];
+    }
+
+    protected function getSqlSaveUpdateArray(): array
+    {
+        return $this->getArrayCopy();
+    }
+
+    /**
+     * This will return ALL options of a Mvc Navigation Page once exchangeArray has been called
+     */
+    public function toArray(): array
+    {
+        return $this->storage;
     }
 }
