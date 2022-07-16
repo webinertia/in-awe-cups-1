@@ -1,26 +1,6 @@
 {
-    "extensions": [
-      "extension names to install"
-    ],
-    "ini": [
-      "php.ini directives"
-    ],
-    "checks": [
-      {
-      }
-    ],
-    "additional_checks": [
-      {
-      }
-    ],
-    "exclude": [
-      {
-      }
-    ],
     "ignore_php_platform_requirements": {
         "8.0": true
     },
-    "stablePHP": "8.0",
-    "additional_composer_arguments": [
-    ]
+    "stablePHP": "8.0"
   }
