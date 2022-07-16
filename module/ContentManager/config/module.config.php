@@ -12,87 +12,87 @@ use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 
 return [
-    'db' => [
+    'db'              => [
         'pages_table_name' => 'pages',
     ],
-    'router' => [
+    'router'          => [
         'routes' => [
-            'page' => [
-                'type' => Segment::class,
+            'page'          => [
+                'type'          => Segment::class,
                 'may_terminate' => true,
-                'options' => [
-                    'route' => '[/:title]',
+                'options'       => [
+                    'route'       => '[/:title]',
                     'constraints' => [
-                        'title'    => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'title' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ],
-                    'defaults' => [
+                    'defaults'    => [
                         'controller' => Controller\ContentController::class,
                         'action'     => 'page',
                     ],
                 ],
             ],
             'admin.content' => [
-                'type' => Placeholder::class,
+                'type'          => Placeholder::class,
                 'may_terminate' => true,
-                'options' => [
+                'options'       => [
                     'route' => '/admin/content',
                 ],
-                'child_routes' => [
+                'child_routes'  => [
                     'manager' => [
-                        'type' => Literal::class,
+                        'type'          => Literal::class,
                         'may_terminate' => true,
-                        'options' => [
-                            'route' => '/admin/content/manager',
+                        'options'       => [
+                            'route'    => '/admin/content/manager',
                             'defaults' => [
                                 'controller' => Controller\AdminController::class,
                                 'action'     => 'dashboard',
                             ],
                         ],
-                        'child_routes' => [
+                        'child_routes'  => [
                             'create' => [
-                                'type' => Literal::class,
+                                'type'          => Literal::class,
                                 'may_terminate' => true,
-                                'options' => [
-                                    'route' => '/create',
+                                'options'       => [
+                                    'route'    => '/create',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
-                                        'action' => 'create',
+                                        'action'     => 'create',
                                     ],
                                 ],
                             ],
-                            'edit' => [
-                                'type' => Segment::class,
+                            'edit'   => [
+                                'type'          => Segment::class,
                                 'may_terminate' => true,
-                                'options' => [
-                                    'route' => '/edit[/:title]',
+                                'options'       => [
+                                    'route'    => '/edit[/:title]',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
-                                        'action' => 'edit',
+                                        'action'     => 'edit',
                                     ],
                                 ],
                             ],
                             'delete' => [
-                                'type' => Segment::class,
+                                'type'          => Segment::class,
                                 'may_terminate' => true,
-                                'options' => [
-                                    'route' => '/delete[/:id]',
-                                    'defaults' => [
+                                'options'       => [
+                                    'route'       => '/delete[/:id]',
+                                    'defaults'    => [
                                         'controller' => Controller\AdminController::class,
-                                        'action' => 'delete',
+                                        'action'     => 'delete',
                                     ],
                                     'constraints' => [
-                                        'id'    => '[0-9]*',
+                                        'id' => '[0-9]*',
                                     ],
                                 ],
                             ],
                             'upload' => [
-                                'type' => Segment::class,
+                                'type'          => Segment::class,
                                 'may_terminate' => true,
-                                'options' => [
-                                    'route' => '/upload',
+                                'options'       => [
+                                    'route'    => '/upload',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
-                                        'action' => 'upload-images',
+                                        'action'     => 'upload-images',
                                     ],
                                 ],
                             ],
@@ -102,38 +102,38 @@ return [
             ],
         ],
     ],
-    'controllers' => [
+    'controllers'     => [
         'factories' => [
             Controller\AdminController::class   => AppControllerFactory::class,
             Controller\ContentController::class => AppControllerFactory::class,
         ],
     ],
-    'form_elements' => [
+    'form_elements'   => [
         'factories' => [
             Form\PageForm::class              => Form\Factory\PageFormFactory::class,
             Form\Fieldset\PageFieldset::class => Form\Fieldset\Factory\PageFieldsetFactory::class,
         ],
     ],
     'service_manager' => [
-        'aliases' => [
-            'navigation'       => Navigation::class,
+        'aliases'   => [
+            'navigation' => Navigation::class,
             //Model\Pages::class => Db\PageGateway::class,
         ],
         'factories' => [
-            Navigation::class     => DefaultNavigationFactory::class,
-            Db\PageGateway::class => Db\Factory\PageGatewayFactory::class,
+            Navigation::class                       => DefaultNavigationFactory::class,
+            Db\PageGateway::class                   => Db\Factory\PageGatewayFactory::class,
             Db\Listener\InsertUpdateListener::class => Db\Listener\InsertUpdateListenerFactory::class,
         ],
     ],
-    'navigation' => [
-        'admin'  => [
+    'navigation'      => [
+        'admin' => [
             [
                 'label'     => 'Page Manager',
                 'uri'       => '/admin/content',
                 'iconClass' => 'mdi mdi-page-layout-body text-warning',
                 'resource'  => 'admin',
                 'privilege' => 'admin.access',
-                'pages' => [
+                'pages'     => [
                     [
                         'label'     => 'Content Dashboard',
                         'route'     => 'admin.content/manager',
