@@ -22,13 +22,7 @@ final class DefaultNavigationFactory extends AbstractNavigationFactory
     protected $pageModel;
     /** @var array $pageMenu */
     protected $pageMenu = [];
-    /**
-     * Create and return a new Navigation instance (v3).
-     *
-     * @param string $requestedName
-     * @param null|array $options
-     * @return Navigation
-     */
+    /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $this->pageModel = $container->get(PageGateway::class);
@@ -36,11 +30,7 @@ final class DefaultNavigationFactory extends AbstractNavigationFactory
         return new Navigation($this->getPages($container));
     }
 
-    /**
-     * @return array
-     * @throws InvalidArgumentException
-     */
-    protected function getPages(ContainerInterface $container)
+    protected function getPages(ContainerInterface $container): array
     {
         if (null === $this->pages) {
             $configuration = $container->get('config');
@@ -64,10 +54,7 @@ final class DefaultNavigationFactory extends AbstractNavigationFactory
         return $this->pages;
     }
 
-    /**
-     * @return string
-     */
-    protected function getName()
+    protected function getName(): string
     {
         return 'default';
     }

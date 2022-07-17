@@ -16,30 +16,27 @@ use Laminas\Filter\FilterChain;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
 use Laminas\Form\FormElementManager;
-use Laminas\Log\Logger;
 use Laminas\Navigation\Navigation;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
+use User\Acl\ResourceAwareTrait;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
+    use ResourceAwareTrait;
+
     /** @var string $resourceId */
     protected $resourceId = 'pages';
-    /** @var Page $page */
-    /** @var Pages $pages */
-    /** @var PageForm $form */
-
-    public function getResourceId(): string
-    {
-        return $this->resourceId;
-    }
 
     public function createAction(): ViewModel
     {
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $form = $this->service()->get(FormElementManager::class)->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
+        $form = $this->service()->get(FormElementManager::class)->build(
+            PageForm::class,
+            ['mode' => FormInterface::CREATE_MODE]
+        );
         $form->setAttribute(
             'action',
             $this->url()->fromRoute('admin.content/manager/create')
@@ -56,7 +53,6 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $data->route   = 'page';
                 $data->params  = ['title' => $data->title];
                 try {
-                    //$page   = $data->toArray();
                     $result = $gateway->insert($data->getArrayCopy());
                     if (! $result) {
                         throw new RuntimeException('Page Not saved');
@@ -136,7 +132,6 @@ final class AdminController extends AbstractAppController implements AdminContro
 
     public function deleteAction(): ViewModel
     {
-        //$json = ['href' => '', 'message' => ''];
         if ($this->request->isXmlHttpRequest()) {
             $headers = $this->response->getHeaders();
             $headers->addHeaderLine('Content-Type', 'application/json');
@@ -150,7 +145,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             try {
                 $result = $gateway->delete(['id' => $page->id]);
                 if (! $result) {
-                    $this->getLogger()->err(Logger::EMERG, 'Page Delete error', $this->identity()->getIdentity()->getLogData());
+                    $this->getLogger()->error('Page Delete error');
                     $this->flashMessenger()->addErrorMessage('Page not deleted');
                     $this->view->setVariable(
                         'data',
@@ -175,6 +170,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->flashMessenger()->addErrorMessage('You are not allowed to upload images');
             $this->response->setStatusCode(403);
         }
+        $config = $this->service('config')['page_upload_paths'];
         $this->view->setTerminal(true);
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
@@ -182,12 +178,12 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isPost()) {
             $data = (array) $this->request->getFiles();
         }
-        $localPath  = '/public/modules/contentmanager/page/content/images/';
-        $publicPath = '/modules/contentmanager/page/content/images/';
+        $localPath  = $config['local_path'];
+        $publicPath = $config['public_path'];
         $fileFilter = new RenameUpload();
         // set it to randomize the file name
         $fileFilter->setRandomize(true);
-        // notice this sets the path for directory and the base file name used for all profile Images
+        // this sets the path for directory and the base file name used for all page Images
         $fileFilter->setTarget($this->basePath . $localPath . 'page_image');
         // maintain the original file extension
         $fileFilter->setUseUploadExtension(true);
@@ -196,7 +192,6 @@ final class AdminController extends AbstractAppController implements AdminContro
         $baseNameFilter = new BaseName();
         // grab just the file name so it can be stored in the profile table
         $baseName = $baseNameFilter->filter($uploaded['tmp_name']);
-
         // the view needs this data in this format for tinymce to work
         $data = ['location' => $publicPath . $baseName];
         $this->view->setVariable('data', $data);

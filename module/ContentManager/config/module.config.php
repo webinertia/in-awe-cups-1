@@ -12,10 +12,14 @@ use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
 
 return [
-    'db'              => [
+    'db'                => [
         'pages_table_name' => 'pages',
     ],
-    'router'          => [
+    'page_upload_paths' => [
+        'local_path'  => '/public/modules/contentmanager/page/content/images/',
+        'public_path' => '/modules/contentmanager/page/content/images/',
+    ],
+    'router'            => [
         'routes' => [
             'page'          => [
                 'type'          => Segment::class,
@@ -102,22 +106,21 @@ return [
             ],
         ],
     ],
-    'controllers'     => [
+    'controllers'       => [
         'factories' => [
             Controller\AdminController::class   => AppControllerFactory::class,
             Controller\ContentController::class => AppControllerFactory::class,
         ],
     ],
-    'form_elements'   => [
+    'form_elements'     => [
         'factories' => [
             Form\PageForm::class              => Form\Factory\PageFormFactory::class,
             Form\Fieldset\PageFieldset::class => Form\Fieldset\Factory\PageFieldsetFactory::class,
         ],
     ],
-    'service_manager' => [
+    'service_manager'   => [
         'aliases'   => [
             'navigation' => Navigation::class,
-            //Model\Pages::class => Db\PageGateway::class,
         ],
         'factories' => [
             Navigation::class                       => DefaultNavigationFactory::class,
@@ -125,7 +128,7 @@ return [
             Db\Listener\InsertUpdateListener::class => Db\Listener\InsertUpdateListenerFactory::class,
         ],
     ],
-    'navigation'      => [
+    'navigation'        => [
         'admin' => [
             [
                 'label'     => 'Page Manager',
@@ -140,7 +143,6 @@ return [
                         'action'    => 'dashboard',
                         'resource'  => 'admin',
                         'privilege' => 'admin.access',
-                        //'params'    => ['action' => 'dashboard']
                     ],
                     [
                         'label'     => 'Create New Page',

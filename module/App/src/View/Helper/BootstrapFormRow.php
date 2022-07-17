@@ -11,11 +11,8 @@ use Laminas\Form\Element\MonthSelect;
 use Laminas\Form\Element\MultiCheckbox;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\ElementInterface;
-use Laminas\Form\Exception\DomainException;
-use Laminas\Form\Exception\InvalidArgumentException as ExceptionInvalidArgumentException;
 use Laminas\Form\LabelAwareInterface;
 use Laminas\Form\View\Helper\FormRow;
-use Laminas\View\Exception\InvalidArgumentException;
 
 use function array_merge;
 use function count;
@@ -72,14 +69,14 @@ class BootstrapFormRow extends FormRow
             $element->setAttribute('class', 'btn btn-secondary');
         } elseif ($element instanceof Checkbox || $element instanceof MultiCheckbox) {
             $classString = 'form-check';
-            if ($labelPosition == BootstrapForm::MODE_INLINE) {
+            if ($labelPosition === BootstrapForm::MODE_INLINE) {
                 $classString .= ' mr-sm-2';
                 $element->setLabelAttributes(['class' => $classString]);
             }
             $element->setAttribute('class', $classString);
         } else {
             $classString = 'form-control';
-            if ($labelPosition == BootstrapForm::MODE_INLINE) {
+            if ($labelPosition === BootstrapForm::MODE_INLINE) {
                 $classString .= ' mb-2 mr-sm-2';
             }
             $element->setAttribute('class', $classString);
