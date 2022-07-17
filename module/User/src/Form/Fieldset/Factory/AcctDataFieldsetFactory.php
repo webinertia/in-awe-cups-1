@@ -6,6 +6,7 @@ namespace User\Form\Fieldset\Factory;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use User\Db\UserGateway;
 use User\Form\Fieldset\AcctDataFieldset;
 
 final class AcctDataFieldsetFactory implements FactoryInterface
@@ -16,6 +17,6 @@ final class AcctDataFieldsetFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): AcctDataFieldset
     {
-        return new AcctDataFieldset($options);
+        return new $requestedName($container->get(UserGateway::class), $options);
     }
 }

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
-use Laminas\Authentication\Result;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
-use User\Form\LoginForm;
 
-final class UserController extends AbstractAppController
+final class UserController extends AbstractAppController implements ResourceInterface
 {
+    /** @var string $resourceId */
+    protected $resourceId = 'member-list';
 
     public function listAction(): ViewModel
     {

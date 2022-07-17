@@ -12,10 +12,7 @@ use User\Model\Roles;
 
 final class AclFactory implements FactoryInterface
 {
-    /**
-     * @param string $requestedName
-     * @param null|mixed[] $options
-     */
+    /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Acl
     {
         $acl   = new Acl();
@@ -41,14 +38,14 @@ final class AclFactory implements FactoryInterface
         $acl->addResource('users');
         $acl->addResource('account', 'users');
         $acl->addResource('profile', 'account');
-        $acl->addResource('user-list', 'users');
+        $acl->addResource('member-list', 'users');
 
         $acl->addResource('messages');
         $acl->addResource('contact-us', 'messages');
         $acl->addResource('site-message', 'messages');
 
         $acl->addResource('content');
-        $acl->addResource('pages', 'content');
+        $acl->addResource('page', 'content');
 
         $acl->allow('Guest', 'content', 'view'); // should allow reading of pages
         $acl->allow('Guest', 'account', ['register', 'login']); // should allow showing the register, login tabs
@@ -57,7 +54,7 @@ final class AclFactory implements FactoryInterface
 
         $acl->allow('Member', null, ['view', 'edit', 'delete'], new Owner()); // view, edit, delete own account
         $acl->deny('Member', 'account', ['register', 'login']);
-        $acl->deny('Member', 'user-list', 'view'); // should prevent user from seeing the user list
+        $acl->deny('Member', 'member-list', 'view'); // should prevent user from seeing the user list
         $acl->allow('Member', 'account', 'logout');
         $acl->allow('Member', 'profile', 'view'); // allow any logged in user to view their profile
         $acl->allow('Member', 'profile', ['edit', 'delete'], new Owner());
@@ -65,7 +62,7 @@ final class AclFactory implements FactoryInterface
 
         $acl->allow(
             'Staff',
-            ['account', 'profile', 'user-list', 'content'],
+            ['account', 'profile', 'member-list', 'content'],
             ['view', 'create', 'edit', 'delete', 'upload.images']
         );
         $acl->allow('Staff', 'admin', 'view'); // should allow staff to view the admin page

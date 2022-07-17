@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form\Factory;
 
-use App\Model\Settings;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

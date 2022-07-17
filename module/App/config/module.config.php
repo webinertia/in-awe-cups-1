@@ -18,6 +18,13 @@ use Psr\Log\LoggerInterface;
 use function dirname;
 
 return [
+    'app_settings'       => [ // app_settings that are not to be edited are stored here
+        'server' => [
+            'app_path'        => dirname($_SERVER['DOCUMENT_ROOT'], 1),
+            'upload_basepath' => dirname($_SERVER['DOCUMENT_ROOT'], 1) . '/public/module',
+            'scheme'          => $_SERVER['REQUEST_SCHEME'],
+        ],
+    ],
     'base_dir'           => dirname(__DIR__, 3),
     'db'                 => [
         'sessions_table_name' => 'sessions',

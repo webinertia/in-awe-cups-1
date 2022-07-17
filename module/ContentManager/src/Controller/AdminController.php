@@ -19,14 +19,11 @@ use Laminas\Form\FormElementManager;
 use Laminas\Navigation\Navigation;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
-use User\Acl\ResourceAwareTrait;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
-    use ResourceAwareTrait;
-
     /** @var string $resourceId */
-    protected $resourceId = 'pages';
+    protected $resourceId = 'page';
 
     public function createAction(): ViewModel
     {
@@ -86,7 +83,10 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $form = $this->service()->get(FormElementManager::class)->build(PageForm::class, ['mode' => FormInterface::CREATE_MODE]);
+        $form = $this->service(FormElementManager::class)->build(
+            PageForm::class,
+            ['mode' => FormInterface::CREATE_MODE]
+        );
         $form->setAttribute(
             'action',
             $this->url()->fromRoute('admin.content/manager/edit', ['title' => $this->params('title')])

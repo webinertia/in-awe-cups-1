@@ -21,10 +21,17 @@ final class RegistrationHash implements FilterInterface
     public function filter($value): string
     {
         if (! is_array($value)) {
-            throw new InvalidArgumentException('Expected $value to be of type array, received: ' . gettype($value));
+            throw new InvalidArgumentException(
+                'Expects $value to associative array with keys: email, timestamp - received: ' . gettype($value)
+            );
         }
         if (isset($value['email']) && $value['timestamp']) {
             return password_hash($value['email'] . $value['timestamp'], PASSWORD_DEFAULT);
         }
+    }
+
+    public function __invoke(array $value): string
+    {
+        return $this->filter($value);
     }
 }

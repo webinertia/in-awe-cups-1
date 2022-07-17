@@ -19,6 +19,7 @@ final class Acl extends AbstractPlugin
         return $this;
     }
 
+    /** {@inheritDoc} */
     public function __call($name, $arguments): mixed
     {
         return $this->acl->{$name}(...$arguments);

@@ -6,20 +6,13 @@ namespace User\Controller\Plugin\Factory;
 
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use User\Controller\Plugin\Identity;
 use User\Service\UserInterface;
 
 final class IdentityFactory implements FactoryInterface
 {
-    /**
-     * @param string $requestedName
-     * @param null|mixed[] $options
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
+    /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Identity
     {
         return new Identity(

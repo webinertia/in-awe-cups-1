@@ -1,12 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This is configuration for the Laminas\DeveloperTools development toolbar.
  *
  * It will be enabled when you enable development mode.
  */
+
+declare(strict_types=1);
 
 return [
     'laminas-developer-tools' => [

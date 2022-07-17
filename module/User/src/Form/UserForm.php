@@ -44,12 +44,13 @@ class UserForm extends BaseForm
         $this->acl           = $acl;
         $this->userInterface = $userInterface;
         parent::__construct('user-form');
-        if (! empty($options) && isset($options['mode'])) {
-            parent::setOptions($options);
-        } elseif (empty($options) || ! empty($options) && ! isset($options['mode'])) {
-            $options['mode'] = FormInterface::CREATE_MODE;
-            parent::setOptions($options);
-        }
+        parent::setOptions($options);
+        // if (! empty($options) && isset($options['mode'])) {
+        //     parent::setOptions($options);
+        // } elseif (empty($options) || ! empty($options) && ! isset($options['mode'])) {
+        //     $options['mode'] = FormInterface::CREATE_MODE;
+        //     parent::setOptions($options);
+        // }
     }
 
     public function init(): void
@@ -60,7 +61,10 @@ class UserForm extends BaseForm
         $manager = $factory->getFormElementManager();
         $secData = $manager->build(SecurityFieldset::class, ['mode' => $options['mode']]);
         $this->add($secData, ['priority' => -1]);
-        $acctData = $manager->build(AcctDataFieldset::class, ['mode' => $options['mode']]);
+        $acctData = $manager->build(
+            AcctDataFieldset::class,
+            ['mode' => $options['mode'], 'userId' => $options['userId']]
+        );
         $this->add($acctData, ['priority' => 1]);
         // we will use this in both mode(s), but only if the user is already logged in and has privilege
         if ($this->acl->isAllowed($this->userInterface, 'roles', 'assign')) {

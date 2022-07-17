@@ -13,6 +13,6 @@ final class SecurityFieldsetFactory implements FactoryInterface
     /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): SecurityFieldset
     {
-        return new SecurityFieldset($container->get('config')['app_settings']);
+        return new SecurityFieldset($container->get('config')['app_settings'], $options);
     }
 }

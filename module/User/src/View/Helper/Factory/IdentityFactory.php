@@ -12,12 +12,7 @@ use User\View\Helper\Identity;
 
 final class IdentityFactory implements FactoryInterface
 {
-    /**
-     * @param string $requestedName
-     * @param null|mixed[] $options
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
+    /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Identity
     {
         return new Identity(

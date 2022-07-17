@@ -15,6 +15,13 @@ use User\Navigation\View\PermissionAclDelegatorFactory;
 use User\Navigation\View\RoleFromAuthenticationIdentityDelegator;
 
 return [
+    'module_settings'    => [
+        'user' => [
+            'server' => [
+                'profile_image_target_path' => '/user/profile/profileImages/profileImage',
+            ],
+        ],
+    ],
     'db'                 => [
         'auth_identity_column'   => 'userName',
         'auth_credential_column' => 'password',
@@ -250,7 +257,7 @@ return [
                 'class'     => 'nav-link',
                 'order'     => -901,
                 'action'    => 'list',
-                'resource'  => 'user-list',
+                'resource'  => 'member-list',
                 'privilege' => 'view',
             ],
             [
@@ -354,7 +361,8 @@ return [
     ],
     'filters'            => [
         'factories' => [
-            Filter\PasswordFilter::class => Filter\Factory\PasswordFilterFactory::class,
+            Filter\PasswordFilter::class   => InvokableFactory::class,
+            Filter\RegistrationHash::class => InvokableFactory::class,
         ],
     ],
     'form_elements'      => [

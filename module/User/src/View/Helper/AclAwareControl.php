@@ -8,7 +8,7 @@ use Laminas\Permissions\Acl\AclInterface;
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\View\Helper\TranslatorAwareTrait;
 use Laminas\View\Renderer\PhpRenderer;
-use User\Model\Users as User;
+use User\Service\UserInterface;
 
 final class AclAwareControl extends AbstractHelper
 {
@@ -52,7 +52,7 @@ final class AclAwareControl extends AbstractHelper
      * @param string $url
      * @param array $options
      */
-    public function __invoke(User $user, $resource, $privilege, $type, $url, $options = []): string
+    public function __invoke(UserInterface $user, $resource, $privilege, $type, $url, $options = []): string
     {
         $this->user      = $user;
         $this->resource  = $resource;
@@ -87,11 +87,11 @@ final class AclAwareControl extends AbstractHelper
                 }
             }
             // if we are building a button then build it and return early
-            /*
-           * <a class="btn btn-primary" href="<?= $this->url('profile', ['action' => 'edit-profile', 'userName' => $data->userName]) ?>" role="button">Edit Profile</a>
-             */
             $html .= '<a class="' . $this->buttonClass . '"';
-            $html .= 'href="' . $url . '" role="button">' . $translator->translate($this->options['link_text']) . '</a>';
+            $html .= 'href="'
+            . $url . '" role="button">'
+            . $translator->translate($this->options['link_text'])
+            . '</a>';
             //return $html;
         }
         $html .= '<svg class="' . $this->svgClass;
@@ -108,10 +108,7 @@ final class AclAwareControl extends AbstractHelper
         return $this->iconHeight;
     }
 
-    /**
-     * @return the $iconWidth
-     */
-    public function getIconWidth()
+    public function getIconWidth(): string
     {
         return $this->iconWidth;
     }

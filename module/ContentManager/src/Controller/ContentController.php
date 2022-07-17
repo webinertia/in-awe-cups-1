@@ -10,6 +10,9 @@ use Laminas\View\Model\ViewModel;
 
 final class ContentController extends AbstractAppController
 {
+    /** @var string $resourceId */
+    protected $resourceId = 'pages';
+
     public function pageAction(): ViewModel
     {
         $navigation = $this->service()->get(Navigation::class);

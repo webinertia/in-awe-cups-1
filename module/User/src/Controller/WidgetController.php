@@ -63,5 +63,4 @@ final class WidgetController extends AbstractAppController
         $this->view->setVariable('paginator', $this->paginator);
         return $this->view;
     }
-
 }

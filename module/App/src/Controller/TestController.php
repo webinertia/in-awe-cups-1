@@ -2,6 +2,7 @@
 
 /**
  * This file is for general testing to prevent random changes in other controllers
+ * phpcs:ignoreFile
  */
 
 declare(strict_types=1);
@@ -10,12 +11,26 @@ namespace App\Controller;
 
 use App\Controller\AbstractAppController;
 use Laminas\View\Model\ViewModel;
+use User\Acl\ResourceAwareTrait;
+use Webinertia\Utils\Debug;
 
 final class TestController extends AbstractAppController
 {
+    use ResourceAwareTrait;
+
+    /** @var string $resourceId */
+    protected $resourceId = 'test';
+
     public function indexAction(): ViewModel
     {
-        $log   = $this->getLogger();
+        $settings = $this->service('config')['app_settings'];
+        $appSettings    = $this->service('config')['app_settings'];
+        $moduleSettings = $this->service('config')['module_settings']['user'];
+
+
+
+        Debug::dump($appSettings['server']['upload_basepath'] . $moduleSettings['server']['profile_image_target_path']);
+                $log   = $this->getLogger();
         $limit = $this->params()->fromQuery('limit');
         if ($limit > 0) {
             $log->warning('This is a warning');
