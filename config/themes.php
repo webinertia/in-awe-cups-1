@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+// @codingStandardsIgnoreStart
 return [
     'default' => [
         'id' => '1',
@@ -15,3 +19,4 @@ return [
         'has_layout' => '1',
     ],
 ];
+// @codingStandardsIgnoreEnd

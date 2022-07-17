@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Local Configuration Override for DEVELOPMENT MODE.
  *
@@ -18,9 +16,11 @@ declare(strict_types=1);
  * You may also create files matching the glob pattern `{,*.}{global,local}-development.php`.
  */
 
+declare(strict_types=1);
+
 return [
     'view_manager' => [
         'display_exceptions' => true,
-        'not_found_template' => 'error/404-dev',
+       // 'not_found_template' => 'error/404-dev',
     ],
 ];

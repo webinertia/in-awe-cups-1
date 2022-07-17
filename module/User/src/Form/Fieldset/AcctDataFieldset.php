@@ -13,50 +13,45 @@ use Laminas\Form\Element\Text;
 use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\Db\NoRecordExists;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\StringLength;
-
-use function array_merge;
+use User\Db\UserGateway;
 
 final class AcctDataFieldset extends Fieldset implements InputFilterProviderInterface
 {
+    /** @var UserGateway $userGateway */
+    protected $userGateway;
     /**
      * @param array $options
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct($options = [])
+    public function __construct(UserGateway $userGateway, $options = [])
     {
         parent::__construct('acct-data');
         $this->setAttribute('id', 'acct-data');
-        if (! empty($options)) {
+        $this->userGateway = $userGateway;
+        if ($options !== []) {
             $this->setOptions($options);
         }
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function init(): void
     {
         $this->add([
             'name' => 'id',
             'type' => Hidden::class,
-        ]);
-        if ($this->options['mode'] === FormInterface::CREATE_MODE) {
-            $this->add([
-                'name' => 'regDate',
-                'type' => Hidden::class,
-            ]);
-            $this->add([
-                'name'    => 'userName',
-                'type'    => Text::class,
-                'options' => [
-                    'label' => 'User Name',
-                ],
-            ]);
-        }
-        $this->add([
+        ])->add([
+            'name' => 'regDate',
+            'type' => Hidden::class,
+        ])->add([
+            'name'    => 'userName',
+            'type'    => Text::class,
+            'options' => [
+                'label' => 'User Name',
+            ],
+        ])->add([
             'name'    => 'email',
             'type'    => Text::class,
             'options' => [
@@ -68,12 +63,12 @@ final class AcctDataFieldset extends Fieldset implements InputFilterProviderInte
     public function getInputFilterSpecification(): array
     {
         $filters = [
-            'id'    => [
+            'id'       => [
                 'filters' => [
                     ['name' => ToInt::class],
                 ],
             ],
-            'email' => [
+            'email'    => [
                 'required'   => true,
                 'filters'    => [
                     ['name' => StripTags::class],
@@ -92,28 +87,40 @@ final class AcctDataFieldset extends Fieldset implements InputFilterProviderInte
                     ['name' => EmailAddress::class],
                 ],
             ],
-        ];
-        if (isset($this->options['mode']) && $this->options['mode'] === FormInterface::CREATE_MODE) {
-            $filter  = [
-                'userName' => [
-                    'required'   => true,
-                    'filters'    => [
-                        ['name' => StripTags::class],
-                        ['name' => StringTrim::class],
+            'userName' => [
+                'required'   => true,
+                'filters'    => [
+                    ['name' => StripTags::class],
+                    ['name' => StringTrim::class],
+                ],
+                'validators' => [
+                    [
+                        'name'    => StringLength::class,
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                            'min'      => 3,
+                            'max'      => 100,
+                        ],
                     ],
-                    'validators' => [
-                        [
-                            'name'    => StringLength::class,
-                            'options' => [
-                                'encoding' => 'UTF-8',
-                                'min'      => 1,
-                                'max'      => 100,
+                    [
+                        'name'    => NoRecordExists::class,
+                        'options' => [
+                            'table'     => $this->userGateway->getTable(),
+                            'field'     => 'userName',
+                            'dbAdapter' => $this->userGateway->getAdapter(),
+                            'messages'  => [
+                                NoRecordExists::ERROR_RECORD_FOUND => 'Username is already in use!!',
                             ],
                         ],
                     ],
                 ],
+            ],
+        ];
+        if ($this->options['mode'] === FormInterface::EDIT_MODE) {
+            $filters['userName']['validators'][1]['options']['exclude'] = [
+                'field' => 'id',
+                'value' => $this->options['userId'],
             ];
-            $filters = array_merge($filters, $filter);
         }
         return $filters;
     }

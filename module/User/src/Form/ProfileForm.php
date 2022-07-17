@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form;
 
-use Uploader\Fieldset\UploaderAwareFieldset;
 use User\Form\UserForm;
 
 class ProfileForm extends UserForm

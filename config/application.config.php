@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * If you need an environment-specific system or app configuration,
  * there is an example in the documentation
@@ -9,6 +7,8 @@ declare(strict_types=1);
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-system-configuration
  * @see https://docs.laminas.dev/tutorials/advanced-config/#environment-specific-app-configuration
  */
+
+declare(strict_types=1);
 
 /**
  *     'router' => [

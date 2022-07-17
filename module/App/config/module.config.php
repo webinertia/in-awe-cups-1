@@ -18,17 +18,24 @@ use Psr\Log\LoggerInterface;
 use function dirname;
 
 return [
-    'base_dir'        => dirname(__DIR__, 3),
-    'db'              => [
+    'app_settings'       => [ // app_settings that are not to be edited are stored here
+        'server' => [
+            'app_path'        => dirname($_SERVER['DOCUMENT_ROOT'], 1),
+            'upload_basepath' => dirname($_SERVER['DOCUMENT_ROOT'], 1) . '/public/module',
+            'scheme'          => $_SERVER['REQUEST_SCHEME'],
+        ],
+    ],
+    'base_dir'           => dirname(__DIR__, 3),
+    'db'                 => [
         'sessions_table_name' => 'sessions',
         'log_table_name'      => 'log',
         'theme_table_name'    => 'theme',
     ],
-    'router'          => [
+    'router'             => [
         'router_class' => TranslatorAwareTreeRouteStack::class,
         'routes'       => [
-            'home' => [
-                'type' => Literal::class,
+            'home'    => [
+                'type'    => Literal::class,
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
@@ -37,7 +44,7 @@ return [
                     ],
                 ],
             ],
-            'test' => [
+            'test'    => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'    => '/test',
@@ -47,7 +54,7 @@ return [
                     ],
                 ],
             ],
-            'site' => [
+            'site'    => [
                 'type'    => Segment::class,
                 'options' => [
                     'route'    => '/site[/:action]',
@@ -67,29 +74,29 @@ return [
                     ],
                 ],
             ],
-            'admin' => [
-                'type' => Placeholder::class,
+            'admin'   => [
+                'type'          => Placeholder::class,
                 'may_terminate' => true,
                 'child_routes'  => [
                     'dashboard' => [
                         'type'          => Literal::class,
                         'may_terminate' => true,
-                        'options' => [
+                        'options'       => [
                             'route'    => '/admin',
                             'defaults' => [
                                 'controller' => Controller\AdminController::class,
                                 'action'     => 'index',
                             ],
                         ],
-                    ],/// this needs to be the manage route instead of the settings route | needs to be admin/dashboard/manage/settings
-                    'settings' => [
-                        'type'    => Placeholder::class,
+                    ],
+                    'settings'  => [
+                        'type'          => Placeholder::class,
                         'may_terminate' => true,
                         'child_routes'  => [
                             'manage' => [
                                 'may_terminate' => true,
                                 'type'          => Literal::class,
-                                'options' => [
+                                'options'       => [
                                     'route'    => '/admin/settings',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
@@ -99,14 +106,14 @@ return [
                             ],
                         ],
                     ],
-                    'themes' => [
-                        'type'    => Placeholder::class,
+                    'themes'    => [
+                        'type'          => Placeholder::class,
                         'may_terminate' => true,
                         'child_routes'  => [
                             'manage' => [
                                 'may_terminate' => true,
                                 'type'          => Literal::class,
-                                'options' => [
+                                'options'       => [
                                     'route'    => '/admin/themes',
                                     'defaults' => [
                                         'controller' => Controller\AdminController::class,
@@ -116,44 +123,44 @@ return [
                             ],
                         ],
                     ],
-                    'logs' => [
-                        'type' => Placeholder::class,
-                        'may_terminate' =>  true,
-                        'child_routes' => [
+                    'logs'      => [
+                        'type'          => Placeholder::class,
+                        'may_terminate' => true,
+                        'child_routes'  => [
                             'overview' => [
                                 'may_terminate' => true,
-                                'type' => Segment::class,
-                                'options' => [
-                                    'route' => '/admin/logs/view',
+                                'type'          => Segment::class,
+                                'options'       => [
+                                    'route'    => '/admin/logs/view',
                                     'defaults' => [
                                         'controller' => Controller\LogController::class,
-                                        'action' => 'view',
+                                        'action'     => 'view',
                                     ],
                                 ],
                             ],
-                            'error' => [
+                            'error'    => [
                                 'may_terminate' => true,
-                                'type' => Segment::class,
-                                'options' => [
-                                    'route' => '/admin/logs/error[/:pageNumber[/:itemsPerPage]]',
-                                    'defaults' => [
+                                'type'          => Segment::class,
+                                'options'       => [
+                                    'route'       => '/admin/logs/error[/:pageNumber[/:itemsPerPage]]',
+                                    'defaults'    => [
                                         'controller' => Controller\LogController::class,
-                                        'action' => 'error',
+                                        'action'     => 'error',
                                     ],
                                     'constraints' => [
-                                        'pageNumber' => '[0-9]',
+                                        'pageNumber'   => '[0-9]',
                                         'itemsPerPage' => '[0-9]',
                                     ],
                                 ],
                             ],
-                            'delete' => [
+                            'delete'   => [
                                 'may_terminate' => true,
-                                'type' => Segment::class,
-                                'options' => [
-                                    'route' => '/admin/logs/delete[/:id]',
-                                    'defaults' => [
+                                'type'          => Segment::class,
+                                'options'       => [
+                                    'route'       => '/admin/logs/delete[/:id]',
+                                    'defaults'    => [
                                         'controller' => Controller\LogController::class,
-                                        'action' => 'delete',
+                                        'action'     => 'delete',
                                     ],
                                     'constraints' => [
                                         'id' => '[0-9]',
@@ -166,17 +173,17 @@ return [
             ],
         ],
     ],
-    'psr_log' => [
+    'psr_log'            => [
         LoggerInterface::class => [
-            'writers' => [
+            'writers'    => [
                 'db' => [
-                    'name' => 'db',
+                    'name'     => 'db',
                     'priority' => Logger::INFO,
-                    'options' => [
-                        'table' => 'log',
-                        'db' => AdapterInterface::class,
+                    'options'  => [
+                        'table'     => 'log',
+                        'db'        => AdapterInterface::class,
                         'formatter' => [
-                            'name' => 'db',
+                            'name'    => 'db',
                             'options' => [
                                 'dateTimeFormat' => 'm-d-Y H:i:s',
                             ],
@@ -186,21 +193,21 @@ return [
             ],
             'processors' => [
                 'psrplaceholder' => [
-                    'name' => PsrPlaceholder::class,
+                    'name'     => PsrPlaceholder::class,
                     'priority' => Logger::INFO,
                 ],
             ],
         ],
     ],
-    'log_processors' => [
-        'aliases' => [
+    'log_processors'     => [
+        'aliases'   => [
             'psrplaceholder' => PsrPlaceholder::class,
         ],
         'factories' => [
             PsrPlaceholder::class => Log\Processors\PsrPlaceholderFactory::class,
         ],
     ],
-    'service_manager' => [
+    'service_manager'    => [
         'factories' => [
             Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
             Model\Settings::class          => Model\Factory\SettingsFactory::class,
@@ -209,8 +216,8 @@ return [
             SaveHandlerInterface::class    => Session\SaveHandlerFactory::class,
         ],
     ],
-    'controllers'     => [
-        'factories' => [// move this to an abstract factory???
+    'controllers'        => [
+        'factories' => [ // move this to an abstract factory???
             Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
             Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
@@ -218,7 +225,7 @@ return [
         ],
     ],
     'controller_plugins' => [
-        'aliases' => [
+        'aliases'   => [
             'email'          => Controller\Plugin\Email::class,
             'redirectPrev'   => Controller\Plugin\RedirectPrev::class,
             'service'        => Controller\Plugin\ServiceLocator::class,
@@ -228,9 +235,9 @@ return [
             Controller\Plugin\Email::class          => Controller\Plugin\Factory\EmailFactory::class,
             Controller\Plugin\RedirectPrev::class   => Controller\Plugin\Factory\RedirectPrevFactory::class,
             Controller\Plugin\ServiceLocator::class => Controller\Plugin\Factory\ServiceLocatorFactory::class,
-        ]
+        ],
     ],
-    'form_elements'   => [
+    'form_elements'      => [
         'factories' => [
             Form\ContactForm::class               => Form\Factory\ContactFormFactory::class,
             Form\Fieldset\SecurityFieldset::class => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
@@ -239,26 +246,26 @@ return [
             Form\Fieldset\ThemeFieldset::class    => InvokableFactory::class,
         ],
     ],
-    'filters'         => [
+    'filters'            => [
         'invokables' => [
             Filter\FqcnToControllerName::class => InvokableFactory::class,
             Filter\FqcnToModuleName::class     => InvokableFactory::class,
         ],
     ],
-    'navigation'      => [
+    'navigation'         => [
         'default' => [
             [
-                'label' => 'Home',
-                'route' => 'home',
-                'class' => 'nav-link',
-                'order' => -999,
+                'label'  => 'Home',
+                'route'  => 'home',
+                'class'  => 'nav-link',
+                'order'  => -999,
                 'action' => 'index',
             ],
             [
-                'label' => 'Contact Us',
-                'route' => 'contact',
-                'class' => 'nav-link',
-                'order' => 999,
+                'label'  => 'Contact Us',
+                'route'  => 'contact',
+                'class'  => 'nav-link',
+                'order'  => 999,
                 'action' => 'contact',
             ],
             [
@@ -270,7 +277,7 @@ return [
                 'privilege' => 'view',
             ],
         ],
-        'admin' => [
+        'admin'   => [
             [
                 'label'     => 'Home',
                 'uri'       => '/',
@@ -307,13 +314,11 @@ return [
             ],
         ],
     ],
-    'view_helpers'    => [
+    'view_helpers'       => [
         'aliases'   => [
             'bootstrapForm'           => View\Helper\BootstrapForm::class,
             'bootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
             'bootstrapFormRow'        => View\Helper\BootstrapFormRow::class,
-            'iconifiedcontrol'        => View\Helper\IconifiedControl::class,
-            'iconifiedControl'        => View\Helper\IconifiedControl::class,
             'mapPriority'             => View\Helper\MapLogPriority::class,
         ],
         'factories' => [
@@ -321,10 +326,9 @@ return [
             View\Helper\BootstrapForm::class           => InvokableFactory::class,
             View\Helper\BootstrapFormCollection::class => InvokableFactory::class,
             View\Helper\BootstrapFormRow::class        => InvokableFactory::class,
-            View\Helper\IconifiedControl::class        => View\Helper\Service\IconifiedControlFactory::class,
         ],
     ],
-    'view_manager'    => [
+    'view_manager'       => [
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
@@ -332,8 +336,8 @@ return [
         'exception_template'       => 'error/index',
         'template_map'             => [],
     ],
-    'translator'      => [
-        'locale' => [
+    'translator'         => [
+        'locale'                    => [
             //'en_US'
         ],
         'translation_file_patterns' => [
@@ -349,9 +353,8 @@ return [
 //                 'pattern'     => 'user-%s.php',
 //                 'text_domain' => 'user',
 //             ],
-
         ],
-        'translation_files' => [
+        'translation_files'         => [
             [
                 'type'        => 'PhpArray',
                 'filename'    => dirname(__DIR__, 3) . '/languages/en-US.php',

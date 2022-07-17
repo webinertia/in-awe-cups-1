@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ContentManager\Navigation\Page;
 
-use Laminas\Json\Json;
 use Laminas\Json\Decoder;
+use Laminas\Json\Json;
 use Laminas\Navigation\Page\Mvc as MvcPage;
 use Laminas\Permissions\Acl\ProprietaryInterface;
 

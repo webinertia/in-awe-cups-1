@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
+use App\Form\FormInterface;
 use Laminas\Filter\DateTimeFormatter;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
@@ -34,13 +35,14 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
         $this->appSettings = $appSettings;
         parent::__construct('profile-data');
         $this->setAttribute('id', 'profile-data');
-        if (! empty($options)) {
+        if ($options !== []) {
             $this->setOptions($options);
         }
     }
 
     public function init(): void
     {
+        $this->options = $this->getOptions();
         $this->add([
             'name'    => 'firstName',
             'type'    => Text::class,
@@ -82,7 +84,6 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
 
     public function getInputFilterSpecification(): array
     {
-        $options = $this->getOptions();
         return [
             'firstName' => [
                 'required'   => true,
@@ -143,7 +144,7 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
                 ],
             ],
             'birthday'  => [ // This key corresponds to the name key from init
-                'required' => true, // Should the input be required?
+                'required' => $this->options['mode'] === FormInterface::CREATE_MODE ? true : false,
                 'filters'  => [ // there should be 1 array for each filter
                     [
                         'name'    => DateTimeFormatter::class,

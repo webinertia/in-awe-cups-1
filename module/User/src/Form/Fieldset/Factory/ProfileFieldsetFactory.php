@@ -13,6 +13,6 @@ final class ProfileFieldsetFactory implements FactoryInterface
     /** @param string $requestedName */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): ProfileFieldset
     {
-        return new ProfileFieldset($container->get('config')['app_settings']);
+        return new ProfileFieldset($container->get('config')['app_settings'], $options);
     }
 }

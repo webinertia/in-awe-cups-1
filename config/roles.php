@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+// @codingStandardsIgnoreStart
 return [
     'Guest' => [
         'id' => '0',
@@ -34,3 +35,4 @@ return [
         'label' => 'Super Administrator',
     ],
 ];
+// @codingStandardsIgnoreEnd

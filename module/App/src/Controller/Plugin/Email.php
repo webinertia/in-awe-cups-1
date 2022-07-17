@@ -7,23 +7,26 @@ namespace App\Controller\Plugin;
 use App\Service\Email as EmailService;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 
-use function call_user_func_array;
-
 final class Email extends AbstractPlugin
 {
-    /** @var Email $mailService */
+    /** @var EmailService $mailService */
     protected $mailService;
+
     public function __construct(EmailService $mailService)
     {
         $this->mailService = $mailService;
     }
 
-    public function __invoke()
+    public function __invoke(): self
     {
         return $this;
     }
 
-    public function __call($name, $arguments)
+    /**
+     * @param string $name
+     * @param array $arguments
+     */
+    public function __call($name, $arguments): EmailService
     {
         return $this->mailService->{$name}(...$arguments);
     }

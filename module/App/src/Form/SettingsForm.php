@@ -7,35 +7,37 @@ namespace App\Form;
 use App\Form\BaseForm;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Text;
-use Laminas\Form\Fieldset;
 use Laminas\Form\Exception\InvalidArgumentException;
+use Laminas\Form\Exception\InvalidElementException;
+use Laminas\Form\Fieldset;
 
 use function gettype;
-use function strtolower;
 
 class SettingsForm extends BaseForm
 {
     /** @var array $settings */
     protected $settings;
     /**
-     * @param array $options
-     * @param array $settings
      * @return void
      * @throws InvalidArgumentException
-     * @throws DomainException
      */
-    public function __construct($options = [], $settings = [])
+    public function __construct(array $options = [], array $settings = [])
     {
+        if ($settings === []) {
+            throw new InvalidArgumentException('Settings cannot be empty');
+        }
         parent::__construct('app_settings', $options);
         parent::setOptions($options);
         $this->settings = $settings;
     }
 
-    public function init()
+    /**
+     * @throws InvalidElementException
+     */
+    public function init(): void
     {
         foreach ($this->settings as $fieldsetName => $values) {
             $fieldset = new Fieldset($fieldsetName);
-            //$fieldset->setLabel($fieldsetName);
             foreach ($values as $elementName => $elementValue) {
                 $type = gettype($elementValue);
                 switch ($type) {
@@ -48,7 +50,7 @@ class SettingsForm extends BaseForm
                         $element = new Checkbox($elementName);
                         break;
                     default:
-                        //throw new InvalidArgumentException('Invalid type for element: ' . $type);
+                        throw new InvalidElementException('Unsupported Element Type: ' . $type);
                 }
                 $element->setLabel($elementName);
                 $element->setValue($elementValue);

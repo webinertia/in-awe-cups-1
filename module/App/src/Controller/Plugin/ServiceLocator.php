@@ -15,7 +15,7 @@ final class ServiceLocator extends AbstractPlugin
         $this->serviceLocator = $serviceLocator;
     }
 
-    public function __invoke(?string $serviceName = null): object
+    public function __invoke(?string $serviceName = null): mixed
     {
         if ($serviceName === null) {
             return $this;

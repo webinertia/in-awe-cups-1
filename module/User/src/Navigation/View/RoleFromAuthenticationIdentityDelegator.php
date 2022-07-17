@@ -38,11 +38,12 @@ class RoleFromAuthenticationIdentityDelegator
         );
     }
 
+    /** {@inheritDoc} */
     public function __invoke(
         ContainerInterface $container,
         string $name,
         callable $callback,
-        array $options = null
+        ?array $options = null
     ) {
         $helper = $callback();
 

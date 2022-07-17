@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 return [
     'app_settings' => [
+        'log'      => [
+            'time_format' => 'm-d-Y H:i:s',
+        ],
         'seo'      => [
             'key_words'   => 'Aurora CMS, Webinertia.net, Laminas, Php, MySQL',
             'description' => 'Aurora CMS',
@@ -13,34 +16,29 @@ return [
             'copyright_link'   => 'http://webinertia.net/aurora',
             'copyright_text'   => 'Aurora CMS',
             'footer_text'      => 'Developed by Webinertia',
-            'show_breadcrumbs' => false,
+            'show_breadcrumbs' => 0,
         ],
         'email'    => [
             'contact_form_email'   => '',
             'smtp_sender_address'  => '',
             'smtp_sender_password' => '',
-            'enable_contact_form'  => true,
+            'enable_contact_form'  => 1,
         ],
         'security' => [
-            'enable_login'          => true, // only disable this in case of emergency and if you have database access
-            'enable_registration'   => true,
-            'enable_captcha'        => true,
+            'enable_login'          => 1, // only disable this in case of emergency and if you have database access
+            'enable_registration'   => 1,
+            'enable_captcha'        => 1,
             'recaptcha_private_key' => '',
             'recaptcha_public_key'  => '',
         ],
         'server'   => [
-            'host'                 => '',
-            'request_scheme'       => '',
-            'time_format'          => 'm-j-Y g:i:s',
-            'time_zone'            => 'America/Chicago',
-            'enable_error_log'     => true,
-            'enable_translation'   => false,
-        ],
-        'api_keys' => [
-            'facebook' => [
-                'app_id'     => '360267229456291',
-                'app_secret' => '3b7d36d4cdea9d1aa584ca15e459916e',
-            ],
+            'host'               => '',
+            'request_scheme'     => '',
+            'time_format'        => 'm-j-Y g:i:s',
+            'time_zone'          => 'America/Chicago',
+            'log_errors'         => 1,
+            'enable_translation' => 0,
+            'captcha_path'       => '/modules/app/captcha/',
         ],
     ],
 ];

@@ -20,7 +20,6 @@ final class ThemeSettingsForm extends BaseForm
     {
         $data = $this->themes->getConfig();
         foreach ($data as $theme) {
-           // $fieldset = new ThemeFieldset($theme['name'], $theme);
             $fieldset = $this->getFormFactory()->getFormElementManager()->get(ThemeFieldset::class);
             $fieldset->setName($theme['name']);
             $fieldset->populateValues($theme);

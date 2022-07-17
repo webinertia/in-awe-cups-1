@@ -6,17 +6,13 @@ namespace User\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
-use Laminas\Log\Logger;
 use Laminas\View\Model\ViewModel;
 use Throwable;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
-    public function getResourceId(): string
-    {
-        return self::RESOURCE_ID;
-    }
-
+    /** @var string $resourceId */
+    protected $resourceId = 'admin';
     public function indexAction(): ViewModel
     {
         return $this->view;

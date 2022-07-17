@@ -11,10 +11,8 @@ namespace App\Controller;
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Db\DbGateway\LogGateway;
-use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
-use Laminas\Paginator\AdapterPluginManager;
-use Laminas\Paginator\Paginator;
 use Laminas\View\Model\ViewModel;
+use Throwable;
 use User\Acl\CheckActionAccessTrait;
 use User\Acl\ResourceAwareTrait;
 
@@ -37,11 +35,10 @@ final class LogController extends AbstractAppController implements AdminControll
             $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
         }
         $logGateway = $this->service(LogGateway::class);
-        //$entries    = $logGateway->select();
-        $select = $logGateway->getSql()->select();
+        $select     = $logGateway->getSql()->select();
         $select->order(['logId DESC']);
         $resultSet = $logGateway->selectWith($select);
-        $check = $this->acl()->isAllowed($this->identity()->getIdentity(), $this->resourceId, 'delete');
+        $check     = $this->acl()->isAllowed($this->identity()->getIdentity(), $this->resourceId, 'delete');
         $this->view->setVariables(
             [
                 'data'        => $resultSet,
@@ -64,16 +61,14 @@ final class LogController extends AbstractAppController implements AdminControll
         }
         if (! $this->isAllowed()) {
             $this->response->setStatusCode(403);
-            // add denied logic
             return $this->view;
         }
         $gateway = $this->service(LogGateway::class);
         $logId   = $this->params()->fromRoute('id');
         if ($logId !== null) {
             try {
-                //code...
                 $gateway->delete(['logId' => $logId]);
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $this->getLogger()->error($th->getMessage());
             }
         }

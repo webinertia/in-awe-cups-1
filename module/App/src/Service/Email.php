@@ -7,7 +7,6 @@ namespace App\Service;
 use Laminas\Config\Config;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
-use Laminas\Mail\Exception\DomainException;
 use Laminas\Mail\Exception\InvalidArgumentException;
 use Laminas\Mail\Header\ContentType;
 use Laminas\Mail\Message;
@@ -18,14 +17,16 @@ use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Mime;
 use Laminas\Mime\Part as MimePart;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\Validator\EmailAddress;
 use RuntimeException;
+use User\Acl\ResourceAwareTrait;
 
 use function sprintf;
 
 final class Email implements ResourceInterface
 {
+    use ResourceAwareTrait;
     use TranslatorAwareTrait;
 
     public const RESOURCE_ID    = 'mailService';
@@ -34,16 +35,21 @@ final class Email implements ResourceInterface
     public const RESET_PASSWORD = 'resetPasswordMessage';
     public const NEWSLETTER     = 'newsletterMessage';
     public const CONTACT        = 'contactUs';
+
     /** @var Acl $acl */
     private $acl;
     /** @var Config $appSettings */
     protected $appSettings;
+    /** @var ContentType $contentTypeHeader */
+    protected $contentTypeHeader;
     /** @var Request $request */
     protected $request;
     /** @var string|HTTP_HOST $hostName */
     protected $hostName;
     /** @var string|http https|REQUEST_SCHEME $requestScheme  */
     protected $requestScheme;
+    /** @var string $resourceId */
+    protected $resourceId = 'messages';
     /** @var Message $message */
     public $message;
     /** @var string $subject */
@@ -56,16 +62,11 @@ final class Email implements ResourceInterface
     protected $transport;
     /** @var array $config */
     protected $config;
-    /**
-     * @param Config|null $settings
-     * @return void
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
+    /** @return void */
     public function __construct(array $config)
     {
         $this->config      = $config;
-        $this->appSettings = new Config($this->config['app_settings']);
+        $this->appSettings = $this->config['app_settings'];
         $transport         = new SmtpTransport();
         $this->setMessage(new Message());
         $options = new SmtpOptions($this->config['smtp_options']);
@@ -79,16 +80,13 @@ final class Email implements ResourceInterface
         $this->transport = $transport;
     }
 
-    /**
-     * @param mixed $address
-     * @param mixed $type
-     * @param mixed $token
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     */
-    public function sendMessage($address, $type, $token = null): void
+    public function sendMessage(string $address, string $type, ?string $token = null): void
     {
         try {
+            $validator = new EmailAddress();
+            if (! $validator->isValid($address)) {
+                throw new InvalidArgumentException('Invalid email address');
+            }
             $message = $this->getMessage();
             $message->addTo($address);
             // This email must match the connection_config key in the options above
@@ -96,35 +94,28 @@ final class Email implements ResourceInterface
             $message->addFrom($userName);
             switch ($type) {
                 case self::VERIFICATION:
-                    $message->setSubject($this->appSettings->view->site_name . ' account verification');
+                    $message->setSubject($this->appSettings['view']['site_name'] . ' account verification');
                     $this->verificationMessage($address, $message, $token);
-
                     break;
                 case self::WELCOME:
                     break;
                 case self::RESET_PASSWORD:
-                    $message->setSubject($this->appSettings->view->site_name . ' Password Reset Requested');
+                    $message->setSubject($this->appSettings['view']['site_name'] . ' Password Reset Requested');
                     $this->passwordResetMessage($address, $message, $token);
-
                     break;
                 default:
                     throw new RuntimeException('Unsupported message type detected!!');
-                break;
             }
         } catch (RuntimeException $e) {
             echo $e->getMessage();
         }
     }
 
-    /**
-     * @param string $fromAddress
-     * @param string $fromName
-     * @param string $formText
-     */
-    public function contactUsMessage($fromAddress, $fromName, $formText): void
+    public function contactUsMessage(string $fromAddress, string $fromName, string $formText): void
     {
-        if (empty($fromAddress)) {
-            throw new RuntimeException('Unknown From address...');
+        $validator = new EmailAddress();
+        if (! $validator->isValid($fromAddress)) {
+            throw new InvalidArgumentException('Invalid from address.');
         }
         $textContent    = $formText;
         $text           = new MimePart($textContent);
@@ -145,9 +136,8 @@ final class Email implements ResourceInterface
         $this->message->setFrom($fromAddress, $fromName);
         $this->message->addTo($this->appSettings->email->contact_form_email);
         $this->message->setSubject($this->appSettings->view->site_name . ' Contact Page Submission');
-        /** @var ContentType $contentTypeHeader */
-        $contentTypeHeader = $this->message->getHeaders()->get('Content-Type');
-        $contentTypeHeader->setType('multipart/alternative');
+        $this->contentTypeHeader = $this->message->getHeaders()->get('Content-Type');
+        $this->contentTypeHeader->setType('multipart/alternative');
         try {
             $this->transport->send($this->message);
         } catch (RuntimeException $e) {
@@ -155,18 +145,14 @@ final class Email implements ResourceInterface
         }
     }
 
-    /**
-     * @param string $address
-     * @param Message $message
-     * @param string $token
-     */
-    protected function passwordResetMessage($address, $message, $token): void
+    protected function passwordResetMessage(string $address, Message $message, string $token): void
     {
         try {
-            //$translator = $this->getTranslator();
-            if (empty($token)) {
-                throw new RuntimeException('You must pass a token to send a password reset email!!');
+            $validator = new EmailAddress();
+            if (! $validator->isValid($address)) {
+                throw new InvalidArgumentException('Invalid email address');
             }
+            //$translator = $this->getTranslator();
             $textContent    = 'Please click the link below to change your password.';
             $text           = new MimePart($textContent);
             $text->type     = Mime::TYPE_TEXT;
@@ -186,9 +172,8 @@ final class Email implements ResourceInterface
                 $html,
             ]);
             $message->setBody($body);
-            /** @var ContentType $contentTypeHeader */
-            $contentTypeHeader = $message->getHeaders()->get('Content-Type');
-            $contentTypeHeader->setType('multipart/alternative');
+            $this->contentTypeHeader = $message->getHeaders()->get('Content-Type');
+            $this->contentTypeHeader->setType('multipart/alternative');
             try {
                 $this->transport->send($message);
             } catch (RuntimeException $e) {
@@ -199,22 +184,14 @@ final class Email implements ResourceInterface
         }
     }
 
-    /**
-     * @param string $address
-     * @param Message $message
-     * @param string $token
-     * @throws RuntimeException
-     * @throws ServiceNotFoundException
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     */
-    protected function verificationMessage($address, $message, $token): void
+    protected function verificationMessage(string $address, Message $message, string $token): void
     {
         try {
-            //$translator = $this->getTranslator();
-            if (empty($token)) {
-                throw new RuntimeException('You must pass a token to send a verification email!!');
+            $validator = new EmailAddress();
+            if (! $validator->isValid($address)) {
+                throw new InvalidArgumentException('Invalid email address');
             }
+            //$translator = $this->getTranslator();
             $textContent    = 'Please click the link below to verify your account.';
             $text           = new MimePart($textContent);
             $text->type     = Mime::TYPE_TEXT;
@@ -234,9 +211,8 @@ final class Email implements ResourceInterface
                 $html,
             ]);
             $message->setBody($body);
-            /** @var ContentType $contentTypeHeader */
-            $contentTypeHeader = $message->getHeaders()->get('Content-Type');
-            $contentTypeHeader->setType('multipart/alternative');
+            $this->contentTypeHeader = $message->getHeaders()->get('Content-Type');
+            $this->contentTypeHeader->setType('multipart/alternative');
             try {
                 $this->transport->send($message);
             } catch (RuntimeException $e) {
@@ -245,12 +221,6 @@ final class Email implements ResourceInterface
         } catch (RuntimeException $e) {
             echo $e->getMessage();
         }
-    }
-
-    /** Return the AclInterface resourceId */
-    public function getResourceId(): string
-    {
-        return $this->resourceId;
     }
 
     /** Return the Message Object */

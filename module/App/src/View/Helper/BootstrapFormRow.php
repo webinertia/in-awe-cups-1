@@ -11,11 +11,8 @@ use Laminas\Form\Element\MonthSelect;
 use Laminas\Form\Element\MultiCheckbox;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\ElementInterface;
-use Laminas\Form\Exception\DomainException;
-use Laminas\Form\Exception\InvalidArgumentException as ExceptionInvalidArgumentException;
 use Laminas\Form\LabelAwareInterface;
 use Laminas\Form\View\Helper\FormRow;
-use Laminas\View\Exception\InvalidArgumentException;
 
 use function array_merge;
 use function count;
@@ -23,11 +20,6 @@ use function sprintf;
 
 class BootstrapFormRow extends FormRow
 {
-    /**
-     * @throws DomainException
-     * @throws InvalidArgumentException
-     * @throws ExceptionInvalidArgumentException
-     */
     public function render(ElementInterface $element, ?string $labelPosition = null): string
     {
         $escapeHtmlHelper         = $this->getEscapeHtmlHelper();
@@ -44,18 +36,16 @@ class BootstrapFormRow extends FormRow
             $labelPosition = $this->labelPosition;
         }
         if (isset($label) && '' !== $label) {
-// label translation
+            // label translation
             if (null !== ($translator = $this->getTranslator())) {
                 $label = $translator->translate($label, $this->getTranslatorTextDomain());
             }
         }
-
         $classAttributes = $element->hasAttribute('class') ? $element->getAttribute('class') . ' ' : '';
-// does that element contains errors?
+        // does that element contain errors?
         if (count($element->getMessages()) > 0 && ! empty($inputErrorClass)) {
             $extraClass .= $inputErrorClass;
         }
-
         if ($this->partial) {
             $vars = [
                 'element'         => $element,
@@ -66,53 +56,44 @@ class BootstrapFormRow extends FormRow
             ];
             return $this->view->render($this->partial, $vars);
         }
-
         if ($this->renderErrors) {
             $elementErrorsHelper->setMessageOpenFormat('<div %s>');
             $elementErrorsHelper->setMessageSeparatorString('<br />');
             $elementErrorsHelper->setMessageCloseString('</div>');
             $elementErrors = $elementErrorsHelper->render($element, ['class' => 'help-block']);
         }
-
         if ($label) {
             $element->setAttribute('placeholder', $label);
         }
-
         if ($element instanceof Submit || $element instanceof Button) {
             $element->setAttribute('class', 'btn btn-secondary');
         } elseif ($element instanceof Checkbox || $element instanceof MultiCheckbox) {
             $classString = 'form-check';
-            if ($labelPosition == BootstrapForm::MODE_INLINE) {
+            if ($labelPosition === BootstrapForm::MODE_INLINE) {
                 $classString .= ' mr-sm-2';
                 $element->setLabelAttributes(['class' => $classString]);
             }
             $element->setAttribute('class', $classString);
         } else {
             $classString = 'form-control';
-            if ($labelPosition == BootstrapForm::MODE_INLINE) {
+            if ($labelPosition === BootstrapForm::MODE_INLINE) {
                 $classString .= ' mb-2 mr-sm-2';
             }
             $element->setAttribute('class', $classString);
         }
-
         $elementString = $elementHelper->render($element, $labelPosition);
         // hidden elements does not need <label> tag
         $type = $element->getAttribute('type');
-        if ($element instanceof Captcha) {
-        ////////////////////////////////////
-                   // $type = 'captcha';
-        } ///////////////////////////////////////////////////////////////////////
-
         if (isset($label) && '' !== $label && $type !== 'hidden' && isset($type)) {
             $labelAttributes = ['class' => 'control-label'];
             if ($element instanceof LabelAwareInterface) {
-                if ($labelPosition == BootstrapForm::MODE_HORIZONTAL) {
+                if ($labelPosition === BootstrapForm::MODE_HORIZONTAL) {
                     $labelAttributes['class'] .= ' col-sm-2 col-form-label';
                     $extraMainLabelClassLabel  = 'col-sm-2 col-form-label';
                     $extraMultiClassInput      = 'col-sm-10';
                     $extraClass               .= ' row';
                     $nestedDivClass           .= ' form-check';
-                } elseif ($labelPosition == BootstrapForm::MODE_INLINE) {
+                } elseif ($labelPosition === BootstrapForm::MODE_INLINE) {
                     $labelAttributes['class'] .= ' sr-only';
                     $extraMainLabelClassLabel .= ' mr-sm-2 mb-2';
                 }
@@ -122,11 +103,9 @@ class BootstrapFormRow extends FormRow
             if (! $element instanceof LabelAwareInterface || ! $element->getLabelOption('disable_html_escape')) {
                 $label = $escapeHtmlHelper($label);
             }
-
             if (empty($labelAttributes)) {
                 $labelAttributes = $this->labelAttributes;
             }
-
             // Elements Multicheckbox must be handled separatly,
             // as HTML standard does not allow for the nested labels.
             // An approriate replacement here is a fieldset tag
@@ -140,9 +119,17 @@ class BootstrapFormRow extends FormRow
                     'radio'          => 'form-check mb-2',
                     'multi_checkbox' => 'form-check mb-2',
                 ];
-                $markup      .= sprintf('<label class="control-label %s">%s</label><div class="%s"><div class="%s %s">%s</div></div>', $extraMainLabelClassLabel, $label, $nestedDivClass, $classMapping[$type] ?? '', $extraMultiClassInput, $elementString);
+                $markup      .= sprintf(
+                    '<label class="control-label %s">%s</label><div class="%s"><div class="%s %s">%s</div></div>',
+                    $extraMainLabelClassLabel,
+                    $label,
+                    $nestedDivClass,
+                    $classMapping[$type] ?? '',
+                    $extraMultiClassInput,
+                    $elementString
+                );
             } else {
-            // If the element has id attribute, it will display a separate label and element
+                // If the element has id attribute, it will display a separate label and element
                 if (
                     $element->hasAttribute('id') &&
                     ($element instanceof LabelAwareInterface && ! $element->getLabelOption('always_wrap'))
@@ -172,29 +159,31 @@ class BootstrapFormRow extends FormRow
 
                 switch ($labelPosition) {
                     case self::LABEL_PREPEND:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      $markup .= $labelOpen . $label . $labelClose . $elementString;
-
+                        $markup .= $labelOpen . $label . $labelClose . $elementString;
                         break;
                     case BootstrapForm::MODE_HORIZONTAL:
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      $markup .= $labelOpen . $label . $labelClose . '<div class="col-sm-10">' . $elementString . '</div>';
-
+                        $markup .= $labelOpen
+                        . $label
+                        . $labelClose
+                        . '<div class="col-sm-10">'
+                        . $elementString
+                        . '</div>';
                         break;
                     case self::LABEL_APPEND:
                     default:
                         $markup .= $labelOpen . $label . $labelClose . $elementString;
-
                         break;
                 }
             }
-
             if ($this->renderErrors) {
                 $markup .= $elementErrors;
             }
-
             $markup .= '</div>';
         } else {
             if ($labelPosition === BootstrapForm::MODE_HORIZONTAL && $element instanceof Submit) {
-                $elementString = '<div class="form-group"><div class="col-sm-10 col-sm-offset-2">' . $elementString . '</div></div>';
+                $elementString = '<div class="form-group"><div class="col-sm-10 col-sm-offset-2">'
+                . $elementString
+                . '</div></div>';
             }
             if ($this->renderErrors) {
                 $markup = $elementString . $elementErrors;

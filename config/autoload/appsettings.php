@@ -2,39 +2,44 @@
 
 declare(strict_types=1);
 
+// @codingStandardsIgnoreStart
 return [
     'app_settings' => [
+        'log'      => [
+            'time_format' => 'm-d-Y H:i:s',
+        ],
         'seo'      => [
-            'seo_key_words'   => '',
-            'seo_description' => '',
+            'key_words'   => 'Aurora CMS, Webinertia.net, Laminas, Php, MySQL',
+            'description' => 'Aurora CMS',
         ],
         'view'     => [
-            'site_name'      => '',
-            'copyright_link' => '',
-            'copyright_text' => '',
-            'footer_text'    => '',
+            'site_name'        => 'Aurora CMS',
+            'copyright_link'   => 'http://webinertia.net/aurora',
+            'copyright_text'   => 'Aurora CMS',
+            'footer_text'      => 'Developed by Webinertia',
+            'show_breadcrumbs' => 0,
         ],
         'email'    => [
             'contact_form_email'   => '',
             'smtp_sender_address'  => '',
             'smtp_sender_password' => '',
-            'enable_contact_form'  => true,
+            'enable_contact_form'  => 1,
         ],
         'security' => [
-            'enable_login'          => true, // only disable this in case of emergency and if you have database access
-            'enable_registration'   => true,
-            'enable_captcha'        => true,
+            'enable_login'          => 1, // only disable this in case of emergency and if you have database access
+            'enable_registration'   => 1,
+            'enable_captcha'        => 1,
             'recaptcha_private_key' => '',
             'recaptcha_public_key'  => '',
         ],
         'server'   => [
-            'host'                 => '',
-            'request_scheme'       => '',
-            'time_format'          => 'm-j-Y g:i:s',
-            'time_zone'            => 'America/Chicago',
-            'enable_error_log'     => true,
-            'enable_firebug_debug' => true,
-            'enable_translation'   => false,
+            'host'               => '',
+            'request_scheme'     => '',
+            'time_format'        => 'm-j-Y g:i:s',
+            'time_zone'          => 'America/Chicago',
+            'log_errors'         => 1,
+            'enable_translation' => 0,
         ],
     ],
 ];
+// @codingStandardsIgnoreEnd

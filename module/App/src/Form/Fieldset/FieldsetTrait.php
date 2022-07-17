@@ -10,7 +10,6 @@ trait FieldsetTrait
 {
     /**
      * @param array|null $exclude
-     * @return array
      */
     public function getElementNames(?array $exclude = null): array
     {

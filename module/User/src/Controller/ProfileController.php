@@ -14,7 +14,6 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use User\Form\ProfileForm;
-use User\Model\Users;
 
 use function array_merge;
 use function array_merge_recursive;
@@ -27,11 +26,6 @@ final class ProfileController extends AbstractAppController
     protected $form;
     /** @var string $resourceId */
     protected $resourceId = 'profile';
-
-    public function getResourceId(): string
-    {
-        return $this->resourceId;
-    }
 
     /**
      * @return mixed
@@ -73,7 +67,7 @@ final class ProfileController extends AbstractAppController
         $user = $this->usrGateway->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         if (! $this->request->isPost()) {
             foreach ($form->getFieldsets() as $fieldset) {
-                $fieldset->populateValues($user->getArrayCopy());
+                $fieldset->populateValues($user->toArray());
             }
             return [
                 'form' => $form,
@@ -93,7 +87,11 @@ final class ProfileController extends AbstractAppController
                 // set it to randomize the file name
                 $fileFilter->setRandomize(true);
                 // notice this sets the path for directory and the base file name used for all profile Images
-                $fileFilter->setTarget($this->basePath . '/public/modules/user/profile/profileImages/profileImage');
+                $appSettings    = $this->service('config')['app_settings'];
+                $moduleSettings = $this->service('config')['module_settings']['user'];
+                $fileFilter->setTarget(
+                    $appSettings['server']['upload_basepath'] . $moduleSettings['server']['profile_image_target_path']
+                );
                 // maintain the original file extension
                 $fileFilter->setUseUploadExtension(true);
                 // perform the move and rename on the file
@@ -109,7 +107,7 @@ final class ProfileController extends AbstractAppController
                         $data['role-data']
                     ));
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->err($e->getMessage(), $this->identity()->getLogData());
+                    $this->getLogger()->error($e->getMessage());
                 }
             }
         }

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * phpcs:ignoreFile
+ */
 declare(strict_types=1);
 
 namespace App\Model;
@@ -13,7 +15,6 @@ final class LogMessage implements ResourceInterface
 {
     use ResourceAwareTrait;
 
-    // @codingStandardsIgnoreStart
     /** @var int $logId */
     protected $logId;
     /** @var int $extra_userId */
@@ -73,7 +74,6 @@ final class LogMessage implements ResourceInterface
         $this->extra_line = $data['extra_line'] ?? null;
         $this->extra_trace = $data['extra_trace'] ?? null;
         $this->fileId = $data['fileId'] ?? null;
-        // @codingStandardsIgnoreEnd
     }
 
     public function getArrayCopy(): array

@@ -2,6 +2,7 @@
 
 /**
  * This file is for general testing to prevent random changes in other controllers
+ * phpcs:ignoreFile
  */
 
 declare(strict_types=1);
@@ -9,19 +10,29 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\AbstractAppController;
-use App\Controller\AdminControllerInterface;
 use Laminas\View\Model\ViewModel;
+use User\Acl\ResourceAwareTrait;
 use Webinertia\Utils\Debug;
 
 final class TestController extends AbstractAppController
 {
-    //protected $resourceId = 'test-controller';
+    use ResourceAwareTrait;
+
+    /** @var string $resourceId */
+    protected $resourceId = 'test';
+
     public function indexAction(): ViewModel
     {
-        Debug::dump($this->getResourceId());
-        $log = $this->getLogger();
+        $settings = $this->service('config')['app_settings'];
+        $appSettings    = $this->service('config')['app_settings'];
+        $moduleSettings = $this->service('config')['module_settings']['user'];
+
+
+
+        Debug::dump($appSettings['server']['upload_basepath'] . $moduleSettings['server']['profile_image_target_path']);
+                $log   = $this->getLogger();
         $limit = $this->params()->fromQuery('limit');
-        if($limit > 0) {
+        if ($limit > 0) {
             $log->warning('This is a warning');
             for ($i = 0; $i < $limit; $i++) {
                 $log->info("This is a test log message $i");
@@ -30,7 +41,7 @@ final class TestController extends AbstractAppController
             $log->critical('This is a critical error');
             $log->alert('This is an alert');
             $log->emergency('This is an emergency');
-    }
+        }
         return $this->view;
     }
 }

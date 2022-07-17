@@ -19,7 +19,8 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 
 final class PageFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /** @var Mvc $page */
+    /** @var Page $page */
+    protected $page;
     /** @return void */
     public function __construct(Page $page, ?array $options = null)
     {
@@ -45,16 +46,12 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
         $this->add([
             'name'    => 'label',
             'type'    => Text::class,
-            'options' => [
-                'label' => 'Page Label (Will show in the menu)',
-            ],
+            'options' => ['label' => 'Page Label (Will show in the menu)'],
         ])
         ->add([
             'name'    => 'order',
             'type'    => Number::class,
-            'options' => [
-                'label' => 'Order - The order in which the page will be shown',
-            ],
+            'options' => ['label' => 'Order - The order in which the page will be shown'],
         ])
         ->add([
             'name' => 'content',

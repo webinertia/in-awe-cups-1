@@ -6,7 +6,6 @@ namespace ContentManager\Form;
 
 use App\Form\BaseForm;
 use App\Form\FormInterface;
-use App\Model\Settings;
 use ContentManager\Form\Fieldset\PageFieldset;
 use User\Db\UserGateway as User;
 
@@ -19,7 +18,7 @@ final class PageForm extends BaseForm
      */
     public function __construct(
         User $user,
-        Settings $appSettings,
+        array $appSettings,
         $options = []
     ) {
         $this->user        = $user;

@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 
 final class SettingsFactory implements FactoryInterface
 {
-    /** @param string $requestedName */
+    /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Settings
     {
         $config = $container->get('config');

@@ -5,26 +5,17 @@ declare(strict_types=1);
 namespace ContentManager\Db\Factory;
 
 use App\Db\TableGateway\AbstractGatewayModel;
-use ContentManager\Db\PageGateway;
 use ContentManager\Db\Listener\InsertUpdateListener;
+use ContentManager\Db\PageGateway;
 use ContentManager\Model\Page;
-use Laminas\Db\ResultSet\Exception\InvalidArgumentException;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\EventManager\EventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 final class PageGatewayFactory implements FactoryInterface
 {
-    /**
-     * @param string $requestedName
-     * @param null|mixed[] $options
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     * @throws InvalidArgumentException
-     */
+    /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PageGateway
     {
         $config             = $container->get('config');

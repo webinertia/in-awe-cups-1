@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Model\Settings;
 use Laminas\Captcha\Image;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
@@ -21,12 +20,12 @@ use Laminas\Validator\StringLength;
 class ContactForm extends Form implements InputFilterProviderInterface
 {
     /**
-     * @param mixed $name
+     * @param string $name
      * @param array $options
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct(Settings $settings, $name = null, $options = [])
+    public function __construct(array $settings, $name = null, $options = [])
     {
         $this->appSettings = $settings;
         parent::__construct('contact');
@@ -38,25 +37,19 @@ class ContactForm extends Form implements InputFilterProviderInterface
         $this->add([
             'name'    => 'fullName',
             'type'    => Text::class,
-            'options' => [
-                'label' => 'Full Name',
-            ],
+            'options' => ['label' => 'Full Name'],
         ]);
         $this->add([
             'name'    => 'email',
             'type'    => Email::class,
-            'options' => [
-                'label' => 'Email',
-            ],
+            'options' => ['label' => 'Email'],
         ]);
         $this->add([
             'name'    => 'message',
             'type'    => Textarea::class,
-            'options' => [
-                'label' => 'Message',
-            ],
+            'options' => ['label' => 'Message'],
         ]);
-        if ($this->appSettings->security->enable_captcha) {
+        if ($this->appSettings['security']['enable_captcha']) {
             $this->add([
                 'name'    => 'captcha',
                 'type'    => Captcha::class,
@@ -71,7 +64,7 @@ class ContactForm extends Form implements InputFilterProviderInterface
                         'timeout'        => 300,
                         'font'           => $_SERVER['DOCUMENT_ROOT'] . '/fonts/arbli.ttf',
                         'imgDir'         => $_SERVER['DOCUMENT_ROOT'] . '/modules/app/captcha/',
-                        'imgUrl'         => '/modules/app/captcha/',
+                        'imgUrl'         => $this->appSettings['server']['captcha_path'],
                         'lineNoiseLevel' => 4,
                         'width'          => 200,
                         'height'         => 70,
