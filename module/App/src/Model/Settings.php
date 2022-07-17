@@ -6,13 +6,14 @@ namespace App\Model;
 
 use App\Model\ModelInterface;
 use Laminas\Config\Config;
+use User\Acl\ResourceAwareTrait;
 
 final class Settings extends Config implements ModelInterface
 {
-    protected const RESOURCE_ID        = 'settings';
-    protected const SETTINGS_NAMESPACE = 'app_settings';
-    public function getResourceId(): string
-    {
-        return 'settings';
-    }
+    use ResourceAwareTrait;
+
+    public const SETTINGS_NAMESPACE = 'app_settings';
+
+    /** @var string $resourceId */
+    protected $resourceId = 'settings';
 }

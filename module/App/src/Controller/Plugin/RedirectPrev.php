@@ -11,13 +11,11 @@ namespace App\Controller\Plugin;
 use Laminas\Mvc\Controller\Plugin\Redirect;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Session\Container;
-use Laminas\Stdlib\DispatchableInterface;
 
 use function method_exists;
 
 class RedirectPrev extends Redirect
 {
-    /** @var DispatchableInterface $controller  */
     public function __construct(Container $container)
     {
         $this->sessionContainer = $container;

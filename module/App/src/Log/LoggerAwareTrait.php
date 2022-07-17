@@ -10,10 +10,11 @@ use Psr\Log\LoggerInterface;
 
 trait LoggerAwareTrait
 {
+    // @codingStandardsIgnoreStart
     use LmLoggerAwareTrait, PsrLoggerAwareTrait {
         PsrLoggerAwareTrait::setLogger insteadof LmLoggerAwareTrait;
     }
-
+    // @codingStandardsIgnoreEnd
     /** @var LoggerInterface $logger */
     protected $logger;
 }

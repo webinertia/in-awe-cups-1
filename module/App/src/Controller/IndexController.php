@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\ContactForm;
-use App\Service\Email;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 
@@ -24,10 +23,10 @@ final class IndexController extends AbstractAppController
     {
         $formManager = $this->service()->get(FormElementManager::class);
         $form        = $formManager->get(ContactForm::class);
-        //todo:: start with this form on the refactoring to fieldsets and delegators
+        $appSettings = $this->service('config')['app_settings'];
         if ($this->request->isPost()) {
             $validationGroup = ['fullName', 'email', 'message'];
-            if ($this->appSettings->security->enable_captcha) {
+            if ($appSettings['security']['enable_captcha']) {
                 $validationGroup[] = 'captcha';
             }
             $form->setValidationGroup($validationGroup);

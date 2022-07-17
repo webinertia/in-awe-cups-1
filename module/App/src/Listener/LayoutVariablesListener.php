@@ -13,7 +13,7 @@ final class LayoutVariablesListener extends AbstractListenerAggregate
     /** @var array $appSettings */
     protected $appSettings;
     /** @return void */
-    public function __construct(array $appSettings = [])
+    public function __construct(array $appSettings)
     {
         $this->appSettings = $appSettings;
     }

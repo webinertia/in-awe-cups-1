@@ -6,7 +6,6 @@ namespace App\Form\Fieldset;
 
 use App\Form\FormInterface;
 use Laminas\Captcha\Image;
-use Laminas\Config\Config;
 use Laminas\Form\Element\Captcha;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Exception\InvalidArgumentException;
@@ -20,12 +19,10 @@ class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
      * @param mixed $options
      * @throws InvalidArgumentException
      */
-    public function __construct(Config $appSettings, $options = [])
+    public function __construct(array $appSettings, $options = [])
     {
-        //$options['mode'] = 'create';
         $this->appSettings = $appSettings;
         parent::__construct('security-data');
-        //$this->setAttribute('id', 'security-data');
         if (! empty($options)) {
             $this->setOptions($options);
         }
@@ -34,15 +31,10 @@ class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
     public function init(): void
     {
         $this->add(
-            [
-                'name' => 'security_token',
-                'type' => Csrf::class,
-            ],
-            [
-                'priority' => 101,
-            ]
+            ['name' => 'security_token', 'type' => Csrf::class],
+            ['priority' => 101]
         );
-        if ($this->appSettings->security->enable_captcha && $this->options['mode'] === FormInterface::CREATE_MODE) {
+        if ($this->appSettings['security']['enable_captcha'] && $this->options['mode'] === FormInterface::CREATE_MODE) {
             $this->add(
                 [
                     'name'    => 'captcha',
@@ -51,9 +43,7 @@ class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
                         'label'   => 'Rewrite Captcha text:',
                         'captcha' => new Image([
                             'name'           => 'myCaptcha',
-                            'messages'       => [
-                                'badCaptcha' => 'incorrectly rewritten image text',
-                            ],
+                            'messages'       => ['badCaptcha' => 'incorrectly rewritten image text'],
                             'wordLen'        => 5,
                             'timeout'        => 300,
                             'font'           => $_SERVER['DOCUMENT_ROOT'] . '/fonts/arbli.ttf',
@@ -74,14 +64,6 @@ class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
 
     public function getInputFilterSpecification(): array
     {
-        return [
-            // 'security_token' => [
-            //     'validators' => [
-            //         [
-            //             'name' => CsrfValidator::class,
-            //         ],
-            //     ],
-            // ],
-        ];
+        return [];
     }
 }

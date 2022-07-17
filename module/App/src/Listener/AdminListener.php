@@ -8,7 +8,7 @@ use App\Controller\AdminControllerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
-use Laminas\Log\Logger;
+use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Permissions\Acl\Exception\RuntimeException;
@@ -19,6 +19,7 @@ class AdminListener extends AbstractListenerAggregate
 {
     /** @var AuthenticationService $authService */
     protected $authService;
+    /** @var AbstractActionController $controller */
     /** @var ModelManager $modelManager */
     protected $modelManager;
     /** @var TemplateMapResolver */
@@ -37,25 +38,28 @@ class AdminListener extends AbstractListenerAggregate
         $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER, [$this, 'setAdminLayout']);
     }
 
-    public function authorize(MvcEvent $event)
+    public function authorize(MvcEvent $event): void
     {
         // Get and check the route match object
-        $controller = $event->getTarget();
-        $logger     = $controller->getLogger();
+        $this->controller = $event->getTarget();
+        $logger           = $this->controller->getLogger();
         // Get and check the parameter for current controller
-        if (! $controller instanceof AdminControllerInterface) {
+        if (! $this->controller instanceof AdminControllerInterface) {
             return;
         }
-        $user = $controller->identity()->getIdentity();
+        $user = $this->controller->identity()->getIdentity();
         try {
-            if (! $controller->identity()->hasIdentity() || ! $controller->acl()->isAllowed($user, $controller, 'view')) {
+            if (
+                ! $this->controller->identity()->hasIdentity() ||
+                ! $this->controller->acl()->isAllowed($user, $this->controller, 'view')
+            ) {
                 throw new RuntimeException('You have insufficient privileges to complete request');
             }
         } catch (Throwable $th) {
             $message = $th->getMessage();
             $logger->notice($th->getMessage());
-            $controller->flashMessenger()->addErrorMessage($message);
-            $controller->redirectPrev();
+            $this->controller->flashMessenger()->addErrorMessage($message);
+            $this->controller->redirectPrev();
         }
     }
 
@@ -68,11 +72,11 @@ class AdminListener extends AbstractListenerAggregate
              return;
         }
          // Get and check the parameter for current controller
-        $controller = $routeMatch->getParam('controller');
-        $controller = $controllerManager->get($controller);
-        $name       = 'layout/admin';
+        $this->controller = $routeMatch->getParam('controller');
+        $this->controller = $controllerManager->get($this->controller);
+        $name             = 'layout/admin';
         // if this is not an admin controller or if we have already got the layout return
-        if (! $controller instanceof AdminControllerInterface || $this->templateMapResolver->has($name)) {
+        if (! $this->controller instanceof AdminControllerInterface || $this->templateMapResolver->has($name)) {
              return;
         }
         // Get root view model

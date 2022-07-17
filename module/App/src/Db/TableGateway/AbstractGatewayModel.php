@@ -14,10 +14,8 @@ abstract class AbstractGatewayModel extends ArrayObject implements
 {
     /** @var string $ownerIdColumn */
     protected $ownerIdColumn;
-    /**
-     * @param array $data
-     */
-    public function __construct($data = [])
+
+    public function __construct(array $data = [])
     {
         parent::__construct($data, ArrayObject::ARRAY_AS_PROPS);
     }

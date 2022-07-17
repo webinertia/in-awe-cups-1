@@ -35,6 +35,7 @@ return [
             'time_zone'            => 'America/Chicago',
             'enable_error_log'     => true,
             'enable_translation'   => false,
+            'captcha_path'       => '/modules/app/captcha/',
         ],
         'api_keys' => [
             'facebook' => [

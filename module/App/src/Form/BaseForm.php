@@ -5,18 +5,12 @@ declare(strict_types=1);
 namespace App\Form;
 
 use Laminas\Form\Element\Submit;
-use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Form;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
 class BaseForm extends Form implements InputFilterProviderInterface
 {
-    /**
-     * @param string $name
-     * @param array $options
-     * @return void
-     * @throws InvalidArgumentException
-     */
+    /** {@inheritDoc} */
     public function __construct($name = null, $options = [])
     {
         parent::__construct($name);
@@ -34,9 +28,7 @@ class BaseForm extends Form implements InputFilterProviderInterface
                     'id'    => 'submitbutton',
                 ],
             ],
-            [
-                'priority' => -100,
-            ]
+            ['priority' => -100]
         );
     }
 

@@ -19,16 +19,7 @@ class BootstrapFormCollection extends FormCollection
     /** @var string $defaultElementHelper */
     protected $defaultElementHelper = 'bootstrapFormRow';
 
-    /**
-     * Invoke helper as function
-     *
-     * Proxies to {@link render()}.
-     *
-     * @template T as null|ElementInterface
-     * @psalm-param T $element
-     * @psalm-return (T is null ? self : string)
-     * @return string|FormCollection
-     */
+    /** @return string|FormCollection */
     public function __invoke(?ElementInterface $element = null, bool $wrap = true)
     {
         if (! $element) {
@@ -43,7 +34,6 @@ class BootstrapFormCollection extends FormCollection
      */
     public function render(ElementInterface $element): string
     {
-        // todo: fixme $labelPosition set to empty string as a temp fix for moving to 8.1 support
         $labelPosition = '';
         $renderer      = $this->getView();
         if (! method_exists($renderer, 'plugin')) {
@@ -52,14 +42,12 @@ class BootstrapFormCollection extends FormCollection
         }
         $markup         = '';
         $templateMarkup = '';
-        //$this->setDefaultElementHelper('bootstrapFormRow');
         $elementHelper  = $this->getElementHelper();
         $fieldsetHelper = $this->getFieldsetHelper();
         if ($element instanceof CollectionElement && $element->shouldCreateTemplate()) {
             $templateMarkup = $this->renderTemplate($element);
         }
         $this->shouldWrap = false;
-
         foreach ($element->getIterator() as $elementOrFieldset) {
             if ($elementOrFieldset instanceof FieldsetInterface) {
                 $markup .= $fieldsetHelper($elementOrFieldset, $this->shouldWrap());
@@ -67,8 +55,7 @@ class BootstrapFormCollection extends FormCollection
                 $markup .= $elementHelper($elementOrFieldset, $labelPosition);
             }
         }
-
-        // each collection of elements is palced according to the specified style
+        // each collection of elements is placed according to the specified style
         if ($this->shouldWrap) {
             $attributes = $element->getAttributes();
             unset($attributes['name']);
@@ -79,14 +66,12 @@ class BootstrapFormCollection extends FormCollection
                 if (null !== ($translator = $this->getTranslator())) {
                     $label = $translator->translate($label, $this->getTranslatorTextDomain());
                 }
-
                 if (! $element instanceof LabelAwareInterface || ! $element->getLabelOption('disable_html_escape')) {
                     $escapeHtmlHelper = $this->getEscapeHtmlHelper();
                     $label            = $escapeHtmlHelper($label);
                 }
                 $legend = sprintf($this->labelWrapper, $label);
             }
-
             $markup = sprintf($this->wrapper, $markup, $legend, $templateMarkup, $attributesString);
         } else {
             $markup .= $templateMarkup;

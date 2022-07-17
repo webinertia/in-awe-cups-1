@@ -9,14 +9,11 @@ use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
-use Laminas\Hydrator\ArraySerializableHydrator;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
 final class ThemeFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /**
-     * @return void
-     */
+    /** {@inheritDoc} */
     public function __construct($name = null, array $options = [])
     {
         parent::__construct($name, $options);
@@ -32,32 +29,24 @@ final class ThemeFieldset extends Fieldset implements InputFilterProviderInterfa
             'type' => Hidden::class,
         ]);
         $this->add([
-            'name' => 'active',
-            'type' => Checkbox::class,
-            'options' => [
-                'label' => 'Active Theme',
-            ],
+            'name'    => 'active',
+            'type'    => Checkbox::class,
+            'options' => ['label' => 'Active Theme'],
         ]);
         $this->add([
-            'name' => 'name',
-            'type' => Text::class,
-            'options' => [
-                'label' => 'Theme Name',
-            ],
+            'name'    => 'name',
+            'type'    => Text::class,
+            'options' => ['label' => 'Theme Name'],
         ]);
         $this->add([
-            'name' => 'fallback',
-            'type' => Text::class,
-            'options' => [
-                'label' => 'Fallback Theme',
-            ],
+            'name'    => 'fallback',
+            'type'    => Text::class,
+            'options' => ['label' => 'Fallback Theme'],
         ]);
         $this->add([
-            'name' => 'has_layout',
-            'type' => Checkbox::class,
-            'options' => [
-                'label' => 'Does this theme provide a layout?',
-            ],
+            'name'    => 'has_layout',
+            'type'    => Checkbox::class,
+            'options' => ['label' => 'Does this theme provide a layout?'],
         ]);
     }
 

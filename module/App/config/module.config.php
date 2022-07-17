@@ -312,8 +312,6 @@ return [
             'bootstrapForm'           => View\Helper\BootstrapForm::class,
             'bootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
             'bootstrapFormRow'        => View\Helper\BootstrapFormRow::class,
-            'iconifiedcontrol'        => View\Helper\IconifiedControl::class,
-            'iconifiedControl'        => View\Helper\IconifiedControl::class,
             'mapPriority'             => View\Helper\MapLogPriority::class,
         ],
         'factories' => [
@@ -321,7 +319,6 @@ return [
             View\Helper\BootstrapForm::class           => InvokableFactory::class,
             View\Helper\BootstrapFormCollection::class => InvokableFactory::class,
             View\Helper\BootstrapFormRow::class        => InvokableFactory::class,
-            View\Helper\IconifiedControl::class        => View\Helper\Service\IconifiedControlFactory::class,
         ],
     ],
     'view_manager'       => [

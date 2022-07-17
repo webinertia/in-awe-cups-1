@@ -6,11 +6,14 @@ namespace App\Model;
 
 use App\Model\ModelInterface;
 use Laminas\Config\Factory;
+use User\Acl\ResourceAwareTrait;
 
 use function dirname;
 
 final class Theme implements ModelInterface
 {
+    use ResourceAwareTrait;
+
     public const DEFAULT_THEME = 'default';
     /** @var string $currentTheme */
     protected $activeTheme;
@@ -24,6 +27,8 @@ final class Theme implements ModelInterface
     protected $directory;
     /** @var array $paths */
     protected $paths = [];
+    /** @var string $resourceId */
+    protected $resourceId = 'themes';
 
     public function __construct()
     {
@@ -92,11 +97,6 @@ final class Theme implements ModelInterface
     public function getFallBack(): string
     {
         return $this->fallBack;
-    }
-
-    public function getResourceId(): string
-    {
-        return 'theme';
     }
 
     public function getConfig(): array

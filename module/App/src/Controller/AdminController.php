@@ -20,6 +20,7 @@ final class AdminController extends AbstractAppController implements AdminContro
 {
     use ResourceAwareTrait;
 
+    /** @var string $resourceId */
     protected $resourceId = 'admin';
 
     public function getResourceId(): string
@@ -119,7 +120,9 @@ final class AdminController extends AbstractAppController implements AdminContro
         $this->resourceId = 'settings';
 
         if (! $this->acl()->isAllowed($this->identity()->getIdentity(), $this, 'create')) {
-            $this->flashMessenger()->addWarningMessage('Access Denied, your attempt to access this area as been logged');
+            $this->flashMessenger()->addWarningMessage(
+                'Access Denied, your attempt to access this area as been logged'
+            );
             $this->response->setStatusCode('403');
         }
         $this->view->setVariable('resourceId', $this->resourceId);

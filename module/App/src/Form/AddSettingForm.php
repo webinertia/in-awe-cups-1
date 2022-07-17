@@ -10,6 +10,5 @@ class AddSettingForm extends Form
 {
     public function __construct()
     {
-        // TODO - Insert your code here
     }
 }
