@@ -16,6 +16,14 @@ use function method_exists;
 
 class RedirectPrev extends Redirect
 {
+    /**
+     * @codingStandardsIgnoreStart
+     * @property \Laminas\Session\Container $sessionsContainer
+     * @var Container $sessionContainer
+     * @codingStandardsIgnoreEnd
+     * */
+    protected $sessionsContainer;
+
     public function __construct(Container $container)
     {
         $this->sessionContainer = $container;

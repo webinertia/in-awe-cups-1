@@ -6,6 +6,7 @@ namespace App;
 
 use App\Log\Processors\PsrPlaceholder;
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Log\Logger;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
@@ -342,7 +343,7 @@ return [
         ],
         'translation_file_patterns' => [
             [
-                'type'     => Laminas\I18n\Translator\Loader\PhpArray::class,
+                'type'     => PhpArray::class,
                 'filename' => 'en-US.php',
                 'base_dir' => __DIR__ . '/languages',
                 'pattern'  => '%s.php',

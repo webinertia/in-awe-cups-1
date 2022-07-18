@@ -23,7 +23,7 @@ use function array_key_exists;
 
 class MapLogPriority extends AbstractHelper
 {
-    /** @var array $map */
+    /** @var array<int, string> $map */
     protected $map = [
         Logger::EMERG  => 'danger',
         Logger::ALERT  => 'danger',
