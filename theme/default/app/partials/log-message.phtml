@@ -1,6 +1,6 @@
 <?php
 use Laminas\Filter\DateTimeFormatter;
-$filter = new DateTimeFormatter(['format' => 'm-j-Y g:i A']);
+$filter = new DateTimeFormatter(['format' => 'm-j-Y \a\t g:i:s A']);
 $allowDelete = $this->acl()->isAllowed($this->identity()->getIdentity(), $resourceId, 'delete');
 ?>
 <div class="log-message alert alert-<?=$this->mapPriority($priority)?><?=$allowDelete ? ' alert-dismissible fade show' : '';?>" data-id="<?= $logId?>">
@@ -17,7 +17,7 @@ $allowDelete = $this->acl()->isAllowed($this->identity()->getIdentity(), $resour
     <span class="log-message-detail">Last Name: <?= $extra_lastName?></span>
     <span class="log-message-detail">UserName: <?= $extra_userName?></span>
     <span class="log-message-detail">MemberGroup: <?= $extra_role?></span>
-    <span class="log-message-detail">Timestamp: <?= $filter->filter(DateTime::createFromFormat('m-d-Y H:i:s', $timeStamp))?></span>
+    <span class="log-message-detail">Occurred On: <?= $filter->filter(DateTime::createFromFormat('m-d-Y H:i:s', $timeStamp))?></span>
     <div class="log-message">
         <span class="log-message-header">
             Message:
