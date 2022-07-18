@@ -155,9 +155,6 @@ final class ProfileFieldset extends Fieldset implements InputFilterProviderInter
                     ],
                 ],
             ],
-            // 'bio' => [
-            //     'required' => isset($options['mode']) && $options['mode'] === UserForm::CREATE_MODE ? false : true,
-            // ],
         ];
     }
 }
