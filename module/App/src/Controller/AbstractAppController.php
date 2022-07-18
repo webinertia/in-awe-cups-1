@@ -44,10 +44,13 @@ abstract class AbstractAppController extends AbstractActionController implements
     /** @var ViewModel $view */
     protected $view;
 
-    /** @var array $config */
+    /** @var array<string, mixed> $config */
     protected $config;
 
-    /** @return void */
+    /**
+     * @return void
+     * @param array<string, mixed> $config
+     * */
     public function __construct(
         ?array $config = null,
         ?UserGateway $userGateway = null

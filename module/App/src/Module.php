@@ -14,6 +14,7 @@ use Laminas\Http\PhpEnvironment\Request as PhpRequest;
 use Laminas\I18n\ConfigProvider;
 use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\Session\Container;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
@@ -25,12 +26,18 @@ use function date_default_timezone_set;
 
 final class Module
 {
+    /** @var ServiceLocatorInterface $sm */
+    protected $sm;
+    /** @var array<string, mixed> $config */
+    protected $config;
+
+    /** @return array<string, mixed> */
     public function getConfig(): array
     {
         return include __DIR__ . '/../config/module.config.php';
     }
 
-    public function onBootstrap(MvcEvent $e)
+    public function onBootstrap(MvcEvent $e): void
     {
         $app          = $e->getApplication();
         $eventManager = $app->getEventManager();
@@ -77,8 +84,6 @@ final class Module
                 $translator->setLocale($locale);
                 // set option two as the fallback
                 $translator->setFallbackLocale('en_US');
-            } else {
-                $translator->setLocale('en_US');
             }
             $renderer = $this->sm->get(PhpRenderer::class);
             // attach the Il8n standard helpers for translation

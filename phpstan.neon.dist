@@ -1,0 +1,29 @@
+parameters:
+    level: 6
+    paths:
+        - module
+    excludePaths:
+        - module/ContentManager
+        - module/User
+    ignoreErrors:
+        -
+            message: '#Access to an undefined property [a-zA-Z0-9\\_]+::\$sessionContainer#'
+            path: module/App/src/Controller/Plugin/RedirectPrev.php
+        -
+            message: '#Access to an undefined property [a-zA-Z0-9\\_]+::\$serviceLocator#'
+            path: module/App/src/Controller/Plugin/ServiceLocator.php
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::acl()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::identity()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::service()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::flashMessenger()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::warning()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::error()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::emergency()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::info()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::debug()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::notice()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::alert()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::critical()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::getRoleId()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::getOwnerId()#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+::current()#'
