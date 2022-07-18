@@ -1,1 +1,1 @@
-![Continuous Integration](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?event=pull_request)
+![Continuous Integration](https://github.com/webinertia/aurora/actions/workflows/main.yml/badge.svg?event=pull_request)
