@@ -122,7 +122,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers = $this->response->getHeaders();
                     $headers->addHeaderLine('Content-Type', 'application/json');
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->critical($e->getMessage());
+                    $this->critical($e->getMessage());
                 }
             }
         }
@@ -145,12 +145,12 @@ final class AdminController extends AbstractAppController implements AdminContro
             try {
                 $result = $gateway->delete(['id' => $page->id]);
                 if (! $result) {
-                    $this->getLogger()->error('Page Delete error');
+                    $this->error('Page Delete error');
                     $this->flashMessenger()->addErrorMessage('Page not deleted');
                     $this->view->setVariable(
                         'data',
                         [
-                            'href'    => $this->url('page', ['title' => $page->title]),
+                            'href'    => $this->url()->fromRoute('page', ['title' => $page->title]),
                             'message' => 'Page not deleted',
                         ]
                     );
@@ -158,10 +158,10 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $this->flashMessenger()->addSuccessMessage('Page deleted');
                 $this->view->setVariable('data', ['href' => $this->url()->fromRoute('home')]);
             } catch (RuntimeException $e) {
-                $this->getLogger()->error($e->getMessage());
+                $this->error($e->getMessage());
             }
-            return $this->view;
         }
+        return $this->view;
     }
 
     public function uploadImagesAction(): ViewModel
@@ -170,6 +170,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->flashMessenger()->addErrorMessage('You are not allowed to upload images');
             $this->response->setStatusCode(403);
         }
+        $data   = [];
         $config = $this->service('config')['page_upload_paths'];
         $this->view->setTerminal(true);
         if ($this->request->isXmlHttpRequest()) {

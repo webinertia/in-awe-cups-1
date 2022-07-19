@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ContentManager\Db\Factory;
 
-use App\Db\TableGateway\AbstractGatewayModel;
 use ContentManager\Db\Listener\InsertUpdateListener;
 use ContentManager\Db\PageGateway;
 use ContentManager\Model\Page;
@@ -21,7 +20,7 @@ final class PageGatewayFactory implements FactoryInterface
         $config             = $container->get('config');
         $resultSetPrototype = new ResultSet();
         $resultSetPrototype->setArrayObjectPrototype(
-            new Page([], AbstractGatewayModel::ARRAY_AS_PROPS)
+            new Page()
         );
         return new PageGateway(
             $config['db']['pages_table_name'],

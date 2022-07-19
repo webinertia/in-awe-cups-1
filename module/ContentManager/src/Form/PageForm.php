@@ -11,6 +11,10 @@ use User\Db\UserGateway as User;
 
 final class PageForm extends BaseForm
 {
+    /** @var UserGateway $user */
+    protected $user;
+    /** @var array<mixed> $appSettings */
+    protected $appSettings;
     /**
      * @param array $options
      * @return void
@@ -24,12 +28,10 @@ final class PageForm extends BaseForm
         $this->user        = $user;
         $this->appSettings = $appSettings;
         parent::__construct('page-form');
-        if (! empty($options) && isset($options['mode'])) {
-            parent::setOptions($options);
-        } elseif (empty($options) || ! empty($options) && ! isset($options['mode'])) {
+        if (! isset($options['mode'])) {
             $options['mode'] = FormInterface::CREATE_MODE;
-            parent::setOptions($options);
         }
+        parent::setOptions($options);
     }
 
     public function init(): void
