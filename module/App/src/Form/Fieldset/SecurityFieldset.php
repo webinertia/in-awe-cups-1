@@ -14,6 +14,8 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 
 class SecurityFieldset extends Fieldset implements InputFilterProviderInterface
 {
+    /** @var array<mixed> */
+    protected $appSettings;
     /**
      * @param string $name
      * @param mixed $options

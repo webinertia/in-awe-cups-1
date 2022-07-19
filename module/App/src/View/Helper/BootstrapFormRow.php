@@ -16,6 +16,7 @@ use Laminas\Form\View\Helper\FormRow;
 
 use function array_merge;
 use function count;
+use function is_string;
 use function sprintf;
 
 class BootstrapFormRow extends FormRow
@@ -103,7 +104,7 @@ class BootstrapFormRow extends FormRow
             if (! $element instanceof LabelAwareInterface || ! $element->getLabelOption('disable_html_escape')) {
                 $label = $escapeHtmlHelper($label);
             }
-            if (empty($labelAttributes)) {
+            if (! is_string($labelAttributes)) {
                 $labelAttributes = $this->labelAttributes;
             }
             // Elements Multicheckbox must be handled separatly,
@@ -176,7 +177,11 @@ class BootstrapFormRow extends FormRow
                 }
             }
             if ($this->renderErrors) {
-                $markup .= $elementErrors;
+                if (isset($elementErrors)) {
+                    $markup .= $elementErrors;
+                } else {
+                    $markup .= '';
+                }
             }
             $markup .= '</div>';
         } else {
@@ -185,7 +190,7 @@ class BootstrapFormRow extends FormRow
                 . $elementString
                 . '</div></div>';
             }
-            if ($this->renderErrors) {
+            if ($this->renderErrors && isset($elementErrors)) {
                 $markup = $elementString . $elementErrors;
             } else {
                 $markup = $elementString;

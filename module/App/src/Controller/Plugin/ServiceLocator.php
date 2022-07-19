@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace App\Controller\Plugin;
 
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
-use Laminas\ServiceManager\ServiceManager;
+use Psr\Container\ContainerInterface;
 
 final class ServiceLocator extends AbstractPlugin
 {
-    /** @var ServiceManager $serviceLocator */
-    public function __construct(ServiceManager $serviceLocator)
+    /** @var ContainerInterface $container */
+    protected $container;
+
+    public function __construct(ContainerInterface $container)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->container = $container;
     }
 
     public function __invoke(?string $serviceName = null): mixed
@@ -20,7 +22,7 @@ final class ServiceLocator extends AbstractPlugin
         if ($serviceName === null) {
             return $this;
         }
-        return $this->serviceLocator->get($serviceName);
+        return $this->container->get($serviceName);
     }
 
     /**
@@ -29,6 +31,6 @@ final class ServiceLocator extends AbstractPlugin
      */
     public function __call($name, $arguments): mixed
     {
-        return $this->serviceLocator->{$name}(...$arguments);
+        return $this->container->{$name}(...$arguments);
     }
 }

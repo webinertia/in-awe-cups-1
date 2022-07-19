@@ -15,7 +15,7 @@ final class Theme implements ModelInterface
     use ResourceAwareTrait;
 
     public const DEFAULT_THEME = 'default';
-    /** @var string $currentTheme */
+    /** @var string $activeTheme */
     protected $activeTheme;
     /** @var string $fallBack */
     protected $fallBack;
@@ -25,10 +25,12 @@ final class Theme implements ModelInterface
     protected $configFilename = 'themes.php';
     /** @var string $directory */
     protected $directory;
-    /** @var array $paths */
+    /** @var array<int, string> $paths */
     protected $paths = [];
     /** @var string $resourceId */
     protected $resourceId = 'themes';
+    /** @var array<string, array> $config */
+    protected $config = [];
 
     public function __construct()
     {
@@ -38,7 +40,7 @@ final class Theme implements ModelInterface
         $this->processConfig($this->config);
     }
 
-    protected function processConfig(array $config)
+    protected function processConfig(array $config): void
     {
         foreach ($config as $theme) {
             if ($theme['active']) {
@@ -53,10 +55,6 @@ final class Theme implements ModelInterface
     public function getConfigPath(): string
     {
         return $this->configPath . $this->configFilename;
-    }
-
-    public function getTemplateMap()
-    {
     }
 
     public function getThemePaths(): array

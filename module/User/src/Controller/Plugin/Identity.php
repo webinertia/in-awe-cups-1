@@ -26,9 +26,14 @@ final class Identity extends AbstractPlugin
         return $this;
     }
 
+    public function identity(): self
+    {
+        return $this;
+    }
+
     /**
-     * @param mixed $name
-     * @param mixed $arguments
+     * @param string $name
+     * @param array<int, mixed> $arguments
      */
     public function __call($name, $arguments): mixed
     {

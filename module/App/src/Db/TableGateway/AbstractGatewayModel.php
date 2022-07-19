@@ -30,12 +30,14 @@ abstract class AbstractGatewayModel extends ArrayObject implements
 
     public function getOwnerId(): int
     {
+        $ownerId = 0;
         if (! empty($this->ownerIdColumn) && $this->offsetExists($this->ownerIdColumn)) {
-            return (int) $this->offsetGet($this->ownerIdColumn);
+            $ownerId = (int) $this->offsetGet($this->ownerIdColumn);
         } elseif ($this->offsetExists('userId')) {
-            return (int) $this->offsetGet('userId');
+            $ownerId = (int) $this->offsetGet('userId');
         } elseif ($this->offsetExists('user_id')) {
-            return (int) $this->offsetGet('user_id');
+            $ownerId = (int) $this->offsetGet('user_id');
         }
+        return $ownerId;
     }
 }

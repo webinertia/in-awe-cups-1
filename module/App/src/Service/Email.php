@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Laminas\Config\Config;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mail\Exception\InvalidArgumentException;
@@ -16,11 +15,12 @@ use Laminas\Mail\Transport\TransportInterface;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Mime;
 use Laminas\Mime\Part as MimePart;
+use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
-use Laminas\ServiceManager\ServiceManager;
 use Laminas\Validator\EmailAddress;
 use RuntimeException;
 use User\Acl\ResourceAwareTrait;
+use User\Service\UserInterface;
 
 use function sprintf;
 
@@ -36,17 +36,17 @@ final class Email implements ResourceInterface
     public const NEWSLETTER     = 'newsletterMessage';
     public const CONTACT        = 'contactUs';
 
-    /** @var Acl $acl */
+    /** @var AclInterface $acl */
     private $acl;
-    /** @var Config $appSettings */
+    /** @var array<mixed> $appSettings */
     protected $appSettings;
     /** @var ContentType $contentTypeHeader */
     protected $contentTypeHeader;
     /** @var Request $request */
     protected $request;
-    /** @var string|HTTP_HOST $hostName */
+    /** @var string $hostName */
     protected $hostName;
-    /** @var string|http https|REQUEST_SCHEME $requestScheme  */
+    /** @var string $requestScheme  */
     protected $requestScheme;
     /** @var string $resourceId */
     protected $resourceId = 'messages';
@@ -54,10 +54,8 @@ final class Email implements ResourceInterface
     public $message;
     /** @var string $subject */
     public $subject;
-    /** @var Users $user */
+    /** @var UserInterface $user */
     public $user;
-    /** @var ServiceManager $sm */
-    protected $sm;
     /** @var SmtpTransport */
     protected $transport;
     /** @var array $config */
@@ -134,8 +132,8 @@ final class Email implements ResourceInterface
         ]);
         $this->message->setBody($body);
         $this->message->setFrom($fromAddress, $fromName);
-        $this->message->addTo($this->appSettings->email->contact_form_email);
-        $this->message->setSubject($this->appSettings->view->site_name . ' Contact Page Submission');
+        $this->message->addTo($this->appSettings['email']['contact_form_email']);
+        $this->message->setSubject($this->appSettings['view']['site_name'] . ' Contact Page Submission');
         $this->contentTypeHeader = $this->message->getHeaders()->get('Content-Type');
         $this->contentTypeHeader->setType('multipart/alternative');
         try {
