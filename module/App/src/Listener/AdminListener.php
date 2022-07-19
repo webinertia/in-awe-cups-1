@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Listener;
 
+use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Permissions\Acl\Exception\RuntimeException;
@@ -19,7 +19,8 @@ class AdminListener extends AbstractListenerAggregate
 {
     /** @var AuthenticationService $authService */
     protected $authService;
-    /** @var AbstractActionController $controller */
+    /** @var AbstractAppController $controller */
+    protected $controller;
     /** @var ModelManager $modelManager */
     protected $modelManager;
     /** @var TemplateMapResolver */

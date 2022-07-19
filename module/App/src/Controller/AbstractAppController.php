@@ -1,11 +1,15 @@
 <?php
 
+    /**
+     * @method User\Controller\Plugin\Identity identity()
+     */
+
 declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Log\LoggerAwareTrait;
-use Laminas\Config\Config;
+use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
@@ -19,7 +23,7 @@ abstract class AbstractAppController extends AbstractActionController implements
     use LoggerAwareTrait;
     use ResourceAwareTrait;
 
-    /** @var Config $appSettings */
+    /** @var array<mixed> $appSettings */
     public $appSettings;
 
     /** @var string $baseUrl */
@@ -55,7 +59,7 @@ abstract class AbstractAppController extends AbstractActionController implements
         ?array $config = null,
         ?UserGateway $userGateway = null
     ) {
-        $this->appSettings = new Config($config['app_settings']);
+        $this->appSettings = $config['app_settings'];
         $this->config      = $config;
         $this->view        = new ViewModel();
         $this->basePath    = dirname(__DIR__, 4);
@@ -65,5 +69,10 @@ abstract class AbstractAppController extends AbstractActionController implements
             'appSettings' => $this->appSettings,
             'resourceId'  => null,
         ]);
+    }
+
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 }

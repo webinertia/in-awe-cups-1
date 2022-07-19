@@ -19,6 +19,8 @@ use Laminas\Session\Container;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
+use Laminas\View\Strategy\JsonStrategy;
+use Laminas\View\View;
 use Locale;
 use Psr\Log\LoggerInterface;
 
@@ -56,6 +58,17 @@ final class Module
         $layoutVariables->attach($eventManager);
         $adminListener = new AdminListener($this->sm->get(TemplateMapResolver::class));
         $adminListener->attach($eventManager);
+        // attach the jsonsrategy to the event manager
+        $eventManager->attach(MvcEvent::EVENT_RENDER, [$this, 'registerJsonStrategy'], 100);
+    }
+
+    public function registerJsonStrategy(MvcEvent $e)
+    {
+        $app          = $e->getApplication();
+        $container    = $app->getServicemanager();
+        $view         = $container->get(View::class);
+        $jsonStrategy = $container->get(JsonStrategy::class);
+        $jsonStrategy->attach($view->getEventManager(), 100);
     }
 
     public function boostrapSessions(MvcEvent $e): void

@@ -10,4 +10,5 @@ use Laminas\Permissions\Acl\Role\RoleInterface;
 
 interface UserInterface extends ProprietaryInterface, ResourceInterface, RoleInterface
 {
+    public function getLogData(): array;
 }

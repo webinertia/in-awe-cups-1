@@ -9,6 +9,9 @@ use User\Service\UserInterface;
 
 final class PsrPlaceholder extends Placeholder
 {
+    /** @var UserInterface userInterface */
+    protected $userInterface;
+
     public function __construct(UserInterface $userInterface)
     {
         $this->userInterface = $userInterface;

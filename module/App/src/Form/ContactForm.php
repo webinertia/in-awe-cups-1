@@ -19,13 +19,15 @@ use Laminas\Validator\StringLength;
 
 class ContactForm extends Form implements InputFilterProviderInterface
 {
+    /** @var array<mixed> $appSettings */
+    protected $appSettings;
     /**
      * @param string $name
      * @param array $options
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct(array $settings, $name = null, $options = [])
+    public function __construct(array $settings, $options = [])
     {
         $this->appSettings = $settings;
         parent::__construct('contact');

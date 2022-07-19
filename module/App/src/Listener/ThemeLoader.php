@@ -12,6 +12,10 @@ use Laminas\View\Resolver\TemplatePathStack;
 
 final class ThemeLoader extends AbstractListenerAggregate
 {
+    /** @var Theme $theme */
+    protected $theme;
+    /** @var TemplatePathStack $stack */
+    protected $stack;
     /** @return void */
     public function __construct(Theme $theme, TemplatePathStack $stack)
     {

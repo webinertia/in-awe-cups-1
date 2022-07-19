@@ -10,6 +10,9 @@ use App\Model\Theme;
 
 final class ThemeSettingsForm extends BaseForm
 {
+    /** @var Theme $themes */
+    protected $themes;
+
     public function __construct(Theme $theme, array $options = [])
     {
         parent::__construct('theme-settings', $options);
