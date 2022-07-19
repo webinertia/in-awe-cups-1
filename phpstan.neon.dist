@@ -3,7 +3,6 @@ parameters:
     paths:
         - module
     excludePaths:
-        - module/ContentManager
         - module/User
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+::acl()#'
