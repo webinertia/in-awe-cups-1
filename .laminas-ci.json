@@ -9,7 +9,7 @@
             "job": {
                 "php": "8.0",
                 "dependencies": "locked",
-                "command": "composer require -W --ignore-platform-req=php+ phpstan/phpstan && /vendor/bin/phpstan analyse"
+                "command": "composer require --dev --ignore-platform-req=php+ phpstan/phpstan && vendor/bin/phpstan analyse"
             }
         }
     ]
