@@ -9,6 +9,7 @@ use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
+use User\Acl\CheckActionAccessTrait;
 use User\Acl\ResourceAwareTrait;
 use User\Db\UserGateway;
 
@@ -30,6 +31,7 @@ use function dirname;
 
 abstract class AbstractAppController extends AbstractActionController implements ResourceInterface
 {
+    use CheckActionAccessTrait;
     use LoggerAwareTrait;
     use ResourceAwareTrait;
 
