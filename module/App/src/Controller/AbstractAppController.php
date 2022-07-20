@@ -1,9 +1,5 @@
 <?php
 
-    /**
-     * @method User\Controller\Plugin\Identity identity()
-     */
-
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -17,6 +13,20 @@ use User\Acl\ResourceAwareTrait;
 use User\Db\UserGateway;
 
 use function dirname;
+
+/**
+ * Abstract App Controller
+ * Plugin and trait method signatures for static analysis
+ * @codingStandardsIgnoreStart
+ * @method \App\Controller\Plugin\RedirectPrev redirectPrev()
+ * @method \App\Controller\Plugin\Email email()
+ * @method \App\Controller\Plugin\ServiceLocator getService(string $serviceName)
+ * @method \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger flashMessenger()
+ * @method \User\Controller\Plugin\Acl acl()
+ * @method \User\Controller\Plugin\Identity identity()
+ * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null)
+ * @codingStandardsIgnoreEnd
+ */
 
 abstract class AbstractAppController extends AbstractActionController implements ResourceInterface
 {

@@ -227,10 +227,9 @@ return [
     ],
     'controller_plugins' => [
         'aliases'   => [
-            'email'          => Controller\Plugin\Email::class,
-            'redirectPrev'   => Controller\Plugin\RedirectPrev::class,
-            'service'        => Controller\Plugin\ServiceLocator::class,
-            'serviceManager' => Controller\Plugin\ServiceLocator::class,
+            'email'        => Controller\Plugin\Email::class,
+            'redirectPrev' => Controller\Plugin\RedirectPrev::class,
+            'getService'   => Controller\Plugin\ServiceLocator::class,
         ],
         'factories' => [
             Controller\Plugin\Email::class          => Controller\Plugin\Factory\EmailFactory::class,

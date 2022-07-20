@@ -19,6 +19,9 @@ final class WidgetController extends AbstractAppController
 {
     /** @var Paginator $paginator */
     protected $paginator;
+    /** @var string $group */
+    protected $group = 'member';
+
     /**
      * @throws InvalidArgumentException
      * @throws DomainException

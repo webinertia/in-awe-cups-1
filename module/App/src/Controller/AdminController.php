@@ -49,16 +49,16 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
+        $themes  = $this->getService(Theme::class);
         $headers = $this->response->getHeaders();
-        if (! $this->acl()->isAllowed($this->identity()->getIdentity(), 'theme', $this->params('action'))) {
+        if (! $this->isAllowed($themes)) {
             $headers->addHeaderLine('Content-Type', 'application/json');
             $this->response->setStatusCode(403);
             $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
         }
-        $form = $this->service()->get(FormElementManager::class)->get(ThemeSettingsForm::class);
+        $form = $this->getService(FormElementManager::class)->get(ThemeSettingsForm::class);
         $form->setAttribute('action', $this->url()->fromRoute('admin/themes/manage'));
         if (! $this->request->isPost()) {
-            $themes = $this->service()->get(Theme::class);
             $form->setData($themes->getConfig());
         }
         if ($this->request->isPost()) {
@@ -66,13 +66,13 @@ final class AdminController extends AbstractAppController implements AdminContro
             if ($form->isValid()) {
                 $data = $form->getData();
                 try {
-                    $writer = $this->service()->get(ConfigWriter::class);
+                    $writer = $this->getService(ConfigWriter::class)->get();
                     $writer->setUseBracketArraySyntax(true);
-                    $writer->toFile($this->service()->get(Theme::class)->getConfigPath(), $data);
+                    $writer->toFile($this->getService(Theme::class)->get()->getConfigPath(), $data);
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Settings Saved']]);
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->err($e->getMessage());
+                    $this->error($e->getMessage());
                 }
             }
         }
@@ -87,12 +87,12 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        if (! $this->acl()->isAllowed($this->identity()->getIdentity(), 'settings', $this->params('action'))) {
+        if (! $this->isAllowed($this)) {
             $headers->addHeaderLine('Content-Type', 'application/json');
             $this->response->setStatusCode(403);
             $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
         }
-        $form = $this->service()->get(FormElementManager::class)->get(SettingsForm::class);
+        $form = $this->getService(FormElementManager::class)->get(SettingsForm::class);
         $form->setAttribute(
             'action',
             $this->url()->fromRoute('admin/settings/manage')
@@ -105,7 +105,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 try {
                     $writer->toFile($this->basePath . '/config/autoload/appsettings.local.php', $form->getData());
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->crit($e->getMessage(), $this->identity()->getIdentity()->getLogData());
+                    $this->critical($e->getMessage());
                 }
                 $headers->addHeaderLine('Content-Type', 'application/json');
                 $this->view->setVariables(['success' => true, 'message' => ['message' => 'Settings saved']]);

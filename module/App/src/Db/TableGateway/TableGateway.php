@@ -21,6 +21,8 @@ class TableGateway extends AbstractTableGateway
 
     /** @var LoggerInterface $logger */
     protected $logger;
+    /** @var string $resourceId */
+    protected $resourceId;
     /**
      * Name of the database table
      *

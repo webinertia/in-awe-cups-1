@@ -14,6 +14,7 @@ use App\Controller\AbstractAppController;
 use App\Form\ContactForm;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
+use RuntimeException;
 
 final class IndexController extends AbstractAppController
 {
@@ -27,9 +28,9 @@ final class IndexController extends AbstractAppController
 
     public function contactAction(): mixed
     {
-        $formManager = $this->service()->get(FormElementManager::class);
+        $formManager = $this->getService(FormElementManager::class);
         $form        = $formManager->get(ContactForm::class);
-        $appSettings = $this->service('config')['app_settings'];
+        $appSettings = $this->getService('config')['app_settings'];
         if ($this->request->isPost()) {
             $validationGroup = ['fullName', 'email', 'message'];
             if ($appSettings['security']['enable_captcha']) {
@@ -39,8 +40,24 @@ final class IndexController extends AbstractAppController
             $form->setData($this->request->getPost()->toArray());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $this->email()->contactUsMessage($data['email'], $data['fullName'], $data['message']);
-                $this->flashMessenger()->addSuccessMessage('Thank you for contacting us, your message was sent');
+                try {
+                    $this->email()->contactUsMessage($data['email'], $data['fullName'], $data['message']);
+                } catch (RuntimeException $e) {
+                    $this->warning(
+                        $e->getMessage(),
+                        ['firstName' => $data['firstName'], 'lastName' => $data['lastName'], 'email' => $data['email']]
+                    );
+                    $this->flashMessenger()->addErrorMessage('Your message could not be sent');
+                }
+                $this->info(
+                    'Guest with the name '
+                    . $data['firstName']
+                    . ' ' . $data['lastName']
+                    . ' has sent a message using email: '
+                    . $data['email'],
+                    ['firstName' => $data['firstName'], 'lastName' => $data['lastName'], 'email' => $data['email']]
+                );
+                $this->flashMessenger()->addSuccessMessage('Thank you for contacting us, your message has been sent');
                 return $this->redirect()->toRoute('home');
             }
         }

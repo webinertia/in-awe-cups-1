@@ -9,6 +9,9 @@ use Laminas\Permissions\Acl\AclInterface;
 
 final class Acl extends AbstractPlugin
 {
+    /** @var AclInterface $acl */
+    protected $acl;
+
     public function __construct(AclInterface $acl)
     {
         $this->acl = $acl;

@@ -21,7 +21,7 @@ final class PasswordController extends AbstractAppController
     public function resetAction(): ViewModel
     {
         try {
-            $appSettings = $this->service('config')['app_settings'];
+            $appSettings = $this->getService('config')['app_settings'];
             $step        = $this->params('step', 'zero');
             $dateTime    = new DateTime('NOW');
             $options     = ['db' => $this->usrGateway, 'enableCaptcha' => $appSettings['security']['enable_captcha']];
@@ -54,15 +54,13 @@ final class PasswordController extends AbstractAppController
                             $user->resetTimeStamp = $post['resetTimeStamp'];
                             $user->resetHash      = $hash;
                             if ($this->usrGateway->update(['id' => $user->id], $user->toArray(true))) {
-                                // send reset email
-                                $mailService = $this->sm->get(Email::class);
                                 try {
-                                    $mailService->sendMessage($post['email'], Email::RESET_PASSWORD, $hash);
+                                    $this->email()->sendMessage($post['email'], Email::RESET_PASSWORD, $hash);
                                 } catch (Throwable $th) {
-                                    $this->getLogger()->error($th->getMessage());
+                                    $this->error($th->getMessage());
                                 }
                                 // redirect
-                                $this->getLogger()->info('User {firstName} {lastName} requested to reset password');
+                                $this->info('User {firstName} {lastName} requested to reset password');
                                 // condition is when you have just submitted your email to be sent a link to reset
                                 // @codingStandardsIgnoreStart
                                 $this->flashMessenger()->addInfoMessage(
@@ -77,39 +75,39 @@ final class PasswordController extends AbstractAppController
                     }
                     break;
                 case 'reset-password':
-                    try {
-                        $token = $this->request->getQuery('token');
-                        $user  = $this->usrGateway->fetchByColumn('resetHash', $token);
-                    } catch (Throwable $th) {
-                        $this->getLogger()->warning(
-                            'Unknown user from IP:'
-                            . $this->request->getServer('REMOTE_ADDR')
-                            . ' attempted to reset password with invalid or expired token'
-                        );
-                        // @codingStandardsIgnoreStart
-                        $this->flashMessenger()
-                        ->addErrorMessage(
-                            'The supplied reset token is invlaid or expired please contact the site adminitrators. This action has been logged'
-                        );
-                        // @codingStandardsIgnoreEnd
-                        // this needs to redirect to a contact page.
-                        $this->redirect()->toRoute('home');
+                    $token = $this->request->getQuery('token');
+                    $user  = $this->usrGateway->fetchByColumn('resetHash', $token);
+                    if (! $user instanceof UserInterface) {
+                        throw new RuntimeException('User not found');
                     }
+                    $this->warning(
+                        'Unknown user from IP:'
+                        . $this->request->getServer('REMOTE_ADDR')
+                        . ' attempted to reset password with invalid or expired token'
+                    );
+                    // @codingStandardsIgnoreStart
+                    $this->flashMessenger()
+                    ->addErrorMessage(
+                        'The supplied reset token is invlaid or expired please contact the site adminitrators. This action has been logged'
+                    );
+                    // @codingStandardsIgnoreEnd
+                    // this needs to redirect to a contact page.
+                    $this->redirect()->toRoute('home');
                     if (! $this->request->isPost()) {
                         $this->view->setVariable('showForm', true);
                         $form->remove('email');
                         $form->setAttribute('action', '/user/password/reset/reset-password?token=' . $token);
                         $startTime = DateTime::createFromFormat(
-                            $this->appSettings->server->time_format,
+                            $this->appSettings['server']['time_format'],
                             $user->resetTimeStamp
                         );
                         $limit     = DateTime::createFromFormat(
-                            $this->appSettings->server->time_format,
-                            $dateTime->format($this->appSettings->server->time_format)
+                            $this->appSettings['server']['time_format'],
+                            $dateTime->format($this->appSettings['server']['time_format'])
                         );
                         $interval  = $startTime->diff($limit);
                         if ($interval->d > 0) {
-                            $this->flashmessenger()->addErrorMessage(
+                            $this->flashMessenger()->addErrorMessage(
                                 'Your reset link has expired, please submit your email to send a valid reset link'
                             );
                             return $this->redirect()->toRoute(
@@ -129,12 +127,12 @@ final class PasswordController extends AbstractAppController
                             $user->resetTimeStamp = null;
                             $user->resetHash      = null;
                             if ($this->usrGateway->update(['id' => $user->id], $user->toArray(true))) {
-                                $this->flashmessenger()->addSuccessMessage(
+                                $this->flashMessenger()->addSuccessMessage(
                                     'Your password has been succesfully updated'
                                 );
                                 return $this->redirect()->toRoute('user', ['action' => 'login']);
                             } else {
-                                $this->flashmessenger()->addErrorMessage(
+                                $this->flashMessenger()->addErrorMessage(
                                     'Your password was not updated due to an error processing your request'
                                 );
                                 return $this->redirect()->toRoute('home');
@@ -144,9 +142,9 @@ final class PasswordController extends AbstractAppController
                     break;
             }
             $this->view->setVariable('form', $form);
-            return $this->view;
         } catch (RuntimeException $e) {
-            $this->getLogger()->error($e->getMessage());
+            $this->error($e->getMessage());
         }
+        return $this->view;
     }
 }

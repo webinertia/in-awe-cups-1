@@ -21,6 +21,6 @@ final class RolesFactory implements FactoryInterface
     {
         $roles = $container->get(Roles::class);
         $roles->loadRoles();
-        return new Roles([], ArrayObject::ARRAY_AS_PROPS);
+        return new Roles();
     }
 }

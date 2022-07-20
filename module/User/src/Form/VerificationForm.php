@@ -16,11 +16,11 @@ final class VerificationForm extends Form
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct($name, $options = null)
+    public function __construct($name = 'VerificationForm', $options = [])
     {
         try {
-            parent::__construct('VerificationForm');
-            if (! empty($options)) {
+            parent::__construct($name);
+            if ($options !== []) {
                 parent::setOptions($options);
             }
         } catch (RuntimeException $e) {

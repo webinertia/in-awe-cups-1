@@ -20,7 +20,7 @@ final class LoginFieldset extends Fieldset implements InputFilterProviderInterfa
      * */
     public function __construct($options = [])
     {
-        parent::__construct('login-data', []);
+        parent::__construct('login-data', $options);
     }
 
     public function init(): void

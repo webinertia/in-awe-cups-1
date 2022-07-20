@@ -67,19 +67,19 @@ final class UserGateway extends TableGateway
 
     public function fetchGuestContext(): ModelInterface
     {
+        $prototype = false;
         $guest     = (new Guest())->toArray();
         $resultSet = $this->getResultSetPrototype();
         if ($resultSet instanceof ResultSet) {
             $prototype = $resultSet->getArrayObjectPrototype();
             $prototype->exchangeArray($guest);
-            return $prototype;
         }
         if ($resultSet instanceof HydratingResultSet) {
             $hydator   = $resultSet->getHydrator();
             $prototype = $resultSet->getObjectPrototype();
             $hydator->hydrate($guest, $prototype);
-            return $prototype;
         }
+        return $prototype;
     }
 
     public function getContextColumns(): array

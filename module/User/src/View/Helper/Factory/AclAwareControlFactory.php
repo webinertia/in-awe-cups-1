@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\View\Helper\Factory;
 
-use Laminas\Authentication\AuthenticationService;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -18,9 +17,6 @@ final class AclAwareControlFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): AclAwareControl
     {
-         return new AclAwareControl(
-             $container->get(AclInterface::class),
-             $container->get(AuthenticationService::class)
-         );
+         return new $requestedName($container->get(AclInterface::class));
     }
 }

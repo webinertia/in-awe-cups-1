@@ -23,11 +23,11 @@ final class TestController extends AbstractAppController
 
     public function indexAction(): ViewModel
     {
-        $settings = $this->service('config')['app_settings'];
-        $appSettings    = $this->service('config')['app_settings'];
-        $moduleSettings = $this->service('config')['module_settings']['user'];
+        $settings = $this->getService('config')['app_settings'];
+        $appSettings    = $this->getService('config')['app_settings'];
+        $moduleSettings = $this->getService('config')['module_settings']['user'];
 
-        Debug::dump($appSettings['server']['upload_basepath'] . $moduleSettings['server']['profile_image_target_path']);
+        $this->info('This is a test');
         $limit = $this->params()->fromQuery('limit');
         if ($limit > 0) {
             $this->warning('This is a warning');

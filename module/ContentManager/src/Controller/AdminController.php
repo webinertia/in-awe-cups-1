@@ -30,7 +30,7 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $form = $this->service()->get(FormElementManager::class)->build(
+        $form = $this->getService(FormElementManager::class)->get()->build(
             PageForm::class,
             ['mode' => FormInterface::CREATE_MODE]
         );
@@ -42,7 +42,7 @@ final class AdminController extends AbstractAppController implements AdminContro
             $post = $this->request->getPost();
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
-                $gateway       = $this->service()->get(PageGateway::class);
+                $gateway       = $this->getService(PageGateway::class);
                 $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
                 $data          = $form->getData();
                 $data->ownerId = $this->identity()->getIdentity()->id;
@@ -83,7 +83,7 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $form = $this->service(FormElementManager::class)->build(
+        $form = $this->getService(FormElementManager::class)->build(
             PageForm::class,
             ['mode' => FormInterface::CREATE_MODE]
         );
@@ -92,14 +92,14 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->url()->fromRoute('admin.content/manager/edit', ['title' => $this->params('title')])
         );
         $title      = $this->params('title');
-        $navigation = $this->service()->get(Navigation::class);
+        $navigation = $this->getService(Navigation::class);
         $page       = $navigation->findOneByTitle($title);
         $model      = new Page();
         $bindData   = $page->toArray();
         $model->exchangeArray($bindData);
         $form->bind($model);
         if ($this->request->isPost()) {
-            $gateway = $this->service()->get(PageGateway::class);
+            $gateway = $this->getService(PageGateway::class);
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
                 $filter        = (new FilterChain())->attach(new StringToLower())->attach(new SeparatorToDash());
@@ -137,11 +137,11 @@ final class AdminController extends AbstractAppController implements AdminContro
             $headers->addHeaderLine('Content-Type', 'application/json');
             $this->view->setTerminal(true);
         }
-        if ($this->acl()->isAllowed($this->identity()->getIdentity(), $this->resourceId, 'delete')) {
+        if ($this->isAllowed($this)) {
             $id         = $this->params('id');
-            $navigation = $this->service()->get(Navigation::class);
+            $navigation = $this->getService(Navigation::class);
             $page       = $navigation->findOneById($id);
-            $gateway    = $this->service()->get(PageGateway::class);
+            $gateway    = $this->getService(PageGateway::class);
             try {
                 $result = $gateway->delete(['id' => $page->id]);
                 if (! $result) {
@@ -166,12 +166,12 @@ final class AdminController extends AbstractAppController implements AdminContro
 
     public function uploadImagesAction(): ViewModel
     {
-        if (! $this->acl()->isAllowed($this->identity()->getIdentity(), $this, 'upload.images')) {
+        if (! $this->isAllowed($this)) {
             $this->flashMessenger()->addErrorMessage('You are not allowed to upload images');
             $this->response->setStatusCode(403);
         }
         $data   = [];
-        $config = $this->service('config')['page_upload_paths'];
+        $config = $this->getService('config')['page_upload_paths'];
         $this->view->setTerminal(true);
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);

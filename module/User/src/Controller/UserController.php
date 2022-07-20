@@ -20,15 +20,15 @@ final class UserController extends AbstractAppController implements ResourceInte
             $userName   = $this->params('userName');
             $hasMessage = false;
             if (! empty($userName)) {
-                $this->fm = $this->plugin('flashMessenger');
-                $this->fm->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
+                $this->flashMessenger()->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
                 $hasMessage = true;
             }
             $this->view->setVariable('hasMessage', $hasMessage);
             $this->view->setVariable('users', $this->usrGateway->fetchAll());
-            return $this->view;
         } catch (RuntimeException $e) {
+            $this->warning($e->getMessage());
         }
+        return $this->view;
     }
 
     public function forgotPasswordAction()

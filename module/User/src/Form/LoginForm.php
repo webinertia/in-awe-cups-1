@@ -11,7 +11,7 @@ class LoginForm extends BaseForm
 {
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct('login');
     }
 
     public function init(): void

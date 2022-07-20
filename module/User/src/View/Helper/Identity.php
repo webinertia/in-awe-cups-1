@@ -13,6 +13,8 @@ final class Identity extends AbstractHelper
     /** @var AuthenticationService $authenticationService */
     protected $authenticationService;
     /** @var UserInterface $userInterface */
+    protected $userInterface;
+
     public function __construct(AuthenticationService $authenticationService, UserInterface $userInterface)
     {
         $this->authenticationService = $authenticationService;
