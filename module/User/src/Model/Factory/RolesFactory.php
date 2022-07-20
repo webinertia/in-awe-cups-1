@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace User\Model\Factory;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\Stdlib\ArrayObject;
 use Psr\Container\ContainerInterface;
 use User\Model\Roles;
 
