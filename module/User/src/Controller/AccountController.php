@@ -14,6 +14,7 @@ use Throwable;
 use User\Acl\CheckActionAccessTrait;
 use User\Form\LoginForm;
 use User\Form\UserForm;
+use User\Service\UserInterface;
 
 use function array_merge;
 
@@ -31,7 +32,7 @@ final class AccountController extends AbstractAppController
 
     public function loginAction(): mixed
     {
-        $formManager = $this->service()->get(FormElementManager::class);
+        $formManager = $this->getService(FormElementManager::class);
         $form        = $formManager->get(LoginForm::class);
         if (! $this->request->isPost()) {
             $this->view->setVariable('form', $form);
@@ -74,7 +75,7 @@ final class AccountController extends AbstractAppController
     public function editAction(): ViewModel
     {
         try {
-            $formManager = $this->service()->get(FormElementManager::class);
+            $formManager = $this->getService(FormElementManager::class);
             // get the user by userName that is to be edited
             $userName = $this->params()->fromRoute('userName');
             $user     = $this->usrGateway->fetchByColumn('userName', $userName);
@@ -129,23 +130,27 @@ final class AccountController extends AbstractAppController
             }
             $this->view->setVariable('form', $form);
         } catch (Throwable $th) {
-            $this->getLogger()->error($th->getMessage());
+            $this->error($th->getMessage());
         }
         return $this->view;
     }
 
     public function deleteAction(): void
     {
+        $user = false;
         // verify that the session cleared during user deletion
         try {
-            $userName    = $this->params()->fromRoute('userName');
-            $user        = $this->usrGateway->fetchByColumn('userName', $userName);
+            $userName = $this->params()->fromRoute('userName');
+            $user     = $this->usrGateway->fetchByColumn('userName', $userName);
+            if (! $user instanceof UserInterface) {
+                throw new RuntimeException('The user could not be found');
+            }
             $deletedUser = $user->toArray();
-            if ($this->isAllowed($this->user, $user, $this->action)) {
-                $result = $this->usrGateway->delete(['userName' => $user->userName]);
+            if ($this->isAllowed($user)) {
+                $result = $this->usrGateway->delete(['id' => $user->id]);
                 if ($result > 0) {
-                    $this->getLogger()->info(
-                        'User ' . $deletedUser['firstName'] . ' ' . $deletedUser['lastName'] . ' was deleted'
+                    $this->info(
+                        'User ' . $deletedUser['firstName'] . ' ' . $deletedUser['lastName'] . ' was deleted.'
                     );
                     $this->redirect()->toRoute(
                         'user',
@@ -156,11 +161,11 @@ final class AccountController extends AbstractAppController
                 }
             } else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
-                $this->response->setStatusCode('403');
+                $this->response->setStatusCode(403);
                 $this->redirectPrev();
             }
         } catch (RuntimeException $e) {
-            $this->getLogger()->error($e->getMessage());
+            $this->error($e->getMessage());
         }
     }
 
@@ -174,7 +179,7 @@ final class AccountController extends AbstractAppController
             $this->flashMessenger()->addErrorMessage(
                 'An unknown error occurred please contact the system administrator'
             );
-            $this->getLogger()->critical('System failed to log the user out!!');
+            $this->critical('System failed to log the user out!!');
             return $this->redirect()->toRoute('home');
         }
     }
@@ -182,17 +187,20 @@ final class AccountController extends AbstractAppController
     public function staffActivateAction(): ViewModel
     {
         try {
-            $this->user = $this->identity()->getIdentity();
-            if ($this->acl()->isAllowed($this->identity()->getIdentity(), $this, 'create')) {
+            $user = false;
+            if ($this->isAllowed()) {
                 if ($this->request->isXmlHttpRequest()) {
                     $this->view->setTerminal(true);
                 }
-                $userName     = $this->params()->fromRoute('userName');
-                $user         = $this->usrGateway->fetchByColumn('userName', $userName);
+                $userName = $this->params()->fromRoute('userName');
+                $user     = $this->usrGateway->fetchByColumn('userName', $userName);
+                if (! $user instanceof UserInterface) {
+                    throw new RuntimeException('The user could not be found');
+                }
                 $user->active = 1;
                 $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
-                    $this->getLogger()->info(
+                    $this->info(
                         'User with UserName: ' . $user->userName . ' has been activated by staff member'
                     );
                 } else {
@@ -200,29 +208,32 @@ final class AccountController extends AbstractAppController
                 }
             } else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
-                $this->response->setStatusCode('403');
+                $this->response->setStatusCode(403);
             }
         } catch (RuntimeException $e) {
-            $this->getLogger()->error($e->getMessage());
+            $this->error($e->getMessage());
         }
-        $this->view->setVariables(['user' => $this->user, 'activatedUser' => $user]);
+        $this->view->setVariables(['user' => $this->identity()->getIdentity(), 'activatedUser' => $user]);
         return $this->view;
     }
 
     public function staffDeactivateAction(): ViewModel
     {
         try {
-            $this->user = $this->identity()->getIdentity();
-            if ($this->acl()->isAllowed($this->identity()->getIdentity(), 'account', 'create')) {
+            $user = false;
+            if ($this->acl()->isAllowed($this->identity()->getIdentity(), $this, 'create')) {
                 if ($this->request->isXmlHttpRequest()) {
                     $this->view->setTerminal(true);
                 }
-                $userName     = $this->params()->fromRoute('userName');
-                $user         = $this->usrGateway->fetchByColumn('userName', $userName);
+                $userName = $this->params()->fromRoute('userName');
+                $user     = $this->usrGateway->fetchByColumn('userName', $userName);
+                if (! $user instanceof UserInterface) {
+                    throw new RuntimeException('The user could not be found');
+                }
                 $user->active = 0;
                 $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
-                    $this->getLogger()->info(
+                    $this->info(
                         'User with UserName: ' . $user->userName . ' has been deactivated by staff member'
                     );
                 } else {
@@ -230,12 +241,12 @@ final class AccountController extends AbstractAppController
                 }
             } else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
-                $this->response->setStatusCode('403');
+                $this->response->setStatusCode(403);
             }
         } catch (RuntimeException $e) {
-            $this->getLogger()->error($e->getMessage());
+            $this->error($e->getMessage());
         }
-        $this->view->setVariables(['user' => $this->user, 'deactivatedUser' => $user]);
+        $this->view->setVariables(['user' => $this->identity()->getIdentity(), 'deactivatedUser' => $user]);
         return $this->view;
     }
 }

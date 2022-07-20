@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace User\Model\Factory;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\Stdlib\ArrayObject;
 use Psr\Container\ContainerInterface;
 use User\Model\Roles;
 
@@ -21,6 +20,6 @@ final class RolesFactory implements FactoryInterface
     {
         $roles = $container->get(Roles::class);
         $roles->loadRoles();
-        return new Roles([], ArrayObject::ARRAY_AS_PROPS);
+        return new Roles();
     }
 }

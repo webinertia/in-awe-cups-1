@@ -60,7 +60,7 @@ final class ProfileController extends AbstractAppController
 
     public function editProfileAction(): mixed
     {
-        $form = $this->service()->get(FormElementManager::class)->build(
+        $form = $this->getService(FormElementManager::class)->build(
             ProfileForm::class,
             ['mode' => FormInterface::EDIT_MODE]
         );
@@ -87,8 +87,8 @@ final class ProfileController extends AbstractAppController
                 // set it to randomize the file name
                 $fileFilter->setRandomize(true);
                 // notice this sets the path for directory and the base file name used for all profile Images
-                $appSettings    = $this->service('config')['app_settings'];
-                $moduleSettings = $this->service('config')['module_settings']['user'];
+                $appSettings    = $this->getService('config')['app_settings'];
+                $moduleSettings = $this->getService('config')['module_settings']['user'];
                 $fileFilter->setTarget(
                     $appSettings['server']['upload_basepath'] . $moduleSettings['server']['profile_image_target_path']
                 );
@@ -107,7 +107,7 @@ final class ProfileController extends AbstractAppController
                         $data['role-data']
                     ));
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->error($e->getMessage());
+                    $this->error($e->getMessage());
                 }
             }
         }

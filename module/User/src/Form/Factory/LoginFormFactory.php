@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form\Factory;
 
-use App\Model\Settings;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -21,6 +20,6 @@ final class LoginFormFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): LoginForm
     {
-        return new LoginForm($container->get(Settings::class));
+        return new LoginForm();
     }
 }

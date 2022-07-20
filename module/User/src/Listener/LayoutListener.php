@@ -25,6 +25,10 @@ class LayoutListener extends AbstractListenerAggregate
     protected $targetController = 'AccountController';
     /** @var string */
     protected $targetModule = 'User';
+    /** @var FqcnToControllerName $cnameFilter */
+    protected $cnameFilter;
+    /** @var FqcnToModuleName $moduleNameFilter */
+    protected $moduleNameFilter;
     /** @return void */
     public function __construct(TemplateMapResolver $templateMapResolver)
     {

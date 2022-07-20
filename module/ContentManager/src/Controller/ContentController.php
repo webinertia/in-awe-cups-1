@@ -15,11 +15,11 @@ final class ContentController extends AbstractAppController
 
     public function pageAction(): ViewModel
     {
-        $navigation = $this->service()->get(Navigation::class);
+        $navigation = $this->getService(Navigation::class);
         $title      = $this->params('title');
         if (! $navigation->findOneBy('title', $title)) {
             $this->view->setVariable('message', 'The requested page could not be found.');
-            $this->response->setStatusCode('404');
+            $this->response->setStatusCode(404);
         }
         $this->view->setVariables([
             'title' => $title,

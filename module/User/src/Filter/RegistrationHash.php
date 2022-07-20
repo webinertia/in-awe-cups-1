@@ -25,9 +25,12 @@ final class RegistrationHash implements FilterInterface
                 'Expects $value to associative array with keys: email, timestamp - received: ' . gettype($value)
             );
         }
-        if (isset($value['email']) && $value['timestamp']) {
-            return password_hash($value['email'] . $value['timestamp'], PASSWORD_DEFAULT);
+        if (! isset($value['email']) && ! $value['timestamp']) {
+            throw new InvalidArgumentException(
+                'Expects $value to associative array with keys: email, timestamp - received: ' . gettype($value)
+            );
         }
+        return password_hash($value['email'] . $value['timestamp'], PASSWORD_DEFAULT);
     }
 
     public function __invoke(array $value): string

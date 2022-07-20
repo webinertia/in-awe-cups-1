@@ -19,7 +19,9 @@ final class PsrPlaceholder extends Placeholder
 
     public function process(array $event): array
     {
-        $event['extra'] += $this->userInterface->getLogData();
+        if ($event['extra'] === []) {
+            $event['extra'] += $this->userInterface->getLogData();
+        }
         return parent::process($event);
     }
 }

@@ -17,6 +17,10 @@ final class Roles implements ModelInterface
     protected $roles = [];
     /** @var string $configFilename */
     protected $configFilename = 'roles.json';
+    /** @var string $fileName */
+    protected $fileName;
+    /** @var array<mixed> $config */
+    protected $config;
 
     public function __construct()
     {

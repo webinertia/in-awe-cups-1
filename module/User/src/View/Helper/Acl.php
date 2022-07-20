@@ -14,6 +14,7 @@ use Laminas\View\Helper\AbstractHelper;
 final class Acl extends AbstractHelper
 {
     /** @var AclInterface $acl */
+    protected $acl;
     /** @return void */
     public function __construct(AclInterface $acl)
     {

@@ -17,20 +17,8 @@ final class ServiceLocator extends AbstractPlugin
         $this->container = $container;
     }
 
-    public function __invoke(?string $serviceName = null): mixed
+    public function __invoke(string $serviceName): mixed
     {
-        if ($serviceName === null) {
-            return $this;
-        }
         return $this->container->get($serviceName);
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     */
-    public function __call($name, $arguments): mixed
-    {
-        return $this->container->{$name}(...$arguments);
     }
 }

@@ -29,13 +29,13 @@ class RegisterController extends AbstractAppController
      */
     public function indexAction(): object
     {
-        $this->form  = $this->service()->get(FormElementManager::class)->get(UserForm::class);
-        $appSettings = $this->service('config')['app_settings'];
+        $this->form  = $this->getService(FormElementManager::class)->get(UserForm::class);
+        $appSettings = $this->getService('config')['app_settings'];
         // if registration is disabled return as there is nothing more to do
         if (! $appSettings['security']['enable_registration']) {
             return $this->view;
         }
-        $mailService = $this->service(Email::class);
+        $mailService = $this->getService(Email::class);
         // we need a timestamp based on the server settings
         $now = new DateTime();
         // time format is 02/13/1975

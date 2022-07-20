@@ -17,20 +17,23 @@ use Laminas\InputFilter\InputFilter;
 use Laminas\Validator\Db\RecordExists;
 use Laminas\Validator\Identical;
 use Laminas\Validator\StringLength;
+use User\Db\UserGateway;
 use User\Filter\PasswordFilter;
 
 final class ResetPassword extends Form
 {
+    /** @var UserGateway $table */
+    protected $table;
     /**
      * @param string $name
-     * @param array $options
+     * @param array|mixed[] $options
      * @return void
      * @throws InvalidArgumentException
      * @throws DomainException
      */
-    public function __construct($name, $options)
+    public function __construct($name = 'reset_password', ?array $options = null)
     {
-        parent::__construct('reset_password');
+        parent::__construct($name);
         parent::setOptions($options);
         $this->table = $this->options['db'];
 
@@ -123,6 +126,8 @@ final class ResetPassword extends Form
                         'min'      => 1,
                         'max'      => 100,
                     ],
+                ],
+                [
                     'name'    => RecordExists::class,
                     'options' => [
                         'table'     => $this->table->getTable(),
@@ -169,6 +174,8 @@ final class ResetPassword extends Form
                         'min'      => 1,
                         'max'      => 100,
                     ],
+                ],
+                [
                     'name'    => Identical::class,
                     'options' => [
                         'token'    => 'password',

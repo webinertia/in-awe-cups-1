@@ -15,7 +15,7 @@ final class IdentityFactory implements FactoryInterface
     /** {@inheritDoc} */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Identity
     {
-        return new Identity(
+        return new $requestedName(
             $container->get(AuthenticationService::class),
             $container->get(UserInterface::class)
         );

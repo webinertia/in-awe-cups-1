@@ -34,7 +34,7 @@ final class LogController extends AbstractAppController implements AdminControll
             $this->response->setStatusCode(403);
             $this->view->setVariables(['error' => true, 'message' => ['message' => 'Access denied']]);
         }
-        $logGateway = $this->service(LogGateway::class);
+        $logGateway = $this->getService(LogGateway::class);
         $select     = $logGateway->getSql()->select();
         $select->order(['logId DESC']);
         $resultSet = $logGateway->selectWith($select);
@@ -63,13 +63,13 @@ final class LogController extends AbstractAppController implements AdminControll
             $this->response->setStatusCode(403);
             return $this->view;
         }
-        $gateway = $this->service(LogGateway::class);
+        $gateway = $this->getService(LogGateway::class);
         $logId   = $this->params()->fromRoute('id');
         if ($logId !== null) {
             try {
                 $gateway->delete(['logId' => $logId]);
             } catch (Throwable $th) {
-                $this->getLogger()->error($th->getMessage());
+                $this->error($th->getMessage());
             }
         }
         return $this->view;

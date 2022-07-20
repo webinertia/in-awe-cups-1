@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\View\Helper;
 
 use Laminas\Permissions\Acl\AclInterface;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\View\Helper\TranslatorAwareTrait;
 use Laminas\View\Renderer\PhpRenderer;
@@ -40,6 +41,17 @@ final class AclAwareControl extends AbstractHelper
     private $buttonOptionsConfigKey = 'button_options';
     /** @var User\Model\User|User\Model\Guest $user */
     protected $user;
+    /** @var AclInterface $acl */
+    protected $acl;
+    /** @var ResourceInterface|string $resource */
+    protected $resource;
+    /** @var string $privilege */
+    protected $privilege;
+    /** @var string $url */
+    protected $url;
+    /** @var array<mixed> $iconOptions */
+    protected $iconOptions = [];
+
     public function __construct(AclInterface $acl)
     {
         $this->acl = $acl;

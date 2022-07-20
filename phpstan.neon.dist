@@ -2,11 +2,11 @@ parameters:
     level: 1
     paths:
         - module
-    excludePaths:
-        - module/User
-    ignoreErrors:
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+::acl()#'
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+::email()#'
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+::identity()#'
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+::service()#'
-        - '#Call to an undefined method [a-zA-Z0-9\\_]+::flashMessenger()#'
+    universalObjectCratesClasses:
+        - module/*/src/Model/*
+    earlyTerminatingMethodCalls:
+        App\Controller\AbstractAppController:
+            - redirect
+            - redirectPrev
+            - isAllowed
+            - acl

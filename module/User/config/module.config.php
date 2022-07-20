@@ -348,7 +348,6 @@ return [
     ],
     'service_manager'    => [
         'aliases'   => [
-            Model\Users::class           => Db\UserGateway::class,
             Service\UserInterface::class => Service\UserService::class,
         ],
         'factories' => [
