@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Form\Factory;
 
-use App\Model\Settings;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

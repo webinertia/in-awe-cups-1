@@ -225,8 +225,8 @@ final class AccountController extends AbstractAppController
                 if ($this->request->isXmlHttpRequest()) {
                     $this->view->setTerminal(true);
                 }
-                $userName     = $this->params()->fromRoute('userName');
-                $user         = $this->usrGateway->fetchByColumn('userName', $userName);
+                $userName = $this->params()->fromRoute('userName');
+                $user     = $this->usrGateway->fetchByColumn('userName', $userName);
                 if (! $user instanceof UserInterface) {
                     throw new RuntimeException('The user could not be found');
                 }

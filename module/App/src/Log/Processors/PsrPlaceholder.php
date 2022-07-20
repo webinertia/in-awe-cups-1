@@ -7,8 +7,6 @@ namespace App\Log\Processors;
 use Laminas\Log\Processor\PsrPlaceholder as Placeholder;
 use User\Service\UserInterface;
 
-use function array_intersect_assoc;
-
 final class PsrPlaceholder extends Placeholder
 {
     /** @var UserInterface userInterface */
