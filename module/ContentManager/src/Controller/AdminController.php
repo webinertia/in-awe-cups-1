@@ -30,7 +30,7 @@ final class AdminController extends AbstractAppController implements AdminContro
         if ($this->request->isXmlHttpRequest()) {
             $this->view->setTerminal(true);
         }
-        $form = $this->getService(FormElementManager::class)->get()->build(
+        $form = $this->getService(FormElementManager::class)->build(
             PageForm::class,
             ['mode' => FormInterface::CREATE_MODE]
         );
@@ -58,7 +58,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Page saved']]);
                 } catch (RuntimeException $e) {
-                    $this->getLogger()->error($e->getMessage(), $this->identity()->getIdentity()->getLogData());
+                    $this->error($e->getMessage());
                 }
             }
         }
