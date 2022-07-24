@@ -14,3 +14,5 @@ parameters:
     - stubs/Laminas/Mvc/InjectApplicationEventInterface.stub
     - stubs/Laminas/Stdlib/DispatchableInterface.stub
     - stubs/Laminas/Http/PhpEnvironment/Request.stub
+    - stubs/Laminas/Http/PhpEnvironment/Response.stub
+    - stubs/Laminas/EventManagerAwareInterface.stub
