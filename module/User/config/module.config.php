@@ -353,9 +353,9 @@ return [
         'factories' => [
             AclInterface::class        => Acl\AclFactory::class,
             Db\UserGateway::class      => Db\Factory\UserGatewayFactory::class,
-            Service\UserService::class => Service\Factory\UserServiceFactory::class,
             Model\Roles::class         => InvokableFactory::class,
             Model\Guest::class         => InvokableFactory::class,
+            Service\UserService::class => Service\Factory\UserServiceFactory::class,
         ],
     ],
     'filters'            => [

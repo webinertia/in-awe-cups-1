@@ -9,6 +9,7 @@ use ContentManager\Model\Page;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\ToInt;
 use Laminas\Filter\ToNull;
+use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Number;
 use Laminas\Form\Element\Text;
@@ -49,6 +50,16 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
             'options' => ['label' => 'Page Label (Will show in the menu)'],
         ])
         ->add([
+            'name'    => 'showOnLandingPage',
+            'type'    => Checkbox::class,
+            'options' => [
+                'label'              => 'Show on Landing Page',
+                'use_hidden_element' => true,
+                'checked_value'      => '1',
+                'unchecked_value'    => '0',
+            ],
+        ])
+        ->add([
             'name'    => 'order',
             'type'    => Number::class,
             'options' => ['label' => 'Order - The order in which the page will be shown'],
@@ -62,13 +73,19 @@ final class PageFieldset extends Fieldset implements InputFilterProviderInterfac
     public function getInputFilterSpecification(): array
     {
         return [
-            'id'    => [
+            'id'                => [
                 'required' => false,
                 'filters'  => [
                     ['name' => ToInt::class],
                 ],
             ],
-            'order' => [
+            'showOnLandingPage' => [
+                'required' => false,
+                'filters'  => [
+                    ['name' => ToInt::class],
+                ],
+            ],
+            'order'             => [
                 'required' => false,
                 'filters'  => [
                     ['name' => StringTrim::class],

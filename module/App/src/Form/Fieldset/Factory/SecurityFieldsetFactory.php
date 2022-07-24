@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 
 final class SecurityFieldsetFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): SecurityFieldset
     {
         return new SecurityFieldset($container->get('config')['app_settings'], $options);

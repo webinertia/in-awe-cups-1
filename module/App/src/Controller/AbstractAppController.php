@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Log\LoggerAwareTrait;
-use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
@@ -19,13 +18,15 @@ use function dirname;
  * Abstract App Controller
  * Plugin and trait method signatures for static analysis
  * @codingStandardsIgnoreStart
- * @method \App\Controller\Plugin\RedirectPrev redirectPrev()
  * @method \App\Controller\Plugin\Email email()
  * @method \App\Controller\Plugin\ServiceLocator getService(string $serviceName)
  * @method \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger flashMessenger()
  * @method \User\Controller\Plugin\Acl acl()
+ * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null)
  * @method \User\Controller\Plugin\Identity identity()
  * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null)
+ * @method \Laminas\Http\PhpEnvironment\Request getRequest()
+ * @method \Laminas\Http\PhpEnvironment\Response getResponse()
  * @codingStandardsIgnoreEnd
  */
 
@@ -81,10 +82,5 @@ abstract class AbstractAppController extends AbstractActionController implements
             'appSettings' => $this->appSettings,
             'resourceId'  => null,
         ]);
-    }
-
-    public function getRequest(): Request
-    {
-        return $this->request;
     }
 }

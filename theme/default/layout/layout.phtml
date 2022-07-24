@@ -16,9 +16,6 @@ use Laminas\View\Renderer\PhpRenderer;
         <?= $this->headTitle($this->appSettings['view']['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
 
         <?php
-        if (! $this->renderPage) {
-            $this->headMeta()->prependName('keywords', $this->appSettings['seo']['key_words'] ?? '');
-        }
         $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0')->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 

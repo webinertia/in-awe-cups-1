@@ -14,7 +14,7 @@ use Psr\Container\ContainerInterface;
 
 final class PageGatewayFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PageGateway
     {
         $config             = $container->get('config');

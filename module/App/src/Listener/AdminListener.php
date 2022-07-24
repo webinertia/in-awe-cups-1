@@ -21,8 +21,6 @@ class AdminListener extends AbstractListenerAggregate
     protected $authService;
     /** @var AbstractAppController $controller */
     protected $controller;
-    /** @var ModelManager $modelManager */
-    protected $modelManager;
     /** @var TemplateMapResolver */
     private $templateMapResolver;
     /** @return void */
@@ -60,7 +58,7 @@ class AdminListener extends AbstractListenerAggregate
             $message = $th->getMessage();
             $logger->notice($th->getMessage());
             $this->controller->flashMessenger()->addErrorMessage($message);
-            $this->controller->redirectPrev();
+            $this->controller->redirect()->toRoute('home');
         }
     }
 

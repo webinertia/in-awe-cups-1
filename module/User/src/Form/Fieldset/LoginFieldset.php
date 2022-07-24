@@ -15,12 +15,12 @@ use Laminas\Validator\StringLength;
 final class LoginFieldset extends Fieldset implements InputFilterProviderInterface
 {
     /**
-     * @param array $options
+     * @param array<mixed> $options
      * @return void
      * */
-    public function __construct($options = [])
+    public function __construct(?string $name = 'login-data', array $options = [])
     {
-        parent::__construct('login-data', $options);
+        parent::__construct($name, $options);
     }
 
     public function init(): void

@@ -13,7 +13,9 @@ final class PageGateway extends TableGateway
 
     public function fetchMenu(): array
     {
-        $result = $this->select();
+        $select = $this->getSql()->select();
+        $select->where(['parentId = 0'])->where(['isLandingPage = 0']);
+        $result = $this->selectWith($select);
         $pages  = [];
         foreach ($result as $row) {
             $pages[] = $row->toArray();

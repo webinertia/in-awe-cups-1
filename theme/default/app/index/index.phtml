@@ -5,44 +5,81 @@ declare(strict_types=1);
 /**
  * @var Laminas\View\Renderer\PhpRenderer $this
  */
+
+if (isset($this->page)) :
 ?>
 <div class="jumbotron">
-    <h1 class="display-4">A Content Management System</h1>
-    <p>Loading from the default theme directory</br>
-        Congratulations! You have successfully installed <a href="https://github.com/Tyrsson/aurora-2.0/wiki" target="_blank">ACMS</a>.
-    </p>
-    <hr class="my-4">
-    <a class="btn btn-primary btn-lg" href="https://github.com/Tyrsson/aurora-2.0" target="_blank">
-        Check Aurora on GitHub &raquo;
+    <?php
+    if($this->acl()->isAllowed($this->identity()->getIdentity(), 'page', 'edit')) :
+    ?>
+    <a
+    class="mdi mdi-pencil"
+    data-toggle="modal"
+    data-target="#editorModal"
+    data-href="<?=$this->url('admin.content/manager/edit', ['title' => $this->page->title])?>"
+    href="#">
     </a>
+    <a
+    class="delete-page mdi mdi-delete-forever text-danger"
+    href="<?=$this->url('admin.content/manager/delete', ['id' => $this->page->id])?>">
+    </a>
+    <?php endif; ?>
+    <h1>Welcome to <?=$this->appSettings['view']['site_name']?></h1>
+    <?=$this->page->content?>
 </div>
+<?php
+    if (isset($this->page->pages)) :
+?>
 <div class="card-deck">
+    <?php
+        foreach ($this->page->pages as $page) :
+    ?>
     <div class="card">
-        <h2 class="card-header">Follow Development</h2>
-        <div class="card-body">
-            <p>
-                This project is being actively developed by <a href="https://github.com/Tyrsson">Tyrsson</a> .
-            </p>
-            <a class="btn btn-primary" href="#" target="_blank">Project Portal &raquo;</a>
-        </div>
-    </div>
-    <div class="card">
-        <h2 class="card-header">Placeholder Heading</h2>
-        <div class="card-body">
-            <p>
-                This application is not ready for use.
-            </p>
-            <a class="btn btn-primary" href="#" target="_blank">
-                Modules &raquo;
+        <div class="card-header">
+        <?php
+            if($this->acl()->isAllowed($this->identity()->getIdentity(), 'page', 'edit')) :
+            ?>
+            <a
+            class="mdi mdi-pencil"
+            data-toggle="modal"
+            data-target="#editorModal"
+            data-href="<?=$this->url('admin.content/manager/edit', ['title' => $page->title])?>"
+            href="#">
             </a>
+            <a
+            class="delete-page mdi mdi-delete-forever text-danger"
+            href="<?=$this->url('admin.content/manager/delete', ['id' => $page->id])?>">
+            </a>
+            <?php endif; ?>
+            <h2><?=$page->label?></h2>
         </div>
-    </div>
-    <div class="card">
-        <h2 class="card-header">Help &amp; Support</h2>
         <div class="card-body">
-            <p>
-                This is placeholder text
-            </p>
+            <?=$page->content?>
         </div>
     </div>
+    <?php
+        endforeach;
+    ?>
 </div>
+<?php
+    endif;
+else :
+?>
+
+<?php
+endif;
+?>
+    <div class="modal fade" id="editorModal" tabindex="-1" role="dialog" aria-labelledby="editorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editorModalLabel">Edit Page <?=$page->lagel?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="work-space" class="modal-body"></div>
+
+            </div>
+        </div>
+    </div>

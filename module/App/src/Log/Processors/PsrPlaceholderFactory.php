@@ -11,7 +11,7 @@ use User\Service\UserInterface;
 
 final class PsrPlaceholderFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(
         ContainerInterface $container,
         $requestedName,

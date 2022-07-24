@@ -12,7 +12,7 @@ use User\Model\Roles;
 
 final class AclFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Acl
     {
         $acl   = new Acl();

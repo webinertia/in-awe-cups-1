@@ -94,8 +94,17 @@ final class AdminController extends AbstractAppController implements AdminContro
         $title      = $this->params('title');
         $navigation = $this->getService(Navigation::class);
         $page       = $navigation->findOneByTitle($title);
-        $model      = new Page();
-        $bindData   = $page->toArray();
+        $model      = $this->getService(Page::class);
+        if ($page === null) {
+            $page = $model->fetchByColumn('title', $title);
+        }
+        if ($page->title === 'homelandingpage') {
+            $label = $form->get('page-data')->get('label');
+            $label->setAttribute('readonly', 'readonly');
+            $showOnLanding = $form->get('page-data')->get('showOnLandingPage');
+            $showOnLanding->setAttribute('disabled', 'disabled');
+        }
+        $bindData = $page->toArray();
         $model->exchangeArray($bindData);
         $form->bind($model);
         if ($this->request->isPost()) {
@@ -112,11 +121,16 @@ final class AdminController extends AbstractAppController implements AdminContro
                     if (! $result) {
                         throw new RuntimeException('Page Not saved');
                     }
+                    if ($data->showOnLandingPage || $data->title === 'homelandingpage') {
+                        $redirectData = ['href' => $this->url()->fromRoute('home')];
+                    } else {
+                        $redirectData = ['href' => $this->url()->fromRoute('page', ['title' => $data->title])];
+                    }
                     $this->flashMessenger()->addSuccessMessage('Page saved');
                     $this->view->setvariables(
                         [
                             'success' => true,
-                            'data'    => ['href' => $this->url()->fromRoute('page', ['title' => $data->title])],
+                            'data'    => $redirectData,
                         ]
                     );
                     $headers = $this->response->getHeaders();

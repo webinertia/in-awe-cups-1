@@ -13,7 +13,7 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 
 final class ThemeFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __construct($name = null, array $options = [])
     {
         parent::__construct($name, $options);

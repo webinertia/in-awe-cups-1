@@ -13,7 +13,6 @@ use Laminas\Form\Element\Date;
 use Laminas\Form\Element\File;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
-use Laminas\Form\Exception\InvalidArgumentException;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\Between;
@@ -22,13 +21,11 @@ use Laminas\Validator\StringLength;
 
 final class ProfileFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    /** @var Settings $appSettings */
+    /** @var array<string, mixed> $appSettings */
     protected $appSettings;
     /**
-     * @param mixed $name
-     * @param mixed $options
+     * @param array<mixed> $options
      * @return void
-     * @throws InvalidArgumentException
      */
     public function __construct(array $appSettings = [], $options = [])
     {

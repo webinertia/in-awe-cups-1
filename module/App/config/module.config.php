@@ -8,6 +8,7 @@ use App\Log\Processors\PsrPlaceholder;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Log\Logger;
+use Laminas\Mvc\Controller\LazyControllerAbstractFactory;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -220,20 +221,18 @@ return [
     'controllers'        => [
         'factories' => [ // move this to an abstract factory???
             Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
-            Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
+            Controller\IndexController::class => LazyControllerAbstractFactory::class,
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
             Controller\LogController::class   => Controller\Factory\AppControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
         'aliases'   => [
-            'email'        => Controller\Plugin\Email::class,
-            'redirectPrev' => Controller\Plugin\RedirectPrev::class,
-            'getService'   => Controller\Plugin\ServiceLocator::class,
+            'email'      => Controller\Plugin\Email::class,
+            'getService' => Controller\Plugin\ServiceLocator::class,
         ],
         'factories' => [
             Controller\Plugin\Email::class          => Controller\Plugin\Factory\EmailFactory::class,
-            Controller\Plugin\RedirectPrev::class   => Controller\Plugin\Factory\RedirectPrevFactory::class,
             Controller\Plugin\ServiceLocator::class => Controller\Plugin\Factory\ServiceLocatorFactory::class,
         ],
     ],
