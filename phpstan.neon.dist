@@ -15,4 +15,4 @@ parameters:
     - stubs/Laminas/Stdlib/DispatchableInterface.stub
     - stubs/Laminas/Http/PhpEnvironment/Request.stub
     - stubs/Laminas/Http/PhpEnvironment/Response.stub
-    - stubs/Laminas/EventManagerAwareInterface.stub
+    - stubs/Laminas/EventManager/EventManagerAwareInterface.stub
