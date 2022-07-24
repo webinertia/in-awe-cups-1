@@ -38,7 +38,7 @@ class RoleFromAuthenticationIdentityDelegator
         );
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(
         ContainerInterface $container,
         string $name,

@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 
 final class ContactFormFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): ContactForm
     {
         return new ContactForm($container->get('config')['app_settings']);

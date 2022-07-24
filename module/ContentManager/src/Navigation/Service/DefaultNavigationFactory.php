@@ -22,7 +22,7 @@ final class DefaultNavigationFactory extends AbstractNavigationFactory
     protected $pageModel;
     /** @var array $pageMenu */
     protected $pageMenu = [];
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
         $this->pageModel = $container->get(PageGateway::class);

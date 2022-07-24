@@ -13,7 +13,7 @@ use User\Service\UserService as UserInterface;
 
 final class UserGatewayFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): UserGateway
     {
         $config             = $container->get('config');

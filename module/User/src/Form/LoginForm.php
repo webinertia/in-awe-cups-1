@@ -9,17 +9,18 @@ use User\Form\Fieldset\LoginFieldset;
 
 class LoginForm extends BaseForm
 {
-    public function __construct()
+    /** @param array<mixed> $options */
+    public function __construct(string $name = 'login', array $options = [])
     {
-        parent::__construct('login');
+        parent::__construct($name, $options);
     }
 
     public function init(): void
     {
         parent::init();
-        $this
-        ->add([
+        $this->add([
             'type' => LoginFieldset::class,
+            'name' => 'login-data',
         ]);
     }
 }

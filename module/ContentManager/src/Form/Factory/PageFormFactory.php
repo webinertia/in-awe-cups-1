@@ -11,7 +11,7 @@ use User\Db\UserGateway;
 
 final class PageFormFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PageForm
     {
         return new PageForm(

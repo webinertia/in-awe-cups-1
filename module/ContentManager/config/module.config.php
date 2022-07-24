@@ -126,6 +126,7 @@ return [
             Navigation::class                       => DefaultNavigationFactory::class,
             Db\PageGateway::class                   => Db\Factory\PageGatewayFactory::class,
             Db\Listener\InsertUpdateListener::class => Db\Listener\InsertUpdateListenerFactory::class,
+            Model\Page::class                       => Model\Factory\PageFactory::class,
         ],
     ],
     'navigation'        => [

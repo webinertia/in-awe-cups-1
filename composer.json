@@ -23,7 +23,7 @@
 		"laminas/laminas-mvc-i18n" : "^1.2.0",
 		"laminas/laminas-mvc-plugins" : "^1.1.0",
 		"laminas/laminas-mvc-middleware" : "^2.0.0",
-		"laminas/laminas-session" : "^2.12.1",
+		"laminas/laminas-session" : "2.13.0",
 		"laminas/laminas-di" : "^3.2.2",
 		"laminas/laminas-permissions-acl" : "^2.8",
 		"laminas/laminas-navigation": "^2.11",

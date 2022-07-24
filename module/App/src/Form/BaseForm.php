@@ -10,7 +10,7 @@ use Laminas\InputFilter\InputFilterProviderInterface;
 
 class BaseForm extends Form implements InputFilterProviderInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __construct($name = null, $options = [])
     {
         parent::__construct($name);

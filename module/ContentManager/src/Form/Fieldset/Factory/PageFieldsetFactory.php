@@ -11,7 +11,7 @@ use Psr\Container\ContainerInterface;
 
 final class PageFieldsetFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): PageFieldset
     {
         return new $requestedName(new Page(), $options);

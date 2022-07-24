@@ -37,20 +37,27 @@ final class InsertUpdateListener extends AbstractListenerAggregate
     public function preInsert(TableGatewayEvent $event): void
     {
         $insert = $event->getParam('insert');
-        if (empty($insert->order)) {
+        if ($insert->order === null) {
             $gateway = $event->getTarget();
             $select  = (new Select())->from($gateway->getTable());
             $select->columns(['order'])->order('order DESC')->limit(1);
             $lastPage      = $gateway->selectWith($select)->current();
-            $insert->order = empty($lastPage) ? 1 : $lastPage->order + 1;
+            $insert->order = $lastPage === null ? 1 : $lastPage->order + 1;
+        }
+        if ($insert->title !== 'homelandingpage' && (bool) $insert->showOnLandingPage) {
+            $insert->parentId = 1;
         }
         $insert->values(
             [
-                'class'       => 'nav-link',
-                'createdDate' => $this->time->filter(new DateTime()),
-                'params'      => (string) Json::encode(['title' => $insert->title]),
-                'order'       => $insert->order,
-                'visible'     => $insert->visible ?? 1,
+                'class'         => 'nav-link',
+                'createdDate'   => $this->time->filter(new DateTime()),
+                'params'        => (string) Json::encode(['title' => $insert->title]),
+                'order'         => $insert->order,
+                'visible'       => $insert->visible ?? 1,
+                'parentId'      => $insert->parentId ?? 0,
+                'resource'      => $insert->resource ?? 'page',
+                'privilege'     => $insert->privilege ?? 'view',
+                'isLandingPage' => $insert->isLandingPage ?? 0,
             ],
             Insert::VALUES_MERGE
         );
@@ -63,6 +70,7 @@ final class InsertUpdateListener extends AbstractListenerAggregate
         $data   = [
             'params'      => (string) Json::encode(['title' => $set['title']]),
             'updatedDate' => $this->time->filter(new DateTime()),
+            'parentId'    => $set['showOnLandingPage'] ? $set['parendId'] = 1 : $set['parentId'] = 0,
         ];
         $update->set($data, Update::VALUES_MERGE);
     }

@@ -39,7 +39,7 @@ final class AclAwareControl extends AbstractHelper
     private $iconOptionsConfigKey = 'icon_options';
     /** @var string $buttonsOptionsConfigKey */
     private $buttonOptionsConfigKey = 'button_options';
-    /** @var User\Model\User|User\Model\Guest $user */
+    /** @var UserInterface */
     protected $user;
     /** @var AclInterface $acl */
     protected $acl;
@@ -84,7 +84,6 @@ final class AclAwareControl extends AbstractHelper
      * @param string $url
      * @param string $type
      * @param null|array $options
-     * @return string|void
      */
     public function buildControl($resource, $privilege, $type, $url, $options = []): string
     {

@@ -12,7 +12,7 @@ use User\Controller\Plugin\Acl;
 
 final class AclFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Acl
     {
         if ($container->has(AclInterface::class)) {

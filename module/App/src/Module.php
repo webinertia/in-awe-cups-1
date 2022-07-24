@@ -10,12 +10,12 @@ use App\Listener\ThemeLoader;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
-use Laminas\Http\PhpEnvironment\Request as PhpRequest;
 use Laminas\I18n\ConfigProvider;
+use Laminas\ModuleManager\ModuleEvent;
+use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use Laminas\Session\Container;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
@@ -39,6 +39,27 @@ final class Module
         return include __DIR__ . '/../config/module.config.php';
     }
 
+    public function init(ModuleManager $modulemanager): void
+    {
+        $events = $modulemanager->getEventManager();
+        $events->attach(ModuleEvent::EVENT_MERGE_CONFIG, [$this, 'onMergeConfig']);
+    }
+
+    public function onMergeConfig(ModuleEvent $event): void
+    {
+        $configListener = $event->getConfigListener();
+        $config         = $configListener->getMergedConfig(false);
+        if (
+            isset($config['session_config']['cookie_secure']) &&
+            isset($GLOBALS['_SERVER']['REQUEST_SCHEME']) &&
+            ! $config['session_config']['cookie_secure'] &&
+            $GLOBALS['_SERVER']['REQUEST_SCHEME'] === 'https'
+        ) {
+            $config['session_config']['cookie_secure']   = true;
+            $config['session_config']['cookie_samesite'] = 'None';
+        }
+    }
+
     public function onBootstrap(MvcEvent $e): void
     {
         $app          = $e->getApplication();
@@ -47,7 +68,6 @@ final class Module
         $this->config = $this->sm->get('config');
         date_default_timezone_set($this->config['app_settings']['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($this->sm->get(AdapterInterface::class));
-        $this->boostrapSessions($e);
         if ($this->config['app_settings']['server']['log_errors'] && $this->sm->has(LoggerInterface::class)) {
             $log = $this->sm->get(LoggerInterface::class)->getLogger();
             $log::registerErrorHandler($log, true);
@@ -69,19 +89,6 @@ final class Module
         $view         = $container->get(View::class);
         $jsonStrategy = $container->get(JsonStrategy::class);
         $jsonStrategy->attach($view->getEventManager(), 100);
-    }
-
-    public function boostrapSessions(MvcEvent $e): void
-    {
-        $phpRequest = $this->sm->get(PhpRequest::class);
-        if (
-            $phpRequest->getServer()->get('REQUEST_SCHEME') === 'https' &&
-            ! $this->config['session_config']['cookie_secure']
-        ) {
-            $this->config['session_config']['cookie_secure'] = true;
-        }
-        $container          = $this->sm->get(Container::class);
-        $container->prevUrl = $phpRequest->getServer()->get('HTTP_REFERER');
     }
 
     public function boostrapTranslation(MvcEvent $e): void

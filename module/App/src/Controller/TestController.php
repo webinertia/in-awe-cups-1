@@ -23,9 +23,15 @@ final class TestController extends AbstractAppController
 
     public function indexAction(): ViewModel
     {
+        //Debug::dump($_SESSION);
         $settings = $this->getService('config')['app_settings'];
         $appSettings    = $this->getService('config')['app_settings'];
         $moduleSettings = $this->getService('config')['module_settings']['user'];
+
+        if ($this->getRequest()->isPost()) {
+            $data = $this->getRequest()->getPost()->toArray();
+            Debug::dump($data);
+        }
 
         $this->info('This is a test');
         $limit = $this->params()->fromQuery('limit');

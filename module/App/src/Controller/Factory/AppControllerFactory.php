@@ -14,7 +14,7 @@ use User\Db\UserGateway;
 
 class AppControllerFactory implements FactoryInterface
 {
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function __invoke(
         ContainerInterface $container,
         $requestedName,

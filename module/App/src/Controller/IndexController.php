@@ -12,6 +12,7 @@ namespace App\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\ContactForm;
+use ContentManager\Model\Page;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
@@ -20,16 +21,38 @@ final class IndexController extends AbstractAppController
 {
     /** @var ContactForm $form */
     protected $form;
+    /** @var FormElementManager $formManager */
+    protected $formManager;
+    /** @var Page $page */
+    protected $page;
 
-    public function indexAction(): ViewModel
+    public function __construct(
+        FormElementManager $formElementManager,
+        Page $page,
+        array $config,
+    ) {
+        $this->formManager = $formElementManager;
+        $this->page        = $page;
+        $this->appSettings = $config['app_settings'];
+        $this->view        = new ViewModel();
+        $this->view->setVariables([
+            'appSettings' => $this->appSettings,
+        ]);
+    }
+
+    public function indexAction(): mixed
     {
+        $homePage = $this->page->getLandingPage();
+        $this->view->setVariables([
+            'page' => $homePage,
+        ]);
         return $this->view;
     }
 
     public function contactAction(): mixed
     {
-        $formManager = $this->getService(FormElementManager::class);
-        $form        = $formManager->get(ContactForm::class);
+       // $formManager = $this->getService(FormElementManager::class);
+        $form        = $this->formManager->get(ContactForm::class);
         $appSettings = $this->getService('config')['app_settings'];
         if ($this->request->isPost()) {
             $validationGroup = ['fullName', 'email', 'message'];

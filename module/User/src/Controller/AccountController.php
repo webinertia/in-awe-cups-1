@@ -162,7 +162,7 @@ final class AccountController extends AbstractAppController
             } else {
                 $this->flashMessenger()->addErrorMessage('Forbidden action');
                 $this->response->setStatusCode(403);
-                $this->redirectPrev();
+                $this->redirect()->toRoute('user/list', ['page' => 1, 'count' => 5]);
             }
         } catch (RuntimeException $e) {
             $this->error($e->getMessage());
