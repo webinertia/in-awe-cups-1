@@ -83,7 +83,9 @@ $('div#work-space').on("submit", function(event) {
             $('div#work-space').html(response);
         }
         else if(jqXHR.getResponseHeader("Content-Type") == "application/json") {
-            window.location = response.href;
+            if (response.href !== undefined) {
+                window.location = response.href;
+            }
         }
     });
     request.fail(function(){

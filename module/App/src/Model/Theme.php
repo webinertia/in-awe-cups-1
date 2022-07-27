@@ -101,4 +101,9 @@ final class Theme implements ModelInterface
     {
         return $this->config;
     }
+
+    public function getOwnerId(): mixed
+    {
+        return 0;
+    }
 }

@@ -33,6 +33,26 @@
         <exclude-pattern>*.phtml</exclude-pattern>
     </rule>
 
+    <!-- exclude the config files written by the system -->
+     <rule ref="WebimpressCodingStandard.Arrays.DoubleArrow">
+        <exclude-pattern>/config/autoload/appsettings.php</exclude-pattern>
+        <exclude-pattern>/config/autoload/appsettings.*.php</exclude-pattern>
+        <exclude-pattern>/config/roles.php</exclude-pattern>
+        <exclude-pattern>/config/themes.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR12.Files.FileHeader">
+        <exclude-pattern>/config/autoload/appsettings.php</exclude-pattern>
+        <exclude-pattern>/config/autoload/appsettings.*.php</exclude-pattern>
+        <exclude-pattern>/config/roles.php</exclude-pattern>
+        <exclude-pattern>/config/themes.php</exclude-pattern>
+    </rule>
+        <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <exclude-pattern>/config/autoload/appsettings.php</exclude-pattern>
+        <exclude-pattern>/config/autoload/appsettings.*.php</exclude-pattern>
+        <exclude-pattern>/config/roles.php</exclude-pattern>
+        <exclude-pattern>/config/themes.php</exclude-pattern>
+    </rule>
+
     <!-- Paths to check -->
     <file>config</file>
     <file>module</file>

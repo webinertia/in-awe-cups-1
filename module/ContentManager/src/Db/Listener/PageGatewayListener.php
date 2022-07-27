@@ -15,7 +15,7 @@ use Laminas\EventManager\EventManagerInterface;
 use Laminas\Filter\DateTimeFormatter;
 use Laminas\Json\Json;
 
-final class InsertUpdateListener extends AbstractListenerAggregate
+final class PageGatewayListener extends AbstractListenerAggregate
 {
     /** @var Json $json */
     protected $json;

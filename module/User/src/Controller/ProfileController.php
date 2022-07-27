@@ -5,18 +5,11 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
-use App\Form\FormInterface;
-use Laminas\Filter\BaseName;
-use Laminas\Filter\File\RenameUpload;
-use Laminas\Form\FormElementManager;
 use Laminas\Mvc\Exception\DomainException;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use User\Form\ProfileForm;
-
-use function array_merge;
-use function array_merge_recursive;
 
 final class ProfileController extends AbstractAppController
 {
@@ -51,67 +44,10 @@ final class ProfileController extends AbstractAppController
             }
             $this->view->setVariable('data', $profileData);
         } catch (RuntimeException $e) {
-            $this->getLogger()->err($e->getMessage(), $this->identity()->getLogData());
+            $this->error($e->getMessage());
             $this->view->setVariables(['message' => 'User not found', 'reason' => null]);
             $this->response->setStatusCode(404);
         }
-        return $this->view;
-    }
-
-    public function editProfileAction(): mixed
-    {
-        $form = $this->getService(FormElementManager::class)->build(
-            ProfileForm::class,
-            ['mode' => FormInterface::EDIT_MODE]
-        );
-        $user = $this->usrGateway->fetchByColumn('userName', $this->params()->fromRoute('userName'));
-        if (! $this->request->isPost()) {
-            foreach ($form->getFieldsets() as $fieldset) {
-                $fieldset->populateValues($user->toArray());
-            }
-            return [
-                'form' => $form,
-            ];
-        }
-        // is this post?
-        if ($this->request->isPost()) {
-            $merged = array_merge_recursive(
-                $this->request->getPost()->toArray(),
-                $this->request->getFiles()->toArray()
-            );
-            unset($merged['submit']);
-            $form->setData($merged);
-            if ($form->isValid()) {
-                $data       = $form->getData();
-                $fileFilter = new RenameUpload();
-                // set it to randomize the file name
-                $fileFilter->setRandomize(true);
-                // notice this sets the path for directory and the base file name used for all profile Images
-                $appSettings    = $this->getService('config')['app_settings'];
-                $moduleSettings = $this->getService('config')['module_settings']['user'];
-                $fileFilter->setTarget(
-                    $appSettings['server']['upload_basepath'] . $moduleSettings['server']['profile_image_target_path']
-                );
-                // maintain the original file extension
-                $fileFilter->setUseUploadExtension(true);
-                // perform the move and rename on the file
-                $filtered       = $fileFilter->filter($data['profile-data']['profileImage']);
-                $baseNameFilter = new BaseName();
-                // grab just the file name so it can be stored in the profile table
-                $baseName                             = $baseNameFilter->filter($filtered['tmp_name']);
-                $data['profile-data']['profileImage'] = $baseName;
-                try {
-                    $result = $this->usrGateway->update(array_merge(
-                        $data['acct-data'],
-                        $data['profile-data'],
-                        $data['role-data']
-                    ));
-                } catch (RuntimeException $e) {
-                    $this->error($e->getMessage());
-                }
-            }
-        }
-        $this->view->setVariable('form', $form);
         return $this->view;
     }
 }

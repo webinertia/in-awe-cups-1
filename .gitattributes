@@ -1,3 +1,4 @@
+/.ci/ export-ignore
 /.coveralls.yml export-ignore
 /.gitattributes export-ignore
 /.github/ export-ignore
@@ -6,8 +7,11 @@
 /docs/ export-ignore
 /mkdocs.yml export-ignore
 /phpcs.xml export-ignore
+/phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /test/ export-ignore
+/vagrantfile export-ignore
+/Dockerfile export-ignore
 # Force our line endings to be LF, even for Windows
 * text eol=lf
 # Set certain files to be binary

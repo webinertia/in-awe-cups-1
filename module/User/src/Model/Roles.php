@@ -21,6 +21,8 @@ final class Roles implements ModelInterface
     protected $fileName;
     /** @var array<mixed> $config */
     protected $config;
+    /** @var string $resourceId */
+    protected $resourceId = 'roles';
 
     public function __construct()
     {
@@ -82,6 +84,11 @@ final class Roles implements ModelInterface
 
     public function getResourceId(): string
     {
-        return 'roles';
+        return $this->resourceId;
+    }
+
+    public function getOwnerId(): mixed
+    {
+        return null;
     }
 }

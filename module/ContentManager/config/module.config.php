@@ -123,10 +123,10 @@ return [
             'navigation' => Navigation::class,
         ],
         'factories' => [
-            Navigation::class                       => DefaultNavigationFactory::class,
-            Db\PageGateway::class                   => Db\Factory\PageGatewayFactory::class,
-            Db\Listener\InsertUpdateListener::class => Db\Listener\InsertUpdateListenerFactory::class,
-            Model\Page::class                       => Model\Factory\PageFactory::class,
+            Navigation::class                      => DefaultNavigationFactory::class,
+            Db\PageGateway::class                  => Db\Factory\PageGatewayFactory::class,
+            Db\Listener\PageGatewayListener::class => Db\Listener\PageGatewayListenerFactory::class,
+            Model\Page::class                      => Model\Factory\PageFactory::class,
         ],
     ],
     'navigation'        => [

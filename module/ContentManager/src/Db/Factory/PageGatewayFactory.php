@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ContentManager\Db\Factory;
 
-use ContentManager\Db\Listener\InsertUpdateListener;
+use ContentManager\Db\Listener\PageGatewayListener;
 use ContentManager\Db\PageGateway;
 use ContentManager\Model\Page;
 use Laminas\Db\ResultSet\ResultSet;
@@ -22,12 +22,12 @@ final class PageGatewayFactory implements FactoryInterface
         $resultSetPrototype->setArrayObjectPrototype(
             new Page()
         );
-        return new PageGateway(
+        return new $requestedName(
             $config['db']['pages_table_name'],
             $container->get(EventManager::class),
             $resultSetPrototype,
             true,
-            $container->get(InsertUpdateListener::class)
+            $container->get(PageGatewayListener::class)
         );
     }
 }

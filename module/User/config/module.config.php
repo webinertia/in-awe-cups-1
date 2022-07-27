@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace User;
 
 use App\Controller\Factory\AppControllerFactory;
+use Laminas\I18n\Translator\Loader\PhpArray;
+use Laminas\Mvc\Controller\LazyControllerAbstractFactory;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -36,7 +38,7 @@ return [
                     'route' => '/user',
                 ],
                 'child_routes'  => [
-                    'list'     => [
+                    'list'           => [
                         'type'          => Segment::class,
                         'may_terminate' => true,
                         'options'       => [
@@ -53,7 +55,7 @@ return [
                             ],
                         ],
                     ],
-                    'register' => [
+                    'register'       => [
                         'type'          => Literal::class,
                         'may_terminate' => true,
                         'options'       => [
@@ -64,7 +66,7 @@ return [
                             ],
                         ],
                     ],
-                    'verify'   => [
+                    'verify'         => [
                         'type'    => Literal::class,
                         'options' => [
                             'route'    => '/user/register/verify',
@@ -74,7 +76,7 @@ return [
                             ],
                         ],
                     ],
-                    'profile'  => [
+                    'profile'        => [
                         'type'          => Segment::class,
                         'may_terminate' => true,
                         'options'       => [
@@ -89,7 +91,21 @@ return [
                             ],
                         ],
                     ],
-                    'account'  => [
+                    'manage-profile' => [
+                        'type'    => Segment::class,
+                        'options' => [
+                            'route'       => '/user/manage-profile[/:action[/:userName]]',
+                            'constraints' => [
+                                'action'   => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
+                            'defaults'    => [
+                                'controller' => Controller\ManageProfileController::class,
+                                'action'     => 'index',
+                            ],
+                        ],
+                    ],
+                    'account'        => [
                         'type'          => Placeholder::class,
                         'may_terminate' => true,
                         'options'       => [
@@ -327,13 +343,14 @@ return [
     ],
     'controllers'        => [
         'factories' => [
-            Controller\AccountController::class  => AppControllerFactory::class,
-            Controller\AdminController::class    => AppControllerFactory::class,
-            Controller\PasswordController::class => AppControllerFactory::class,
-            Controller\ProfileController::class  => AppControllerFactory::class,
-            Controller\RegisterController::class => AppControllerFactory::class,
-            Controller\UserController::class     => AppControllerFactory::class,
-            Controller\WidgetController::class   => AppControllerFactory::class,
+            Controller\AccountController::class       => AppControllerFactory::class,
+            Controller\AdminController::class         => AppControllerFactory::class,
+            Controller\ManageProfileController::class => LazyControllerAbstractFactory::class,
+            Controller\PasswordController::class      => AppControllerFactory::class,
+            Controller\ProfileController::class       => AppControllerFactory::class,
+            Controller\RegisterController::class      => AppControllerFactory::class,
+            Controller\UserController::class          => AppControllerFactory::class,
+            Controller\WidgetController::class        => AppControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
@@ -351,11 +368,12 @@ return [
             Service\UserInterface::class => Service\UserService::class,
         ],
         'factories' => [
-            AclInterface::class        => Acl\AclFactory::class,
-            Db\UserGateway::class      => Db\Factory\UserGatewayFactory::class,
-            Model\Roles::class         => InvokableFactory::class,
-            Model\Guest::class         => InvokableFactory::class,
-            Service\UserService::class => Service\Factory\UserServiceFactory::class,
+            AclInterface::class                    => Acl\AclFactory::class,
+            Db\Listener\UserGatewayListener::class => Db\Listener\UserGatewayListenerFactory::class,
+            Db\UserGateway::class                  => Db\Factory\UserGatewayFactory::class,
+            Model\Roles::class                     => InvokableFactory::class,
+            Model\Guest::class                     => InvokableFactory::class,
+            Service\UserService::class             => Service\Factory\UserServiceFactory::class,
         ],
     ],
     'filters'            => [
@@ -366,14 +384,15 @@ return [
     ],
     'form_elements'      => [
         'factories' => [
-            Form\Element\RoleSelect::class        => Form\Element\Factory\RoleSelectFactory::class,
-            Form\Fieldset\AcctDataFieldset::class => Form\Fieldset\Factory\AcctDataFieldsetFactory::class,
-            Form\Fieldset\LoginFieldset::class    => Form\Fieldset\Factory\LoginFieldsetFactory::class,
-            Form\Fieldset\PasswordFieldset::class => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
-            Form\Fieldset\ProfileFieldset::class  => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
-            Form\Fieldset\RoleFieldset::class     => Form\Fieldset\Factory\RoleFieldsetFactory::class,
-            Form\UserForm::class                  => Form\Factory\UserFormFactory::class,
-            Form\ProfileForm::class               => Form\Factory\UserFormFactory::class,
+            Form\Element\RoleSelect::class           => Form\Element\Factory\RoleSelectFactory::class,
+            Form\Fieldset\AcctDataFieldset::class    => Form\Fieldset\Factory\AcctDataFieldsetFactory::class,
+            Form\Fieldset\LoginFieldset::class       => Form\Fieldset\Factory\LoginFieldsetFactory::class,
+            Form\Fieldset\PasswordFieldset::class    => Form\Fieldset\Factory\PasswordFieldsetFactory::class,
+            Form\Fieldset\ProfileFieldset::class     => Form\Fieldset\Factory\ProfileFieldsetFactory::class,
+            Form\Fieldset\RoleFieldset::class        => Form\Fieldset\Factory\RoleFieldsetFactory::class,
+            Form\Fieldset\SocialMediaFieldset::class => Form\Fieldset\Factory\SocialMediaFieldsetFactory::class,
+            Form\UserForm::class                     => Form\Factory\UserFormFactory::class,
+            Form\ProfileForm::class                  => Form\Factory\ProfileFormFactory::class,
         ],
     ],
     'view_helpers'       => [
@@ -388,6 +407,30 @@ return [
             View\Helper\Acl::class             => View\Helper\Factory\AclFactory::class,
             View\Helper\AclAwareControl::class => View\Helper\Factory\AclAwareControlFactory::class,
             View\Helper\Identity::class        => View\Helper\Factory\IdentityFactory::class,
+        ],
+    ],
+    'translator'         => [
+        'translation_file_patterns' => [
+            [
+                'type'     => PhpArray::class,
+                'filename' => 'en_US.php',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%s.php',
+            ],
+        ],
+        'translation_files' => [
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/en_US.php',
+                'locale'      => 'en_US',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/en_MX.php',
+                'locale'      => 'en_MX',
+                'text_domain' => 'default',
+            ],
         ],
     ],
     'widgets'            => [

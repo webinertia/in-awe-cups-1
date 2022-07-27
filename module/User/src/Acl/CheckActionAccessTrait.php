@@ -8,21 +8,33 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 
 trait CheckActionAccessTrait
 {
-    public function isAllowed(?ResourceInterface $resourceInterface = null): bool
-    {
+    public function isAllowed(
+        ?ResourceInterface $resourceInterface = null,
+        ?string $privilege = null
+    ): bool {
         $isAllowed = false;
         if ($resourceInterface instanceof ResourceInterface) {
             $isAllowed = $this->acl()->isAllowed(
                 $this->identity()->getIdentity(),
                 $resourceInterface,
-                $this->params()->fromRoute('action')
+                $privilege ?? $this->params()->fromRoute('action')
             );
         } else {
             $isAllowed = $this->acl()->isAllowed(
                 $this->identity()->getIdentity(),
                 $this,
-                $this->params()->fromRoute('action')
+                $privilege ?? $this->params()->fromRoute('action')
             );
+        }
+        if (! $isAllowed) {
+            $ident = $this->identity()->getIdentity();
+            $this->warning(
+                'User '
+                . isset($ident->firstName) ? $ident->firstName . ' ' . $ident->username : $ident->userName
+                . ' is not allowed to access '
+                . $this->resourceId . ' with privilege: ' . $privilege
+            );
+            $this->response->setStatusCode(403);
         }
         return $isAllowed;
     }

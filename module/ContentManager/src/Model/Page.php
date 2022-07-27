@@ -9,8 +9,10 @@ declare(strict_types=1);
 namespace ContentManager\Model;
 
 use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\ModelInterface;
 use ArrayObject;
 use ContentManager\Db\PageGateway;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Json\Decoder;
 use Laminas\Json\Json;
 use RuntimeException;
@@ -20,10 +22,14 @@ use function is_object;
 use function is_string;
 use function sprintf;
 
-final class Page extends AbstractGatewayModel
+final class Page extends AbstractGatewayModel implements ModelInterface
 {
     /** @var PageGateway $gateway */
     protected $gateway;
+    /** @var string $resourceId */
+    protected $resourceId = 'page';
+    /** @var ResultSet $resultSet */
+    protected $resultSet;
 
     public function __construct(?PageGateway $gateway = null)
     {
@@ -40,9 +46,9 @@ final class Page extends AbstractGatewayModel
      */
     public function fetchByColumn($column, $value): self
     {
-        $column    = (string) $column;
-        $resultSet = $this->gateway->select([$column => $value]);
-        $row       = $resultSet->current();
+        $column          = (string) $column;
+        $this->resultSet = $this->gateway->select([$column => $value]);
+        $row             = $this->resultSet->current();
         if (! $row) {
             throw new RuntimeException(sprintf('Could not fetch column: ' . $column . ' with value: ' . $value));
         }
@@ -51,8 +57,8 @@ final class Page extends AbstractGatewayModel
 
     public function getLandingPage(): mixed
     {
-        $resultSet = $this->gateway->select(['isLandingPage' => 1]);
-        $row       = $resultSet->current();
+        $this->resultSet = $this->gateway->select(['isLandingPage' => 1]);
+        $row             = $this->resultSet->current();
         if (! $row) {
             throw new RuntimeException('Could not fetch landing page');
         }
@@ -130,5 +136,15 @@ final class Page extends AbstractGatewayModel
     public function toArray(): array
     {
         return $this->storage;
+    }
+
+    public function getResourceId(): mixed
+    {
+        return $this->resourceId;
+    }
+
+    public function getOwnerId(): mixed
+    {
+        return $this->offsetGet('ownerId');
     }
 }

@@ -10,6 +10,7 @@ use App\Listener\ThemeLoader;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
+use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\ConfigProvider;
 use Laminas\ModuleManager\ModuleEvent;
 use Laminas\ModuleManager\ModuleManager;
@@ -72,6 +73,9 @@ final class Module
             $log = $this->sm->get(LoggerInterface::class)->getLogger();
             $log::registerErrorHandler($log, true);
         }
+        if ($this->config['app_settings']['server']['enable_translation']) {
+            $this->boostrapTranslation($e);
+        }
         $themeLoader = new ThemeLoader($this->sm->get(Theme::class), $this->sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener($this->config['app_settings']);
@@ -94,20 +98,18 @@ final class Module
     public function boostrapTranslation(MvcEvent $e): void
     {
         // get an instance of the service manager
-        if ($this->config['app_settings']['server']['enable_translation']) {
-            $request = $this->sm->get('request');
-            // get the laguages sent by the client
-            $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
-            $translator = $this->sm->get(Translator::class);
-            // set the primary locale as requested by the client
-            if ($locale !== null) {
-                $translator->setLocale($locale);
-                // set option two as the fallback
-                $translator->setFallbackLocale('en_US');
-            }
-            $renderer = $this->sm->get(PhpRenderer::class);
-            // attach the Il8n standard helpers for translation
-            $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
+        $request = $this->sm->get(Request::class);
+        // get the laguages sent by the client
+        $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
+        $translator = $this->sm->get(Translator::class);
+        // set the primary locale as requested by the client
+        if ($locale !== null) {
+            $translator->setLocale($locale);
+            // set option two as the fallback
+            $translator->setFallbackLocale('en_US');
         }
+        $renderer = $this->sm->get(PhpRenderer::class);
+        // attach the Il8n standard helpers for translation
+        $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
     }
 }

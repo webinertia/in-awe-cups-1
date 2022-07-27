@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'Login'                      => 'Login',
+    'login'                      => 'login',
+    'Register'                   => 'Register',
+    'register'                   => 'register',
+    'Home'                       => 'Home',
+    'home'                       => 'home',
+    'Profile'                    => 'Profile',
+    'profile'                    => 'profile',
+    'Logout'                     => 'Logout',
+    'Admin'                      => 'Admin',
+    'Users'                      => 'Users',
+    'Password'                   => 'Password',
+    'Email'                      => 'Email',
+    'edit_user_notice'           => 'You are editing your primary account details.',
+    'account_activation_success' => 'Your account has been activated. You can now login.',
+    'account_activation_error'   => 'An error occurred while activating your account. Please try again later.',
+    'account_activation_notice'  => 'You have not activated your account. Please check your email for the activation link.',
+    'account_update_success'     => 'Your account has been updated successfully.',
+    'account_update_failure'     => 'Your account could not be updated.',
+    'login_success'              => 'You have successfully logged in.',
+    'login_failure'              => 'Your login attempt was not successful. Please try again.',
+    'log_login'                  => '',
+    'logout_success'             => 'You have successfully logged out.',
+    'profile_data_not_found'     => 'It appears that you have not created a profile yet!!',
+    'profile_update_success'     => 'Your profile has been updated successfully!!',
+    'profile_update_failure'     => 'Your profile could not be updated!!',
+    'password_mismatch'          => 'Your passwords do not match!!',
+    'password_update_success'    => 'Your password has been updated successfully!!',
+    'password_update_failure'    => 'Your password could not be updated!!',
+    'welcome_back'               => 'Welcome back, %s!!',
+];
