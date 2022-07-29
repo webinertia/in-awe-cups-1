@@ -17,7 +17,7 @@ final class ServiceLocator extends AbstractPlugin
         $this->sm = $sm;
     }
 
-    /** @return array|object */
+    /** @return ServiceManager|AbstractPluginManager|array<mixed> */
     public function __invoke(string $serviceName)
     {
         return $this->sm->get($serviceName);

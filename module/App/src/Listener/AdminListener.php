@@ -9,10 +9,12 @@ use App\Controller\AdminControllerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
+use Laminas\I18n\Translator\Translator;
 use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\MvcEvent;
 use Laminas\Permissions\Acl\Exception\RuntimeException;
 use Laminas\View\Resolver\TemplateMapResolver;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class AdminListener extends AbstractListenerAggregate
@@ -21,13 +23,21 @@ class AdminListener extends AbstractListenerAggregate
     protected $authService;
     /** @var AbstractAppController $controller */
     protected $controller;
+    /** @var LoggerInterface $logger */
+    protected $logger;
     /** @var TemplateMapResolver */
-    private $templateMapResolver;
+    protected $templateMapResolver;
+    /** @var Translator $translator */
+    protected $translator;
     /** @return void */
     public function __construct(
-        TemplateMapResolver $templateMapResolver
+        LoggerInterface $logger,
+        TemplateMapResolver $templateMapResolver,
+        Translator $translator,
     ) {
+        $this->logger              = $logger;
         $this->templateMapResolver = $templateMapResolver;
+        $this->translator          = $translator;
     }
 
     /** @param int $priority */
@@ -41,7 +51,6 @@ class AdminListener extends AbstractListenerAggregate
     {
         // Get and check the route match object
         $this->controller = $event->getTarget();
-        $logger           = $this->controller->getLogger();
         // Get and check the parameter for current controller
         if (! $this->controller instanceof AdminControllerInterface) {
             return;
@@ -52,12 +61,13 @@ class AdminListener extends AbstractListenerAggregate
                 ! $this->controller->identity()->hasIdentity() ||
                 ! $this->controller->acl()->isAllowed($user, $this->controller, 'view')
             ) {
-                throw new RuntimeException('You have insufficient privileges to complete request');
+                throw new RuntimeException('log_forbidden_403');
             }
         } catch (Throwable $th) {
-            $message = $th->getMessage();
-            $logger->notice($th->getMessage());
-            $this->controller->flashMessenger()->addErrorMessage($message);
+            $this->logger->alert($th->getMessage());
+            $this->controller->flashMessenger()->addErrorMessage(
+                $this->translator->translate('forbidden_403')
+            );
             $this->controller->redirect()->toRoute('home');
         }
     }

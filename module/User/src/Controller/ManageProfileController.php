@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Form\FormInterface;
-use App\Log\LoggerAwareTrait;
+use App\Log\LogEvent;
+use App\Log\LoggerAwareInterface;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
 use Laminas\Form\FormElementManager;
+use Laminas\I18n\Translator\Translator;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\Mvc\MvcEvent;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ModelInterface;
@@ -19,31 +21,35 @@ use RuntimeException;
 use User\Acl\CheckActionAccessTrait;
 use User\Acl\ResourceAwareTrait;
 use User\Form\ProfileForm;
-use User\Service\UserInterface;
 use User\Service\UserService;
 
 use function array_merge;
 use function array_merge_recursive;
+use function sprintf;
 
-final class ManageProfileController extends AbstractActionController implements ResourceInterface
+final class ManageProfileController extends AbstractActionController implements ResourceInterface, LoggerAwareInterface
 {
     use CheckActionAccessTrait;
-    use LoggerAwareTrait;
     use ResourceAwareTrait;
+    use TranslatorAwareTrait;
 
-    /** @var string $resourceId */
-    protected $resourceId = 'profile';
-    /** @var UserService $user */
-    protected $user;
     /** @var FormElementManager $formManager */
     protected $formManager;
+    /** @var string $resourceId */
+    protected $resourceId = 'profile';
+    /** @var Translator $translator */
+    protected $translator;
+    /** @var UserService $userService */
+    protected $userService;
     public function __construct(
-        UserService $userService,
         FormElementManager $formManager,
+        Translator $translator,
+        UserService $userService,
         array $config
     ) {
-        $this->user = $userService;
         $this->formManager = $formManager;
+        $this->translator  = $translator;
+        $this->userService = $userService;
     }
 
     public function editAddressAction()
@@ -63,7 +69,10 @@ final class ManageProfileController extends AbstractActionController implements 
             'status'        => 'inprogress',
         ];
         if (! $this->isAllowed($this, 'edit')) { // if your not allowed were gonna tell ya you are not allowed
-            $viewData['message']         = 'You are not allowed to edit your profile';
+            $viewData['message']         = sprintf(
+                $this->getTranslator()->translate('forbidden_known_action_403'),
+                $this->getTranslator()->translate($this->params()->fromRoute('action'))
+            );
             $veiewData['isJsonResponse'] = true;
             $jsonModel->setVariables($viewData);
             return $jsonModel;
@@ -81,7 +90,7 @@ final class ManageProfileController extends AbstractActionController implements 
                 $formData            = $form->getData()['social-media']; // stopped working here
                 $result              = $userService->save($formData, $formData['id']);
                 $viewData['status']  = 'success';
-                $viewData['message'] = 'Your social media info has been successfully updated';
+                $viewData['message'] = $this->getTranslator()->translate('profile_social_update_success');
             }
         } else {
             $requestedUserName = $this->params()->fromRoute('userName', $userService->userName);
@@ -101,11 +110,11 @@ final class ManageProfileController extends AbstractActionController implements 
 
     public function editProfileAction(): mixed
     {
-        $form = $this->getService(FormElementManager::class)->build(
+        $form = $this->formManager->build(
             ProfileForm::class,
             ['mode' => FormInterface::EDIT_MODE]
         );
-        $user = $this->usrGateway->fetchByColumn('userName', $this->params()->fromRoute('userName'));
+        $user = $this->userService->fetchByColumn('userName', $this->params()->fromRoute('userName'));
         if (! $this->request->isPost()) {
             foreach ($form->getFieldsets() as $fieldset) {
                 $fieldset->populateValues($user->toArray());
@@ -142,13 +151,22 @@ final class ManageProfileController extends AbstractActionController implements 
                 $baseName                             = $baseNameFilter->filter($filtered['tmp_name']);
                 $data['profile-data']['profileImage'] = $baseName;
                 try {
-                    $result = $this->usrGateway->update(array_merge(
+                    $result = $this->userService->save(array_merge(
                         $data['acct-data'],
                         $data['profile-data'],
                         $data['role-data']
                     ));
+                    if (! $result) {
+                        throw new RuntimeException('log_known_user_profile_update_failure');
+                    }
                 } catch (RuntimeException $e) {
-                    $this->error($e->getMessage());
+                    $this->getEventManager()->trigger(
+                        LogEvent::NOTICE,
+                        sprintf(
+                            $this->getTranslator()->translate($e->getMessage()),
+                            $user->getFullName()
+                        )
+                    );
                 }
             }
         }

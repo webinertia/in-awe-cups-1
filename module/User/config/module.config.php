@@ -418,7 +418,7 @@ return [
                 'pattern'  => '%s.php',
             ],
         ],
-        'translation_files' => [
+        'translation_files'         => [
             [
                 'type'        => 'PhpArray',
                 'filename'    => __DIR__ . '/../language/en_US.php',
@@ -428,6 +428,18 @@ return [
             [
                 'type'        => 'PhpArray',
                 'filename'    => __DIR__ . '/../language/en_MX.php',
+                'locale'      => 'en_MX',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_en_US.php',
+                'locale'      => 'en_US',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_es_MX.php',
                 'locale'      => 'en_MX',
                 'text_domain' => 'default',
             ],

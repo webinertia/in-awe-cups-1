@@ -8,6 +8,7 @@ use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Form\SettingsForm;
 use App\Form\ThemeSettingsForm;
+use App\Log\LogEvent;
 use App\Model\Theme;
 use Laminas\Config\Factory as ConfigFactory;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
@@ -65,7 +66,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Settings Saved']]);
                 } catch (RuntimeException $e) {
-                    $this->error($e->getMessage());
+                    $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
                 }
             }
         }

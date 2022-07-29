@@ -29,15 +29,15 @@ final class AdminController extends AbstractAppController implements AdminContro
             if ($this->request->isXmlHttpRequest()) {
                 $this->view->setTerminal(true);
             }
-            $userName   = $this->params('userName');
-            $hasMessage = false;
-            if (! empty($userName)) {
-                $this->flashMessenger()->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
-                $hasMessage = true;
-            }
+            // $userName   = $this->params('userName');
+            // $hasMessage = false;
+            // if (! empty($userName)) {
+            //     $this->flashMessenger()->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
+            //     $hasMessage = true;
+            // }
             $this->view->setVariable('users', $this->usrGateway->loadMemberContext());
         } catch (Throwable $th) {
-            $this->error($th->getMessage());
+            $this->getEventManager()->trigger('error', $th->getMessage());
         }
         return $this->view;
     }

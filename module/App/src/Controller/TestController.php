@@ -10,17 +10,19 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\AbstractAppController;
+use App\Log\LoggerAwareInterface;
+use App\Log\LoggerAwareInterfaceTrait;
+use App\Log\LogEvent;
 use Laminas\View\Model\ViewModel;
 use User\Acl\ResourceAwareTrait;
 use Webinertia\Utils\Debug;
 
-final class TestController extends AbstractAppController
+final class TestController extends AbstractAppController implements LoggerAwareInterface
 {
     use ResourceAwareTrait;
 
     /** @var string $resourceId */
     protected $resourceId = 'test';
-
     public function indexAction(): ViewModel
     {
         //Debug::dump($_SESSION);
@@ -33,17 +35,15 @@ final class TestController extends AbstractAppController
             Debug::dump($data);
         }
 
-        $this->info('This is a test');
+        $this->getEventManager()->trigger(LogEvent::NOTICE, 'This is a standard log message');
+
+        $this->getEventManager()->trigger(LogEvent::ALERT, 'log_login_success');
+
         $limit = $this->params()->fromQuery('limit');
         if ($limit > 0) {
-            $this->warning('This is a warning');
             for ($i = 0; $i < $limit; $i++) {
-                $this->info("This is a test log message $i");
+                $this->getEventManager()->trigger(LogEvent::DEBUG, 'Auto generated log message number ' . $i);
             }
-            $this->error('This is an error');
-            $this->critical('This is a critical error');
-            $this->alert('This is an alert');
-            $this->emergency('This is an emergency');
         }
         return $this->view;
     }

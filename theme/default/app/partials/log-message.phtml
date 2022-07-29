@@ -13,9 +13,9 @@ $allowDelete = $this->acl()->isAllowed($this->identity()->getIdentity(), $resour
     <?php
     endif; ?>
 
-    <span class="log-message-detail">First Name: <?= $extra_firstName?></span>
-    <span class="log-message-detail">Last Name: <?= $extra_lastName?></span>
-    <span class="log-message-detail">UserName: <?= $extra_userName?></span>
+    <span class="log-message-detail">First Name: <?= $extra_firstName?> | </span>
+    <span class="log-message-detail">Last Name: <?= $extra_lastName?> | </span>
+    <span class="log-message-detail">UserName: <?= $extra_userName?> | </span>
     <span class="log-message-detail">MemberGroup: <?= $this->translate($extra_role)?></span>
     <span class="log-message-detail">Occurred On: <?= $filter->filter(DateTime::createFromFormat('m-d-Y H:i:s', $timeStamp))?></span>
     <div class="log-message">
@@ -23,6 +23,7 @@ $allowDelete = $this->acl()->isAllowed($this->identity()->getIdentity(), $resour
             Message:
         </span>
         <p class="log-message-text">
+
             <?= $this->translate($message) ?>
         </p>
     </div>

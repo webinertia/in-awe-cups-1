@@ -7,6 +7,7 @@ namespace ContentManager\Controller;
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Form\FormInterface;
+use App\Log\LogEvent;
 use ContentManager\Db\PageGateway;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
@@ -58,7 +59,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Page saved']]);
                 } catch (RuntimeException $e) {
-                    $this->error($e->getMessage());
+                    $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
                 }
             }
         }
@@ -159,8 +160,10 @@ final class AdminController extends AbstractAppController implements AdminContro
             try {
                 $result = $gateway->delete(['id' => $page->id]);
                 if (! $result) {
-                    $this->error('Page Delete error');
-                    $this->flashMessenger()->addErrorMessage('Page not deleted');
+                    $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_page_deletion_error');
+                    $this->flashMessenger()->addErrorMessage(
+                        $this->getTranslator()->translate('log_page_deletion_error')
+                    );
                     $this->view->setVariable(
                         'data',
                         [
@@ -172,7 +175,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $this->flashMessenger()->addSuccessMessage('Page deleted');
                 $this->view->setVariable('data', ['href' => $this->url()->fromRoute('home')]);
             } catch (RuntimeException $e) {
-                $this->error($e->getMessage());
+                $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
             }
         }
         return $this->view;

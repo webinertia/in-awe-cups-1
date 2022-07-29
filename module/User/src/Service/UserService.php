@@ -175,6 +175,15 @@ final class UserService implements UserInterface, ModelInterface
         $this->groupName = $groupName;
     }
 
+    public function getFullName(): string
+    {
+        if ($this->firstName !== null && $this->lastName !== null) {
+            return $this->firstName . ' ' . $this->lastName;
+        } else {
+            return $this->userName;
+        }
+    }
+
     public function getGroupName(): string
     {
         $this->groupName = $this->roles->getGroupName($this->role);

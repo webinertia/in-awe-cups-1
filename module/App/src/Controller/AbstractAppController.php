@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Log\LoggerAwareTrait;
+use App\Log\LoggerAwareInterface;
+use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
@@ -30,11 +31,11 @@ use function dirname;
  * @codingStandardsIgnoreEnd
  */
 
-abstract class AbstractAppController extends AbstractActionController implements ResourceInterface
+abstract class AbstractAppController extends AbstractActionController implements ResourceInterface, LoggerAwareInterface
 {
     use CheckActionAccessTrait;
-    use LoggerAwareTrait;
     use ResourceAwareTrait;
+    use TranslatorAwareTrait;
 
     /** @var array<mixed> $appSettings */
     public $appSettings;

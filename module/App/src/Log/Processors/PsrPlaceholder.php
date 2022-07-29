@@ -7,6 +7,8 @@ namespace App\Log\Processors;
 use Laminas\Log\Processor\PsrPlaceholder as Placeholder;
 use User\Service\UserInterface;
 
+use function array_merge;
+
 final class PsrPlaceholder extends Placeholder
 {
     /** @var UserInterface userInterface */
@@ -21,6 +23,8 @@ final class PsrPlaceholder extends Placeholder
     {
         if ($event['extra'] === []) {
             $event['extra'] += $this->userInterface->getLogData();
+        } elseif ($event['extra'] !== []) {
+            $event['extra'] = array_merge($this->userInterface->getLogData(), $event['extra']);
         }
         return parent::process($event);
     }

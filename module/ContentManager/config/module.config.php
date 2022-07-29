@@ -6,6 +6,7 @@ namespace ContentManager;
 
 use App\Controller\Factory\AppControllerFactory;
 use ContentManager\Navigation\Service\DefaultNavigationFactory;
+use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Navigation\Navigation;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -127,6 +128,30 @@ return [
             Db\PageGateway::class                  => Db\Factory\PageGatewayFactory::class,
             Db\Listener\PageGatewayListener::class => Db\Listener\PageGatewayListenerFactory::class,
             Model\Page::class                      => Model\Factory\PageFactory::class,
+        ],
+    ],
+    'translator'        => [
+        'translation_file_patterns' => [
+            [
+                'type'     => PhpArray::class,
+                'filename' => 'en_US.php',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%s.php',
+            ],
+        ],
+        'translation_files'         => [
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/en_US.php',
+                'locale'      => 'en_US',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_en_US.php',
+                'locale'      => 'en_US',
+                'text_domain' => 'default',
+            ],
         ],
     ],
     'navigation'        => [

@@ -7,11 +7,13 @@ namespace App;
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
 use App\Listener\ThemeLoader;
+use App\Log\LogListener;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\ConfigProvider;
+use Laminas\I18n\Translator\Translator as TranslatorTranslator;
 use Laminas\ModuleManager\ModuleEvent;
 use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\I18n\Translator;
@@ -69,6 +71,9 @@ final class Module
         $this->config = $this->sm->get('config');
         date_default_timezone_set($this->config['app_settings']['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($this->sm->get(AdapterInterface::class));
+        $psrLogAdapter = $this->sm->get(LoggerInterface::class);
+        $logListener   = new LogListener($psrLogAdapter);
+        $logListener->attach($eventManager);
         if ($this->config['app_settings']['server']['log_errors'] && $this->sm->has(LoggerInterface::class)) {
             $log = $this->sm->get(LoggerInterface::class)->getLogger();
             $log::registerErrorHandler($log, true);
@@ -80,7 +85,11 @@ final class Module
         $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener($this->config['app_settings']);
         $layoutVariables->attach($eventManager);
-        $adminListener = new AdminListener($this->sm->get(TemplateMapResolver::class));
+        $adminListener = new AdminListener(
+            $psrLogAdapter,
+            $this->sm->get(TemplateMapResolver::class),
+            $this->sm->get(TranslatorTranslator::class)
+        );
         $adminListener->attach($eventManager);
         // attach the jsonsrategy to the event manager
         $eventManager->attach(MvcEvent::EVENT_RENDER, [$this, 'registerJsonStrategy'], 100);

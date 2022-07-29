@@ -324,9 +324,6 @@ return [
         'template_map'             => [],
     ],
     'translator'         => [
-        // 'locale'                    => [
-        //     //'en_US'
-        // ],
         'translation_file_patterns' => [
             [
                 'type'     => PhpArray::class,
@@ -338,15 +335,27 @@ return [
         'translation_files'         => [
             [
                 'type'        => 'PhpArray',
-                'filename'    => __DIR__ . '/../language/system_en_US.php',
+                'filename'    => __DIR__ . '/../language/en_US.php',
                 'locale'      => 'en_US',
-                'text_domain' => 'system',
+                'text_domain' => 'default',
             ],
             [
                 'type'        => 'PhpArray',
-                'filename'    => __DIR__ . '/../language/system_es_MX.php',
+                'filename'    => __DIR__ . '/../language/es_MX.php',
                 'locale'      => 'es_MX',
-                'text_domain' => 'system',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_en_US.php',
+                'locale'      => 'es_US',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_es_MX.php',
+                'locale'      => 'es_MX',
+                'text_domain' => 'default',
             ],
         ],
     ],

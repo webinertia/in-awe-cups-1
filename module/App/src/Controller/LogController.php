@@ -11,6 +11,7 @@ namespace App\Controller;
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Db\DbGateway\LogGateway;
+use App\Log\LogEvent;
 use Laminas\View\Model\ViewModel;
 use Throwable;
 use User\Acl\CheckActionAccessTrait;
@@ -69,7 +70,7 @@ final class LogController extends AbstractAppController implements AdminControll
             try {
                 $gateway->delete(['logId' => $logId]);
             } catch (Throwable $th) {
-                $this->error($th->getMessage());
+                $this->getEventManager()->trigger(LogEvent::ERROR, $th->getMessage());
             }
         }
         return $this->view;
