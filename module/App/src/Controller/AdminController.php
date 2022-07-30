@@ -10,6 +10,7 @@ use App\Form\SettingsForm;
 use App\Form\ThemeSettingsForm;
 use App\Log\LogEvent;
 use App\Model\Theme;
+use Laminas\Config\Exception\RuntimeException as ConfigRuntimeException;
 use Laminas\Config\Factory as ConfigFactory;
 use Laminas\Config\Writer\PhpArray as ConfigWriter;
 use Laminas\Form\FormElementManager;
@@ -102,18 +103,43 @@ final class AdminController extends AbstractAppController implements AdminContro
                         $this->basePath . '/config/autoload/appsettings.local.php',
                         $form->getData(),
                     );
-                } catch (RuntimeException $e) {
-                    $this->critical($e->getMessage());
+                } catch (ConfigRuntimeException $e) {
+                    $this->getEventManager()->trigger(
+                        LogEvent::CRITICAL,
+                        $this->getTranslator()->translate('log_settings_file_write_failure')
+                        . 'Exception Info: '
+                        . $e->getFile() . ' Line#:' . $e->getLine() . ': ' . $e->getMessage()
+                    );
                 }
                 $headers->addHeaderLine('Content-Type', 'application/json');
-                $this->view->setVariables(['success' => true, 'message' => ['message' => 'Settings saved']]);
+                $this->getEventManager()->trigger(
+                    LogEvent::NOTICE,
+                    $this->getTranslator()->translate('log_settings_file_write_success')
+                );
+                $this->view->setVariables(
+                    [
+                        'success' => true,
+                        'message' => [
+                            'message' => $this->getTranslator()->translate('edit_settings_success'),
+                        ],
+                    ]
+                );
             }
         } else {
-            $config = ConfigFactory::fromFile($this->basePath . '/config/autoload/appsettings.local.php');
-            if (isset($config['app_settings'])) {
-                $form->setData($config);
-            } else {
-                throw new RuntimeException('Settings could not be loaded');
+            try {
+                $config = ConfigFactory::fromFile($this->basePath . '/config/autoload/appsettings.local.php');
+                if (isset($config['app_settings'])) {
+                    $form->setData($config);
+                } else {
+                    throw new RuntimeException('log_settings_file_read_failure');
+                }
+            } catch (ConfigRuntimeException $e) {
+                $this->getEventManager()->trigger(
+                    LogEvent::CRITICAL,
+                    $this->getTranslator()->translate($e->getMessage())
+                    . 'Exception Info: '
+                    . $e->getFile() . ' Line#:' . $e->getLine()
+                );
             }
         }
         $this->view->setVariable('form', $form);

@@ -12,10 +12,13 @@ namespace App\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\ContactForm;
+use App\Log\LogEvent;
 use ContentManager\Model\Page;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
+
+use function sprintf;
 
 final class IndexController extends AbstractAppController
 {
@@ -66,21 +69,38 @@ final class IndexController extends AbstractAppController
                 try {
                     $this->email()->contactUsMessage($data['email'], $data['fullName'], $data['message']);
                 } catch (RuntimeException $e) {
-                    $this->warning(
-                        $e->getMessage(),
-                        ['firstName' => $data['firstName'], 'lastName' => $data['lastName'], 'email' => $data['email']]
+                    $this->getEventManager()->trigger(
+                        LogEvent::NOTICE,
+                        sprintf(
+                            $this->getTranslator()->translate('log_contact_email_failure'),
+                            $data['email'],
+                            $data['firstName'] . ' ' . $data['lastName']
+                        )
                     );
-                    $this->flashMessenger()->addErrorMessage('Your message could not be sent');
+                    $this->flashMessenger()->addErrorMessage(
+                        $this->getTranslator()->translate('contact_email_failure')
+                    );
                 }
-                $this->info(
-                    'Guest with the name '
-                    . $data['firstName']
-                    . ' ' . $data['lastName']
-                    . ' has sent a message using email: '
-                    . $data['email'],
-                    ['firstName' => $data['firstName'], 'lastName' => $data['lastName'], 'email' => $data['email']]
+                $this->getEventManager()->trigger(
+                    LogEvent::INFO,
+                    sprintf(
+                        $this->getTranslator()->translate('log_contact_email_success'),
+                        $data['email'],
+                        $data['firstName'] . ' ' . $data['lastName']
+                    )
                 );
-                $this->flashMessenger()->addSuccessMessage('Thank you for contacting us, your message has been sent');
+                // stopped work here
+                $this->getEventManager()->trigger(
+                    LogEvent::INFO,
+                    sprintf(
+                        $this->getTranslator()->translate('log_contact_email_success'),
+                        $data['firstName'] . ' ' . $data['lastName'],
+                        $data['email']
+                    )
+                );
+                $this->flashMessenger()->addSuccessMessage(
+                    $this->getTranslator()->translate('contact_email_success')
+                );
                 return $this->redirect()->toRoute('home');
             }
         }

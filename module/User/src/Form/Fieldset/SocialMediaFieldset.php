@@ -5,24 +5,24 @@ declare(strict_types=1);
 namespace User\Form\Fieldset;
 
 use App\Form\FormInterface;
+use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
-use Laminas\Filter\ToInt;
 
 final class SocialMediaFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    public function __construct(?string $name = null, ?array $options = [], ?array $appSettings = [])
+    /** @var array<mixed> $appSettings */
+    protected $appSettings;
+    public function __construct(?string $name = 'social-media', ?array $options = [], ?array $appSettings = [])
     {
-        if ($name === null) {
-            $name = 'social-media';
-        }
         if ($options === [] || $options === null) {
             $options = [
                 'mode' => FormInterface::EDIT_MODE,
             ];
         }
+        $this->appSettings = $appSettings;
         parent::__construct($name, $options);
     }
 

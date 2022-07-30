@@ -13,7 +13,6 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\ConfigProvider;
-use Laminas\I18n\Translator\Translator as TranslatorTranslator;
 use Laminas\ModuleManager\ModuleEvent;
 use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\I18n\Translator;
@@ -88,7 +87,7 @@ final class Module
         $adminListener = new AdminListener(
             $psrLogAdapter,
             $this->sm->get(TemplateMapResolver::class),
-            $this->sm->get(TranslatorTranslator::class)
+            $this->sm->get(Translator::class)
         );
         $adminListener->attach($eventManager);
         // attach the jsonsrategy to the event manager

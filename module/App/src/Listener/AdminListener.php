@@ -9,13 +9,13 @@ use App\Controller\AdminControllerInterface;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
-use Laminas\I18n\Translator\Translator;
 use Laminas\Mvc\Controller\ControllerManager;
+use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
-use Laminas\Permissions\Acl\Exception\RuntimeException;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Psr\Log\LoggerInterface;
-use Throwable;
+
+use function sprintf;
 
 class AdminListener extends AbstractListenerAggregate
 {
@@ -56,17 +56,25 @@ class AdminListener extends AbstractListenerAggregate
             return;
         }
         $user = $this->controller->identity()->getIdentity();
-        try {
-            if (
-                ! $this->controller->identity()->hasIdentity() ||
-                ! $this->controller->acl()->isAllowed($user, $this->controller, 'view')
-            ) {
-                throw new RuntimeException('log_forbidden_403');
-            }
-        } catch (Throwable $th) {
-            $this->logger->alert($th->getMessage());
+
+        if (
+            ! $this->controller->identity()->hasIdentity() ||
+            ! $this->controller->acl()->isAllowed($user, $this->controller, 'view')
+        ) {
+            $action       = $this->translator->translate('admin_access_action');
+            $logMessage   = $this->translator->translate('log_forbidden_known_action_403');
+            $flashMessage = $this->translator->translate('forbidden_known_action_403');
+            $this->logger->alert(
+                sprintf(
+                    $logMessage,
+                    $action
+                )
+            );
             $this->controller->flashMessenger()->addErrorMessage(
-                $this->translator->translate('forbidden_403')
+                sprintf(
+                    $flashMessage,
+                    $action
+                )
             );
             $this->controller->redirect()->toRoute('home');
         }

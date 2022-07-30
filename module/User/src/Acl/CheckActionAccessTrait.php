@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace User\Acl;
 
+use App\Log\LogEvent;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
+
+use function sprintf;
 
 trait CheckActionAccessTrait
 {
@@ -28,11 +31,14 @@ trait CheckActionAccessTrait
         }
         if (! $isAllowed) {
             $ident = $this->identity()->getIdentity();
-            $this->warning(
-                'User '
-                . isset($ident->firstName) ? $ident->firstName . ' ' . $ident->username : $ident->userName
-                . ' is not allowed to access '
-                . $this->resourceId . ' with privilege: ' . $privilege
+            $this->getEventManager()->trigger(
+                LogEvent::NOTICE,
+                sprintf(
+                    $this->getTranslator()->translate(
+                        'log_forbidden_known_action_403'
+                    ),
+                    $this->params()->fromRoute('action')
+                )
             );
             $this->response->setStatusCode(403);
         }

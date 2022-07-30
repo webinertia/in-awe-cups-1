@@ -17,9 +17,9 @@ final class AppSettingsFieldset extends Fieldset implements InputFilterProviderI
      * @param array $options
      * @return void
      */
-    public function __construct($name = null, $options = [])
+    public function __construct($name = 'app_settings', $options = [])
     {
-        parent::__construct('app_settings');
+        parent::__construct($name, $options);
     }
 
     public function init(): void

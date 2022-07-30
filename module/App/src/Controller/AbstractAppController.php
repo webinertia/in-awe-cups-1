@@ -23,9 +23,8 @@ use function dirname;
  * @method \App\Controller\Plugin\ServiceLocator getService(string $serviceName)
  * @method \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger flashMessenger()
  * @method \User\Controller\Plugin\Acl acl()
- * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null)
+ * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null, ?string $privilege = null)
  * @method \User\Controller\Plugin\Identity identity()
- * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null)
  * @method \Laminas\Http\PhpEnvironment\Request getRequest()
  * @method \Laminas\Http\PhpEnvironment\Response getResponse()
  * @codingStandardsIgnoreEnd

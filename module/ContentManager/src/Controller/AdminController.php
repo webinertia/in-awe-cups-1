@@ -21,6 +21,8 @@ use Laminas\Navigation\Navigation;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 
+use function sprintf;
+
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
     /** @var string $resourceId */
@@ -120,7 +122,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 try {
                     $result = $gateway->update($data->getArrayCopy(), ['id' => $data->id]);
                     if (! $result) {
-                        throw new RuntimeException('Page Not saved');
+                        throw new RuntimeException('page_update_error');
                     }
                     if ($data->showOnLandingPage || $data->title === 'homelandingpage') {
                         $redirectData = ['href' => $this->url()->fromRoute('home')];
@@ -137,7 +139,14 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers = $this->response->getHeaders();
                     $headers->addHeaderLine('Content-Type', 'application/json');
                 } catch (RuntimeException $e) {
-                    $this->critical($e->getMessage());
+                    $this->getEventManager()->trigger(
+                        LogEvent::ERROR,
+                        sprintf(
+                            $this->getTranslator()->translate(
+                                sprintf($e->getMessage(), $data->Label)
+                            ),
+                        )
+                    );
                 }
             }
         }

@@ -33,6 +33,14 @@
         <exclude-pattern>*.phtml</exclude-pattern>
     </rule>
 
+    <!-- language file exclusion-->
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>/language/*.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR12.Files.FileHeader">
+        <exclude-pattern>/language/*.php</exclude-pattern>
+    </rule>
+
     <!-- exclude the config files written by the system -->
      <rule ref="WebimpressCodingStandard.Arrays.DoubleArrow">
         <exclude-pattern>/config/autoload/appsettings.php</exclude-pattern>

@@ -6,14 +6,12 @@ namespace User\Form;
 
 use App\Form\BaseForm;
 use App\Form\FormInterface;
-use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Form\ElementInterface;
+use Laminas\Permissions\Acl\AclInterface;
 use User\Form\Fieldset\AcctDataFieldset;
-use User\Form\Fieldset\LoginFieldset;
 use User\Form\Fieldset\PasswordFieldset;
 use User\Form\Fieldset\ProfileFieldset;
 use User\Form\Fieldset\SocialMediaFieldset;
-use User\Form\UserForm;
 use User\Service\UserService;
 
 use function array_key_exists;
@@ -22,6 +20,10 @@ class ProfileForm extends BaseForm implements FormInterface
 {
     public const FORM_NAME = 'profile-manager';
 
+    /** @var AclInterface $acl */
+    protected $acl;
+    /** @var UserService $userService */
+    protected $userService;
     /** @var array<string,class-string<ElementInterface>> $fieldsetMap */
     protected $fieldsetMap = [
         'edit-account-data' => AcctDataFieldset::class,
@@ -41,6 +43,8 @@ class ProfileForm extends BaseForm implements FormInterface
                 'mode' => self::EDIT_MODE,
             ];
         }
+        $this->acl         = $acl;
+        $this->userService = $userService;
         parent::__construct(self::FORM_NAME, $options);
     }
 

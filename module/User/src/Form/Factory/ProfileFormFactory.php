@@ -7,7 +7,6 @@ namespace User\Form\Factory;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use User\Acl\AclFactory;
 use User\Form\ProfileForm;
 use User\Service\UserInterface;
 

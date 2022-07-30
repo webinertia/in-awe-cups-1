@@ -49,9 +49,11 @@ final class AccountController extends AbstractAppController
         $loginResult = $this->usrGateway->login($loginData['userName'], $loginData['password']);
         if ($loginResult->isValid()) {
             $userInterface = $this->usrGateway->fetchByColumn('userName', $loginResult->getIdentity());
-            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_success');
+            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_success', $userInterface->getLogData());
             $this->flashMessenger()->addSuccessMessage(
-                $this->getTranslator()->translate('login_success') . ' ' . sprintf($this->getTranslator()->translate('welcome_back'), $userInterface->getFullName())
+                $this->getTranslator()->translate('login_success')
+                . ' '
+                . sprintf($this->getTranslator()->translate('welcome_back'), $userInterface->getFullName())
             );
             return $this->redirect()->toRoute('user/profile', ['userName' => $userInterface->userName]);
         } else {
@@ -151,30 +153,46 @@ final class AccountController extends AbstractAppController
             if (! $user instanceof UserInterface) {
                 throw new RuntimeException('log_exception_user_not_found');
             }
-            $deletedUser = $user->toArray();
             if ($this->isAllowed($user)) {
                 $result = $this->usrGateway->delete(['id' => $user->id]);
                 if ($result > 0) {
-                    $this->info(
-                        'User ' . $deletedUser['firstName'] . ' ' . $deletedUser['lastName'] . ' was deleted.'
+                    $this->getEventManager()->trigger(
+                        LogEvent::INFO,
+                        $this->getTranslator()->translate('log_account_delete_success'),
+                        $user->getFullName()
                     );
                     $this->redirect()->toRoute(
                         'user',
-                        ['action' => 'index', 'userName' => $deletedUser['userName']]
+                        ['action' => 'index', 'userName' => $user->userName]
                     );
                 } else {
-                    throw new RuntimeException('log_account_deletion_failure' );
+                    throw new RuntimeException('log_account_deletion_failure');
                 }
             } else {
-                $this->getEventManager()->trigger(LogEvent::ALERT, 'log_forbidden_403');
+                $this->getEventManager()->trigger(
+                    LogEvent::ERROR,
+                    sprintf(
+                        $this->getTranslator()->translate('log_forbidden_known_action_403'),
+                        $user->getFullName()
+                    )
+                );
                 $this->flashMessenger()->addErrorMessage(
-                    $this->getTranslator()->translate('log_forbidden_403')
+                    sprintf(
+                        $this->getTranslator()->translate('forbidden_known_action_403_user'),
+                        $user->getFullName()
+                    )
                 );
                 $this->response->setStatusCode(403);
                 $this->redirect()->toRoute('user/list', ['page' => 1, 'count' => 5]);
             }
         } catch (RuntimeException $e) {
-            $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
+            $this->getEventManager()->trigger(
+                LogEvent::ERROR,
+                sprintf(
+                    $this->getTranslator()->translate('log_account_delete_failure'),
+                    $user->getFullName()
+                )
+            );
         }
     }
 

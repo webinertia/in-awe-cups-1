@@ -27,12 +27,28 @@ use function array_merge;
 use function array_merge_recursive;
 use function sprintf;
 
+/**
+ * Plugin and trait method signatures for static analysis
+ * @codingStandardsIgnoreStart
+ * @method \App\Controller\Plugin\Email email()
+ * @method \App\Controller\Plugin\ServiceLocator getService(string $serviceName)
+ * @method \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger flashMessenger()
+ * @method \User\Controller\Plugin\Acl acl()
+ * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null, ?string $privilege = null)
+ * @method \User\Controller\Plugin\Identity identity()
+ * @method \Laminas\Http\PhpEnvironment\Request getRequest()
+ * @method \Laminas\Http\PhpEnvironment\Response getResponse()
+ * @codingStandardsIgnoreEnd
+ */
+
 final class ManageProfileController extends AbstractActionController implements ResourceInterface, LoggerAwareInterface
 {
     use CheckActionAccessTrait;
     use ResourceAwareTrait;
     use TranslatorAwareTrait;
 
+    /** @var array<mixed> $config */
+    protected $config;
     /** @var FormElementManager $formManager */
     protected $formManager;
     /** @var string $resourceId */
@@ -47,6 +63,7 @@ final class ManageProfileController extends AbstractActionController implements 
         UserService $userService,
         array $config
     ) {
+        $this->config      = $config;
         $this->formManager = $formManager;
         $this->translator  = $translator;
         $this->userService = $userService;
@@ -54,7 +71,6 @@ final class ManageProfileController extends AbstractActionController implements 
 
     public function editAddressAction()
     {
-
     }
 
     public function editSocialMediaAction(): ?ModelInterface
@@ -110,6 +126,7 @@ final class ManageProfileController extends AbstractActionController implements 
 
     public function editProfileAction(): mixed
     {
+        $view = new ViewModel();
         $form = $this->formManager->build(
             ProfileForm::class,
             ['mode' => FormInterface::EDIT_MODE]
@@ -170,7 +187,7 @@ final class ManageProfileController extends AbstractActionController implements 
                 }
             }
         }
-        $this->view->setVariable('form', $form);
-        return $this->view;
+        $view->setVariable('form', $form);
+        return $view;
     }
 }

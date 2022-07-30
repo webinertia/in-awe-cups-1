@@ -144,8 +144,8 @@ return [
                                 ],
                             ],
                             'delete'   => [
-                                'type'          => Segment::class,
-                                'options'       => [
+                                'type'    => Segment::class,
+                                'options' => [
                                     'route'       => '/admin/logs/delete[/:id]',
                                     'defaults'    => [
                                         'controller' => Controller\LogController::class,

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 return [
     '403'             => 'You have insufficient privileges to {action}.',
     '404'             => 'The requested {resource} could not be found.',

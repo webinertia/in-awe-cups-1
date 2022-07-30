@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace User\Db\Listener;
 
 use App\Service\Email;
-use DateTime;
 use Laminas\Db\TableGateway\Feature\EventFeature;
 use Laminas\Db\TableGateway\Feature\EventFeature\TableGatewayEvent;
 use Laminas\EventManager\AbstractListenerAggregate;
@@ -16,6 +15,8 @@ final class UserGatewayListener extends AbstractListenerAggregate
 {
     /** @var Email $mailService */
     protected $mailService;
+    /** @var DateTimeFormatter $time */
+    protected $time;
     /** @inheritDoc */
     public function __construct(Email $mailService, $format = 'm-j-Y g:i:s')
     {

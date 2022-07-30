@@ -219,6 +219,7 @@ final class UserService implements UserInterface, ModelInterface
     {
         $this->filterPassword = $filterPassword;
     }
+
     public function getFilterPassword(): bool
     {
         return $this->filterPassword;

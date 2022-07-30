@@ -10,7 +10,6 @@ use Laminas\EventManager\EventInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\ListenerAggregateInterface;
 use Laminas\EventManager\ListenerAggregateTrait;
-use Laminas\Mvc\I18n\Translator;
 use Psr\Log\LoggerInterface;
 
 final class LogListener implements ListenerAggregateInterface
