@@ -14,4 +14,9 @@ final class Setting extends ArrayObject implements ModelInterface
 
     /** @var string $resourceId */
     protected $resourceId = 'settings';
+
+    public function getOwnerId(): mixed
+    {
+        return null;
+    }
 }

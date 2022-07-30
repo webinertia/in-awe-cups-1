@@ -7,6 +7,7 @@ namespace ContentManager\Controller;
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Form\FormInterface;
+use App\Log\LogEvent;
 use ContentManager\Db\PageGateway;
 use ContentManager\Form\PageForm;
 use ContentManager\Model\Page;
@@ -19,6 +20,8 @@ use Laminas\Form\FormElementManager;
 use Laminas\Navigation\Navigation;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
+
+use function sprintf;
 
 final class AdminController extends AbstractAppController implements AdminControllerInterface
 {
@@ -58,7 +61,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers->addHeaderLine('Content-Type', 'application/json');
                     $this->view->setVariables(['success' => true, 'message' => ['message' => 'Page saved']]);
                 } catch (RuntimeException $e) {
-                    $this->error($e->getMessage());
+                    $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
                 }
             }
         }
@@ -119,7 +122,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 try {
                     $result = $gateway->update($data->getArrayCopy(), ['id' => $data->id]);
                     if (! $result) {
-                        throw new RuntimeException('Page Not saved');
+                        throw new RuntimeException('page_update_error');
                     }
                     if ($data->showOnLandingPage || $data->title === 'homelandingpage') {
                         $redirectData = ['href' => $this->url()->fromRoute('home')];
@@ -136,7 +139,14 @@ final class AdminController extends AbstractAppController implements AdminContro
                     $headers = $this->response->getHeaders();
                     $headers->addHeaderLine('Content-Type', 'application/json');
                 } catch (RuntimeException $e) {
-                    $this->critical($e->getMessage());
+                    $this->getEventManager()->trigger(
+                        LogEvent::ERROR,
+                        sprintf(
+                            $this->getTranslator()->translate(
+                                sprintf($e->getMessage(), $data->Label)
+                            ),
+                        )
+                    );
                 }
             }
         }
@@ -159,8 +169,10 @@ final class AdminController extends AbstractAppController implements AdminContro
             try {
                 $result = $gateway->delete(['id' => $page->id]);
                 if (! $result) {
-                    $this->error('Page Delete error');
-                    $this->flashMessenger()->addErrorMessage('Page not deleted');
+                    $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_page_deletion_error');
+                    $this->flashMessenger()->addErrorMessage(
+                        $this->getTranslator()->translate('log_page_deletion_error')
+                    );
                     $this->view->setVariable(
                         'data',
                         [
@@ -172,7 +184,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $this->flashMessenger()->addSuccessMessage('Page deleted');
                 $this->view->setVariable('data', ['href' => $this->url()->fromRoute('home')]);
             } catch (RuntimeException $e) {
-                $this->error($e->getMessage());
+                $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
             }
         }
         return $this->view;

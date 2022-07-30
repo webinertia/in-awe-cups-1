@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
+use App\Log\LogEvent;
 use App\Service\Email;
 use DateTime;
 use Laminas\View\Model\ViewModel;
@@ -13,6 +14,8 @@ use Throwable;
 use User\Filter\RegistrationHash;
 use User\Form\ResetPassword;
 use User\Service\UserInterface;
+
+use function sprintf;
 
 final class PasswordController extends AbstractAppController
 {
@@ -46,6 +49,7 @@ final class PasswordController extends AbstractAppController
                             $data = $form->getData();
                         }
                         $user = $this->usrGateway->fetchByColumn('email', $post['email']);
+                        $user->setFilterPassword(false);
                         if ($user instanceof UserInterface) {
                             $filter               = new RegistrationHash();
                             $hash                 = $filter->filter(
@@ -53,23 +57,31 @@ final class PasswordController extends AbstractAppController
                             );
                             $user->resetTimeStamp = $post['resetTimeStamp'];
                             $user->resetHash      = $hash;
-                            if ($this->usrGateway->update(['id' => $user->id], $user->toArray(true))) {
+                            if ($user->save($user->toArray())) {
                                 try {
                                     $this->email()->sendMessage($post['email'], Email::RESET_PASSWORD, $hash);
                                 } catch (Throwable $th) {
-                                    $this->error($th->getMessage());
+                                    $this->getEventManager()->trigger(
+                                        LogEvent::ERROR,
+                                        'log_password_update_reset_email_failure'
+                                    );
                                 }
-                                // redirect
-                                $this->info('User {firstName} {lastName} requested to reset password');
+                                $this->getEventManager()->trigger(
+                                    LogEvent::INFO,
+                                    'log_password_update_request'
+                                );
                                 // condition is when you have just submitted your email to be sent a link to reset
                                 // @codingStandardsIgnoreStart
                                 $this->flashMessenger()->addInfoMessage(
-                                    'You have been sent a reset link via the submitted email, please click the provided link to rest your password'
+                                    $this->getTranslator()->translate('password_reset_link_sent')
                                 );
                                 // @codingStandardsIgnoreEnd
+                                // redirect
                                 $this->redirect()->toRoute('home');
                             } else {
-                                throw new RuntimeException('Information not saved');
+                                throw new RuntimeException(
+                                    $this->getTranslator()->translate('password_update_failure')
+                                );
                             }
                         }
                     }
@@ -80,15 +92,16 @@ final class PasswordController extends AbstractAppController
                     if (! $user instanceof UserInterface) {
                         throw new RuntimeException('User not found');
                     }
-                    $this->warning(
-                        'Unknown user from IP:'
-                        . $this->request->getServer('REMOTE_ADDR')
-                        . ' attempted to reset password with invalid or expired token'
+                    $this->getEventManager()->trigger(
+                        LogEvent::INFO,
+                        sprintf(
+                            $this->getTranslator()->translate('log_failed_password_reset_ip'),
+                            $this->getRequest()->getServer('REMOTE_ADDR')
+                        )
                     );
                     // @codingStandardsIgnoreStart
-                    $this->flashMessenger()
-                    ->addErrorMessage(
-                        'The supplied reset token is invlaid or expired please contact the site adminitrators. This action has been logged'
+                    $this->flashMessenger()->addErrorMessage(
+                        $this->getTranslator()->translate('password_reset_token_expired')
                     );
                     // @codingStandardsIgnoreEnd
                     // this needs to redirect to a contact page.
@@ -108,7 +121,7 @@ final class PasswordController extends AbstractAppController
                         $interval  = $startTime->diff($limit);
                         if ($interval->d > 0) {
                             $this->flashMessenger()->addErrorMessage(
-                                'Your reset link has expired, please submit your email to send a valid reset link'
+                                $this->getTranslator()->translate('password_reset_link_expired')
                             );
                             return $this->redirect()->toRoute(
                                 'password',
@@ -143,7 +156,16 @@ final class PasswordController extends AbstractAppController
             }
             $this->view->setVariable('form', $form);
         } catch (RuntimeException $e) {
-            $this->error($e->getMessage());
+            $this->getEventManager()->trigger(
+                LogEvent::ERROR,
+                $this->getTranslator()->translate('log_password_update_failure')
+                . 'Exception Info: '
+                . $e->getFile()
+                . ': '
+                . $e->getLine()
+                . ' - '
+                . $e->getMessage()
+            );
         }
         return $this->view;
     }

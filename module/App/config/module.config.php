@@ -128,6 +128,9 @@ return [
                     'logs'      => [
                         'type'          => Placeholder::class,
                         'may_terminate' => true,
+                        'options'       => [
+                            'route' => '/admin/logs',
+                        ],
                         'child_routes'  => [
                             'overview' => [
                                 'may_terminate' => true,
@@ -140,32 +143,16 @@ return [
                                     ],
                                 ],
                             ],
-                            'error'    => [
-                                'may_terminate' => true,
-                                'type'          => Segment::class,
-                                'options'       => [
-                                    'route'       => '/admin/logs/error[/:pageNumber[/:itemsPerPage]]',
-                                    'defaults'    => [
-                                        'controller' => Controller\LogController::class,
-                                        'action'     => 'error',
-                                    ],
-                                    'constraints' => [
-                                        'pageNumber'   => '[0-9]',
-                                        'itemsPerPage' => '[0-9]',
-                                    ],
-                                ],
-                            ],
                             'delete'   => [
-                                'may_terminate' => true,
-                                'type'          => Segment::class,
-                                'options'       => [
+                                'type'    => Segment::class,
+                                'options' => [
                                     'route'       => '/admin/logs/delete[/:id]',
                                     'defaults'    => [
                                         'controller' => Controller\LogController::class,
                                         'action'     => 'delete',
                                     ],
                                     'constraints' => [
-                                        'id' => '[0-9]',
+                                        'id' => '[0-9]*',
                                     ],
                                 ],
                             ],
@@ -238,11 +225,12 @@ return [
     ],
     'form_elements'      => [
         'factories' => [
-            Form\ContactForm::class               => Form\Factory\ContactFormFactory::class,
-            Form\Fieldset\SecurityFieldset::class => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
-            Form\SettingsForm::class              => Form\Factory\SettingsFormFactory::class,
-            Form\ThemeSettingsForm::class         => Form\Factory\ThemeSettingsFormFactory::class,
-            Form\Fieldset\ThemeFieldset::class    => InvokableFactory::class,
+            Form\Fieldset\AppSettingsFieldset::class => Form\Fieldset\Factory\AppSettingsFieldsetFactory::class,
+            Form\ContactForm::class                  => Form\Factory\ContactFormFactory::class,
+            Form\Fieldset\SecurityFieldset::class    => Form\Fieldset\Factory\SecurityFieldsetFactory::class,
+            Form\SettingsForm::class                 => Form\Factory\SettingsFormFactory::class,
+            Form\ThemeSettingsForm::class            => Form\Factory\ThemeSettingsFormFactory::class,
+            Form\Fieldset\ThemeFieldset::class       => InvokableFactory::class,
         ],
     ],
     'filters'            => [
@@ -336,48 +324,39 @@ return [
         'template_map'             => [],
     ],
     'translator'         => [
-        'locale'                    => [
-            //'en_US'
-        ],
         'translation_file_patterns' => [
             [
                 'type'     => PhpArray::class,
-                'filename' => 'en-US.php',
-                'base_dir' => __DIR__ . '/languages',
+                'filename' => 'en_US.php',
+                'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.php',
             ],
-//             [
-//                 'type'        => Laminas\I18n\Translator\Loader\PhpArray::class,
-//                 'base_dir'    => __DIR__ . '/languages',
-//                 'pattern'     => 'user-%s.php',
-//                 'text_domain' => 'user',
-//             ],
         ],
         'translation_files'         => [
             [
                 'type'        => 'PhpArray',
-                'filename'    => dirname(__DIR__, 3) . '/languages/en-US.php',
-                'locale'      => 'en-US',
+                'filename'    => __DIR__ . '/../language/en_US.php',
+                'locale'      => 'en_US',
                 'text_domain' => 'default',
             ],
-//             [
-//                 'type' => 'PhpArray',
-//                 'filename' => dirname(__DIR__, 3) . '/languages/user-en-US.php',
-//                 'text_domain' => 'user',
-//                 'locale' => 'en-US',
-//             ],
             [
                 'type'        => 'PhpArray',
-                'filename'    => dirname(__DIR__, 3) . '/languages/es-MX.php',
+                'filename'    => __DIR__ . '/../language/es_MX.php',
+                'locale'      => 'es_MX',
                 'text_domain' => 'default',
-                'locale'      => 'es-MX',
             ],
-//             [
-//                 'type' => 'PhpArray',
-//                 'filename' => dirname(__DIR__, 3) . '/languages/user-es-MX.php',
-//                 'text_domain' => 'user',
-//                 'locale' => 'es-MX',
-//             ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_en_US.php',
+                'locale'      => 'es_US',
+                'text_domain' => 'default',
+            ],
+            [
+                'type'        => 'PhpArray',
+                'filename'    => __DIR__ . '/../language/log_messages_es_MX.php',
+                'locale'      => 'es_MX',
+                'text_domain' => 'default',
+            ],
         ],
     ],
 ];

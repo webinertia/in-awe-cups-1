@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace User\Service;
 
 use App\Model\ModelInterface;
+use App\Model\ModelTrait;
 use Laminas\Hydrator\ObjectPropertyHydrator as Hydrator;
+use User\Db\UserGateway;
 use User\Model\Roles;
 
 final class UserService implements UserInterface, ModelInterface
 {
+    use ModelTrait;
+
     /** @var int $id */
     public $id;
     /** @var string $userName */
@@ -32,6 +36,8 @@ final class UserService implements UserInterface, ModelInterface
     public $age;
     /** @var string $birthday */
     public $birthday;
+    /** @var UserGateway $gateway */
+    protected $gateway;
     /** @var string $gender */
     public $gender;
     /** @var string $race */
@@ -40,6 +46,40 @@ final class UserService implements UserInterface, ModelInterface
     public $bio;
     /** @var string companyName */
     public $companyName;
+    /** @var string $jobTitle */
+    public $jobTitle;
+    /** @var string $mobileNumber */
+    public $mobileNumber;
+    /** @var string officeNumber */
+    public $officeNumber;
+    /** @var string $homeNumber */
+    public $homeNumber;
+    /** @var string $street */
+    public $street;
+    /** @var string $aptNumber */
+    public $aptNumber;
+    /** @var string $city */
+    public $city;
+    /** @var string $state */
+    public $state;
+    /** @var string $zip */
+    public $zip;
+    /** @var string $country */
+    public $country;
+    /** @var string $webUrl */
+    public $webUrl;
+    /** @var string $github */
+    public $github;
+    /** @var string $twitter */
+    public $twitter;
+    /** @var string $instagram */
+    public $instagram;
+    /** @var string $facebook */
+    public $facebook;
+    /** @var string $linkedin */
+    public $linkedin;
+    /** @var string $slack */
+    public $slack;
     /** @var int $sessionLength */
     public $sessionLength;
     /** @var string regDate */
@@ -62,9 +102,17 @@ final class UserService implements UserInterface, ModelInterface
     protected $logData = [];
     /** @var Roles $roleModel */
     protected $roles;
+    /** @var bool $filterPassword */
+    protected $filterPassword = true;
+    /** @var Hydrator $hydrator */
+    protected $hydrator;
 
-    public function __construct()
+    public function __construct(?UserGateway $gateway = null)
     {
+        $this->hydrator = new Hydrator();
+        if ($gateway instanceof UserGateway) {
+            $this->gateway = $gateway;
+        }
         $this->roles = new Roles();
     }
 
@@ -81,14 +129,35 @@ final class UserService implements UserInterface, ModelInterface
         ];
     }
 
-    /** @param bool $withPassword */
-    public function toArray($withPassword = false): array
+    /**
+     * @param array<mixed> $data
+     */
+    public function save(array $data, ?int $id = null): mixed
     {
-        $hydrator = new Hydrator();
-        if (! $withPassword && ! empty($this->password)) {
+        if ($id !== null) {
+            $id = (int) $id;
+        }
+
+        return $id === null
+        ? $this->gateway->insert($data) : $this->gateway->update($data, ['id' => $id]);
+    }
+
+    public function exchangeArray(array $data)
+    {
+        $this->hydrator->hydrate($data, $this);
+    }
+
+    public function toArray(): array
+    {
+        if ($this->filterPassword) {
             unset($this->password);
         }
-        return $hydrator->extract($this);
+        return $this->hydrator->extract($this);
+    }
+
+    public function getArrayCopy(): array
+    {
+        return $this->toArray();
     }
 
     public function setPassword(string $password): void
@@ -104,6 +173,15 @@ final class UserService implements UserInterface, ModelInterface
     public function setGroupName(string $groupName): void
     {
         $this->groupName = $groupName;
+    }
+
+    public function getFullName(): string
+    {
+        if ($this->firstName !== null && $this->lastName !== null) {
+            return $this->firstName . ' ' . $this->lastName;
+        } else {
+            return $this->userName;
+        }
     }
 
     public function getGroupName(): string
@@ -130,5 +208,20 @@ final class UserService implements UserInterface, ModelInterface
     public function getResourceId(): string
     {
         return $this->resourceId;
+    }
+
+    public function setGateway(UserGateway $gateway): void
+    {
+        $this->gateway = $gateway;
+    }
+
+    public function setFilterPassword(bool $filterPassword): void
+    {
+        $this->filterPassword = $filterPassword;
+    }
+
+    public function getFilterPassword(): bool
+    {
+        return $this->filterPassword;
     }
 }

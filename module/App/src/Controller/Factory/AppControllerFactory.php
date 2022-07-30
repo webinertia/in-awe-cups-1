@@ -6,10 +6,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Factory;
 
+use Laminas\Mvc\I18n\Translator;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use User\Db\UserGateway;
 
 class AppControllerFactory implements FactoryInterface
@@ -21,7 +21,7 @@ class AppControllerFactory implements FactoryInterface
         ?array $options = null
     ): DispatchableInterface {
         $controller = new $requestedName($container->get('config'), $container->get(UserGateway::class));
-        $controller->setLogger($container->get(LoggerInterface::class));
+        $controller->setTranslator($container->get(Translator::class));
         return $controller;
     }
 }

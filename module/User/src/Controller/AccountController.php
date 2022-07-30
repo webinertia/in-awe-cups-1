@@ -6,6 +6,7 @@ namespace User\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
+use App\Log\LogEvent;
 use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
@@ -17,6 +18,7 @@ use User\Form\UserForm;
 use User\Service\UserInterface;
 
 use function array_merge;
+use function sprintf;
 
 final class AccountController extends AbstractAppController
 {
@@ -38,9 +40,7 @@ final class AccountController extends AbstractAppController
             $this->view->setVariable('form', $form);
             return $this->view;
         }
-        // set the posted data in the form objects context
         $form->setData($this->request->getPost());
-        // check with the form object to verify data is valid
         if (! $form->isValid()) {
             $this->view->setVariable('form', $form);
             return $this->view;
@@ -49,7 +49,12 @@ final class AccountController extends AbstractAppController
         $loginResult = $this->usrGateway->login($loginData['userName'], $loginData['password']);
         if ($loginResult->isValid()) {
             $userInterface = $this->usrGateway->fetchByColumn('userName', $loginResult->getIdentity());
-            $this->flashMessenger()->addInfoMessage('Welcome back!!');
+            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_success', $userInterface->getLogData());
+            $this->flashMessenger()->addSuccessMessage(
+                $this->getTranslator()->translate('login_success')
+                . ' '
+                . sprintf($this->getTranslator()->translate('welcome_back'), $userInterface->getFullName())
+            );
             return $this->redirect()->toRoute('user/profile', ['userName' => $userInterface->userName]);
         } else {
             $messages = $loginResult->getMessages();
@@ -57,7 +62,7 @@ final class AccountController extends AbstractAppController
                 case Result::FAILURE_IDENTITY_NOT_FOUND:
                     $fieldset   = $form->get('login-data');
                     $element    = $fieldset->get('userName');
-                    $messages[] = 'If you have registered, please check your email for the activation link.';
+                    $messages[] = 'account_activation_login_notice';
                     $element->setMessages($messages);
                     break;
                 case Result::FAILURE_CREDENTIAL_INVALID:
@@ -67,6 +72,7 @@ final class AccountController extends AbstractAppController
                     $element->setMessages($messages);
                     break;
             }
+            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_failure');
         }
         $this->view->setVariable('form', $form);
         return $this->view;
@@ -80,7 +86,10 @@ final class AccountController extends AbstractAppController
             $userName = $this->params()->fromRoute('userName');
             $user     = $this->usrGateway->fetchByColumn('userName', $userName);
             if (! $this->isAllowed()) {
-                $this->flashMessenger()->addWarningMessage('You do not have the required permissions to edit users');
+                $this->getEventManager()->trigger(LogEvent::CRITICAL, 'log_forbidden_403');
+                $this->flashMessenger()->addWarningMessage(
+                    $this->getTranslator()->translate('forbidden_403')
+                );
                 $this->redirect()->toRoute('home');
             }
             $form     = $formManager->build(
@@ -125,12 +134,12 @@ final class AccountController extends AbstractAppController
                     // Redirect to User list
                     $this->redirect()->toRoute('user/list', ['page' => 1, 'count' => 5]);
                 } else {
-                    throw new RuntimeException('The user could not be updated at this time');
+                    throw new RuntimeException('log_account_update_failure');
                 }
             }
             $this->view->setVariable('form', $form);
         } catch (Throwable $th) {
-            $this->error($th->getMessage());
+            $this->getEventManager()->trigger(LogEvent::ERROR, $th->getMessage());
         }
         return $this->view;
     }
@@ -138,34 +147,52 @@ final class AccountController extends AbstractAppController
     public function deleteAction(): void
     {
         $user = false;
-        // verify that the session cleared during user deletion
         try {
             $userName = $this->params()->fromRoute('userName');
             $user     = $this->usrGateway->fetchByColumn('userName', $userName);
             if (! $user instanceof UserInterface) {
-                throw new RuntimeException('The user could not be found');
+                throw new RuntimeException('log_exception_user_not_found');
             }
-            $deletedUser = $user->toArray();
             if ($this->isAllowed($user)) {
                 $result = $this->usrGateway->delete(['id' => $user->id]);
                 if ($result > 0) {
-                    $this->info(
-                        'User ' . $deletedUser['firstName'] . ' ' . $deletedUser['lastName'] . ' was deleted.'
+                    $this->getEventManager()->trigger(
+                        LogEvent::INFO,
+                        $this->getTranslator()->translate('log_account_delete_success'),
+                        $user->getFullName()
                     );
                     $this->redirect()->toRoute(
                         'user',
-                        ['action' => 'index', 'userName' => $deletedUser['userName']]
+                        ['action' => 'index', 'userName' => $user->userName]
                     );
                 } else {
-                    throw new RuntimeException('The requested action could not be completed');
+                    throw new RuntimeException('log_account_deletion_failure');
                 }
             } else {
-                $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->getEventManager()->trigger(
+                    LogEvent::ERROR,
+                    sprintf(
+                        $this->getTranslator()->translate('log_forbidden_known_action_403'),
+                        $user->getFullName()
+                    )
+                );
+                $this->flashMessenger()->addErrorMessage(
+                    sprintf(
+                        $this->getTranslator()->translate('forbidden_known_action_403_user'),
+                        $user->getFullName()
+                    )
+                );
                 $this->response->setStatusCode(403);
                 $this->redirect()->toRoute('user/list', ['page' => 1, 'count' => 5]);
             }
         } catch (RuntimeException $e) {
-            $this->error($e->getMessage());
+            $this->getEventManager()->trigger(
+                LogEvent::ERROR,
+                sprintf(
+                    $this->getTranslator()->translate('log_account_delete_failure'),
+                    $user->getFullName()
+                )
+            );
         }
     }
 
@@ -173,13 +200,14 @@ final class AccountController extends AbstractAppController
     {
         if ($this->identity()->hasIdentity()) {
             $this->identity()->clearIdentity();
-            $this->flashMessenger()->addInfoMessage('You have been successfully logged out');
+            $this->flashMessenger()->addInfoMessage($this->getTranslator()->translate('logout_success'));
             return $this->redirect()->toRoute('home');
         } else {
             $this->flashMessenger()->addErrorMessage(
-                'An unknown error occurred please contact the system administrator'
+                $this->getTranslator()->translate('logout_failure')
             );
-            $this->critical('System failed to log the user out!!');
+            // Serious issue, possibly searching for attack vectors
+            $this->getEventManager()->trigger(LogEvent::ALERT, 'log_logout_non_loggedin_attempt');
             return $this->redirect()->toRoute('home');
         }
     }
@@ -200,18 +228,30 @@ final class AccountController extends AbstractAppController
                 $user->active = 1;
                 $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
-                    $this->info(
-                        'User with UserName: ' . $user->userName . ' has been activated by staff member'
+                    $this->getEventManager()->trigger(
+                        LogEvent::INFO,
+                        sprintf(
+                            $this->getTranslator()->translate('log_account_staff_activation_success'),
+                            $user->userName
+                        )
                     );
                 } else {
-                    throw new RuntimeException('The requested action could not be completed');
+                    throw new RuntimeException(
+                        sprintf(
+                            $this->getTranslator()->translate('log_account_staff_activation_failure'),
+                            $user->userName
+                        )
+                    );
                 }
             } else {
-                $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->getEventManager()->trigger(LogEvent::ALERT, 'log_forbidden_403');
+                $this->flashMessenger()->addErrorMessage(
+                    $this->getTranslator()->translate('forbidden_403')
+                );
                 $this->response->setStatusCode(403);
             }
         } catch (RuntimeException $e) {
-            $this->error($e->getMessage());
+            $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
         }
         $this->view->setVariables(['user' => $this->identity()->getIdentity(), 'activatedUser' => $user]);
         return $this->view;
@@ -228,23 +268,39 @@ final class AccountController extends AbstractAppController
                 $userName = $this->params()->fromRoute('userName');
                 $user     = $this->usrGateway->fetchByColumn('userName', $userName);
                 if (! $user instanceof UserInterface) {
-                    throw new RuntimeException('The user could not be found');
+                    throw new RuntimeException(
+                        sprintf(
+                            $this->getTranslator()->translate('log_known_user_not_found'),
+                            $userName
+                        )
+                    );
                 }
                 $user->active = 0;
                 $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
                 if ($result) {
-                    $this->info(
-                        'User with UserName: ' . $user->userName . ' has been deactivated by staff member'
+                    $this->getEventManager()->trigger(
+                        LogEvent::NOTICE,
+                        sprintf(
+                            $this->getTranslator()->translate('log_account_staff_deactivation_success'),
+                            $user->userName
+                        )
                     );
                 } else {
-                    throw new RuntimeException('The requested action could not be completed');
+                    throw new RuntimeException(
+                        sprintf(
+                            $this->getTranslator()->translate('log_account_staff_deactivation_failure'),
+                            $user->userName
+                        )
+                    );
                 }
             } else {
-                $this->flashMessenger()->addErrorMessage('Forbidden action');
+                $this->flashMessenger()->addErrorMessage(
+                    $this->getTranslator()->translate('forbidden_403')
+                );
                 $this->response->setStatusCode(403);
             }
         } catch (RuntimeException $e) {
-            $this->error($e->getMessage());
+            $this->getEventManager()->trigger(LogEvent::ALERT, $e->getMessage());
         }
         $this->view->setVariables(['user' => $this->identity()->getIdentity(), 'deactivatedUser' => $user]);
         return $this->view;

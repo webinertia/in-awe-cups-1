@@ -10,9 +10,9 @@ parameters:
             - isAllowed
             - acl
     stubFiles:
-    - stubs/App/Controller/AbstractController.stub
+    - stubs/Laminas/EventManager/EventManagerAwareInterface.stub
+    - stubs/Laminas/Mvc/Controller/AbstractController.stub
     - stubs/Laminas/Mvc/InjectApplicationEventInterface.stub
     - stubs/Laminas/Stdlib/DispatchableInterface.stub
     - stubs/Laminas/Http/PhpEnvironment/Request.stub
     - stubs/Laminas/Http/PhpEnvironment/Response.stub
-    - stubs/Laminas/EventManager/EventManagerAwareInterface.stub

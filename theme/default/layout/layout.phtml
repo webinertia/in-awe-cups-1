@@ -84,8 +84,8 @@ use Laminas\View\Renderer\PhpRenderer;
                 }
                 ?>
                 <?php
-                if($this->appSettings['view']['show_breadcrumbs']):
-                    $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
+                if((int) $this->appSettings['view']['show_breadcrumbs']):
+                    echo $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
                 endif;
                 ?>
             <?= $this->content ?>

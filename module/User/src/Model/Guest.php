@@ -49,4 +49,9 @@ final class Guest implements ModelInterface
     {
         return $this->toArray();
     }
+
+    public function getOwnerId(): mixed
+    {
+        return null;
+    }
 }

@@ -7,9 +7,11 @@ namespace App;
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
 use App\Listener\ThemeLoader;
+use App\Log\LogListener;
 use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
+use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\ConfigProvider;
 use Laminas\ModuleManager\ModuleEvent;
 use Laminas\ModuleManager\ModuleManager;
@@ -68,15 +70,25 @@ final class Module
         $this->config = $this->sm->get('config');
         date_default_timezone_set($this->config['app_settings']['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($this->sm->get(AdapterInterface::class));
+        $psrLogAdapter = $this->sm->get(LoggerInterface::class);
+        $logListener   = new LogListener($psrLogAdapter);
+        $logListener->attach($eventManager);
         if ($this->config['app_settings']['server']['log_errors'] && $this->sm->has(LoggerInterface::class)) {
             $log = $this->sm->get(LoggerInterface::class)->getLogger();
             $log::registerErrorHandler($log, true);
+        }
+        if ($this->config['app_settings']['server']['enable_translation']) {
+            $this->boostrapTranslation($e);
         }
         $themeLoader = new ThemeLoader($this->sm->get(Theme::class), $this->sm->get(TemplatePathStack::class));
         $themeLoader->attach($eventManager);
         $layoutVariables = new LayoutVariablesListener($this->config['app_settings']);
         $layoutVariables->attach($eventManager);
-        $adminListener = new AdminListener($this->sm->get(TemplateMapResolver::class));
+        $adminListener = new AdminListener(
+            $psrLogAdapter,
+            $this->sm->get(TemplateMapResolver::class),
+            $this->sm->get(Translator::class)
+        );
         $adminListener->attach($eventManager);
         // attach the jsonsrategy to the event manager
         $eventManager->attach(MvcEvent::EVENT_RENDER, [$this, 'registerJsonStrategy'], 100);
@@ -94,20 +106,18 @@ final class Module
     public function boostrapTranslation(MvcEvent $e): void
     {
         // get an instance of the service manager
-        if ($this->config['app_settings']['server']['enable_translation']) {
-            $request = $this->sm->get('request');
-            // get the laguages sent by the client
-            $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
-            $translator = $this->sm->get(Translator::class);
-            // set the primary locale as requested by the client
-            if ($locale !== null) {
-                $translator->setLocale($locale);
-                // set option two as the fallback
-                $translator->setFallbackLocale('en_US');
-            }
-            $renderer = $this->sm->get(PhpRenderer::class);
-            // attach the Il8n standard helpers for translation
-            $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
+        $request = $this->sm->get(Request::class);
+        // get the laguages sent by the client
+        $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
+        $translator = $this->sm->get(Translator::class);
+        // set the primary locale as requested by the client
+        if ($locale !== null) {
+            $translator->setLocale($locale);
+            // set option two as the fallback
+            $translator->setFallbackLocale('en_US');
         }
+        $renderer = $this->sm->get(PhpRenderer::class);
+        // attach the Il8n standard helpers for translation
+        $renderer->getHelperPluginManager()->configure((new ConfigProvider())->getViewHelperConfig());
     }
 }

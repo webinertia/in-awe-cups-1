@@ -1,4 +1,4 @@
-let messages = {
+let responseMessages = {
     'permissionDenied': 'Permission denied!',
     'success': 'Record deleted successfully!',
     'error': 'An Unknown error occurred!',
@@ -9,18 +9,18 @@ function handleAjaxDelete(path) {
         url: path,
         statusCode: {
             200: function() {
-                alert(messages.success);
+                alert(responseMessages.success);
             },
             403: function() {
-                alert(messages.permissionDenied);
+                alert(responseMessages.permissionDenied);
                 //return false;
             },
             404: function() {
-              alert(messages.notFound);
+              alert(responseMessages.notFound);
                 //return false;
             },
             500: function() {
-                alert(messages.error);
+                alert(responseMessages.error);
                // return false;
             }
         }

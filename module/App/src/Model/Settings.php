@@ -16,4 +16,9 @@ final class Settings extends Config implements ModelInterface
 
     /** @var string $resourceId */
     protected $resourceId = 'settings';
+
+    public function getOwnerId(): mixed
+    {
+        return null;
+    }
 }

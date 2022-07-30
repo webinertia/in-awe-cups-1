@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
+use App\Log\LogEvent;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
@@ -26,7 +27,11 @@ final class UserController extends AbstractAppController implements ResourceInte
             $this->view->setVariable('hasMessage', $hasMessage);
             $this->view->setVariable('users', $this->usrGateway->fetchAll());
         } catch (RuntimeException $e) {
-            $this->warning($e->getMessage());
+            $this->getEventManager()->trigger(
+                LogEvent::ERROR,
+                $this->getTranslator()->translate('log_account_deletion_failure')
+                . ': ' . $e->getFile() . 'Line#: ' . $e->getLine() . ': ' . $e->getMessage()
+            );
         }
         return $this->view;
     }

@@ -17,8 +17,17 @@ final class ServiceLocator extends AbstractPlugin
         $this->sm = $sm;
     }
 
-    /** @return array|object */
+    /**
+     * @param string|class-string $serviceName
+     * @return ServiceManager|AbstractPluginManager|array<string|class-string, Entry>
+     * */
     public function __invoke(string $serviceName)
+    {
+        return $this->getService($serviceName);
+    }
+
+    /** @return ServiceManager|AbstractPluginManager|array<string|class-string, Entry> */
+    public function getService(string $serviceName)
     {
         return $this->sm->get($serviceName);
     }
