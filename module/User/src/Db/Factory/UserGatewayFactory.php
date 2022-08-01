@@ -11,7 +11,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Db\Listener\UserGatewayListener;
 use User\Db\UserGateway;
-use User\Service\UserService as UserInterface;
+use User\Service\UserService;
 
 final class UserGatewayFactory implements FactoryInterface
 {
@@ -20,7 +20,7 @@ final class UserGatewayFactory implements FactoryInterface
     {
         $config             = $container->get('config');
         $resultSetPrototype = new HydratingResultSet(new Hydrator());
-        $resultSetPrototype->setObjectPrototype(new UserInterface());
+        $resultSetPrototype->setObjectPrototype(new UserService());
         return new $requestedName(
             $config['db']['users_table_name'],
             $container->get(EventManager::class),

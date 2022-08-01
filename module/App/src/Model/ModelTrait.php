@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Closure;
 use Laminas\Db\Exception\RuntimeException;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\Exception\InvalidArgumentException;
 use Laminas\Db\TableGateway\Exception\RuntimeException as TableGatewayRuntimeException;
 
@@ -60,5 +62,13 @@ trait ModelTrait
     public function fetchAll(): ResultSetInterface
     {
         return $this->gateway->select();
+    }
+
+    /**
+     * @param Where|Closure|string|array $where
+     */
+    public function delete($where): int
+    {
+        return $this->gateway->delete($where);
     }
 }

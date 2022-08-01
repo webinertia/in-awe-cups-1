@@ -8,7 +8,7 @@ use Laminas\Permissions\Acl\ProprietaryInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Permissions\Acl\Role\RoleInterface;
 
-interface UserInterface extends ProprietaryInterface, ResourceInterface, RoleInterface
+interface UserServiceInterface extends ProprietaryInterface, ResourceInterface, RoleInterface
 {
     public function getLogData(): array;
 }

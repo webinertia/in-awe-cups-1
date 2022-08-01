@@ -365,7 +365,8 @@ return [
     ],
     'service_manager'    => [
         'aliases'   => [
-            Service\UserInterface::class => Service\UserService::class,
+            'UserInterface'                     => Service\UserServiceInterface::class,
+            Service\UserServiceInterface::class => Service\UserService::class,
         ],
         'factories' => [
             AclInterface::class                    => Acl\AclFactory::class,

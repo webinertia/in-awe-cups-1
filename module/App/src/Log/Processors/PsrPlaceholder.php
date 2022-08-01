@@ -5,26 +5,26 @@ declare(strict_types=1);
 namespace App\Log\Processors;
 
 use Laminas\Log\Processor\PsrPlaceholder as Placeholder;
-use User\Service\UserInterface;
+use User\Service\UserService;
 
 use function array_merge;
 
 final class PsrPlaceholder extends Placeholder
 {
-    /** @var UserInterface userInterface */
-    protected $userInterface;
+    /** @var UserService $userService */
+    protected $userService;
 
-    public function __construct(UserInterface $userInterface)
+    public function __construct(UserService $userService)
     {
-        $this->userInterface = $userInterface;
+        $this->userService = $userService;
     }
 
     public function process(array $event): array
     {
         if ($event['extra'] === []) {
-            $event['extra'] += $this->userInterface->getLogData();
+            $event['extra'] += $this->userService->getLogData();
         } elseif ($event['extra'] !== []) {
-            $event['extra'] = array_merge($this->userInterface->getLogData(), $event['extra']);
+            $event['extra'] = array_merge($this->userService->getLogData(), $event['extra']);
         }
         return parent::process($event);
     }

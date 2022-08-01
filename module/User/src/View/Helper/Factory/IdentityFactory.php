@@ -7,7 +7,7 @@ namespace User\View\Helper\Factory;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 use User\View\Helper\Identity;
 
 final class IdentityFactory implements FactoryInterface
@@ -17,7 +17,7 @@ final class IdentityFactory implements FactoryInterface
     {
         return new $requestedName(
             $container->get(AuthenticationService::class),
-            $container->get(UserInterface::class)
+            $container->get(UserServiceInterface::class)
         );
     }
 }

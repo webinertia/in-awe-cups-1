@@ -13,7 +13,8 @@ use RuntimeException;
 use Throwable;
 use User\Filter\RegistrationHash;
 use User\Form\ResetPassword;
-use User\Service\UserInterface;
+use User\Service\UserService;
+use User\Service\UserServiceInterface;
 
 use function sprintf;
 
@@ -23,11 +24,12 @@ final class PasswordController extends AbstractAppController
     protected $resourceId = 'account';
     public function resetAction(): ViewModel
     {
+
         try {
             $appSettings = $this->getService('config')['app_settings'];
             $step        = $this->params('step', 'zero');
             $dateTime    = new DateTime('NOW');
-            $options     = ['db' => $this->usrGateway, 'enableCaptcha' => $appSettings['security']['enable_captcha']];
+            $options     = ['db' => $this->userService, 'enableCaptcha' => $appSettings['security']['enable_captcha']];
             $form        = new ResetPassword(null, $options);
             $this->view->setVariable('showForm', true);
             switch ($step) {
@@ -48,9 +50,10 @@ final class PasswordController extends AbstractAppController
                         if ($form->isValid()) {
                             $data = $form->getData();
                         }
-                        $user = $this->usrGateway->fetchByColumn('email', $post['email']);
+                        /** @var UserService $user */
+                        $user = $this->userService->fetchByColumn('email', $post['email']);
                         $user->setFilterPassword(false);
-                        if ($user instanceof UserInterface) {
+                        if ($user instanceof UserServiceInterface) {
                             $filter               = new RegistrationHash();
                             $hash                 = $filter->filter(
                                 ['email' => $post['email'], 'timestamp' => $post['resetTimeStamp']]
@@ -88,8 +91,9 @@ final class PasswordController extends AbstractAppController
                     break;
                 case 'reset-password':
                     $token = $this->request->getQuery('token');
-                    $user  = $this->usrGateway->fetchByColumn('resetHash', $token);
-                    if (! $user instanceof UserInterface) {
+                    /** @var UserService $user */
+                    $user = $this->userService->fetchByColumn('resetHash', $token);
+                    if (! $user instanceof UserServiceInterface) {
                         throw new RuntimeException('User not found');
                     }
                     $this->getEventManager()->trigger(
@@ -139,7 +143,8 @@ final class PasswordController extends AbstractAppController
                             $user->password       = $data['password'];
                             $user->resetTimeStamp = null;
                             $user->resetHash      = null;
-                            if ($this->usrGateway->update(['id' => $user->id], $user->toArray(true))) {
+                            $user->setFilterPassword(true);
+                            if ($this->userService->save($user->toArray(), $user->id)) {
                                 $this->flashMessenger()->addSuccessMessage(
                                     'Your password has been succesfully updated'
                                 );

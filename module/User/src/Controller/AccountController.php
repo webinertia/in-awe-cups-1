@@ -12,18 +12,15 @@ use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use Throwable;
-use User\Acl\CheckActionAccessTrait;
 use User\Form\LoginForm;
 use User\Form\UserForm;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 use function array_merge;
 use function sprintf;
 
 final class AccountController extends AbstractAppController
 {
-    use CheckActionAccessTrait;
-
     /** @var string $resourceId */
     protected $resourceId = 'account';
 
@@ -46,9 +43,9 @@ final class AccountController extends AbstractAppController
             return $this->view;
         }
         $loginData   = $form->getData()['login-data'];
-        $loginResult = $this->usrGateway->login($loginData['userName'], $loginData['password']);
+        $loginResult = $this->userService->login($loginData['userName'], $loginData['password']);
         if ($loginResult->isValid()) {
-            $userInterface = $this->usrGateway->fetchByColumn('userName', $loginResult->getIdentity());
+            $userInterface = $this->userService->fetchByColumn('userName', $loginResult->getIdentity());
             $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_success', $userInterface->getLogData());
             $this->flashMessenger()->addSuccessMessage(
                 $this->getTranslator()->translate('login_success')
@@ -84,7 +81,7 @@ final class AccountController extends AbstractAppController
             $formManager = $this->getService(FormElementManager::class);
             // get the user by userName that is to be edited
             $userName = $this->params()->fromRoute('userName');
-            $user     = $this->usrGateway->fetchByColumn('userName', $userName);
+            $user     = $this->userService->fetchByColumn('userName', $userName);
             if (! $this->isAllowed()) {
                 $this->getEventManager()->trigger(LogEvent::CRITICAL, 'log_forbidden_403');
                 $this->flashMessenger()->addWarningMessage(
@@ -125,9 +122,9 @@ final class AccountController extends AbstractAppController
                     return $this->view;
                 } else {
                     $valid  = $form->getData();
-                    $result = $this->usrGateway->update(
+                    $result = $this->userService->save(
                         array_merge($valid['acct-data'], $valid['role-data'], $valid['profile-data']),
-                        ['id' => $valid['acct-data']['id']]
+                        $valid['acct-data']['id']
                     );
                 }
                 if ($result) {
@@ -149,12 +146,12 @@ final class AccountController extends AbstractAppController
         $user = false;
         try {
             $userName = $this->params()->fromRoute('userName');
-            $user     = $this->usrGateway->fetchByColumn('userName', $userName);
-            if (! $user instanceof UserInterface) {
+            $user     = $this->userService->fetchByColumn('userName', $userName);
+            if (! $user instanceof UserServiceInterface) {
                 throw new RuntimeException('log_exception_user_not_found');
             }
             if ($this->isAllowed($user)) {
-                $result = $this->usrGateway->delete(['id' => $user->id]);
+                $result = $this->userService->delete(['id' => $user->id]);
                 if ($result > 0) {
                     $this->getEventManager()->trigger(
                         LogEvent::INFO,
@@ -199,7 +196,16 @@ final class AccountController extends AbstractAppController
     public function logoutAction(): object
     {
         if ($this->identity()->hasIdentity()) {
+            $ident = $this->identity()->getIdentity()->getLogData();
             $this->identity()->clearIdentity();
+            $this->getEventManager()->trigger(
+                LogEvent::INFO,
+                sprintf(
+                    $this->getTranslator()->translate('log_logout_success'),
+                    $ident['firstName'] . ' ' . $ident['lastName']
+                ),
+                $ident
+            );
             $this->flashMessenger()->addInfoMessage($this->getTranslator()->translate('logout_success'));
             return $this->redirect()->toRoute('home');
         } else {
@@ -221,12 +227,12 @@ final class AccountController extends AbstractAppController
                     $this->view->setTerminal(true);
                 }
                 $userName = $this->params()->fromRoute('userName');
-                $user     = $this->usrGateway->fetchByColumn('userName', $userName);
-                if (! $user instanceof UserInterface) {
+                $user     = $this->userService->fetchByColumn('userName', $userName);
+                if (! $user instanceof UserServiceInterface) {
                     throw new RuntimeException('The user could not be found');
                 }
                 $user->active = 1;
-                $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
+                $result       = $this->userService->save($user->toArray(), $user->id);
                 if ($result) {
                     $this->getEventManager()->trigger(
                         LogEvent::INFO,
@@ -266,8 +272,8 @@ final class AccountController extends AbstractAppController
                     $this->view->setTerminal(true);
                 }
                 $userName = $this->params()->fromRoute('userName');
-                $user     = $this->usrGateway->fetchByColumn('userName', $userName);
-                if (! $user instanceof UserInterface) {
+                $user     = $this->userService->fetchByColumn('userName', $userName);
+                if (! $user instanceof UserServiceInterface) {
                     throw new RuntimeException(
                         sprintf(
                             $this->getTranslator()->translate('log_known_user_not_found'),
@@ -276,7 +282,7 @@ final class AccountController extends AbstractAppController
                     );
                 }
                 $user->active = 0;
-                $result       = $this->usrGateway->update($user->toArray(), ['id' => $user->id]);
+                $result       = $this->userService->save($user->toArray(), $user->id);
                 if ($result) {
                     $this->getEventManager()->trigger(
                         LogEvent::NOTICE,

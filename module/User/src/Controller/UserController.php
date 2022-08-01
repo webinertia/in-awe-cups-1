@@ -25,7 +25,7 @@ final class UserController extends AbstractAppController implements ResourceInte
                 $hasMessage = true;
             }
             $this->view->setVariable('hasMessage', $hasMessage);
-            $this->view->setVariable('users', $this->usrGateway->fetchAll());
+            $this->view->setVariable('users', $this->userService->fetchAll());
         } catch (RuntimeException $e) {
             $this->getEventManager()->trigger(
                 LogEvent::ERROR,

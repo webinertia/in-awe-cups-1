@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Trait for use within Controller classes
+ */
+
 declare(strict_types=1);
 
 namespace User\Acl;
@@ -17,13 +21,13 @@ trait CheckActionAccessTrait
     ): bool {
         $isAllowed = false;
         if ($resourceInterface instanceof ResourceInterface) {
-            $isAllowed = $this->acl()->isAllowed(
+            $isAllowed = $this->acl->isAllowed(
                 $this->identity()->getIdentity(),
                 $resourceInterface,
                 $privilege ?? $this->params()->fromRoute('action')
             );
         } else {
-            $isAllowed = $this->acl()->isAllowed(
+            $isAllowed = $this->acl->isAllowed(
                 $this->identity()->getIdentity(),
                 $this,
                 $privilege ?? $this->params()->fromRoute('action')

@@ -8,7 +8,7 @@ use Laminas\Authentication\AuthenticationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Controller\Plugin\Identity;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 final class IdentityFactory implements FactoryInterface
 {
@@ -17,7 +17,7 @@ final class IdentityFactory implements FactoryInterface
     {
         return new Identity(
             $container->get(AuthenticationService::class),
-            $container->get(UserInterface::class)
+            $container->get(UserServiceInterface::class)
         );
     }
 }

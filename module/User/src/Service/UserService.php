@@ -6,11 +6,14 @@ namespace User\Service;
 
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
+use Laminas\Authentication\Result as AuthResult;
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Hydrator\ObjectPropertyHydrator as Hydrator;
 use User\Db\UserGateway;
 use User\Model\Roles;
+use User\Service\UserServiceInterface;
 
-final class UserService implements UserInterface, ModelInterface
+final class UserService implements UserServiceInterface, ModelInterface
 {
     use ModelTrait;
 
@@ -223,5 +226,15 @@ final class UserService implements UserInterface, ModelInterface
     public function getFilterPassword(): bool
     {
         return $this->filterPassword;
+    }
+
+    public function getAdapter(): AdapterInterface
+    {
+        return $this->gateway->getAdapter();
+    }
+
+    public function login(string $userName, string $password): AuthResult
+    {
+        return $this->gateway->login($userName, $password);
     }
 }

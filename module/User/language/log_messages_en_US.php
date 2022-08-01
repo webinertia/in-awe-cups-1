@@ -9,7 +9,7 @@ return [
     'log_known_user_profile_update_failure'   => 'User %s profile update failed.',
     'log_login_success'                       => 'Successful log in.',
     'log_login_failure'                       => 'Failed login attempt.',
-    'log_logout_success'                      => 'User successfully logged out.',
+    'log_logout_success'                      => 'User %s successfully logged out.',
     'log_logout_failure'                      => 'System failed to log the user out.',
     'log_logout_non_loggedin_attempt'         => 'Attempt to log out when not logged in.',
     'log_account_activation_success'          => 'Successful account activation.',

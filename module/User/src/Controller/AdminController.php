@@ -35,7 +35,6 @@ final class AdminController extends AbstractAppController implements AdminContro
             //     $this->flashMessenger()->addSuccessMessage('User ' . $userName . ' was successfully deleted!!');
             //     $hasMessage = true;
             // }
-            $this->view->setVariable('users', $this->usrGateway->loadMemberContext());
         } catch (Throwable $th) {
             $this->getEventManager()->trigger('error', $th->getMessage());
         }
