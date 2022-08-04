@@ -9,6 +9,7 @@
 declare(strict_types=1);
 
 return [
+    'Laminas\Di',
     'Webinertia\Utils',
     'Laminas\Paginator\Adapter\LaminasDb',
     'Laminas\Paginator',
@@ -26,7 +27,6 @@ return [
     'Laminas\InputFilter',
     'Laminas\Filter',
     'Laminas\Hydrator',
-    'Laminas\Di',
     'Laminas\Db',
     'Laminas\Router',
     'Laminas\Validator',

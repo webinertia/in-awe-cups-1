@@ -8,7 +8,6 @@ use Closure;
 use Laminas\Db\Exception\RuntimeException;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
-use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\Exception\InvalidArgumentException;
 use Laminas\Db\TableGateway\Exception\RuntimeException as TableGatewayRuntimeException;
@@ -26,7 +25,7 @@ trait ModelTrait
      * @param mixed $value
      * @throws RuntimeException
      */
-    public function fetchByColumn($column, $value): ModelInterface
+    public function fetchByColumn($column, $value): self
     {
         $column    = (string) $column;
         $resultSet = $this->gateway->select([$column => $value]);
@@ -45,11 +44,12 @@ trait ModelTrait
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    public function fetchColumns($column, $value, ?array $columns = ['*']): ModelInterface
+    public function fetchColumns($column, $value, ?array $columns = ['*']): self
     {
-        $resultSet = $this->gateway->select(function (Select $select) use ($column, $value, $columns) {
-            $select->columns($columns)->where([$column => $value]);
-        });
+        $select = $this->gateway->getSql()->select();
+        $select->columns($columns);
+        $select->where([$column => $value]);
+        $resultSet = $this->gateway->selectWith($select);
         $row       = $resultSet->current();
         if (! $row) {
             throw new RuntimeException(

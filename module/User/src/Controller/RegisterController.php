@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
+use App\Form\FormManagerAwareInterface;
+use App\Form\FormManagerAwareTrait;
 use App\Service\Email;
 use DateTime;
-use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use User\Filter\RegistrationHash as Filter;
 use User\Form\UserForm;
@@ -18,8 +19,10 @@ use function password_verify;
 use function strpos;
 use function substr;
 
-class RegisterController extends AbstractAppController
+class RegisterController extends AbstractAppController implements FormManagerAwareInterface
 {
+    use FormManagerAwareTrait;
+
     /** @var UserForm $form */
     protected $form;
     /** @var string $resourceId */
@@ -29,7 +32,7 @@ class RegisterController extends AbstractAppController
      */
     public function indexAction(): object
     {
-        $this->form  = $this->getService(FormElementManager::class)->get(UserForm::class);
+        $this->form  = $this->formManager->build(UserForm::class, ['mode' => 'create']);
         $appSettings = $this->getService('config')['app_settings'];
         // if registration is disabled return as there is nothing more to do
         if (! $appSettings['security']['enable_registration']) {

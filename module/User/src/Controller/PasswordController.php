@@ -24,7 +24,6 @@ final class PasswordController extends AbstractAppController
     protected $resourceId = 'account';
     public function resetAction(): ViewModel
     {
-
         try {
             $appSettings = $this->getService('config')['app_settings'];
             $step        = $this->params('step', 'zero');

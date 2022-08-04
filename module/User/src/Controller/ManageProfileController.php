@@ -4,109 +4,98 @@ declare(strict_types=1);
 
 namespace User\Controller;
 
+use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
+use App\Form\FormManagerAwareInterface;
+use App\Form\FormManagerAwareTrait;
 use App\Log\LogEvent;
-use App\Log\LoggerAwareInterface;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
-use Laminas\Form\FormElementManager;
-use Laminas\I18n\Translator\Translator;
-use Laminas\I18n\Translator\TranslatorAwareTrait;
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
-use User\Acl\CheckActionAccessTrait;
-use User\Acl\ResourceAwareTrait;
 use User\Form\ProfileForm;
-use User\Service\UserService;
 
 use function array_merge;
 use function array_merge_recursive;
 use function sprintf;
 
-/**
- * Plugin and trait method signatures for static analysis
- * @codingStandardsIgnoreStart
- * @method \App\Controller\Plugin\Email email()
- * @method \App\Controller\Plugin\ServiceLocator getService(string $serviceName)
- * @method \Laminas\Mvc\Plugin\FlashMessenger\FlashMessenger flashMessenger()
- * @method \User\Controller\Plugin\Acl acl()
- * @method \User\Acl\CheckActionAccessTrait isAllowed(?ResourceInterface $resourceInterface = null, ?string $privilege = null)
- * @method \User\Controller\Plugin\Identity identity()
- * @method \Laminas\Http\PhpEnvironment\Request getRequest()
- * @method \Laminas\Http\PhpEnvironment\Response getResponse()
- * @codingStandardsIgnoreEnd
- */
-
-final class ManageProfileController extends AbstractActionController implements ResourceInterface, LoggerAwareInterface
+final class ManageProfileController extends AbstractAppController implements FormManagerAwareInterface
 {
-    use CheckActionAccessTrait;
-    use ResourceAwareTrait;
-    use TranslatorAwareTrait;
+    use FormManagerAwareTrait;
 
     /** @var array<mixed> $config */
     protected $config;
-    /** @var FormElementManager $formManager */
-    protected $formManager;
     /** @var string $resourceId */
     protected $resourceId = 'profile';
-    /** @var Translator $translator */
-    protected $translator;
-    /** @var UserService $userService */
-    protected $userService;
-    public function __construct(
-        FormElementManager $formManager,
-        Translator $translator,
-        UserService $userService,
-        array $config
-    ) {
-        $this->config      = $config;
-        $this->formManager = $formManager;
-        $this->translator  = $translator;
-        $this->userService = $userService;
-    }
 
-    public function editAddressAction()
+    public function addressAction()
     {
     }
 
-    public function editSocialMediaAction(): ?ModelInterface
+    public function socialMediaAction(): ?ModelInterface
     {
+        //$this->response->setStatusCode(403);
+
         $htmlModel = new ViewModel();
         $htmlModel->setTerminal(true);
         $jsonModel = new JsonModel();
         $viewData  = [
-            'message'       => 'success',
+            'message'       => '',
             'displayAction' => 'Editing Social Media',
-            'form'          => '',
+            'success'       => false,
+            'target'        => $this->params()->fromRoute('action'),
+            'isJson'        => false,
             'status'        => 'inprogress',
+            'formHasErrors' => false,
         ];
+        $headers   = $this->request->getHeaders();
+        $accept    = $headers->get('Accept');
+        if ($accept->match('application/json')) {
+            $viewData['isJson'] = true;
+            //return $jsonModel;
+        }
         if (! $this->isAllowed($this, 'edit')) { // if your not allowed were gonna tell ya you are not allowed
-            $viewData['message']         = sprintf(
+            $viewData['message'] = sprintf(
                 $this->getTranslator()->translate('forbidden_known_action_403'),
                 $this->getTranslator()->translate($this->params()->fromRoute('action'))
             );
-            $veiewData['isJsonResponse'] = true;
             $jsonModel->setVariables($viewData);
-            return $jsonModel;
+            //return $jsonModel;
         }
+        // insure we are using data from the requested user, if none is passed then we are editing our own
+        $userService          = $this->userService->fetchByColumn(
+            'userName',
+            $this->params()->fromRoute('userName', $this->identity()->getIdentity()->userName)
+        );
+        $viewData['userName'] = $userService->userName;
         // if we are here we need a form
         $form = $this->formManager->build(ProfileForm::class, ['action' => $this->params()->fromRoute('action')]);
         $form->setAttribute(
             'action',
-            $this->url()->fromRoute('user/manage-profile', ['action' => 'edit-social-media'])
+            $this->url()->fromRoute('user/manage-profile', ['action' => 'social-media'])
         );
-        $userService = $this->identity()->getIdentity();
-        if ($this->request->isPost()) {
+        if ($this->request->isPost()) { // this should be a json request and response
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
-                $formData            = $form->getData()['social-media']; // stopped working here
-                $result              = $userService->save($formData, $formData['id']);
-                $viewData['status']  = 'success';
-                $viewData['message'] = $this->getTranslator()->translate('profile_social_update_success');
+                $formData = $form->getData()['social-media']; // stopped working here
+                $result   = $this->userService->save($formData, $formData['id']);
+                if ($result) {
+                    $viewData['success'] = true;
+                    $viewData['status']  = 'complete';
+                    $viewData['message'] = sprintf(
+                        $this->getTranslator()->translate('profile_social_update_success'),
+                        $this->identity()->getIdentity()->getFullName()
+                    );
+                } else {
+                    $viewData['message'] = sprintf(
+                        $this->getTranslator()->translate('profile_social_update_failure'),
+                        $this->identity()->getIdentity()->getFullName()
+                    );
+                }
+                $jsonModel->setVariables($viewData += $formData);
+                return $jsonModel;
             }
         } else {
             $requestedUserName = $this->params()->fromRoute('userName', $userService->userName);
@@ -124,7 +113,7 @@ final class ManageProfileController extends AbstractActionController implements 
         return $htmlModel;
     }
 
-    public function editProfileAction(): mixed
+    public function profileAction(): mixed
     {
         $view = new ViewModel();
         $form = $this->formManager->build(
@@ -188,6 +177,23 @@ final class ManageProfileController extends AbstractActionController implements 
             }
         }
         $view->setVariable('form', $form);
+        return $view;
+    }
+
+    public function ajaxTemplateAction(): ?ViewModel
+    {
+        $view = new ViewModel();
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $view->setTerminal(true);
+            $view->setTemplate('user/manage-profile/partials/' . $this->params()->fromRoute('section'));
+            $userName = $this->params()->fromRoute('userName');
+            $data     = $this->userService->fetchColumns(
+                'userName',
+                $userName,
+                $this->userService->getSectionColumns($this->params()->fromRoute('section'))
+            );
+            $view->setVariable('data', $data);
+        }
         return $view;
     }
 }

@@ -1,4 +1,6 @@
-<div id="<?=$activatedUser->userName?>" class="userlist-toolbar float-right">
+<?php
+// at this point this file is not used since there is a recdirect from the controller back to the list action
+?>
     <?php
     if($this->acl()->isAllowed($this->user, $activatedUser, 'delete') && $activatedUser->id !== '1'):
     ?>
@@ -25,9 +27,3 @@
         }
     }
     ?>
-    <?php
-    if ($activatedUser->verified) : ?>
-            <span class="mdi mdi-check-decagram text-success align-middle" data-toggle="tooltip" title="Verified Account"></span>
-    <?php
-    endif; ?>
-</div>

@@ -18,6 +18,7 @@ use Laminas\ModuleManager\ModuleManager;
 use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\Session\SessionManager;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\Resolver\TemplatePathStack;
@@ -64,10 +65,11 @@ final class Module
 
     public function onBootstrap(MvcEvent $e): void
     {
-        $app          = $e->getApplication();
-        $eventManager = $app->getEventManager();
-        $this->sm     = $app->getServiceManager();
-        $this->config = $this->sm->get('config');
+        $app            = $e->getApplication();
+        $eventManager   = $app->getEventManager();
+        $this->sm       = $app->getServiceManager();
+        $sessionManager = $this->sm->get(SessionManager::class);
+        $this->config   = $this->sm->get('config');
         date_default_timezone_set($this->config['app_settings']['server']['time_zone']);
         GlobalAdapterFeature::setStaticAdapter($this->sm->get(AdapterInterface::class));
         $psrLogAdapter = $this->sm->get(LoggerInterface::class);

@@ -8,7 +8,7 @@ use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use User\Form\UserForm;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 final class UserFormFactory implements FactoryInterface
 {
@@ -21,7 +21,7 @@ final class UserFormFactory implements FactoryInterface
     {
         return new $requestedName(
             $container->get(AclInterface::class),
-            $container->get(UserInterface::class),
+            $container->get(UserServiceInterface::class),
             $options
         );
     }

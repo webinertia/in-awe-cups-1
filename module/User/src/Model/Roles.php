@@ -38,10 +38,12 @@ final class Roles implements ModelInterface
         foreach ($config as $role) {
             $roleData[] = $role;
             // The following builds the select data array for the roles dropdown form element
-            $selectData[$role['id']] = [
-                'value' => $role['role'],
-                'label' => $role['role'],
-            ];
+            if ($role['role'] !== 'Guest' && $role['role'] !== 'Super Administrator') {
+                $selectData[$role['id']] = [
+                    'value' => $role['role'],
+                    'label' => $role['role'],
+                ];
+            }
         }
         $this->setRoles($roleData);
         $this->setSelectData($selectData);

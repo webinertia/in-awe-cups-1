@@ -20,13 +20,13 @@ use User\Form\Fieldset\AcctDataFieldset;
 use User\Form\Fieldset\PasswordFieldset;
 use User\Form\Fieldset\ProfileFieldset;
 use User\Form\Fieldset\RoleFieldset;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 class UserForm extends BaseForm
 {
     /** @var AclInterface $pm */
     protected $acl;
-    /** @var UserInterface $userInterface */
+    /** @var UserServiceInterface $userInterface */
     protected $userInterface;
     /** @var string $mode */
     protected $mode;
@@ -38,7 +38,7 @@ class UserForm extends BaseForm
      */
     public function __construct(
         AclInterface $acl,
-        UserInterface $userInterface,
+        UserServiceInterface $userInterface,
         $options = []
     ) {
         $this->acl           = $acl;
@@ -57,13 +57,16 @@ class UserForm extends BaseForm
     {
         // get the options, notice that we set a default in the __construct
         $options = $this->getOptions();
+        if (! isset($options['userId'])) {
+            $options['userId'] = null;
+        }
         $factory = $this->getFormFactory();
         $manager = $factory->getFormElementManager();
         $secData = $manager->build(SecurityFieldset::class, ['mode' => $options['mode']]);
         $this->add($secData, ['priority' => -1]);
         $acctData = $manager->build(
             AcctDataFieldset::class,
-            ['mode' => $options['mode'], 'userId' => $options['userId']]
+            ['mode' => $options['mode'], 'userId' => $options['userId'] ?? $options['userId']]
         );
         $this->add($acctData, ['priority' => 1]);
         // we will use this in both mode(s), but only if the user is already logged in and has privilege

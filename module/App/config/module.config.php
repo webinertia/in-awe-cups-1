@@ -195,10 +195,11 @@ return [
         ],
     ],
     'service_manager'    => [
-        'initializers' => [
-            Initializer\ControllerInitializer::class,
+        'aliases'   => [
+            //AuthenticationServiceInterface::class => AuthenticationService::class,
         ],
-        'factories'    => [
+        'factories' => [
+            //AuthenticationService::class   => Service\AuthenticationServiceFactory::class,
             Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
             Model\Settings::class          => Model\Factory\SettingsFactory::class,
             Model\Theme::class             => InvokableFactory::class,

@@ -13,10 +13,7 @@ use Laminas\View\Model\ViewModel;
 use User\Acl\AclAwareTrait;
 use User\Acl\CheckActionAccessTrait;
 use User\Acl\ResourceAwareTrait;
-use User\Service\UserServiceAwareInterface;
 use User\Service\UserServiceAwareTrait;
-
-use function dirname;
 
 /**
  * Abstract App Controller

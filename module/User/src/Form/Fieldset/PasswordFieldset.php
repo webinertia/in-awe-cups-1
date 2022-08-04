@@ -22,12 +22,10 @@ final class PasswordFieldset extends Fieldset implements InputFilterProviderInte
      * @return void
      * @throws InvalidArgumentException
      */
-    public function __construct($name = 'password-data', $options = null)
+    public function __construct($name = 'password-data', $options = [])
     {
         parent::__construct($name);
-        if ($options !== []) {
-            $this->setOptions($options);
-        }
+        parent::setOptions($options);
     }
 
     public function init(): void

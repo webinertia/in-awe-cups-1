@@ -9,6 +9,7 @@ use App\Form\FormInterface;
 use App\Log\LogEvent;
 use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
+use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
 use Throwable;
@@ -218,13 +219,14 @@ final class AccountController extends AbstractAppController
         }
     }
 
-    public function staffActivateAction(): ViewModel
+    public function staffActivateAction(): ?ViewModel
     {
         try {
             $user = false;
             if ($this->isAllowed()) {
                 if ($this->request->isXmlHttpRequest()) {
-                    $this->view->setTerminal(true);
+                    $jsonModel = new JsonModel();
+                    //$this->view->setTerminal(true);
                 }
                 $userName = $this->params()->fromRoute('userName');
                 $user     = $this->userService->fetchByColumn('userName', $userName);
@@ -260,10 +262,17 @@ final class AccountController extends AbstractAppController
             $this->getEventManager()->trigger(LogEvent::ERROR, $e->getMessage());
         }
         $this->view->setVariables(['user' => $this->identity()->getIdentity(), 'activatedUser' => $user]);
+        $this->redirect()->toRoute(
+            'user/list',
+            [
+                'page'  => 1,
+                'count' => 5,
+            ]
+        );
         return $this->view;
     }
 
-    public function staffDeactivateAction(): ViewModel
+    public function staffDeactivateAction(): ?ViewModel
     {
         try {
             $user = false;
@@ -309,6 +318,13 @@ final class AccountController extends AbstractAppController
             $this->getEventManager()->trigger(LogEvent::ALERT, $e->getMessage());
         }
         $this->view->setVariables(['user' => $this->identity()->getIdentity(), 'deactivatedUser' => $user]);
+        $this->redirect()->toRoute(
+            'user/list',
+            [
+                'page'  => $this->params()->fromRoute('page'),
+                'count' => 5,
+            ]
+        );
         return $this->view;
     }
 }

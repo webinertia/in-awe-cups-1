@@ -11,7 +11,7 @@ $this->headTitle($title);
             <h6 class="card-header"><?=$title?></h6>
             <div class="card-body">
                 <?php
-                if (! $this->appSettings->security->enable_registration) :
+                if (! $this->config('app_settings')['security']['enable_registration']) :
                     ?>
                     <p>Registration is currently disabled. Please contact the site administrator for assistance. <a href="mailto:<?=$this->appSettings->email->contact_form_email; ?>">Email Administrator</a></p>
                     <?php
