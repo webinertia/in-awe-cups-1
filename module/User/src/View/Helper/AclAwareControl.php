@@ -9,7 +9,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Helper\AbstractHelper;
 use Laminas\View\Helper\TranslatorAwareTrait;
 use Laminas\View\Renderer\PhpRenderer;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 final class AclAwareControl extends AbstractHelper
 {
@@ -39,7 +39,7 @@ final class AclAwareControl extends AbstractHelper
     private $iconOptionsConfigKey = 'icon_options';
     /** @var string $buttonsOptionsConfigKey */
     private $buttonOptionsConfigKey = 'button_options';
-    /** @var UserInterface */
+    /** @var UserServiceInterface */
     protected $user;
     /** @var AclInterface $acl */
     protected $acl;
@@ -64,7 +64,7 @@ final class AclAwareControl extends AbstractHelper
      * @param string $url
      * @param array $options
      */
-    public function __invoke(UserInterface $user, $resource, $privilege, $type, $url, $options = []): string
+    public function __invoke(UserServiceInterface $user, $resource, $privilege, $type, $url, $options = []): string
     {
         $this->user      = $user;
         $this->resource  = $resource;

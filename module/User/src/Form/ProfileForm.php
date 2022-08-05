@@ -26,11 +26,11 @@ class ProfileForm extends BaseForm implements FormInterface
     protected $userService;
     /** @var array<string,class-string<ElementInterface>> $fieldsetMap */
     protected $fieldsetMap = [
-        'edit-account-data' => AcctDataFieldset::class,
-        'edit-password'     => PasswordFieldset::class,
-        'edit-address'      => ProfileFieldset::class,
-        'edit-social-media' => SocialMediaFieldset::class,
-        'edit-profile'      => ProfileFieldset::class, // this will load all fieldsets
+        'account-data' => AcctDataFieldset::class,
+        'password'     => PasswordFieldset::class,
+        'address'      => ProfileFieldset::class,
+        'social-media' => SocialMediaFieldset::class,
+        'profile'      => ProfileFieldset::class, // this will load all fieldsets
     ];
     /** @return void */
     public function __construct(

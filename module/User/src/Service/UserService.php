@@ -6,11 +6,16 @@ namespace User\Service;
 
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
+use Laminas\Authentication\Result as AuthResult;
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Hydrator\ObjectPropertyHydrator as Hydrator;
 use User\Db\UserGateway;
 use User\Model\Roles;
+use User\Service\UserServiceInterface;
 
-final class UserService implements UserInterface, ModelInterface
+use function array_key_exists;
+
+final class UserService implements UserServiceInterface, ModelInterface
 {
     use ModelTrait;
 
@@ -132,12 +137,15 @@ final class UserService implements UserInterface, ModelInterface
     /**
      * @param array<mixed> $data
      */
-    public function save(array $data, ?int $id = null): mixed
+    public function save(array $data, ?int $id = null): int
     {
         if ($id !== null) {
             $id = (int) $id;
         }
-
+        /**
+         * only returns a value other than zero if an insert or update was successful
+         * which requires a change in data
+         **/
         return $id === null
         ? $this->gateway->insert($data) : $this->gateway->update($data, ['id' => $id]);
     }
@@ -223,5 +231,41 @@ final class UserService implements UserInterface, ModelInterface
     public function getFilterPassword(): bool
     {
         return $this->filterPassword;
+    }
+
+    public function getAdapter(): AdapterInterface
+    {
+        return $this->gateway->getAdapter();
+    }
+
+    public function login(string $userName, string $password): AuthResult
+    {
+        return $this->gateway->login($userName, $password);
+    }
+
+    public function getSectionColumns(?string $section = null): array
+    {
+        $map = [
+            'member-details' => [
+                'profileImage',
+                'firstName',
+                'lastName',
+                'role',
+                'jobTitle',
+                'city',
+                'state',
+            ],
+            'social-media'   => [
+                'webUrl',
+                'github',
+                'twitter',
+                'instagram',
+                'facebook',
+            ],
+        ];
+        if ($section !== null && array_key_exists($section, $map)) {
+            return $map[$section];
+        }
+        return $map;
     }
 }

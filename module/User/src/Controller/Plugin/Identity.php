@@ -6,16 +6,17 @@ namespace User\Controller\Plugin;
 
 use Laminas\Authentication\AuthenticationService;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
-use User\Service\UserInterface;
+use User\Service\UserService;
+use User\Service\UserServiceInterface;
 
 final class Identity extends AbstractPlugin
 {
     /** @var AuthenticationService $authenticationService */
     protected $authenticationService;
-    /** @var UserInterface $userInterface */
+    /** @var UserServiceInterface $userInterface */
     protected $userInterface;
 
-    public function __construct(AuthenticationService $authenticationService, UserInterface $userInterface)
+    public function __construct(AuthenticationService $authenticationService, UserServiceInterface $userInterface)
     {
         $this->authenticationService = $authenticationService;
         $this->userInterface         = $userInterface;
@@ -40,7 +41,7 @@ final class Identity extends AbstractPlugin
         return $this->authenticationService->$name(...$arguments);
     }
 
-    public function getIdentity(): UserInterface
+    public function getIdentity(): UserService
     {
         return $this->userInterface;
     }

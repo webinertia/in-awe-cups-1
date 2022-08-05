@@ -6,7 +6,6 @@ namespace User;
 
 use App\Controller\Factory\AppControllerFactory;
 use Laminas\I18n\Translator\Loader\PhpArray;
-use Laminas\Mvc\Controller\LazyControllerAbstractFactory;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -94,10 +93,11 @@ return [
                     'manage-profile' => [
                         'type'    => Segment::class,
                         'options' => [
-                            'route'       => '/user/manage-profile[/:action[/:userName]]',
+                            'route'       => '/user/manage-profile[/:action[/:userName[/:section]]]',
                             'constraints' => [
                                 'action'   => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'userName' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'section'  => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ],
                             'defaults'    => [
                                 'controller' => Controller\ManageProfileController::class,
@@ -345,7 +345,7 @@ return [
         'factories' => [
             Controller\AccountController::class       => AppControllerFactory::class,
             Controller\AdminController::class         => AppControllerFactory::class,
-            Controller\ManageProfileController::class => LazyControllerAbstractFactory::class,
+            Controller\ManageProfileController::class => AppControllerFactory::class,
             Controller\PasswordController::class      => AppControllerFactory::class,
             Controller\ProfileController::class       => AppControllerFactory::class,
             Controller\RegisterController::class      => AppControllerFactory::class,
@@ -365,7 +365,8 @@ return [
     ],
     'service_manager'    => [
         'aliases'   => [
-            Service\UserInterface::class => Service\UserService::class,
+            'UserInterface'                     => Service\UserServiceInterface::class,
+            Service\UserServiceInterface::class => Service\UserService::class,
         ],
         'factories' => [
             AclInterface::class                    => Acl\AclFactory::class,

@@ -20,7 +20,7 @@ elseif ($this->status === 'error') :
 endif;
 ?>
 <?php
-if (isset($this->form) && $this->status === 'inprogress') {
+if (isset($this->form)) {
     $this->form->addSubmit();
     echo $this->bootstrapForm($this->form);
 }

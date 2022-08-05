@@ -38,7 +38,7 @@ $buttonOptions = [
             <div class="card-body">
                 <p>
                 <?php
-                    if ($this->appSettings['security']['enable_login'] && isset($this->form)) {
+                    if ($this->config('app_settings')['security']['enable_login'] && isset($this->form)) {
                         $this->form->addSubmit();
                         echo $this->bootstrapForm($this->form);
                     }

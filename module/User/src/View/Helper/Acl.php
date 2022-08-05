@@ -35,6 +35,6 @@ final class Acl extends AbstractHelper
      */
     public function __call($name, $arguments)
     {
-        return $this->acl->{$name}(...$arguments);
+        return $this->acl->$name(...$arguments);
     }
 }

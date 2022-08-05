@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace User\Controller;
 
 use App\Controller\AbstractAppController;
+use App\Form\FormManagerAwareInterface;
+use App\Form\FormManagerAwareTrait;
 use App\Service\Email;
 use DateTime;
-use Laminas\Form\FormElementManager;
 use Laminas\View\Model\ViewModel;
 use User\Filter\RegistrationHash as Filter;
 use User\Form\UserForm;
-use User\Service\UserInterface;
+use User\Service\UserService;
 
 use function array_merge;
 use function password_verify;
 use function strpos;
 use function substr;
 
-class RegisterController extends AbstractAppController
+class RegisterController extends AbstractAppController implements FormManagerAwareInterface
 {
+    use FormManagerAwareTrait;
+
     /** @var UserForm $form */
     protected $form;
     /** @var string $resourceId */
@@ -29,7 +32,7 @@ class RegisterController extends AbstractAppController
      */
     public function indexAction(): object
     {
-        $this->form  = $this->getService(FormElementManager::class)->get(UserForm::class);
+        $this->form  = $this->formManager->build(UserForm::class, ['mode' => 'create']);
         $appSettings = $this->getService('config')['app_settings'];
         // if registration is disabled return as there is nothing more to do
         if (! $appSettings['security']['enable_registration']) {
@@ -61,7 +64,7 @@ class RegisterController extends AbstractAppController
         $filter    = new Filter();
         $hash      = $filter->filter($value);
         $token     = $acctData['email'] . $hash;
-        $result    = $this->usrGateway->insert(
+        $result    = $this->userService->save(
             array_merge($acctData, $profileData, $passwordData, $roleData, ['regHash' => $hash])
         );
         $sendEmail = false;
@@ -80,14 +83,16 @@ class RegisterController extends AbstractAppController
         if (! empty($token)) {
             $position = strpos($token, '$');
             $email    = substr($token, 0, $position);
-            $user     = $this->usrGateway->fetchByColumn('email', $email);
-            if ($user instanceof UserInterface) {
+            /** @var UserService $user */
+            $user = $this->userService->fetchByColumn('email', $email);
+            $user->setFilterPassword(true);
+            if ($user instanceof UserService) {
                 $check = password_verify($email . $user->regDate, $user->regHash);
                 if ($check) {
                     $user->active   = 1;
                     $user->verified = 1;
                     $user->regHash  = null;
-                    $result         = $this->usrGateway->update($user, ['id' => $user->id]);
+                    $result         = $this->userService->save($user->toArray(), $user->id);
                     if ($result) {
                         $this->view->setVariable('verified', true);
                     } else {

@@ -14,6 +14,6 @@ final class SocialMediaFieldsetFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = []): SocialMediaFieldset
     {
         $config = $container->get('config');
-        return new $requestedName(null, $options, $config['app_settings']);
+        return new $requestedName(options:$options, appSettings:$config['app_settings']);
     }
 }

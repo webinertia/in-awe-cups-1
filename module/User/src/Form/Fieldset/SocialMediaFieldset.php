@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace User\Form\Fieldset;
 
 use App\Form\FormInterface;
+use Laminas\Filter\HtmlEntities;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
 use Laminas\Filter\ToInt;
+use Laminas\Filter\UriNormalize;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\Uri;
 
 final class SocialMediaFieldset extends Fieldset implements InputFilterProviderInterface
 {
@@ -65,9 +70,31 @@ final class SocialMediaFieldset extends Fieldset implements InputFilterProviderI
     public function getInputFilterSpecification(): array
     {
         return [
-            'id' => [
+            'id'       => [
                 'filters' => [
                     ['name' => ToInt::class],
+                ],
+            ],
+            'facebook' => [
+                'filters'    => [
+                    ['name' => StringTrim::class],
+                    ['name' => StripTags::class],
+                    ['name' => HtmlEntities::class],
+                    [
+                        'name'    => UriNormalize::class,
+                        'options' => [
+                            'enforcedScheme' => 'https',
+                        ],
+                    ],
+                ],
+                'validators' => [
+                    [
+                        'name'    => Uri::class,
+                        'options' => [
+                            'allowRelative' => true,
+                            'allowAbsolute' => true,
+                        ],
+                    ],
                 ],
             ],
         ];

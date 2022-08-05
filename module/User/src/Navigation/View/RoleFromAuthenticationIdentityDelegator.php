@@ -11,7 +11,7 @@ namespace User\Navigation\View;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\View\Helper\Navigation\AbstractHelper;
 use Psr\Container\ContainerInterface;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 class RoleFromAuthenticationIdentityDelegator
 {
@@ -61,7 +61,7 @@ class RoleFromAuthenticationIdentityDelegator
         if (! $authenticationService instanceof AuthenticationService) {
             return $helper;
         }
-        $user = $container->get(UserInterface::class);
+        $user = $container->get(UserServiceInterface::class);
         $helper->setRole($user);
         return $helper;
     }

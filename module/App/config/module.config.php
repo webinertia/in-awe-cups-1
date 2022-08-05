@@ -17,17 +17,15 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session\SaveHandler\SaveHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-use function dirname;
-
 return [
     'app_settings'       => [ // app_settings that are not to be edited are stored here
         'server' => [
-            'app_path'        => dirname($_SERVER['DOCUMENT_ROOT'], 1),
-            'upload_basepath' => dirname($_SERVER['DOCUMENT_ROOT'], 1) . '/public/module',
+            'app_path'        => __DIR__ . '/../../../',
+            'upload_basepath' => __DIR__ . '/../../../public/module',
             'scheme'          => $_SERVER['REQUEST_SCHEME'],
         ],
     ],
-    'base_dir'           => dirname(__DIR__, 3),
+    'base_dir'           => __DIR__ . '/../../../',
     'db'                 => [
         'sessions_table_name' => 'sessions',
         'log_table_name'      => 'log',
@@ -306,6 +304,7 @@ return [
             'bootstrapForm'           => View\Helper\BootstrapForm::class,
             'bootstrapFormCollection' => View\Helper\BootstrapFormCollection::class,
             'bootstrapFormRow'        => View\Helper\BootstrapFormRow::class,
+            'config'                  => View\Helper\Config::class,
             'mapPriority'             => View\Helper\MapLogPriority::class,
         ],
         'factories' => [
@@ -313,6 +312,7 @@ return [
             View\Helper\BootstrapForm::class           => InvokableFactory::class,
             View\Helper\BootstrapFormCollection::class => InvokableFactory::class,
             View\Helper\BootstrapFormRow::class        => InvokableFactory::class,
+            View\Helper\Config::class                  => View\Helper\Factory\ConfigFactory::class,
         ],
     ],
     'view_manager'       => [

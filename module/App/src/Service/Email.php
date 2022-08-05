@@ -20,7 +20,7 @@ use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Validator\EmailAddress;
 use RuntimeException;
 use User\Acl\ResourceAwareTrait;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 use function sprintf;
 
@@ -54,7 +54,7 @@ final class Email implements ResourceInterface
     public $message;
     /** @var string $subject */
     public $subject;
-    /** @var UserInterface $user */
+    /** @var UserServiceInterface $user */
     public $user;
     /** @var SmtpTransport */
     protected $transport;

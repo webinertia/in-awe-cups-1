@@ -6,16 +6,16 @@ namespace User\View\Helper;
 
 use Laminas\Authentication\AuthenticationService;
 use Laminas\View\Helper\AbstractHelper;
-use User\Service\UserInterface;
+use User\Service\UserServiceInterface;
 
 final class Identity extends AbstractHelper
 {
     /** @var AuthenticationService $authenticationService */
     protected $authenticationService;
-    /** @var UserInterface $userInterface */
+    /** @var UserServiceInterface $userInterface */
     protected $userInterface;
 
-    public function __construct(AuthenticationService $authenticationService, UserInterface $userInterface)
+    public function __construct(AuthenticationService $authenticationService, UserServiceInterface $userInterface)
     {
         $this->authenticationService = $authenticationService;
         $this->userInterface         = $userInterface;
@@ -35,7 +35,7 @@ final class Identity extends AbstractHelper
         return $this->authenticationService->{$name}(...$arguments);
     }
 
-    public function getIdentity(): UserInterface
+    public function getIdentity(): UserServiceInterface
     {
         return $this->userInterface;
     }

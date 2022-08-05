@@ -16,8 +16,6 @@ use function sprintf;
 
 final class ProfileController extends AbstractAppController
 {
-    /** @var Users $usrModel */
-    protected $usrModel;
     /** @var ProfileForm $form */
     protected $form;
     /** @var string $resourceId */
@@ -43,7 +41,7 @@ final class ProfileController extends AbstractAppController
             if ($userName === $user->userName) {
                 $profileData = $user;
             } else {
-                $profileData = $this->usrGateway->fetchByColumn('userName', $userName);
+                $profileData = $this->userService->fetchByColumn('userName', $userName);
             }
             $this->view->setVariable('data', $profileData);
         } catch (RuntimeException $e) {

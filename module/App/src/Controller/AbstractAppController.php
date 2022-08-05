@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Log\LoggerAwareInterface;
+use App\Controller\ControllerInterface;
+use App\Service\AppSettingsAwareTrait;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
+use User\Acl\AclAwareTrait;
 use User\Acl\CheckActionAccessTrait;
 use User\Acl\ResourceAwareTrait;
-use User\Db\UserGateway;
-
-use function dirname;
+use User\Service\UserServiceAwareTrait;
 
 /**
  * Abstract App Controller
@@ -30,37 +30,29 @@ use function dirname;
  * @codingStandardsIgnoreEnd
  */
 
-abstract class AbstractAppController extends AbstractActionController implements ResourceInterface, LoggerAwareInterface
+abstract class AbstractAppController extends AbstractActionController implements ControllerInterface
 {
+    use AclAwareTrait, CheckActionAccessTrait {
+        CheckActionAccessTrait::isAllowed insteadof AclAwareTrait;
+    }
+    use AppSettingsAwareTrait;
     use CheckActionAccessTrait;
     use ResourceAwareTrait;
     use TranslatorAwareTrait;
+    use UserServiceAwareTrait;
 
-    /** @var array<mixed> $appSettings */
-    public $appSettings;
-
+    /** @var string $appPath */
+    public $appPath;
     /** @var string $baseUrl */
     public $baseUrl;
-
     /** @var string $basePath */
     public $basePath;
-
     /** @var string $referringUrl */
     public $referringUrl;
-
     /** @var string $resourceId */
     protected $resourceId;
-
-    /**
-     * Shared instance
-     *
-     * @var UserGateway
-     * */
-    protected $usrGateway;
-
     /** @var ViewModel $view */
     protected $view;
-
     /** @var array<string, mixed> $config */
     protected $config;
 
@@ -69,18 +61,15 @@ abstract class AbstractAppController extends AbstractActionController implements
      * @param array<string, mixed> $config
      * */
     public function __construct(
-        ?array $config = null,
-        ?UserGateway $userGateway = null
+        ?array $config = null
     ) {
-        $this->appSettings = $config['app_settings'];
-        $this->config      = $config;
-        $this->view        = new ViewModel();
-        $this->basePath    = dirname(__DIR__, 4);
-        $this->usrGateway  = $userGateway;
+        $this->config   = $config;
+        $this->view     = new ViewModel();
+        $this->appPath  = $this->config['app_settings']['server']['app_path'];
+        $this->basePath = $this->appPath;
 
         $this->view->setVariables([
-            'appSettings' => $this->appSettings,
-            'resourceId'  => null,
+            'resourceId' => null,
         ]);
     }
 }
