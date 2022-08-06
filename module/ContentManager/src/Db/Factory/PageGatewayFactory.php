@@ -8,7 +8,6 @@ use ContentManager\Db\Listener\PageGatewayListener;
 use ContentManager\Db\PageGateway;
 use ContentManager\Model\Page;
 use Laminas\Db\ResultSet\ResultSet;
-use Laminas\EventManager\EventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -24,7 +23,7 @@ final class PageGatewayFactory implements FactoryInterface
         );
         return new $requestedName(
             $config['db']['pages_table_name'],
-            $container->get(EventManager::class),
+            $container->get('EventManager'), // This must use the string name not the class-string
             $resultSetPrototype,
             true,
             $container->get(PageGatewayListener::class)

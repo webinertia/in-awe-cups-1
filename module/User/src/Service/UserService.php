@@ -6,7 +6,6 @@ namespace User\Service;
 
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
-use Laminas\Authentication\Result as AuthResult;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Hydrator\ObjectPropertyHydrator as Hydrator;
 use User\Db\UserGateway;
@@ -15,7 +14,7 @@ use User\Service\UserServiceInterface;
 
 use function array_key_exists;
 
-final class UserService implements UserServiceInterface, ModelInterface
+class UserService implements UserServiceInterface, ModelInterface
 {
     use ModelTrait;
 
@@ -112,8 +111,9 @@ final class UserService implements UserServiceInterface, ModelInterface
     /** @var Hydrator $hydrator */
     protected $hydrator;
 
-    public function __construct(?UserGateway $gateway = null)
-    {
+    public function __construct(
+        ?UserGateway $gateway = null
+    ) {
         $this->hydrator = new Hydrator();
         if ($gateway instanceof UserGateway) {
             $this->gateway = $gateway;
@@ -236,11 +236,6 @@ final class UserService implements UserServiceInterface, ModelInterface
     public function getAdapter(): AdapterInterface
     {
         return $this->gateway->getAdapter();
-    }
-
-    public function login(string $userName, string $password): AuthResult
-    {
-        return $this->gateway->login($userName, $password);
     }
 
     public function getSectionColumns(?string $section = null): array
