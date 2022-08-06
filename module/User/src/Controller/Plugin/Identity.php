@@ -13,7 +13,7 @@ final class Identity extends AbstractPlugin
 {
     /** @var AuthenticationService $authenticationService */
     protected $authenticationService;
-    /** @var UserServiceInterface $userInterface */
+    /** @var UserService $userInterface */
     protected $userInterface;
 
     public function __construct(AuthenticationService $authenticationService, UserServiceInterface $userInterface)
@@ -43,6 +43,9 @@ final class Identity extends AbstractPlugin
 
     public function getIdentity(): UserService
     {
+        if ($this->authenticationService->hasIdentity()) {
+            return $this->userInterface->fetchByColumn('userName', $this->authenticationService->getIdentity());
+        }
         return $this->userInterface;
     }
 

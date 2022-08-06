@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace User\Form\Fieldset;
 
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Authentication\Validator\Authentication;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
 use Laminas\Form\Element\Password;
@@ -14,12 +16,18 @@ use Laminas\Validator\StringLength;
 
 final class LoginFieldset extends Fieldset implements InputFilterProviderInterface
 {
+    /** @var AuthenticationService $authenticationService */
+    protected $authenticationService;
     /**
      * @param array<mixed> $options
      * @return void
      * */
-    public function __construct(?string $name = 'login-data', array $options = [])
-    {
+    public function __construct(
+        AuthenticationService $authenticationService,
+        ?string $name = 'login-data',
+        array $options = []
+    ) {
+        $this->authenticationService = $authenticationService;
         parent::__construct($name, $options);
     }
 
@@ -75,6 +83,17 @@ final class LoginFieldset extends Fieldset implements InputFilterProviderInterfa
                             'encoding' => 'UTF-8',
                             'min'      => 1,
                             'max'      => 100, // cant be longer than this
+                        ],
+                    ],
+                    [
+                        'name'    => Authentication::class,
+                        'options' => [
+                            'identity'   => 'userName',
+                            'credential' => 'password',
+                            'service'    => $this->authenticationService,
+                            'messages'   => [
+                                Authentication::IDENTITY_NOT_FOUND => 'Have you activated your account?',
+                            ],
                         ],
                     ],
                 ],

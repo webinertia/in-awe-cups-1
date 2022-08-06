@@ -6,8 +6,9 @@ namespace User\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\FormInterface;
+use App\Form\FormManagerAwareInterface;
+use App\Form\FormManagerAwareTrait;
 use App\Log\LogEvent;
-use Laminas\Authentication\Result;
 use Laminas\Form\FormElementManager;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
@@ -20,8 +21,10 @@ use User\Service\UserServiceInterface;
 use function array_merge;
 use function sprintf;
 
-final class AccountController extends AbstractAppController
+final class AccountController extends AbstractAppController implements FormManagerAwareInterface
 {
+    use FormManagerAwareTrait;
+
     /** @var string $resourceId */
     protected $resourceId = 'account';
 
@@ -32,45 +35,25 @@ final class AccountController extends AbstractAppController
 
     public function loginAction(): mixed
     {
-        $formManager = $this->getService(FormElementManager::class);
-        $form        = $formManager->get(LoginForm::class);
+        $form = $this->formManager->get(LoginForm::class);
         if (! $this->request->isPost()) {
             $this->view->setVariable('form', $form);
             return $this->view;
         }
         $form->setData($this->request->getPost());
         if (! $form->isValid()) {
+            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_failure');
             $this->view->setVariable('form', $form);
             return $this->view;
-        }
-        $loginData   = $form->getData()['login-data'];
-        $loginResult = $this->userService->login($loginData['userName'], $loginData['password']);
-        if ($loginResult->isValid()) {
-            $userInterface = $this->userService->fetchByColumn('userName', $loginResult->getIdentity());
-            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_success', $userInterface->getLogData());
+        } else {
+            $userService = $this->identity()->getIdentity();
+            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_success', $userService->getLogData());
             $this->flashMessenger()->addSuccessMessage(
                 $this->getTranslator()->translate('login_success')
                 . ' '
-                . sprintf($this->getTranslator()->translate('welcome_back'), $userInterface->getFullName())
+                . sprintf($this->getTranslator()->translate('welcome_back'), $userService->getFullName())
             );
-            return $this->redirect()->toRoute('user/profile', ['userName' => $userInterface->userName]);
-        } else {
-            $messages = $loginResult->getMessages();
-            switch ($loginResult->getCode()) {
-                case Result::FAILURE_IDENTITY_NOT_FOUND:
-                    $fieldset   = $form->get('login-data');
-                    $element    = $fieldset->get('userName');
-                    $messages[] = 'account_activation_login_notice';
-                    $element->setMessages($messages);
-                    break;
-                case Result::FAILURE_CREDENTIAL_INVALID:
-                    $fieldset = $form->get('login-data');
-                    $element  = $fieldset->get('password');
-                    $element  = $fieldset->get('password');
-                    $element->setMessages($messages);
-                    break;
-            }
-            $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_login_failure');
+            return $this->redirect()->toRoute('user/profile', ['userName' => $userService->userName]);
         }
         $this->view->setVariable('form', $form);
         return $this->view;
