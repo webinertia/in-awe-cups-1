@@ -24,20 +24,6 @@ return [
     ],
     'router'            => [
         'routes' => [
-            'page'          => [
-                'type'          => Segment::class,
-                'may_terminate' => true,
-                'options'       => [
-                    'route'       => '[/:title]',
-                    'constraints' => [
-                        'title' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ],
-                    'defaults'    => [
-                        'controller' => Controller\ContentController::class,
-                        'action'     => 'page',
-                    ],
-                ],
-            ],
             'admin.content' => [
                 'type'          => Placeholder::class,
                 'may_terminate' => true,

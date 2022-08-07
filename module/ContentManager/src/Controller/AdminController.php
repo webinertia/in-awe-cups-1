@@ -50,7 +50,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $data          = $form->getData();
                 $data->ownerId = $this->identity()->getIdentity()->id;
                 $data->title   = $filter->filter($data->label);
-                $data->route   = 'page';
+                //$data->route   = 'page';
                 $data->params  = ['title' => $data->title];
                 try {
                     $result = $gateway->insert($data->getArrayCopy());
@@ -118,7 +118,7 @@ final class AdminController extends AbstractAppController implements AdminContro
                 $data          = $form->getData();
                 $data->ownerId = $this->identity()->getIdentity()->id;
                 $data->title   = $filter->filter($data->label);
-                $data->route   = 'page';
+                //$data->route   = 'page';
                 try {
                     $result = $gateway->update($data->getArrayCopy(), ['id' => $data->id]);
                     if (! $result) {

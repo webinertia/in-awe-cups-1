@@ -9,7 +9,6 @@ use App\Form\FormInterface;
 use App\Form\FormManagerAwareInterface;
 use App\Form\FormManagerAwareTrait;
 use App\Log\LogEvent;
-use Laminas\Form\FormElementManager;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ViewModel;
 use RuntimeException;
@@ -62,7 +61,6 @@ final class AccountController extends AbstractAppController implements FormManag
     public function editAction(): ViewModel
     {
         try {
-            $formManager = $this->getService(FormElementManager::class);
             // get the user by userName that is to be edited
             $userName = $this->params()->fromRoute('userName');
             $user     = $this->userService->fetchByColumn('userName', $userName);
@@ -73,7 +71,7 @@ final class AccountController extends AbstractAppController implements FormManag
                 );
                 $this->redirect()->toRoute('home');
             }
-            $form     = $formManager->build(
+            $form     = $this->formManager->build(
                 UserForm::class,
                 ['mode' => FormInterface::EDIT_MODE, 'userId' => $user->id]
             );
@@ -209,7 +207,6 @@ final class AccountController extends AbstractAppController implements FormManag
             if ($this->isAllowed()) {
                 if ($this->request->isXmlHttpRequest()) {
                     $jsonModel = new JsonModel();
-                    //$this->view->setTerminal(true);
                 }
                 $userName = $this->params()->fromRoute('userName');
                 $user     = $this->userService->fetchByColumn('userName', $userName);

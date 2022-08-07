@@ -25,7 +25,7 @@ final class TestController extends AbstractAppController implements LoggerAwareI
     protected $resourceId = 'test';
     public function indexAction(): ViewModel
     {
-        //Debug::dump($_SESSION);
+        Debug::dump($this->params()->fromQuery());
         $settings = $this->getService('config')['app_settings'];
         $appSettings    = $this->getService('config')['app_settings'];
         $moduleSettings = $this->getService('config')['module_settings']['user'];

@@ -31,7 +31,7 @@ return [
     'Laminas\Router',
     'Laminas\Validator',
     'Laminas\Diactoros',
-    'ContentManager',
     'App',
+    'ContentManager',
     'User',
 ];

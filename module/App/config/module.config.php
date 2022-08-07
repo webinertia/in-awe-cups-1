@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App;
 
 use App\Log\Processors\PsrPlaceholder;
+use ContentManager\Controller\ContentController;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Log\Logger;
@@ -34,6 +35,20 @@ return [
     'router'             => [
         'router_class' => TranslatorAwareTreeRouteStack::class,
         'routes'       => [
+            'page'    => [
+                'type'          => Segment::class,
+                'may_terminate' => true,
+                'options'       => [
+                    'route'       => '[/:title]',
+                    'constraints' => [
+                        'title' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults'    => [
+                        'controller' => ContentController::class,
+                        'action'     => 'page',
+                    ],
+                ],
+            ],
             'home'    => [
                 'type'    => Literal::class,
                 'options' => [
