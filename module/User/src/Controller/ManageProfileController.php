@@ -36,8 +36,6 @@ final class ManageProfileController extends AbstractAppController implements For
 
     public function socialMediaAction(): ?ModelInterface
     {
-        //$this->response->setStatusCode(403);
-
         $htmlModel = new ViewModel();
         $htmlModel->setTerminal(true);
         $jsonModel = new JsonModel();
@@ -79,7 +77,7 @@ final class ManageProfileController extends AbstractAppController implements For
         if ($this->request->isPost()) { // this should be a json request and response
             $form->setData($this->request->getPost());
             if ($form->isValid()) {
-                $formData = $form->getData()['social-media']; // stopped working here
+                $formData = $form->getData()['social-media'];
                 $result   = $this->userService->save($formData, $formData['id']);
                 if ($result) {
                     $viewData['success'] = true;
@@ -178,6 +176,18 @@ final class ManageProfileController extends AbstractAppController implements For
         }
         $view->setVariable('form', $form);
         return $view;
+    }
+
+    public function memberDetailsAction(): ?ModelInterface
+    {
+        if ($this->isAllowed($this, 'edit')) {
+            if ($this->request->isPost()) {
+                $data = $this->request->getPost();
+
+            } else {
+
+            }
+        }
     }
 
     public function ajaxTemplateAction(): ?ViewModel

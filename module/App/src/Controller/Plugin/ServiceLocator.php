@@ -19,7 +19,7 @@ final class ServiceLocator extends AbstractPlugin
 
     /**
      * @param string|class-string $serviceName
-     * @return ServiceManager|AbstractPluginManager|array<string|class-string, Entry>
+     * @return mixed Entry
      * */
     public function __invoke(string $serviceName)
     {

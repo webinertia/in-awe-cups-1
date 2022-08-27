@@ -9,7 +9,7 @@
 declare(strict_types=1);
 
 return [
-    //'Laminas\Di',
+    'Webinertia\Installer',
     'Webinertia\Utils',
     'Laminas\Paginator\Adapter\LaminasDb',
     'Laminas\Paginator',

@@ -31,8 +31,8 @@ final class IndexController extends AbstractAppController implements FormManager
 
     public function indexAction(): mixed
     {
-        $page     = $this->getService(Page::class);
-        $homePage = $page->getLandingPage();
+        $this->page = $this->getService(Page::class);
+        $homePage   = $this->page->getLandingPage();
         $this->view->setVariables([
             'page' => $homePage,
         ]);

@@ -23,7 +23,7 @@ return [
         'server' => [
             'app_path'        => __DIR__ . '/../../../',
             'upload_basepath' => __DIR__ . '/../../../public/module',
-            'scheme'          => $_SERVER['REQUEST_SCHEME'],
+            'scheme'          => $_SERVER['REQUEST_SCHEME'] ?? 'http',
         ],
     ],
     'base_dir'           => __DIR__ . '/../../../',
@@ -221,7 +221,7 @@ return [
     'controllers'        => [
         'factories' => [ // move this to an abstract factory???
             Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
-            Controller\IndexController::class => LazyControllerAbstractFactory::class,
+            Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
             Controller\LogController::class   => Controller\Factory\AppControllerFactory::class,
         ],
