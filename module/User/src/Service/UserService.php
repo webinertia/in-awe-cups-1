@@ -13,18 +13,17 @@ use User\Model\Roles;
 use User\Service\UserServiceInterface;
 
 use function array_key_exists;
-use function in_array;
-use function is_array;
 
 class UserService implements UserServiceInterface, ModelInterface
 {
     use ModelTrait;
 
-    public $acct_data;
-    public $social_media;
-    public $member_details;
-
-
+    /** @var array $acctData */
+    public $acctData;
+    /** @var array $socialMedia */
+    public $socialMedia;
+    /** @var array $memberDetails */
+    public $memberDetails;
     /** @var int $id */
     public $id;
     /** @var string $userName */
@@ -269,12 +268,5 @@ class UserService implements UserServiceInterface, ModelInterface
             return $map[$section];
         }
         return $map;
-    }
-    public function __set($name, $value)
-    {
-        // $sectionVars = [$this->$acct_data, $this->$member_details, $this->$social_media];
-        // if (in_array($name, $sectionVars) && is_array($value) && $value !== []) {
-        //     $this->hydrator->hydrate($value, $this);
-        // }
     }
 }

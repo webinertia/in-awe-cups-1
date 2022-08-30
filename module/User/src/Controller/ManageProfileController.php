@@ -183,11 +183,9 @@ final class ManageProfileController extends AbstractAppController implements For
         if ($this->isAllowed($this, 'edit')) {
             if ($this->request->isPost()) {
                 $data = $this->request->getPost();
-
-            } else {
-
             }
         }
+        return new ViewModel();
     }
 
     public function ajaxTemplateAction(): ?ViewModel

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace User\Command\Factory;
 
-use App\Service\Email;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

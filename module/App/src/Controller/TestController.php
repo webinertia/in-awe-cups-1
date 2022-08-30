@@ -46,6 +46,7 @@ final class TestController extends AbstractAppController implements LoggerAwareI
         $targetNamespace = 'User\\Controller\\';
         $classNames    = [];
         $resources     = [];
+        $actionNames   = [];
         foreach ($dir as $file) {
             if ($file->isDot() && $file->getFileName()) {
                 continue;

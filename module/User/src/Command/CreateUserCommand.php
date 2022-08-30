@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace User\Command;
 
-use App\Log\LogEvent;
 use Laminas\Cli\Command\AbstractParamAwareCommand;
 use Laminas\Cli\Input\ParamAwareInputInterface;
-use Laminas\Cli\Input\IntParam;
 use Laminas\Cli\Input\StringParam;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\EventManager\EventManagerAwareInterface;
-use Laminas\EventManager\EventManagerAwareTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use User\Service\UserService;
-use User\Service\UserServiceInterface;
 
 use function password_hash;
 
@@ -23,9 +18,10 @@ use const PASSWORD_DEFAULT;
 
 class CreateUserCommand extends AbstractParamAwareCommand
 {
-
     /** @var array<string, mixed> $config */
     private $config;
+    /** @var Adapter $dbAdapter */
+    protected $dbAdapter;
     /** @var UserService $userService */
     private $userService;
     public function __construct(
