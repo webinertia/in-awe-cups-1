@@ -13,7 +13,7 @@ use Laminas\View\Renderer\PhpRenderer;
         <div class="card">
             <div class="card-body">
             <?php
-            if (isset($form) && $this->appSettings['email']['enable_contact_form']) :
+            if (isset($form) && $this->config('app_settings')['email']['enable_contact_form']) :
                 $form->prepare();
                 echo $this->form()->openTag($form);
                 echo $this->bootstrapForm($form);

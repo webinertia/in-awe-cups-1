@@ -28,6 +28,11 @@ return [
         'auth_credential_column' => 'password',
         'users_table_name'       => 'users',
     ],
+    'laminas-cli'        => [
+        'commands' => [
+            'create-user' => Command\CreateUserCommand::class,
+        ],
+    ],
     'router'             => [
         'routes' => [
             'user'       => [
@@ -370,6 +375,7 @@ return [
         ],
         'factories' => [
             AclInterface::class                    => Acl\AclFactory::class,
+            Command\CreateUserCommand::class       => Command\Factory\CreateUserCommandFactory::class,
             Db\Listener\UserGatewayListener::class => Db\Listener\UserGatewayListenerFactory::class,
             Db\UserGateway::class                  => Db\Factory\UserGatewayFactory::class,
             Model\Roles::class                     => InvokableFactory::class,

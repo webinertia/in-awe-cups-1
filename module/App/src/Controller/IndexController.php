@@ -12,40 +12,27 @@ namespace App\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Form\ContactForm;
+use App\Form\FormManagerAwareInterface;
+use App\Form\FormManagerAwareTrait;
 use App\Log\LogEvent;
 use ContentManager\Model\Page;
-use Laminas\Form\FormElementManager;
-use Laminas\View\Model\ViewModel;
 use RuntimeException;
 
 use function sprintf;
 
-final class IndexController extends AbstractAppController
+final class IndexController extends AbstractAppController implements FormManagerAwareInterface
 {
+    use FormManagerAwareTrait;
+
     /** @var ContactForm $form */
     protected $form;
-    /** @var FormElementManager $formManager */
-    protected $formManager;
     /** @var Page $page */
     protected $page;
 
-    public function __construct(
-        FormElementManager $formElementManager,
-        Page $page,
-        array $config,
-    ) {
-        $this->formManager = $formElementManager;
-        $this->page        = $page;
-        $this->appSettings = $config['app_settings'];
-        $this->view        = new ViewModel();
-        $this->view->setVariables([
-            'appSettings' => $this->appSettings,
-        ]);
-    }
-
     public function indexAction(): mixed
     {
-        $homePage = $this->page->getLandingPage();
+        $this->page = $this->getService(Page::class);
+        $homePage   = $this->page->getLandingPage();
         $this->view->setVariables([
             'page' => $homePage,
         ]);
@@ -54,7 +41,6 @@ final class IndexController extends AbstractAppController
 
     public function contactAction(): mixed
     {
-       // $formManager = $this->getService(FormElementManager::class);
         $form        = $this->formManager->get(ContactForm::class);
         $appSettings = $this->getService('config')['app_settings'];
         if ($this->request->isPost()) {

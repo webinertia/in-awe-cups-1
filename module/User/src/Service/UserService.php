@@ -18,6 +18,12 @@ class UserService implements UserServiceInterface, ModelInterface
 {
     use ModelTrait;
 
+    /** @var array $acctData */
+    public $acctData;
+    /** @var array $socialMedia */
+    public $socialMedia;
+    /** @var array $memberDetails */
+    public $memberDetails;
     /** @var int $id */
     public $id;
     /** @var string $userName */

@@ -52,6 +52,7 @@ final class PageGatewayListener extends AbstractListenerAggregate
                 'class'         => 'nav-link',
                 'createdDate'   => $this->time->filter(new DateTime()),
                 'params'        => (string) Json::encode(['title' => $insert->title]),
+                'route'         => 'page',
                 'order'         => $insert->order,
                 'visible'       => $insert->visible ?? 1,
                 'parentId'      => $insert->parentId ?? 0,
@@ -69,6 +70,7 @@ final class PageGatewayListener extends AbstractListenerAggregate
         $set    = $update->getRawState('set');
         $data   = [
             'params'      => (string) Json::encode(['title' => $set['title']]),
+            'route'       => 'page',
             'updatedDate' => $this->time->filter(new DateTime()),
             'parentId'    => $set['showOnLandingPage'] ? $set['parendId'] = 1 : $set['parentId'] = 0,
         ];

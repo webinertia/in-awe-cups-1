@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App;
 
 use App\Log\Processors\PsrPlaceholder;
+use ContentManager\Controller\ContentController;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Log\Logger;
-use Laminas\Mvc\Controller\LazyControllerAbstractFactory;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -22,7 +22,7 @@ return [
         'server' => [
             'app_path'        => __DIR__ . '/../../../',
             'upload_basepath' => __DIR__ . '/../../../public/module',
-            'scheme'          => $_SERVER['REQUEST_SCHEME'],
+            'scheme'          => $_SERVER['REQUEST_SCHEME'] ?? 'http',
         ],
     ],
     'base_dir'           => __DIR__ . '/../../../',
@@ -34,6 +34,20 @@ return [
     'router'             => [
         'router_class' => TranslatorAwareTreeRouteStack::class,
         'routes'       => [
+            'page'    => [
+                'type'          => Segment::class,
+                'may_terminate' => true,
+                'options'       => [
+                    'route'       => '[/:title]',
+                    'constraints' => [
+                        'title' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ],
+                    'defaults'    => [
+                        'controller' => ContentController::class,
+                        'action'     => 'page',
+                    ],
+                ],
+            ],
             'home'    => [
                 'type'    => Literal::class,
                 'options' => [
@@ -194,9 +208,13 @@ return [
             PsrPlaceholder::class => Log\Processors\PsrPlaceholderFactory::class,
         ],
     ],
+    'listeners'          => [
+        Listener\ThemeLoader::class,
+    ],
     'service_manager'    => [
         'factories' => [
             Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
+            Listener\ThemeLoader::class    => Listener\Factory\ThemeLoaderFactory::class,
             Model\Settings::class          => Model\Factory\SettingsFactory::class,
             Model\Theme::class             => InvokableFactory::class,
             Service\Email::class           => Service\Factory\EmailFactory::class,
@@ -206,7 +224,7 @@ return [
     'controllers'        => [
         'factories' => [ // move this to an abstract factory???
             Controller\AdminController::class => Controller\Factory\AppControllerFactory::class,
-            Controller\IndexController::class => LazyControllerAbstractFactory::class,
+            Controller\IndexController::class => Controller\Factory\AppControllerFactory::class,
             Controller\TestController::class  => Controller\Factory\AppControllerFactory::class,
             Controller\LogController::class   => Controller\Factory\AppControllerFactory::class,
         ],

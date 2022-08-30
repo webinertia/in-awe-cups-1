@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Model\ContactMessage;
 use Laminas\Captcha\Image;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\StripTags;
@@ -32,6 +33,7 @@ class ContactForm extends Form implements InputFilterProviderInterface
         $this->appSettings = $settings;
         parent::__construct('contact');
         parent::setOptions($options);
+        $this->setObject(new ContactMessage());
     }
 
     public function init(): void

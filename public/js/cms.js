@@ -100,7 +100,6 @@ $('div#profile-work-space').on("submit", function(event) {
                 });
             }
         }
-
     });
     request.fail(function(){
         alert("Profile update failed!!")

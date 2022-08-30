@@ -8,6 +8,7 @@ use Laminas\View\Renderer\PhpRenderer;
 
 $title = 'Profile';
 $this->headTitle($title);
+// phpcs
 ?>
 <div class="jumbotron">
     <div class="container">
@@ -32,12 +33,12 @@ $this->headTitle($title);
                                         <?=$this->translate($this->data->getGroupName(), 'default');?>
                                     </p>
                                     <?php
-                                    if ((isset($this->data->jobTitle))) :
-                                    ?>
+                                    if (isset($this->data->jobTitle)) :
+                                        ?>
                                     <p class="text-secondary mb-1">
                                         <?=$this->data->jobTitle;?>
                                     </p>
-                                    <?php
+                                        <?php
                                     endif;
                                     ?>
                                     <p class="text-secondary mb-1"></p>
@@ -51,14 +52,14 @@ $this->headTitle($title);
                                     <button class="btn btn-sm btn-info">Follow</button>
                                 <?php
                                 if ($this->acl()->isAllowed($this->identity()->getIdentity(), 'personal-message', 'send')) :
-                                ?>
+                                    ?>
                                     <button class="btn btn-sm btn-outline-primary">Message</button>
-                                <?php
+                                    <?php
                                 endif;
                                 ?>
                                 <?php
                                 if ($this->acl()->isAllowed($this->identity()->getIdentity(), $data, 'edit')) :
-                                ?>
+                                    ?>
                                     <button
                                         class="btn btn-sm btn-info"
                                         role="button"
@@ -66,8 +67,8 @@ $this->headTitle($title);
                                         data-toggle="modal"
                                         data-target="#profileModal"
                                         data-href="<?=$this->url('user/manage-profile', ['action' => 'member-details', 'userName' => $data->userName]) ?>">Edit</button>
-                                <?php
-                                    endif;
+                                    <?php
+                                endif;
                                 ?>
                                 </div>
                             </div>
@@ -97,8 +98,8 @@ $this->headTitle($title);
                             </li>
                         </ul>
                         <?php
-                            if ($this->acl()->isAllowed($this->identity()->getIdentity(), $data, 'edit')) :
-                        ?>
+                        if ($this->acl()->isAllowed($this->identity()->getIdentity(), $data, 'edit')) :
+                            ?>
                             <button
                                 class="btn btn-sm btn-info"
                                 role="button"
@@ -106,8 +107,8 @@ $this->headTitle($title);
                                 data-toggle="modal"
                                 data-target="#profileModal"
                                 data-href="<?=$this->url('user/manage-profile', ['action' => 'social-media', 'userName' => $data->userName]) ?>">Edit</button>
-                        <?php
-                            endif;
+                            <?php
+                        endif;
                         ?>
                     </div>
                 </div>
@@ -129,11 +130,11 @@ $this->headTitle($title);
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <?php
-                                        if (isset($this->data->homePhone)) {
+                                    if (isset($this->data->homePhone)) {
                                             echo $this->data->homePhone;
-                                        } else {
-                                            echo "Not Provided";
-                                        }
+                                    } else {
+                                        echo "Not Provided";
+                                    }
                                     ?>
                                 </div>
                             </div>
@@ -144,11 +145,11 @@ $this->headTitle($title);
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <?php
-                                        if (isset($this->data->mobileNumber)) {
-                                            echo $this->data->mobileNumber;
-                                        } else {
+                                    if (isset($this->data->mobileNumber)) {
+                                        echo $this->data->mobileNumber;
+                                    } else {
                                             echo "Not Provided";
-                                        }
+                                    }
                                     ?>
                                 </div>
                             </div>
@@ -159,11 +160,11 @@ $this->headTitle($title);
                                 </div>
                                 <div class="col-sm-9 text-secondary">
                                     <?php
-                                        if (isset($this->data->street)) {
+                                    if (isset($this->data->street)) {
                                             echo $this->data->street . '<br />' . $this->data->city . ', ' . $this->data->state . " " . $this->data->zip;
-                                        } else {
+                                    } else {
                                             echo "Not Provided";
-                                        }
+                                    }
                                     ?>
                                 </div>
                             </div>
@@ -171,11 +172,11 @@ $this->headTitle($title);
                             <div class="row">
                                 <div class="col-sm-12">
                                 <?php
-                                    if ($this->acl()->isAllowed($this->identity()->getIdentity(), $data, 'edit')) {
+                                if ($this->acl()->isAllowed($this->identity()->getIdentity(), $data, 'edit')) {
                                     ?>
                                     <a class="btn btn-sm btn-info" href="<?= $this->url('user/profile', ['action' => 'edit-profile', 'userName' => $data->userName]) ?>" role="button">Edit</a>
                                         <?php
-                                    }
+                                }
                                 ?>
                                 </div>
                             </div>
@@ -250,7 +251,6 @@ $this->headTitle($title);
                 </button>
             </div>
             <div id="profile-work-space" class="modal-body"></div>
-
             </div>
         </div>
     </div>

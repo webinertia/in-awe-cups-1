@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true">
-    <testsuites>
-        <testsuite name="Laminas MVC Skeleton Test Suite">
-            <directory>./module/App/test</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./module/*/src</directory>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="false">
+    <include>
+      <directory suffix=".php">./module/*/src</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="App">
+      <directory>./module/App/test</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>
