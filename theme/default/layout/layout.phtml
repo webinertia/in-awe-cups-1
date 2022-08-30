@@ -22,12 +22,12 @@ use Laminas\View\Renderer\PhpRenderer;
         <?= $this->headMeta(); ?>
         <!-- Ie styles -->
         <?= $this->headLink(
-                            [
-                                'rel'  => 'shortcut icon',
-                                'type' => 'image/vnd.microsoft.icon',
-                                'href' => $this->basePath() . '/images/favicon.ico',
-                            ]
-            )->appendStylesheet($this->basePath('css/bootstrap.min.css'))
+            [
+                'rel'  => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath() . '/images/favicon.ico',
+            ]
+        )->appendStylesheet($this->basePath('css/bootstrap.min.css'))
              ->appendStylesheet($this->basePath('css/style.css'))
              ->appendStylesheet($this->basePath('vendors/mdi/css/materialdesignicons.min.css'));
         ?>
@@ -84,7 +84,7 @@ use Laminas\View\Renderer\PhpRenderer;
                 }
                 ?>
                 <?php
-                if((int) $this->appSettings['view']['show_breadcrumbs']):
+                if ((int) $this->config('app_settings')['view']['show_breadcrumbs']) :
                     echo $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
                 endif;
                 ?>
@@ -93,15 +93,11 @@ use Laminas\View\Renderer\PhpRenderer;
             <footer>
                 <p>
                     &copy; <?= date('Y') ?>
-                    <a href="<?= $this->appSettings['view']['copyright_link'] ?? '#'; ?>">
-                    <?= $this->appSettings['view']['copyright_text'] ?? 'Default text'; ?></a>
+                    <a href="<?= $this->config('app_settings')['view']['copyright_link'] ?? '#'; ?>">
+                    <?= $this->config('app_settings')['view']['copyright_text'] ?? 'Default text'; ?></a>
                     |
-                    <?= $this->appSettings['view']['footer_text'] ?? 'Default Text'; ?>
+                    <?= $this->config('app_settings')['view']['footer_text'] ?? 'Default Text'; ?>
                 </p>
-                <?php
-                // if(!$this->auth->hasIdentity())
-                //     echo $this->renderChildModel('inlineLogin');
-                ?>
             </footer>
         </div>
         <?= $this->inlineScript()
