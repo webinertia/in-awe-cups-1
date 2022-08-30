@@ -9,7 +9,6 @@ use ContentManager\Controller\ContentController;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Log\Logger;
-use Laminas\Mvc\Controller\LazyControllerAbstractFactory;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
@@ -209,9 +208,13 @@ return [
             PsrPlaceholder::class => Log\Processors\PsrPlaceholderFactory::class,
         ],
     ],
+    'listeners'          => [
+        Listener\ThemeLoader::class,
+    ],
     'service_manager'    => [
         'factories' => [
             Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
+            Listener\ThemeLoader::class    => Listener\Factory\ThemeLoaderFactory::class,
             Model\Settings::class          => Model\Factory\SettingsFactory::class,
             Model\Theme::class             => InvokableFactory::class,
             Service\Email::class           => Service\Factory\EmailFactory::class,

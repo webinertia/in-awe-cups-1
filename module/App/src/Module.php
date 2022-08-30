@@ -6,9 +6,7 @@ namespace App;
 
 use App\Listener\AdminListener;
 use App\Listener\LayoutVariablesListener;
-use App\Listener\ThemeLoader;
 use App\Log\LogListener;
-use App\Model\Theme;
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\I18n\ConfigProvider;
@@ -19,7 +17,6 @@ use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
-use Laminas\View\Resolver\TemplatePathStack;
 use Laminas\View\View;
 use Locale;
 use Psr\Log\LoggerInterface;
@@ -80,9 +77,6 @@ final class Module
         if ($this->config['app_settings']['server']['enable_translation']) {
             $this->boostrapTranslation($e);
         }
-        // wire the theme loader
-        $themeLoader = new ThemeLoader($this->sm->get(Theme::class), $this->sm->get(TemplatePathStack::class));
-        $themeLoader->attach($eventManager);
         // this will be removed in a future release
         $layoutVariables = new LayoutVariablesListener($this->config['app_settings']);
         $layoutVariables->attach($eventManager);
@@ -108,7 +102,7 @@ final class Module
     {
         // get an instance of the Request object
         $request = $this->sm->get('Request');
-        // wha locale has the client set in their browser?
+        // what locale has the client set in their browser?
         $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
         $translator = $this->sm->get(Translator::class);
         // set the primary locale as requested by the client

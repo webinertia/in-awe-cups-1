@@ -11,21 +11,20 @@ namespace App\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Controller\Trait\JsonDataTrait;
-use App\Db\TableGateway;
+use App\Filter\FqcnToControllerName;
+use DirectoryIterator;
+use ReflectionClass;
+use ReflectionMethod;
 use App\Log\LoggerAwareInterface;
-use App\Log\LoggerAwareInterfaceTrait;
-use App\Log\LogEvent;
-use App\Form\ContactForm;
-use Laminas\Form\Form;
-use Laminas\Form\FormInterface;
-use App\Model\ContactMessage;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\View\Model\ViewModel;
-use SplFileObject;
-use stdClass;
+use Laminas\Filter\StringToLower;
+use Laminas\Filter\FilterChain;
+use Laminas\Session\SessionManager;
 use User\Acl\ResourceAwareTrait;
 use Webinertia\Utils\Debug;
+
+use function strpos;
+use function str_replace;
 
 final class TestController extends AbstractAppController implements LoggerAwareInterface
 {
@@ -36,60 +35,44 @@ final class TestController extends AbstractAppController implements LoggerAwareI
     protected $resourceId = 'test';
     public function indexAction(): ViewModel
     {
-
-        $settings = ['security' => ['enable_captcha' => false]];
-        $form = new ContactForm($settings, []);
-        $message = new ContactMessage();
-
-        $isPost = $this->request->getQUery()->get('isPost');
-        if (! $isPost) {
-            // show john in the form
-            $userData = [
-                'fullName' => null,
-                'email'    => null,
-                'message'  => null,
-            ];
-        }
-        if ($isPost) {
-            // send janes message
-            $userData = [
-                'fullName' => 'Jane Doe',
-                'email'    => 'test@jane.com',
-                'message'  => 'New message',
-            ];
-        }
-        $message->exchangeArray($userData);
-        $form->bind($message);
-        //$form->setData($message->toArray());
-        $valid = $form->isValid();
-        Debug::dump($valid, 'is form valid?');
-        //$data = $form->getData(FormInterface::VALUES_AS_ARRAY);
-        $data = $form->getData();
-       // $data = $form->getObject();
-        Debug::dump($data);
-
-        $this->setJsonValue('status', 'complete');
-        $this->jsonData(['status' => 'suspended', 'message' => 'onHold']);
-        //Debug::dump($this->jsonData());
-        $settings = $this->getService('config')['app_settings'];
-        $appSettings    = $this->getService('config')['app_settings'];
-        $moduleSettings = $this->getService('config')['module_settings']['user'];
-
-        if ($this->getRequest()->isPost()) {
-            $data = $this->getRequest()->getPost()->toArray();
-            Debug::dump($data);
-        }
-
-        $this->getEventManager()->trigger(LogEvent::NOTICE, 'This is a standard log message');
-
-        $this->getEventManager()->trigger(LogEvent::ALERT, 'log_login_success');
-
-        $limit = $this->params()->fromQuery('limit');
-        if ($limit > 0) {
-            for ($i = 0; $i < $limit; $i++) {
-                $this->getEventManager()->trigger(LogEvent::DEBUG, 'Auto generated log message number ' . $i);
+        //$session = $this->getService(SessionManager::class);
+        Debug::dump($_SESSION);
+        $stripString = 'Action';
+        $filterChain = new FilterChain();
+        $fqcnFilter  = new FqcnToControllerName();
+        $filterChain->attach($fqcnFilter)->attach(new StringToLower());
+        $path = __DIR__ . '/../../../../module/User/src/Controller';
+        $dir = new DirectoryIterator($path);
+        $targetNamespace = 'User\\Controller\\';
+        $classNames    = [];
+        $resources     = [];
+        foreach ($dir as $file) {
+            if ($file->isDot() && $file->getFileName()) {
+                continue;
+            }
+            if (! $file->isDir()) {
+                $parts = explode('.', $file->getFilename());
+                $class = $parts[0];
+                $reflClass = new ReflectionClass($targetNamespace . $class);
+                $methods = $reflClass->getMethods(ReflectionMethod::IS_PUBLIC);
+                foreach ($methods as $method) {
+                    $declaringClass = $method->getDeclaringClass()->getName();
+                    $currentContext = $reflClass->getName() === $declaringClass;
+                    if ($method->isPublic() && ! $method->isConstructor() && $currentContext) {
+                        $classNames[]  = $method->getDeclaringClass()->getName();
+                        $actionNames[] = $method->getName();
+                        if (strpos($method->getName(), $stripString)) {
+                            $resourceName = str_replace($stripString, '', $method->getName());
+                        } else {
+                            $resourceName = $method->getName();
+                        }
+                        $resources[] = $filterChain->filter($reflClass->getName()) . '.' . $resourceName;
+                    }
+                }
             }
         }
+        Debug::dump($resources, 'resources');
+        Debug::dump($actionNames, 'action names');
         return $this->view;
     }
 }

@@ -38,7 +38,6 @@ class ContactForm extends Form implements InputFilterProviderInterface
 
     public function init(): void
     {
-
         $this->add([
             'name'    => 'fullName',
             'type'    => Text::class,
