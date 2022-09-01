@@ -19,7 +19,6 @@ use App\Log\LoggerAwareInterface;
 use Laminas\View\Model\ViewModel;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\FilterChain;
-use Laminas\Session\SessionManager;
 use User\Acl\ResourceAwareTrait;
 use Webinertia\Utils\Debug;
 
@@ -35,7 +34,6 @@ final class TestController extends AbstractAppController implements LoggerAwareI
     protected $resourceId = 'test';
     public function indexAction(): ViewModel
     {
-        //$session = $this->getService(SessionManager::class);
         Debug::dump($_SESSION);
         $stripString = 'Action';
         $filterChain = new FilterChain();

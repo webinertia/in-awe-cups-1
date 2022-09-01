@@ -17,7 +17,11 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         // such as sample view templates, path stacks, module_listener_options,
         // etc.
         $configOverrides = [
-            'session_config' => [],
+            'app_settings' => [
+                'security' => [
+                    'enable_captcha' => 0,
+                ],
+            ],
         ];
 
         $this->setApplicationConfig(ArrayUtils::merge(
@@ -42,6 +46,17 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
     {
         $this->dispatch('/', 'GET');
         $this->assertQuery('.container .jumbotron');
+    }
+
+    public function testContactActionFormRenderedWithViewFile(): void
+    {
+        $this->dispatch('/site/contact', 'GET');
+        $this->assertResponseStatusCode(200);
+        $this->assertModuleName('app');
+        $this->assertControllerName(IndexController::class); // as specified in router's controller name alias
+        $this->assertControllerClass('IndexController');
+        $this->assertMatchedRouteName('contact');
+        $this->assertQuery('.card');
     }
 
     public function testInvalidRouteDoesNotCrash(): void

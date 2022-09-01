@@ -8,6 +8,8 @@ namespace App\Controller\Factory;
 
 use App\Form\FormManagerAwareInterface;
 use App\Service\AppSettingsAwareInterface;
+use App\Session\Container as SessionContainer;
+use App\Session\SessionContainerAwareInterface;
 use Laminas\Form\FormElementManager;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\Mvc\I18n\Translator;
@@ -29,6 +31,9 @@ class AppControllerFactory implements FactoryInterface
         ?array $options = null
     ): DispatchableInterface {
         $controller = new $requestedName($container->get('config'));
+        if ($controller instanceof SessionContainerAwareInterface) {
+            $controller->setSessionContainer($container->get(SessionContainer::class));
+        }
         if ($controller instanceof AclAwareInterface) {
             $controller->setAcl($container->get(AclInterface::class));
         }

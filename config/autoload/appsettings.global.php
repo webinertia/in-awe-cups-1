@@ -1,4 +1,8 @@
 <?php
+/**
+ * This file is for general testing to prevent random changes in other controllers
+ * phpcs:ignoreFile
+ */
 return [
     'app_settings' => [
         'server' => [
@@ -27,8 +31,8 @@ return [
             'show_breadcrumbs' => '0',
         ],
         'email' => [
-            'contact_form_email' => '',
-            'smtp_sender_address' => '',
+            'contact_form_email' => 'jsmith@webinertia.net',
+            'smtp_sender_address' => 'jsmith@webinertia.net',
             'smtp_sender_password' => '',
             'enable_contact_form' => '1',
         ],

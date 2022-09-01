@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Controller\ControllerInterface;
 use App\Service\AppSettingsAwareTrait;
+use App\Session\SessionContainerAwareTrait;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
@@ -38,6 +39,7 @@ abstract class AbstractAppController extends AbstractActionController implements
     use AppSettingsAwareTrait;
     use CheckActionAccessTrait;
     use ResourceAwareTrait;
+    use SessionContainerAwareTrait;
     use TranslatorAwareTrait;
     use UserServiceAwareTrait;
 

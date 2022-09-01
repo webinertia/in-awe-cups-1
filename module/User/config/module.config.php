@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace User;
 
 use App\Controller\Factory\AppControllerFactory;
+use Laminas\Authentication\AuthenticationService;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\Router\Http\Literal;
@@ -375,6 +376,7 @@ return [
         ],
         'factories' => [
             AclInterface::class                    => Acl\AclFactory::class,
+            AuthenticationService::class           => Authentication\AuthenticationServiceFactory::class,
             Command\CreateUserCommand::class       => Command\Factory\CreateUserCommandFactory::class,
             Db\Listener\UserGatewayListener::class => Db\Listener\UserGatewayListenerFactory::class,
             Db\UserGateway::class                  => Db\Factory\UserGatewayFactory::class,

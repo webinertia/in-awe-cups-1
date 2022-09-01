@@ -11,7 +11,7 @@ use Laminas\View\Renderer\PhpRenderer;
 <div class="jumbotron">
     <div class="card-deck">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body contact-form">
             <?php
             if (isset($form) && $this->config('app_settings')['email']['enable_contact_form']) :
                 $form->prepare();

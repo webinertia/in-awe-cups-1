@@ -6,13 +6,11 @@ namespace ContentManager;
 
 use App\Controller\Factory\AppControllerFactory;
 use ContentManager\Navigation\Service\DefaultNavigationFactory;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Navigation\Navigation;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
-use User\Authentication\AuthenticationServiceFactory;
 
 return [
     'db'                => [
@@ -112,7 +110,6 @@ return [
             'navigation' => Navigation::class,
         ],
         'factories' => [
-            AuthenticationService::class           => AuthenticationServiceFactory::class,
             Navigation::class                      => DefaultNavigationFactory::class,
             Db\PageGateway::class                  => Db\Factory\PageGatewayFactory::class,
             Db\Listener\PageGatewayListener::class => Db\Listener\PageGatewayListenerFactory::class,
