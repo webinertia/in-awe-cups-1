@@ -14,7 +14,7 @@
 
 declare(strict_types=1);
 
-use Laminas\Session\Container;
+use App\Session\Container;
 use Laminas\Session\Storage\SessionArrayStorage;
 use Laminas\Session\Validator\HttpUserAgent;
 use Laminas\Session\Validator\RemoteAddr;

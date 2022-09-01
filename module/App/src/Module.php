@@ -103,7 +103,7 @@ final class Module
         // get an instance of the Request object
         $request = $this->sm->get('Request');
         // what locale has the client set in their browser?
-        $locale     = Locale::acceptFromHttp($request->getServer('HTTP_ACCEPT_LANGUAGE'));
+        $locale     = Locale::acceptFromHttp($request->getServer()->get('HTTP_ACCEPT_LANGUAGE', 'en_US'));
         $translator = $this->sm->get(Translator::class);
         // set the primary locale as requested by the client
         if ($locale !== null) {
