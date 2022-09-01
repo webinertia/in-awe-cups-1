@@ -16,7 +16,7 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session\Config\ConfigInterface;
 use Laminas\Session\SaveHandler\SaveHandlerInterface;
-//use Laminas\Session\SessionManager;
+use Laminas\Session\SessionManager;
 use Psr\Log\LoggerInterface;
 
 return [
@@ -214,13 +214,10 @@ return [
         Listener\ThemeLoader::class,
     ],
     'service_manager'    => [
-        'aliases'   => [
-            '__Aurora_Session' => Session\Container::class,
-        ],
         'factories' => [
             ConfigInterface::class         => Session\ConfigFactory::class,
             Session\Container::class       => Session\ContainerFactory::class,
-            Session\SessionManager::class  => Session\SessionManagerFactory::class,
+            SessionManager::class          => Session\SessionManagerFactory::class,
             Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
             Listener\ThemeLoader::class    => Listener\Factory\ThemeLoaderFactory::class,
             Model\Settings::class          => Model\Factory\SettingsFactory::class,

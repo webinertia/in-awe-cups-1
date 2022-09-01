@@ -34,9 +34,6 @@ final class TestController extends AbstractAppController implements LoggerAwareI
     protected $resourceId = 'test';
     public function indexAction(): ViewModel
     {
-        $this->session = $this->sessionContainer;
-        $this->session->appData = ['some_key' => 'some_value'];
-        $this->session->appData = ['another_key' => 'another_value'];
         Debug::dump($_SESSION);
         $stripString = 'Action';
         $filterChain = new FilterChain();

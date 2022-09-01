@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Log\LoggerAwareInterface;
 use App\Service\AppSettingsAwareInterface;
 use App\Session\SessionContainerAwareInterface;
-use App\Session\SessionContainerAwareTrait;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use User\Acl\AclAwareInterface;
