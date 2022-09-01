@@ -17,18 +17,18 @@ return [
             'copyright_link'   => 'http://webinertia.net/aurora',
             'copyright_text'   => 'Aurora CMS',
             'footer_text'      => 'Developed by Webinertia',
-            'show_breadcrumbs' => 0,
+            'show_breadcrumbs' => '0',
         ],
         'email'    => [
             'contact_form_email'   => '',
             'smtp_sender_address'  => '',
             'smtp_sender_password' => '',
-            'enable_contact_form'  => 1,
+            'enable_contact_form'  => '1',
         ],
         'security' => [
-            'enable_login'          => 1, // only disable this in case of emergency and if you have database access
-            'enable_registration'   => 1,
-            'enable_captcha'        => 1,
+            'enable_login'          => '1', // only disable this in case of emergency and if you have database access
+            'enable_registration'   => '1',
+            'enable_captcha'        => '0',
             'recaptcha_private_key' => '',
             'recaptcha_public_key'  => '',
         ],
@@ -37,8 +37,8 @@ return [
             'request_scheme'     => '',
             'time_format'        => 'm-j-Y g:i:s',
             'time_zone'          => 'America/Chicago',
-            'log_errors'         => 1,
-            'enable_translation' => 0,
+            'log_errors'         => '1',
+            'enable_translation' => '0',
         ],
     ],
 ];
