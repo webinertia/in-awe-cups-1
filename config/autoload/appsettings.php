@@ -33,7 +33,7 @@ return [
         'email' => [
             'contact_form_email' => 'jsmith@webinertia.net',
             'smtp_sender_address' => 'jsmith@webinertia.net',
-            'smtp_sender_password' => '**bffbGfbd88**',
+            'smtp_sender_password' => '',
             'enable_contact_form' => '1',
         ],
         'security' => [
