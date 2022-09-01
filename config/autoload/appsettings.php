@@ -1,45 +1,45 @@
 <?php
-
-declare(strict_types=1);
-
-// @codingStandardsIgnoreStart
+/**
+ * This file is for general testing to prevent random changes in other controllers
+ * phpcs:ignoreFile
+ */
 return [
     'app_settings' => [
-        'log'      => [
+        'server' => [
+            'app_path' => 'C:/htdocs/aurora',
+            'upload_basepath' => 'C:/htdocs/aurora/public/module',
+            'request_scheme' => 'http',
+            'host' => 'aurora',
+            'time_format' => 'm-j-Y g:i:s',
+            'time_zone' => 'America/Chicago',
+            'log_errors' => '1',
+            'enable_translation' => '1',
+            'captcha_path' => '/modules/app/captcha/',
+        ],
+        'log' => [
             'time_format' => 'm-d-Y H:i:s',
         ],
-        'seo'      => [
-            'key_words'   => 'Aurora CMS, Webinertia.net, Laminas, Php, MySQL',
+        'seo' => [
+            'key_words' => 'Aurora CMS, Webinertia.net, Laminas, Php, MySQL',
             'description' => 'Aurora CMS',
         ],
-        'view'     => [
-            'site_name'        => 'Aurora CMS',
-            'copyright_link'   => 'http://webinertia.net/aurora',
-            'copyright_text'   => 'Aurora CMS',
-            'footer_text'      => 'Developed by Webinertia',
+        'view' => [
+            'site_name' => 'Aurora CMS',
+            'copyright_link' => 'http://webinertia.net/aurora',
+            'copyright_text' => 'Aurora CMS',
+            'footer_text' => 'Developed by Webinertia',
             'show_breadcrumbs' => '0',
         ],
-        'email'    => [
-            'contact_form_email'   => '',
-            'smtp_sender_address'  => '',
-            'smtp_sender_password' => '',
-            'enable_contact_form'  => '1',
+        'email' => [
+            'contact_form_email' => 'jsmith@webinertia.net',
+            'smtp_sender_address' => 'jsmith@webinertia.net',
+            'smtp_sender_password' => '**bffbGfbd88**',
+            'enable_contact_form' => '1',
         ],
         'security' => [
-            'enable_login'          => '1', // only disable this in case of emergency and if you have database access
-            'enable_registration'   => '1',
-            'enable_captcha'        => '0',
-            'recaptcha_private_key' => '',
-            'recaptcha_public_key'  => '',
-        ],
-        'server'   => [
-            'host'               => '',
-            'request_scheme'     => '',
-            'time_format'        => 'm-j-Y g:i:s',
-            'time_zone'          => 'America/Chicago',
-            'log_errors'         => '1',
-            'enable_translation' => '0',
+            'enable_login' => '1',
+            'enable_registration' => '1',
+            'enable_captcha' => '0',
         ],
     ],
 ];
-// @codingStandardsIgnoreEnd
