@@ -34,7 +34,7 @@ final class TestController extends AbstractAppController implements LoggerAwareI
     protected $resourceId = 'test';
     public function indexAction(): ViewModel
     {
-        Debug::dump($_SESSION);
+       // Debug::dump($_SESSION);
         $stripString = 'Action';
         $filterChain = new FilterChain();
         $fqcnFilter  = new FqcnToControllerName();
@@ -70,8 +70,8 @@ final class TestController extends AbstractAppController implements LoggerAwareI
                 }
             }
         }
-        Debug::dump($resources, 'resources');
-        Debug::dump($actionNames, 'action names');
+       // Debug::dump($resources, 'resources');
+       // Debug::dump($actionNames, 'action names');
         return $this->view;
     }
 }
