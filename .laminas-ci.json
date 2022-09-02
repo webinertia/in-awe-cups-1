@@ -2,6 +2,15 @@
     "ignore_php_platform_requirements": {
         "8.1": true
     },
+    "checks": [
+        {
+            "name": "PhpCodeSniffer",
+            "job": {
+                "php": "8.1",
+                "dependencies": "locked"
+            }
+        }
+      ],
     "additional_checks": [
         {
             "name": "PhpStan",
