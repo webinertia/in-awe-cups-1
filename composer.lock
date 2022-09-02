@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4ddbf5b343971dab79befd78b3ca821",
+    "content-hash": "52f1225a07790fb2f335e65326bc40e6",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -3138,72 +3138,6 @@
             "time": "2022-07-22T10:26:33+00:00"
         },
         {
-            "name": "laminas/laminas-skeleton-installer",
-            "version": "0.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laminas/laminas-skeleton-installer.git",
-                "reference": "66c38246f1e54091ab55ce505014b6765ca12c92"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-skeleton-installer/zipball/66c38246f1e54091ab55ce505014b6765ca12c92",
-                "reference": "66c38246f1e54091ab55ce505014b6765ca12c92",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0 || ^2.0",
-                "laminas/laminas-component-installer": "^1.0 || ^2.1.2",
-                "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^7.3 || ~8.0.0"
-            },
-            "replace": {
-                "zendframework/zend-skeleton-installer": "^0.1.7"
-            },
-            "require-dev": {
-                "composer/composer": "^1.5.2 || ^2.0",
-                "laminas/laminas-coding-standard": "~2.1",
-                "malukenho/docheader": "^0.1.7",
-                "mikey179/vfsstream": "^1.6.7",
-                "phpspec/prophecy-phpunit": "^2.0",
-                "phpunit/phpunit": "^9.3"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "Laminas\\SkeletonInstaller\\Plugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laminas\\SkeletonInstaller\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Installer plugin for Laminas skeleton application",
-            "homepage": "https://laminas.dev",
-            "keywords": [
-                "laminas",
-                "skeleton-installer"
-            ],
-            "support": {
-                "chat": "https://laminas.dev/chat",
-                "docs": "https://docs.laminas.dev/laminas-skeleton-installer/",
-                "forum": "https://discourse.laminas.dev",
-                "issues": "https://github.com/laminas/laminas-skeleton-installer/issues",
-                "rss": "https://github.com/laminas/laminas-skeleton-installer/releases.atom",
-                "source": "https://github.com/laminas/laminas-skeleton-installer"
-            },
-            "funding": [
-                {
-                    "url": "https://funding.communitybridge.org/projects/laminas-project",
-                    "type": "community_bridge"
-                }
-            ],
-            "time": "2021-04-19T20:12:39+00:00"
-        },
-        {
             "name": "laminas/laminas-stdlib",
             "version": "3.13.0",
             "source": {
@@ -4129,20 +4063,21 @@
         },
         {
             "name": "symfony/console",
-            "version": "v6.0.12",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "c5c2e313aa682530167c25077d6bdff36346251e"
+                "reference": "7fccea8728aa2d431a6725b02b3ce759049fc84d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/c5c2e313aa682530167c25077d6bdff36346251e",
-                "reference": "c5c2e313aa682530167c25077d6bdff36346251e",
+                "url": "https://api.github.com/repos/symfony/console/zipball/7fccea8728aa2d431a6725b02b3ce759049fc84d",
+                "reference": "7fccea8728aa2d431a6725b02b3ce759049fc84d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
+                "symfony/deprecation-contracts": "^2.1|^3",
                 "symfony/polyfill-mbstring": "~1.0",
                 "symfony/service-contracts": "^1.1|^2|^3",
                 "symfony/string": "^5.4|^6.0"
@@ -4204,7 +4139,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v6.0.12"
+                "source": "https://github.com/symfony/console/tree/v6.1.4"
             },
             "funding": [
                 {
@@ -4220,29 +4155,29 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-23T20:52:30+00:00"
+            "time": "2022-08-26T10:32:31+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.0.2",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "26954b3d62a6c5fd0ea8a2a00c0353a14978d05c"
+                "reference": "07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/26954b3d62a6c5fd0ea8a2a00c0353a14978d05c",
-                "reference": "26954b3d62a6c5fd0ea8a2a00c0353a14978d05c",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918",
+                "reference": "07f1b9cc2ffee6aaafcf4b710fbc38ff736bd918",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2"
+                "php": ">=8.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.0-dev"
+                    "dev-main": "3.1-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -4271,7 +4206,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.0.2"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -4287,24 +4222,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-02T09:55:41+00:00"
+            "time": "2022-02-25T11:15:52+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v6.0.9",
+            "version": "v6.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "5c85b58422865d42c6eb46f7693339056db098a8"
+                "reference": "a0449a7ad7daa0f7c0acd508259f80544ab5a347"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/5c85b58422865d42c6eb46f7693339056db098a8",
-                "reference": "5c85b58422865d42c6eb46f7693339056db098a8",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/a0449a7ad7daa0f7c0acd508259f80544ab5a347",
+                "reference": "a0449a7ad7daa0f7c0acd508259f80544ab5a347",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "symfony/event-dispatcher-contracts": "^2|^3"
             },
             "conflict": {
@@ -4354,7 +4289,7 @@
             "description": "Provides tools that allow your application components to communicate with each other by dispatching events and listening to them",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/event-dispatcher/tree/v6.0.9"
+                "source": "https://github.com/symfony/event-dispatcher/tree/v6.1.0"
             },
             "funding": [
                 {
@@ -4370,24 +4305,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-05T16:45:52+00:00"
+            "time": "2022-05-05T16:51:07+00:00"
         },
         {
             "name": "symfony/event-dispatcher-contracts",
-            "version": "v3.0.2",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher-contracts.git",
-                "reference": "7bc61cc2db649b4637d331240c5346dcc7708051"
+                "reference": "02ff5eea2f453731cfbc6bc215e456b781480448"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/7bc61cc2db649b4637d331240c5346dcc7708051",
-                "reference": "7bc61cc2db649b4637d331240c5346dcc7708051",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher-contracts/zipball/02ff5eea2f453731cfbc6bc215e456b781480448",
+                "reference": "02ff5eea2f453731cfbc6bc215e456b781480448",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "psr/event-dispatcher": "^1"
             },
             "suggest": {
@@ -4396,7 +4331,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.0-dev"
+                    "dev-main": "3.1-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -4433,7 +4368,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.0.2"
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -4449,7 +4384,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-02T09:55:41+00:00"
+            "time": "2022-02-25T11:15:52+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -5112,20 +5047,20 @@
         },
         {
             "name": "symfony/string",
-            "version": "v6.0.12",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "3a975ba1a1508ad97df45f4590f55b7cc4c1a0a0"
+                "reference": "290972cad7b364e3befaa74ba0ec729800fb161c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/3a975ba1a1508ad97df45f4590f55b7cc4c1a0a0",
-                "reference": "3a975ba1a1508ad97df45f4590f55b7cc4c1a0a0",
+                "url": "https://api.github.com/repos/symfony/string/zipball/290972cad7b364e3befaa74ba0ec729800fb161c",
+                "reference": "290972cad7b364e3befaa74ba0ec729800fb161c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "symfony/polyfill-ctype": "~1.8",
                 "symfony/polyfill-intl-grapheme": "~1.0",
                 "symfony/polyfill-intl-normalizer": "~1.0",
@@ -5177,7 +5112,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.0.12"
+                "source": "https://github.com/symfony/string/tree/v6.1.4"
             },
             "funding": [
                 {
@@ -5193,7 +5128,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-12T18:05:20+00:00"
+            "time": "2022-08-12T18:05:43+00:00"
         },
         {
             "name": "webimpress/safe-writer",
@@ -5253,111 +5188,6 @@
                 }
             ],
             "time": "2021-04-19T16:34:45+00:00"
-        },
-        {
-            "name": "webinertia/webinertia-installer",
-            "version": "0.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webinertia/webinertia-installer.git",
-                "reference": "25703c1553db2f7c7ce82b931e4a1b1a8d0e7ecf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/webinertia-installer/zipball/25703c1553db2f7c7ce82b931e4a1b1a8d0e7ecf",
-                "reference": "25703c1553db2f7c7ce82b931e4a1b1a8d0e7ecf",
-                "shasum": ""
-            },
-            "require": {
-                "laminas/laminas-component-installer": "^2.6",
-                "laminas/laminas-servicemanager": "^3.11.1",
-                "php": "^7.3 || ~8.0.0"
-            },
-            "suggest": {
-                "laminas/laminas-component-installer": "^2.6, required for configuration injection"
-            },
-            "type": "library",
-            "extra": {
-                "laminas": {
-                    "component": "Webinertia\\Installer",
-                    "config-provider": "Webinertia\\Installer\\ConfigProvider"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Webinertia\\Installer\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Aurora CMS Installer",
-            "homepage": "https://github.com/webinertia",
-            "keywords": [
-                "aurora",
-                "installer",
-                "webinertia"
-            ],
-            "support": {
-                "chat": "https://github.com/webinertia/aurora/discussions",
-                "docs": "https://github.com/webinertia/aurora/wiki",
-                "issues": "https://github.com/webinertia/aurora/issues",
-                "source": "https://github.com/webinertia/aurora"
-            },
-            "time": "2022-08-16T15:12:37+00:00"
-        },
-        {
-            "name": "webinertia/webinertia-utils",
-            "version": "0.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webinertia/utils.git",
-                "reference": "7bcfb41afdd34b6f959dad8a253c2032e0882592"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/utils/zipball/7bcfb41afdd34b6f959dad8a253c2032e0882592",
-                "reference": "7bcfb41afdd34b6f959dad8a253c2032e0882592",
-                "shasum": ""
-            },
-            "require": {
-                "laminas/laminas-component-installer": "^2.6",
-                "laminas/laminas-servicemanager": "^3.11.1",
-                "php": "^7.3 || ~8.0.0"
-            },
-            "suggest": {
-                "laminas/laminas-component-installer": "^2.6, required for configuration injection"
-            },
-            "type": "library",
-            "extra": {
-                "laminas": {
-                    "component": "Webinertia\\Utils",
-                    "config-provider": "Webinertia\\Utils\\ConfigProvider"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Webinertia\\Utils\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Webinertia Org Utilities",
-            "homepage": "https://github.com/webinertia",
-            "keywords": [
-                "utils",
-                "webinertia"
-            ],
-            "support": {
-                "chat": "https://github.com/webinertia/modelmanager/discussions",
-                "docs": "https://github.com/webinertia/modelmanager/wiki",
-                "issues": "https://github.com/webinertia/modelmanager/issues",
-                "source": "https://github.com/webinertia/modelmanager"
-            },
-            "time": "2022-06-16T19:29:58+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -5969,6 +5799,75 @@
                 }
             ],
             "time": "2022-08-24T21:56:38+00:00"
+        },
+        {
+            "name": "masterminds/html5",
+            "version": "2.7.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Masterminds/html5-php.git",
+                "reference": "897eb517a343a2281f11bc5556d6548db7d93947"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/897eb517a343a2281f11bc5556d6548db7d93947",
+                "reference": "897eb517a343a2281f11bc5556d6548db7d93947",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.7.21 || ^6 || ^7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Masterminds\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Butcher",
+                    "email": "technosophos@gmail.com"
+                },
+                {
+                    "name": "Matt Farina",
+                    "email": "matt@mattfarina.com"
+                },
+                {
+                    "name": "Asmir Mustafic",
+                    "email": "goetas@gmail.com"
+                }
+            ],
+            "description": "An HTML5 parser and serializer.",
+            "homepage": "http://masterminds.github.io/html5-php",
+            "keywords": [
+                "HTML5",
+                "dom",
+                "html",
+                "parser",
+                "querypath",
+                "serializer",
+                "xml"
+            ],
+            "support": {
+                "issues": "https://github.com/Masterminds/html5-php/issues",
+                "source": "https://github.com/Masterminds/html5-php/tree/2.7.6"
+            },
+            "time": "2022-08-18T16:18:26+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -6736,76 +6635,6 @@
                 }
             ],
             "time": "2022-08-30T07:42:16+00:00"
-        },
-        {
-            "name": "rafalli/bjy-profiler",
-            "version": "1.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rafalli/bjy-profiler.git",
-                "reference": "3d588e6a13eb764ea142e4d013e641b36c56303f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rafalli/bjy-profiler/zipball/3d588e6a13eb764ea142e4d013e641b36c56303f",
-                "reference": "3d588e6a13eb764ea142e4d013e641b36c56303f",
-                "shasum": ""
-            },
-            "require": {
-                "laminas/laminas-db": "^2.7",
-                "laminas/laminas-log": "^2.7",
-                "laminas/laminas-modulemanager": "^2.7",
-                "laminas/laminas-servicemanager": "^3.0.3",
-                "php": "^5.5 || ^7.0"
-            },
-            "require-dev": {
-                "laminas/laminas-mvc": "^2.7 || ^3.0",
-                "phpunit/phpunit": "^4.0 || ^5.0"
-            },
-            "type": "library",
-            "extra": {
-                "zf": {
-                    "module": "BjyProfiler",
-                    "config-provider": "BjyProfiler\\ConfigProvider"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "BjyProfiler\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ben Youngblood",
-                    "email": "bx.youngblood@gmail.com",
-                    "homepage": "http://bjyoungblood.com/"
-                },
-                {
-                    "name": "Andrey N. Mokhov",
-                    "email": "github@mokhov.com",
-                    "homepage": "https://github.com/andrey-mokhov"
-                },
-                {
-                    "name": "Rafal Linca",
-                    "email": "kontakt@rafalllinca.pl",
-                    "homepage": "https://rafallinca.pl"
-                }
-            ],
-            "description": "Database profiler for Laminas\\Db. Module forked from andrey-mokhov/bjy-profiler",
-            "homepage": "https://github.com/rafalli/BjyProfiler",
-            "keywords": [
-                "db",
-                "laminas",
-                "profiler"
-            ],
-            "support": {
-                "source": "https://github.com/rafalli/bjy-profiler/tree/master"
-            },
-            "time": "2020-02-26T19:12:30+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -7890,27 +7719,26 @@
         },
         {
             "name": "symfony/config",
-            "version": "v6.0.11",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "956d4ec5df274dda91a4cedfccc2bfd063f6f649"
+                "reference": "a0645dc585d378b73c01115dd7ab9348f7d40c85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/956d4ec5df274dda91a4cedfccc2bfd063f6f649",
-                "reference": "956d4ec5df274dda91a4cedfccc2bfd063f6f649",
+                "url": "https://api.github.com/repos/symfony/config/zipball/a0645dc585d378b73c01115dd7ab9348f7d40c85",
+                "reference": "a0645dc585d378b73c01115dd7ab9348f7d40c85",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "symfony/deprecation-contracts": "^2.1|^3",
                 "symfony/filesystem": "^5.4|^6.0",
-                "symfony/polyfill-ctype": "~1.8",
-                "symfony/polyfill-php81": "^1.22"
+                "symfony/polyfill-ctype": "~1.8"
             },
             "conflict": {
-                "symfony/finder": "<4.4"
+                "symfony/finder": "<5.4"
             },
             "require-dev": {
                 "symfony/event-dispatcher": "^5.4|^6.0",
@@ -7948,7 +7776,7 @@
             "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/config/tree/v6.0.11"
+                "source": "https://github.com/symfony/config/tree/v6.1.3"
             },
             "funding": [
                 {
@@ -7964,24 +7792,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-27T17:10:44+00:00"
+            "time": "2022-07-20T15:00:40+00:00"
         },
         {
             "name": "symfony/css-selector",
-            "version": "v6.0.11",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "ab2746acddc4f03a7234c8441822ac5d5c63efe9"
+                "reference": "0dd5e36b80e1de97f8f74ed7023ac2b837a36443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/ab2746acddc4f03a7234c8441822ac5d5c63efe9",
-                "reference": "ab2746acddc4f03a7234c8441822ac5d5c63efe9",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/0dd5e36b80e1de97f8f74ed7023ac2b837a36443",
+                "reference": "0dd5e36b80e1de97f8f74ed7023ac2b837a36443",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2"
+                "php": ">=8.1"
             },
             "type": "library",
             "autoload": {
@@ -8013,7 +7841,7 @@
             "description": "Converts CSS selectors to XPath expressions",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/css-selector/tree/v6.0.11"
+                "source": "https://github.com/symfony/css-selector/tree/v6.1.3"
             },
             "funding": [
                 {
@@ -8029,32 +7857,31 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-27T17:10:44+00:00"
+            "time": "2022-06-27T17:24:16+00:00"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v6.0.11",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "5f6246e27475a90a0da5cd704fb5a47880a5d3cc"
+                "reference": "079e336a1880f457b219aecc3d41bef2f1093b0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/5f6246e27475a90a0da5cd704fb5a47880a5d3cc",
-                "reference": "5f6246e27475a90a0da5cd704fb5a47880a5d3cc",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/079e336a1880f457b219aecc3d41bef2f1093b0b",
+                "reference": "079e336a1880f457b219aecc3d41bef2f1093b0b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "psr/container": "^1.1|^2.0",
                 "symfony/deprecation-contracts": "^2.1|^3",
-                "symfony/polyfill-php81": "^1.22",
                 "symfony/service-contracts": "^1.1.6|^2.0|^3.0"
             },
             "conflict": {
                 "ext-psr": "<1.1|>=2",
-                "symfony/config": "<5.4",
+                "symfony/config": "<6.1",
                 "symfony/finder": "<5.4",
                 "symfony/proxy-manager-bridge": "<5.4",
                 "symfony/yaml": "<5.4"
@@ -8064,7 +7891,7 @@
                 "symfony/service-implementation": "1.1|2.0|3.0"
             },
             "require-dev": {
-                "symfony/config": "^5.4|^6.0",
+                "symfony/config": "^6.1",
                 "symfony/expression-language": "^5.4|^6.0",
                 "symfony/yaml": "^5.4|^6.0"
             },
@@ -8101,7 +7928,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v6.0.11"
+                "source": "https://github.com/symfony/dependency-injection/tree/v6.1.3"
             },
             "funding": [
                 {
@@ -8117,32 +7944,29 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-20T13:45:53+00:00"
+            "time": "2022-07-20T13:46:29+00:00"
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v6.0.12",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "c69331ec49913a91f32737e29ed451ecee8cbea2"
+                "reference": "8cb4c6e6c8d30c26f70529ed5e50d79a09576c0c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/c69331ec49913a91f32737e29ed451ecee8cbea2",
-                "reference": "c69331ec49913a91f32737e29ed451ecee8cbea2",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/8cb4c6e6c8d30c26f70529ed5e50d79a09576c0c",
+                "reference": "8cb4c6e6c8d30c26f70529ed5e50d79a09576c0c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "masterminds/html5": "^2.6",
+                "php": ">=8.1",
                 "symfony/polyfill-ctype": "~1.8",
                 "symfony/polyfill-mbstring": "~1.0"
             },
-            "conflict": {
-                "masterminds/html5": "<2.6"
-            },
             "require-dev": {
-                "masterminds/html5": "^2.6",
                 "symfony/css-selector": "^5.4|^6.0"
             },
             "suggest": {
@@ -8174,7 +7998,7 @@
             "description": "Eases DOM navigation for HTML and XML documents",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dom-crawler/tree/v6.0.12"
+                "source": "https://github.com/symfony/dom-crawler/tree/v6.1.4"
             },
             "funding": [
                 {
@@ -8190,24 +8014,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-04T19:18:27+00:00"
+            "time": "2022-08-04T19:19:00+00:00"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v6.0.12",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "a36b782dc19dce3ab7e47d4b92b13cefb3511da3"
+                "reference": "3f39c04d2630c34019907b02f85672dac99f8659"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/a36b782dc19dce3ab7e47d4b92b13cefb3511da3",
-                "reference": "a36b782dc19dce3ab7e47d4b92b13cefb3511da3",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/3f39c04d2630c34019907b02f85672dac99f8659",
+                "reference": "3f39c04d2630c34019907b02f85672dac99f8659",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "symfony/polyfill-ctype": "~1.8",
                 "symfony/polyfill-mbstring": "~1.8"
             },
@@ -8237,7 +8061,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v6.0.12"
+                "source": "https://github.com/symfony/filesystem/tree/v6.1.4"
             },
             "funding": [
                 {
@@ -8253,24 +8077,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-02T16:01:06+00:00"
+            "time": "2022-08-02T16:17:38+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v6.0.11",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "09cb683ba5720385ea6966e5e06be2a34f2568b1"
+                "reference": "39696bff2c2970b3779a5cac7bf9f0b88fc2b709"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/09cb683ba5720385ea6966e5e06be2a34f2568b1",
-                "reference": "09cb683ba5720385ea6966e5e06be2a34f2568b1",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/39696bff2c2970b3779a5cac7bf9f0b88fc2b709",
+                "reference": "39696bff2c2970b3779a5cac7bf9f0b88fc2b709",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2"
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "symfony/filesystem": "^6.0"
             },
             "type": "library",
             "autoload": {
@@ -8298,7 +8125,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v6.0.11"
+                "source": "https://github.com/symfony/finder/tree/v6.1.3"
             },
             "funding": [
                 {
@@ -8314,103 +8141,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-29T07:39:48+00:00"
-        },
-        {
-            "name": "symfony/polyfill-php81",
-            "version": "v1.26.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php81.git",
-                "reference": "13f6d1271c663dc5ae9fb843a8f16521db7687a1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php81/zipball/13f6d1271c663dc5ae9fb843a8f16521db7687a1",
-                "reference": "13f6d1271c663dc5ae9fb843a8f16521db7687a1",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.26-dev"
-                },
-                "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php81\\": ""
-                },
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 8.1+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php81/tree/v1.26.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-05-24T11:49:31+00:00"
+            "time": "2022-07-29T07:42:06+00:00"
         },
         {
             "name": "symfony/serializer",
-            "version": "v6.0.12",
+            "version": "v6.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "18c9a8101edd84f383f440727052a1926d1e3639"
+                "reference": "03e5987dd9bb98038c60c7af3e58500c81c4aec1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/18c9a8101edd84f383f440727052a1926d1e3639",
-                "reference": "18c9a8101edd84f383f440727052a1926d1e3639",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/03e5987dd9bb98038c60c7af3e58500c81c4aec1",
+                "reference": "03e5987dd9bb98038c60c7af3e58500c81c4aec1",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "symfony/polyfill-ctype": "~1.8"
             },
             "conflict": {
@@ -8478,7 +8226,7 @@
             "description": "Handles serializing and deserializing data structures, including object graphs, into array structures or other formats like XML and JSON.",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/serializer/tree/v6.0.12"
+                "source": "https://github.com/symfony/serializer/tree/v6.1.4"
             },
             "funding": [
                 {
@@ -8494,24 +8242,24 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-26T10:32:20+00:00"
+            "time": "2022-08-26T10:32:31+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v6.0.11",
+            "version": "v6.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "2672bdc01c1971e3d8879ce153ec4c3621be5f07"
+                "reference": "d5a5e44a2260c5eb5e746bf4f1fbd12ee6ceb427"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/2672bdc01c1971e3d8879ce153ec4c3621be5f07",
-                "reference": "2672bdc01c1971e3d8879ce153ec4c3621be5f07",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/d5a5e44a2260c5eb5e746bf4f1fbd12ee6ceb427",
+                "reference": "d5a5e44a2260c5eb5e746bf4f1fbd12ee6ceb427",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.2",
+                "php": ">=8.1",
                 "symfony/polyfill-mbstring": "~1.0"
             },
             "conflict": {
@@ -8566,7 +8314,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v6.0.11"
+                "source": "https://github.com/symfony/var-dumper/tree/v6.1.3"
             },
             "funding": [
                 {
@@ -8582,7 +8330,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-07-20T13:45:53+00:00"
+            "time": "2022-07-20T13:46:29+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -8688,6 +8436,176 @@
                 }
             ],
             "time": "2022-02-15T19:52:12+00:00"
+        },
+        {
+            "name": "webinertia/bjy-profiler",
+            "version": "0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webinertia/bjy-profiler.git",
+                "reference": "ac74f371bf5db46861feafb0e31153feb031d678"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webinertia/bjy-profiler/zipball/ac74f371bf5db46861feafb0e31153feb031d678",
+                "reference": "ac74f371bf5db46861feafb0e31153feb031d678",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-component-installer": "^2.8.0",
+                "php": "^8.0 || ^8.1"
+            },
+            "suggest": {
+                "laminas/laminas-component-installer": "^2.8.0, required for configuration injection"
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Webinertia\\BjyProfiler",
+                    "config-provider": "Webinertia\\BjyProfiler\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webinertia\\BjyProfiler\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Youngblood",
+                    "email": "bx.youngblood@gmail.com",
+                    "homepage": "http://bjyoungblood.com/"
+                },
+                {
+                    "name": "Andrey N. Mokhov",
+                    "email": "github@mokhov.com",
+                    "homepage": "https://github.com/andrey-mokhov"
+                },
+                {
+                    "name": "Rafal Linca",
+                    "email": "kontakt@rafalllinca.pl",
+                    "homepage": "https://rafallinca.pl"
+                }
+            ],
+            "description": "Database profiler for Laminas\\Db. Module forked from rafalli/BjyProfiler",
+            "homepage": "https://github.com/rafalli/BjyProfiler",
+            "keywords": [
+                "db",
+                "laminas",
+                "profiler"
+            ],
+            "support": {
+                "source": "https://github.com/webinertia/bjy-profiler/tree/0.0.5"
+            },
+            "time": "2022-09-02T03:03:02+00:00"
+        },
+        {
+            "name": "webinertia/webinertia-installer",
+            "version": "0.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webinertia/webinertia-installer.git",
+                "reference": "9244ec5fd86f68ff53a782527c00d48951a09c10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webinertia/webinertia-installer/zipball/9244ec5fd86f68ff53a782527c00d48951a09c10",
+                "reference": "9244ec5fd86f68ff53a782527c00d48951a09c10",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-component-installer": "^2.8.0",
+                "php": "^8.0 || ^8.1"
+            },
+            "suggest": {
+                "laminas/laminas-component-installer": "^2.8.0, required for configuration injection"
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Webinertia\\Installer",
+                    "config-provider": "Webinertia\\Installer\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webinertia\\Installer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Aurora CMS Installer",
+            "homepage": "https://github.com/webinertia",
+            "keywords": [
+                "aurora",
+                "installer",
+                "webinertia"
+            ],
+            "support": {
+                "chat": "https://github.com/webinertia/aurora/discussions",
+                "docs": "https://github.com/webinertia/aurora/wiki",
+                "issues": "https://github.com/webinertia/aurora/issues",
+                "source": "https://github.com/webinertia/aurora"
+            },
+            "time": "2022-09-02T02:46:27+00:00"
+        },
+        {
+            "name": "webinertia/webinertia-utils",
+            "version": "0.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webinertia/utils.git",
+                "reference": "de4fdfbcf5a866c4b1abd39f77ccd0c80568e780"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webinertia/utils/zipball/de4fdfbcf5a866c4b1abd39f77ccd0c80568e780",
+                "reference": "de4fdfbcf5a866c4b1abd39f77ccd0c80568e780",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-component-installer": "^2.8.0",
+                "laminas/laminas-servicemanager": "^3.11.1",
+                "php": "^8.0.0 || ~8.1.1"
+            },
+            "suggest": {
+                "laminas/laminas-component-installer": "^2.8.0, required for configuration injection"
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Webinertia\\Utils",
+                    "config-provider": "Webinertia\\Utils\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webinertia\\Utils\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Webinertia Org Utilities",
+            "homepage": "https://github.com/webinertia",
+            "keywords": [
+                "utils",
+                "webinertia"
+            ],
+            "support": {
+                "chat": "https://github.com/webinertia/modelmanager/discussions",
+                "docs": "https://github.com/webinertia/modelmanager/wiki",
+                "issues": "https://github.com/webinertia/modelmanager/issues",
+                "source": "https://github.com/webinertia/modelmanager"
+            },
+            "time": "2022-09-02T02:48:20+00:00"
         },
         {
             "name": "webmozart/glob",
