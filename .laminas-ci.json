@@ -3,7 +3,7 @@
         "8.1": true
     },
     "additional_composer_arguments": [
-        "--ignore-platform-req=php+"
+        "-W"
     ],
     "stablePHP": "8.1.10",
     "additional_checks": [
