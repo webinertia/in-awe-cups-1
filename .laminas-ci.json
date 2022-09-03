@@ -2,12 +2,12 @@
     "ignore_php_platform_requirements": {
         "8.1": true
     },
-    "stablePHP": "8.0",
+    "stablePHP": "8.1.10",
     "additional_checks": [
         {
             "name": "PhpStan",
             "job": {
-                "php": "8.0",
+                "php": "8.1",
                 "dependencies": "locked",
                 "command": "composer require --dev --ignore-platform-req=php+ phpstan/phpstan && vendor/bin/phpstan analyse"
             }
