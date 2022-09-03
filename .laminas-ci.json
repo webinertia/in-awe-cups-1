@@ -8,6 +8,9 @@
             "name": "PhpStan",
             "job": {
                 "php": "8.0",
+                "ignore_php_platform_requirements": {
+                    "8.1": true
+                },
                 "dependencies": "locked",
                 "command": "composer require --dev --ignore-platform-req=php+ phpstan/phpstan && vendor/bin/phpstan analyse"
             }
