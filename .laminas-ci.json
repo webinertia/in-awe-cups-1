@@ -1,10 +1,7 @@
 {
     "ignore_php_platform_requirements": {
-        "8.1": true
+        "8.0": true
     },
-    "additional_composer_arguments": [
-        "-W"
-    ],
     "stablePHP": "8.1.10",
     "additional_checks": [
         {
