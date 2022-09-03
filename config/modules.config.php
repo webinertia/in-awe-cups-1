@@ -9,8 +9,6 @@
 declare(strict_types=1);
 
 return [
-    'Webinertia\Installer',
-    'Webinertia\Utils',
     'Laminas\Paginator\Adapter\LaminasDb',
     'Laminas\Paginator',
     'Laminas\Mail',

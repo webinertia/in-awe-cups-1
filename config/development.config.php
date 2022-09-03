@@ -5,8 +5,10 @@ declare(strict_types=1);
 return [
     // Additional modules to include when in development mode
     'modules'      => [
+        'Webinertia\Installer',
+        'Webinertia\Utils',
         'Laminas\DeveloperTools',
-        'BjyProfiler',
+        'Webinertia\BjyProfiler',
     ],
     'view_manager' => [
         'display_not_found_reason' => true,
