@@ -2,6 +2,7 @@
     "ignore_php_platform_requirements": {
         "8.1": true
     },
+    "stablePHP": "8.1",
     "additional_checks": [
         {
             "name": "PhpStan",
