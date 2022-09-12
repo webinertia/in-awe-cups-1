@@ -8,7 +8,7 @@ return [
         'Webinertia\Installer',
         'Webinertia\Utils',
         'Laminas\DeveloperTools',
-        'Webinertia\BjyProfiler',
+        'BjyProfiler',
     ],
     'view_manager' => [
         'display_not_found_reason' => true,

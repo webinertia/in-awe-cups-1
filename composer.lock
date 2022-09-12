@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fac0cf34aa362dcd97b525052e59834f",
+    "content-hash": "7dc6a935d9023324e28ebfefddd72c43",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -8439,16 +8439,16 @@
         },
         {
             "name": "webinertia/bjy-profiler",
-            "version": "0.0.5",
+            "version": "0.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webinertia/bjy-profiler.git",
-                "reference": "ac74f371bf5db46861feafb0e31153feb031d678"
+                "reference": "a729326ab8492bf676ef70c649d544e4357119ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webinertia/bjy-profiler/zipball/ac74f371bf5db46861feafb0e31153feb031d678",
-                "reference": "ac74f371bf5db46861feafb0e31153feb031d678",
+                "url": "https://api.github.com/repos/webinertia/bjy-profiler/zipball/a729326ab8492bf676ef70c649d544e4357119ab",
+                "reference": "a729326ab8492bf676ef70c649d544e4357119ab",
                 "shasum": ""
             },
             "require": {
@@ -8461,13 +8461,13 @@
             "type": "library",
             "extra": {
                 "laminas": {
-                    "component": "Webinertia\\BjyProfiler",
-                    "config-provider": "Webinertia\\BjyProfiler\\ConfigProvider"
+                    "module": "BjyProfiler",
+                    "config-provider": "BjyProfiler\\ConfigProvider"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Webinertia\\BjyProfiler\\": "src/"
+                    "BjyProfiler\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -8499,9 +8499,9 @@
                 "profiler"
             ],
             "support": {
-                "source": "https://github.com/webinertia/bjy-profiler/tree/0.0.5"
+                "source": "https://github.com/webinertia/bjy-profiler/tree/0.0.6"
             },
-            "time": "2022-09-02T03:03:02+00:00"
+            "time": "2022-09-12T16:58:51+00:00"
         },
         {
             "name": "webinertia/webinertia-installer",
@@ -8663,7 +8663,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~8.0.0"
+        "php": "~8.0.0 || ~8.1.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

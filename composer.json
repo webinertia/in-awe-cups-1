@@ -79,7 +79,7 @@
         "icanhazstring/composer-unused": "^0.8.2",
         "webinertia/webinertia-utils": "^0.0.4",
         "webinertia/webinertia-installer": "^0.0.6",
-        "webinertia/bjy-profiler": "^0.0.5"
+        "webinertia/bjy-profiler": "^0.0.6"
     },
     "replace": {
         "laminas/laminas-zendframework-bridge": "*"
