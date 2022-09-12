@@ -57,7 +57,8 @@
         ],
         "serve": "php -S 0.0.0.0:8080 -t public",
         "test": "vendor/bin/phpunit",
-        "static-analysis": "vendor/bin/psalm --shepherd --stats"
+        "static-analysis": "vendor/bin/psalm --shepherd --stats",
+        "phpstan": "php vendor/bin/phpstan analyse"
     },
     "scripts-descriptions": {
         "cs-check": "Run coding standards checks.",
@@ -66,7 +67,8 @@
         "development-enable": "Enable development mode.",
         "development-status": "Detail whether or not the application is in development mode.",
         "serve": "Start the built-in PHP web server and serve the application.",
-        "test": "Run unit tests."
+        "test": "Run unit tests.",
+        "phpstan": "Run PhpStan analyse"
     },
     "require-dev": {
         "laminas/laminas-test": "^4.2",
@@ -77,7 +79,7 @@
         "icanhazstring/composer-unused": "^0.8.2",
         "webinertia/webinertia-utils": "^0.0.4",
         "webinertia/webinertia-installer": "^0.0.6",
-        "webinertia/bjy-profiler": "^0.0.5"
+        "webinertia/bjy-profiler": "^0.0.6"
     },
     "replace": {
         "laminas/laminas-zendframework-bridge": "*"

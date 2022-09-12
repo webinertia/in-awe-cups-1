@@ -16,7 +16,6 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session\Config\ConfigInterface;
 use Laminas\Session\SaveHandler\SaveHandlerInterface;
-use Laminas\Session\SessionManager;
 use Psr\Log\LoggerInterface;
 
 return [
@@ -217,7 +216,6 @@ return [
         'factories' => [
             ConfigInterface::class         => Session\ConfigFactory::class,
             Session\Container::class       => Session\ContainerFactory::class,
-            SessionManager::class          => Session\SessionManagerFactory::class,
             Db\DbGateway\LogGateway::class => Db\DbGateway\Factory\LogGatewayFactory::class,
             Listener\ThemeLoader::class    => Listener\Factory\ThemeLoaderFactory::class,
             Model\Settings::class          => Model\Factory\SettingsFactory::class,
