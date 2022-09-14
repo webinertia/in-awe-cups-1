@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Listener\AdminListener;
-use App\Listener\LayoutVariablesListener;
 use App\Log\LogListener;
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\TableGateway\Feature\GlobalAdapterFeature;
 use Laminas\I18n\ConfigProvider;
 use Laminas\ModuleManager\ModuleEvent;
 use Laminas\ModuleManager\ModuleManager;
@@ -16,7 +12,6 @@ use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Renderer\PhpRenderer;
-use Laminas\View\Resolver\TemplateMapResolver;
 use Laminas\View\View;
 use Locale;
 use Psr\Log\LoggerInterface;
@@ -64,8 +59,6 @@ final class Module
         $this->sm     = $app->getServiceManager();
         $this->config = $this->sm->get('config');
         date_default_timezone_set($this->config['app_settings']['server']['time_zone']);
-        GlobalAdapterFeature::setStaticAdapter($this->sm->get(AdapterInterface::class));
-        // setup the logging and wire the event handling
         $psrLogAdapter = $this->sm->get(LoggerInterface::class);
         $logListener   = new LogListener($psrLogAdapter);
         $logListener->attach($eventManager);
@@ -77,15 +70,6 @@ final class Module
         if ($this->config['app_settings']['server']['enable_translation']) {
             $this->boostrapTranslation($e);
         }
-        // this will be removed in a future release
-        $layoutVariables = new LayoutVariablesListener($this->config['app_settings']);
-        $layoutVariables->attach($eventManager);
-        $adminListener = new AdminListener(
-            $psrLogAdapter,
-            $this->sm->get(TemplateMapResolver::class),
-            $this->sm->get(Translator::class)
-        );
-        $adminListener->attach($eventManager);
         // wire the json strategy
         $eventManager->attach(MvcEvent::EVENT_RENDER, [$this, 'registerJsonStrategy'], 100);
     }
