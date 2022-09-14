@@ -13,9 +13,9 @@ $this->user = $this->identity()->getIdentity();
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?= $this->headTitle($this->appSettings['view']['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($this->config('app_settings')['view']['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
         <?= $this->headMeta()
-            ->prependName('keywords', $this->appSettings['seo']['key_words'] ?? '')
+            ->prependName('keywords', $this->config('app_settings')['seo']['key_words'] ?? '')
             ->appendName('viewport', 'width=device-width, initial-scale=1.0, shrink-to-fit=no')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
@@ -44,7 +44,7 @@ $this->user = $this->identity()->getIdentity();
       <?php
         $this->navigation()->menu()->setPartial('partials/dashboard/sidebar-menu');
         $this->navigation()->setContainer('Laminas\Navigation\Admin');
-        echo $this->navigation()->menu()->renderPartialWithParams(['appSettings' => $this->appSettings, 'user' => $this->user]);
+        echo $this->navigation()->menu()->renderPartialWithParams(['appSettings' => $this->config('app_settings'), 'user' => $this->user]);
         ?>
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">

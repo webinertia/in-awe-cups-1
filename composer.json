@@ -58,7 +58,7 @@
         "serve": "php -S 0.0.0.0:8080 -t public",
         "test": "vendor/bin/phpunit",
         "static-analysis": "vendor/bin/psalm --shepherd --stats",
-        "phpstan": "php vendor/bin/phpstan analyse"
+        "phpstan": "php vendor/bin/phpstan analyse --memory-limit=-1"
     },
     "scripts-descriptions": {
         "cs-check": "Run coding standards checks.",
