@@ -53,14 +53,14 @@ final class IndexController extends AbstractAppController implements FormManager
             if ($form->isValid()) {
                 $data = $form->getData();
                 try {
-                    $this->email()->contactUsMessage($data['email'], $data['fullName'], $data['message']);
+                    $this->email()->contactUsMessage($data->email, $data->fullName, $data->message);
                 } catch (RuntimeException $e) {
                     $this->getEventManager()->trigger(
                         LogEvent::NOTICE,
                         sprintf(
                             $this->getTranslator()->translate('log_contact_email_failure'),
-                            $data['email'],
-                            $data['firstName'] . ' ' . $data['lastName']
+                            $data->email,
+                            $data->fullName
                         )
                     );
                     $this->flashMessenger()->addErrorMessage(
@@ -71,17 +71,16 @@ final class IndexController extends AbstractAppController implements FormManager
                     LogEvent::INFO,
                     sprintf(
                         $this->getTranslator()->translate('log_contact_email_success'),
-                        $data['email'],
-                        $data['firstName'] . ' ' . $data['lastName']
+                        $data->email,
+                        $data->fullName
                     )
                 );
-                // stopped work here
                 $this->getEventManager()->trigger(
                     LogEvent::INFO,
                     sprintf(
                         $this->getTranslator()->translate('log_contact_email_success'),
-                        $data['firstName'] . ' ' . $data['lastName'],
-                        $data['email']
+                        $data->fullName,
+                        $data->email
                     )
                 );
                 $this->flashMessenger()->addSuccessMessage(
