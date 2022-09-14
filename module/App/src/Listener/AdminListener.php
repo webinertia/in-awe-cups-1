@@ -8,6 +8,8 @@ use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Controller\IndexController;
 use App\Log\LogEvent;
+use App\Log\LoggerAwareInterface;
+use App\Log\LoggerAwareInterfaceTrait;
 use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
@@ -15,11 +17,14 @@ use Laminas\Mvc\Controller\ControllerManager;
 use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Resolver\TemplateMapResolver;
+use User\Service\UserService;
 
 use function sprintf;
 
-class AdminListener extends AbstractListenerAggregate
+class AdminListener extends AbstractListenerAggregate implements LoggerAwareInterface
 {
+    use LoggerAwareInterfaceTrait;
+
     /** @var AuthenticationService $authService */
     protected $authService;
     /** @var AbstractAppController $controller */
@@ -57,6 +62,7 @@ class AdminListener extends AbstractListenerAggregate
         if (! $this->controller instanceof AdminControllerInterface) {
             return;
         }
+        /** @var UserService $user */
         $user = $this->controller->identity()->getIdentity();
         if (
             ! $this->controller->identity()->hasIdentity() ||
@@ -66,7 +72,7 @@ class AdminListener extends AbstractListenerAggregate
             $logMessage   = $this->translator->translate('log_forbidden_known_action_403');
             $flashMessage = $this->translator->translate('forbidden_known_action_403');
             // we better log this
-            $event->getApplication()->getEventManager()->trigger(
+            $this->getEventManager()->trigger(
                 LogEvent::WARNING,
                 sprintf(
                     $logMessage,
