@@ -55,9 +55,8 @@ class AdminListener extends AbstractListenerAggregate implements LoggerAwareInte
 
     public function authorize(MvcEvent $event): void
     {
-        // Get and check the route match object
-        $params           = $event->getRouteMatch()->getParams();
-        $this->controller = $this->controllerManager->get($params['controller']);
+        // Get an instance of the matched controller
+        $this->controller = $this->controllerManager->get($event->getRouteMatch()->getParam('controller'));
         // Check if the request is trying to access an admin controller, if not return early
         if (! $this->controller instanceof AdminControllerInterface) {
             return;
