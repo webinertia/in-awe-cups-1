@@ -10,7 +10,6 @@ use App\Controller\IndexController;
 use App\Log\LogEvent;
 use App\Log\LoggerAwareInterface;
 use App\Log\LoggerAwareInterfaceTrait;
-use Laminas\Authentication\AuthenticationService;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\Controller\ControllerManager;
@@ -25,8 +24,6 @@ class AdminListener extends AbstractListenerAggregate implements LoggerAwareInte
 {
     use LoggerAwareInterfaceTrait;
 
-    /** @var AuthenticationService $authService */
-    protected $authService;
     /** @var AbstractAppController $controller */
     protected $controller;
     /** @var ControllerManager $controllerManager */
