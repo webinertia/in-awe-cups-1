@@ -20,9 +20,6 @@ use Laminas\Session\Validator\HttpUserAgent;
 use Laminas\Session\Validator\RemoteAddr;
 
 return [
-    'db'                 => [
-        'sessions_table_name' => 'sessions',
-    ],
     'session_config'     => [
         'use_cookies'         => true,
         'gc_maxlifetime'      => 86400,
