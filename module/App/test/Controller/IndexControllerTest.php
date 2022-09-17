@@ -20,9 +20,10 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         $configOverrides  = [];
         $configOverrides += include __DIR__ . '/../../../../config/roles.php';
         $configOverrides += include __DIR__ . '/../../../../config/themes.php';
+        $configOverrides += include __DIR__ . '/../../../../config/phpunit.config.php';
         $this->setApplicationConfig(ArrayUtils::merge(
             include __DIR__ . '/../../../../config/application.config.php',
-            include __DIR__ . '/../../../../config/autoload/appsettings.gobal.php',
+            include __DIR__ . '/../../../../config/autoload/appsettings.global.php',
             $configOverrides
         ));
 
