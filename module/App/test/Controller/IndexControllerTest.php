@@ -58,7 +58,11 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
 
     public function testActionCanHandlePost(): void
     {
-        $this->dispatch('/site/contact', 'POST', ['fullName' => 'Test User', 'email' => 'test@test.com', 'message' => 'testing']);
+        $this->dispatch(
+            '/site/contact',
+            'POST',
+            ['fullName' => 'Test User', 'email' => 'test@test.com', 'message' => 'testing']
+        );
         $this->assertModuleName('app');
         $this->assertControllerName(IndexController::class);
         $this->assertControllerClass('IndexController');
