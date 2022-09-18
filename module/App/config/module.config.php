@@ -347,6 +347,9 @@ return [
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
         'template_map'             => [],
+        // 'strategies'               => [
+        //     'ViewJsonStrategy',
+        // ],
     ],
     'translator'         => [
         'translation_file_patterns' => [
