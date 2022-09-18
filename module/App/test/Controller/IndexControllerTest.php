@@ -17,10 +17,16 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         // such as sample view templates, path stacks, module_listener_options,
         // etc.
 
-        $configOverrides  = [];
+        $configOverrides  = [
+            'db' => [
+                'driver'   => 'pdo_mysql',
+                'dsn'      => 'mysql:dbname=testdb;host=%;charset=utf8',
+                'username' => 'root',
+                'password' => 'Password123',
+            ],
+        ];
         $configOverrides += include __DIR__ . '/../../../../config/roles.php';
         $configOverrides += include __DIR__ . '/../../../../config/themes.php';
-        $configOverrides += include __DIR__ . '/../../../../config/phpunit.config.php';
         $this->setApplicationConfig(ArrayUtils::merge(
             include __DIR__ . '/../../../../config/application.config.php',
             include __DIR__ . '/../../../../config/autoload/appsettings.global.php',
