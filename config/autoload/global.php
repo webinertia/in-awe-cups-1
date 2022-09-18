@@ -20,6 +20,9 @@ use Laminas\Session\Validator\HttpUserAgent;
 use Laminas\Session\Validator\RemoteAddr;
 
 return [
+    'db'                 => [
+        'driver' => 'pdo_mysql',
+    ],
     'session_config'     => [
         'use_cookies'         => true,
         'gc_maxlifetime'      => 86400,
