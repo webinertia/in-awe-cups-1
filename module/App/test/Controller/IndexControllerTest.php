@@ -17,11 +17,7 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         // such as sample view templates, path stacks, module_listener_options,
         // etc.
 
-        $configOverrides  = [
-            'db' => [
-                'driver' => 'pdo_mysql',
-            ],
-        ];
+        $configOverrides  = [];
         $configOverrides += include __DIR__ . '/../../../../config/roles.php';
         $configOverrides += include __DIR__ . '/../../../../config/themes.php';
         $configOverrides += include __DIR__ . '/../../../../config/phpunit.config.php';
@@ -30,7 +26,6 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
             include __DIR__ . '/../../../../config/autoload/appsettings.global.php',
             $configOverrides
         ));
-
         parent::setUp();
     }
 
