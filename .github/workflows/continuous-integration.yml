@@ -41,10 +41,10 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: 'password'
-          MYSQL_ROOT_HOST: '%'
-          MYSQL_USER: 'gha'
+          MYSQL_ROOT_HOST: 'localhost'
+          MYSQL_USER: 'aurora'
           MYSQL_PASSWORD: 'password'
-          MYSQL_DATABASE: 'testdb'
+          MYSQL_DATABASE: 'aurora'
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval 10s
