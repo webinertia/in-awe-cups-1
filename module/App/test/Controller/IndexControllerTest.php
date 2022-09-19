@@ -20,9 +20,9 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         $configOverrides  = [
             'db' => [
                 'driver'   => 'pdo_mysql',
-                'dsn'      => 'mysql:dbname=testdb;host=mysql;charset=utf8',
-                'username' => 'gha',
-                'password' => 'password',
+                'dsn'      => 'mysql:dbname=testdb;host=192.168.20.20;charset=utf8',
+                'username' => 'root',
+                'password' => 'Password123',
             ],
         ];
         $configOverrides += include __DIR__ . '/../../../../config/roles.php';
