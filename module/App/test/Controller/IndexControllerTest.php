@@ -20,8 +20,8 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         $configOverrides  = [
             'db' => [
                 'driver'   => 'pdo_mysql',
-                'dsn'      => 'mysql:dbname=testdb;host=%;charset=utf8',
-                'username' => 'root',
+                'dsn'      => 'mysql:dbname=testdb;host=mysql;charset=utf8',
+                'username' => 'gha',
                 'password' => 'password',
             ],
         ];
