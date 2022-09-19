@@ -13,4 +13,14 @@ stderr="true">
       <directory>./module/App/test</directory>
     </testsuite>
   </testsuites>
+    <listeners>
+      <listener class="AppTest\AppTestListener" file="./module/App/test/AppTestListener.php"/>
+    </listeners>
+  <php>
+    <env name="DB_ADAPTER_DRIVER_MYSQL" value="false"/>
+    <env name="DB_ADAPTER_DRIVER_MYSQL_HOSTNAME" value="192.168.20.20"/>
+    <env name="DB_ADAPTER_DRIVER_MYSQL_USERNAME" value="root"/>
+    <env name="DB_ADAPTER_DRIVER_MYSQL_PASSWORD" value="Password123"/>
+    <env name="DB_ADAPTER_DRIVER_MYSQL_DATABASE" value="testdb"/>
+  </php>
 </phpunit>
