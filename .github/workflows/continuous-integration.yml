@@ -36,19 +36,3 @@ jobs:
         uses: laminas/laminas-continuous-integration-action@v1
         with:
           job: ${{ matrix.job }}
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: 'password'
-          MYSQL_ROOT_HOST: 'localhost'
-          MYSQL_USER: 'aurora'
-          MYSQL_PASSWORD: 'password'
-          MYSQL_DATABASE: 'aurora'
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 3
-        ports:
-          - 3306
