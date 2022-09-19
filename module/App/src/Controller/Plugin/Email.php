@@ -26,7 +26,7 @@ final class Email extends AbstractPlugin
      * @param string $name
      * @param array $arguments
      */
-    public function __call($name, $arguments): EmailService
+    public function __call($name, $arguments): ?EmailService
     {
         return $this->mailService->{$name}(...$arguments);
     }

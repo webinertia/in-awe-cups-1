@@ -16,19 +16,22 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         // You can override configuration here with test case specific values,
         // such as sample view templates, path stacks, module_listener_options,
         // etc.
-        $configOverrides = [
-            'app_settings' => [
-                'security' => [
-                    'enable_captcha' => 0,
-                ],
+
+        $configOverrides  = [
+            'db' => [
+                'driver'   => 'pdo_mysql',
+                'dsn'      => 'mysql:dbname=aurora;host=mysql;charset=utf8',
+                'username' => 'aurora',
+                'password' => 'password',
             ],
         ];
-
+        $configOverrides += include __DIR__ . '/../../../../config/roles.php';
+        $configOverrides += include __DIR__ . '/../../../../config/themes.php';
         $this->setApplicationConfig(ArrayUtils::merge(
             include __DIR__ . '/../../../../config/application.config.php',
+            include __DIR__ . '/../../../../config/autoload/appsettings.global.php',
             $configOverrides
         ));
-
         parent::setUp();
     }
 
@@ -56,7 +59,21 @@ final class IndexControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName(IndexController::class); // as specified in router's controller name alias
         $this->assertControllerClass('IndexController');
         $this->assertMatchedRouteName('contact');
-        $this->assertQuery('.card');
+        $this->assertQuery('form');
+    }
+
+    public function testActionCanHandlePost(): void
+    {
+        $this->dispatch(
+            '/site/contact',
+            'POST',
+            ['fullName' => 'Test User', 'email' => 'test@test.com', 'message' => 'testing']
+        );
+        $this->assertModuleName('app');
+        $this->assertControllerName(IndexController::class);
+        $this->assertControllerClass('IndexController');
+        $this->assertMatchedRouteName('contact');
+        $this->assertRedirectTo('/');
     }
 
     public function testInvalidRouteDoesNotCrash(): void

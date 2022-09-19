@@ -1,4 +1,7 @@
 {
+    "extensions": [
+        "pdo-mysql"
+    ],
     "ignore_php_platform_requirements": {
         "8.0": true
     },

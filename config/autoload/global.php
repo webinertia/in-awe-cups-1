@@ -21,7 +21,7 @@ use Laminas\Session\Validator\RemoteAddr;
 
 return [
     'db'                 => [
-        'sessions_table_name' => 'sessions',
+        'driver' => 'pdo_mysql',
     ],
     'session_config'     => [
         'use_cookies'         => true,
