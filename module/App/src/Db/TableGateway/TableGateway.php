@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Db\TableGateway;
 
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\TableGateway\AbstractTableGateway;
@@ -42,7 +43,8 @@ class TableGateway extends AbstractTableGateway
         ?EventManager $eventManager = null,
         ?ResultSetInterface $resultSetInterface = null,
         $enableEvents = false,
-        ?AbstractListenerAggregate $listener = null
+        ?AbstractListenerAggregate $listener = null,
+        ?AdapterInterface $adapter,
     ) {
         // Set the table name
         $this->table = $table;

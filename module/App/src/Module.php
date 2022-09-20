@@ -70,16 +70,6 @@ final class Module
         if ($this->config['app_settings']['server']['enable_translation']) {
             $this->boostrapTranslation($e);
         }
-        // wire the json strategy
-        $eventManager->attach(MvcEvent::EVENT_RENDER, [$this, 'registerJsonStrategy'], 100);
-    }
-
-    public function registerJsonStrategy(MvcEvent $e)
-    {
-        $container    = $e->getApplication()->getServicemanager();
-        $view         = $container->get(View::class);
-        $jsonStrategy = $container->get('ViewJsonStrategy');
-        $jsonStrategy->attach($view->getEventManager(), 100);
     }
 
     public function boostrapTranslation(MvcEvent $e): void

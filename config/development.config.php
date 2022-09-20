@@ -6,7 +6,6 @@ return [
     // Additional modules to include when in development mode
     'modules'      => [
         'Webinertia\Installer',
-        'Webinertia\Utils',
         'Laminas\DeveloperTools',
         'BjyProfiler',
     ],
