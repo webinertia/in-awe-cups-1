@@ -21,6 +21,11 @@ final class UserGateway extends TableGateway
 {
     use GatewayTrait;
 
+    /**
+     * @param string $table
+     * @param bool $enableEvents
+     * @return void
+     */
     public function __construct(
         $table,
         ?EventManager $eventManager = null,
@@ -30,13 +35,12 @@ final class UserGateway extends TableGateway
         ?AdapterInterface $adapter = null,
     ) {
         // Set the table name
-        $this->table = $table;
+        $this->table   = $table;
         $this->adapter = $adapter;
         // Create a FeatureSet
         $this->featureSet = new FeatureSet();
         $this->featureSet->setTableGateway($this);
         // Add the desired features
-        //$this->featureSet->addFeature(new GlobalAdapterFeature());
         // if we have an instance of the events manager and events are enabled, add the event feature
         if ($enableEvents && $eventManager instanceof EventManager && $listener instanceof AbstractListenerAggregate) {
             $eventFeature = new EventFeature($eventManager);

@@ -44,10 +44,13 @@ class TableGateway extends AbstractTableGateway
         ?ResultSetInterface $resultSetInterface = null,
         $enableEvents = false,
         ?AbstractListenerAggregate $listener = null,
-        ?AdapterInterface $adapter,
+        ?AdapterInterface $adapter = null,
     ) {
         // Set the table name
         $this->table = $table;
+        if ($adapter instanceof AdapterInterface) {
+            $this->adapter = $adapter;
+        }
         // Create a FeatureSet
         $this->featureSet = new FeatureSet();
         $this->featureSet->setTableGateway($this);

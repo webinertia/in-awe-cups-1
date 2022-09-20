@@ -12,7 +12,6 @@ use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Renderer\PhpRenderer;
-use Laminas\View\View;
 use Locale;
 use Psr\Log\LoggerInterface;
 
