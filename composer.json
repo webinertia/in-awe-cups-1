@@ -77,9 +77,10 @@
         "laminas/laminas-developer-tools": "^2.3",
         "phpstan/phpstan": "^1.8",
         "icanhazstring/composer-unused": "^0.8.2",
-        "webinertia/webinertia-utils": "^0.0.4",
         "webinertia/webinertia-installer": "^0.0.6",
-        "webinertia/bjy-profiler": "^0.0.6"
+        "webinertia/bjy-profiler": "^0.0.6",
+        "firephp/firephp-core": "^0.5.3",
+        "webinertia/webinertia-utils": "^0.0.6"
     },
     "replace": {
         "laminas/laminas-zendframework-bridge": "*"

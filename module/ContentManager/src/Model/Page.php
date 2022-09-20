@@ -10,6 +10,7 @@ namespace ContentManager\Model;
 
 use App\Db\TableGateway\AbstractGatewayModel;
 use App\Model\ModelInterface;
+use App\Model\ModelTrait;
 use ArrayObject;
 use ContentManager\Db\PageGateway;
 use Laminas\Db\ResultSet\ResultSet;
@@ -24,6 +25,8 @@ use function sprintf;
 
 final class Page extends AbstractGatewayModel implements ModelInterface
 {
+    use ModelTrait;
+
     /** @var PageGateway $gateway */
     protected $gateway;
     /** @var string $resourceId */

@@ -161,12 +161,11 @@ final class AdminController extends AbstractAppController implements AdminContro
             $this->view->setTerminal(true);
         }
         if ($this->isAllowed($this)) {
-            $id         = $this->params('id');
-            $navigation = $this->getService(Navigation::class);
-            $page       = $navigation->findOneById($id);
-            $gateway    = $this->getService(PageGateway::class);
+            $id    = $this->params('id');
+            $model = $this->getService(Page::class);
+            $page  = $model->fetchByColumn('id', $id);
             try {
-                $result = $gateway->delete(['id' => $page->id]);
+                $result = $model->delete(['id' => $page->id]);
                 if (! $result) {
                     $this->getEventManager()->trigger(LogEvent::NOTICE, 'log_page_deletion_error');
                     $this->flashMessenger()->addErrorMessage(

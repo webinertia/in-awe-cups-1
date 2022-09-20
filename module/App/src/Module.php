@@ -12,7 +12,6 @@ use Laminas\Mvc\I18n\Translator;
 use Laminas\Mvc\MvcEvent;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Renderer\PhpRenderer;
-use Laminas\View\View;
 use Locale;
 use Psr\Log\LoggerInterface;
 
@@ -70,16 +69,6 @@ final class Module
         if ($this->config['app_settings']['server']['enable_translation']) {
             $this->boostrapTranslation($e);
         }
-        // wire the json strategy
-        $eventManager->attach(MvcEvent::EVENT_RENDER, [$this, 'registerJsonStrategy'], 100);
-    }
-
-    public function registerJsonStrategy(MvcEvent $e)
-    {
-        $container    = $e->getApplication()->getServicemanager();
-        $view         = $container->get(View::class);
-        $jsonStrategy = $container->get('ViewJsonStrategy');
-        $jsonStrategy->attach($view->getEventManager(), 100);
     }
 
     public function boostrapTranslation(MvcEvent $e): void

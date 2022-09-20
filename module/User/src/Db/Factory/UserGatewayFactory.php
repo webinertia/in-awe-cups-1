@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace User\Db\Factory;
 
+use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\ResultSet\HydratingResultSet;
 use Laminas\Hydrator\ObjectPropertyHydrator as Hydrator;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -25,7 +26,8 @@ final class UserGatewayFactory implements FactoryInterface
             $container->get('EventManager'),
             $resultSetPrototype,
             true,
-            $container->get(UserGatewayListener::class)
+            $container->get(UserGatewayListener::class),
+            $container->get(AdapterInterface::class)
         );
     }
 }
