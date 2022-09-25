@@ -386,5 +386,6 @@ return [
                 'text_domain' => 'default',
             ],
         ],
+        'event_manager_enabled'     => true,
     ],
 ];
