@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Factory;
 
+use App\Controller\ControllerInterface;
 use App\Form\FormManagerAwareInterface;
 use App\Service\AppSettingsAwareInterface;
 use App\Session\Container as SessionContainer;
@@ -24,13 +25,16 @@ use User\Service\UserServiceInterface;
 
 class AppControllerFactory implements FactoryInterface
 {
+    protected ?ControllerInterface $controller;
+
     /** @inheritDoc */
     public function __invoke(
         ContainerInterface $container,
         $requestedName,
         ?array $options = null
     ): DispatchableInterface {
-        $controller = new $requestedName($container->get('config'));
+        $config     = $container->get('config');
+        $controller = new $requestedName($config);
         if ($controller instanceof SessionContainerAwareInterface) {
             $controller->setSessionContainer($container->get(SessionContainer::class));
         }
@@ -38,7 +42,7 @@ class AppControllerFactory implements FactoryInterface
             $controller->setAcl($container->get(AclInterface::class));
         }
         if ($controller instanceof AppSettingsAwareInterface) {
-            $controller->setAppSettings($container->get('config')['app_settings']);
+            $controller->setAppSettings($config['app_settings']);
         }
         if ($controller instanceof FormManagerAwareInterface) {
             $controller->setFormManager($container->get(FormElementManager::class));

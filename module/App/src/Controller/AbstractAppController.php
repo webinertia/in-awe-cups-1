@@ -51,7 +51,7 @@ abstract class AbstractAppController extends AbstractActionController implements
     public $basePath;
     /** @var string $referringUrl */
     public $referringUrl;
-    /** @var string $resourceId */
+    /** @var int|string $resourceId */
     protected $resourceId;
     /** @var ViewModel $view */
     protected $view;

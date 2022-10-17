@@ -20,6 +20,10 @@ trait ModelTrait
     protected $gateway;
     /** @var ResultSet $resultSet */
     protected $resultSet;
+    /** @var string $resourceId */
+    //protected $resourceId;
+    /** @var int|string $ownerId */
+    protected $ownerId;
     /**
      * @param string $column
      * @param mixed $value
@@ -70,5 +74,15 @@ trait ModelTrait
     public function delete($where): int
     {
         return $this->gateway->delete($where);
+    }
+
+    public function getResourceId(): string
+    {
+        return $this->resourceId ?? static::class;
+    }
+
+    public function getOwnerId(): int|string
+    {
+        return $this->ownerId ?? $this->offsetGet('ownerId') ?? $this->offsetGet('userId');
     }
 }
