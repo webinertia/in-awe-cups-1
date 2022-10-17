@@ -37,6 +37,7 @@ final class AclFactory implements FactoryInterface
 
         $acl->addResource('users');
         $acl->addResource('account', 'users');
+        $acl->addResource('store', 'account');
         $acl->addResource('profile', 'account');
         $acl->addResource('member-list', 'users');
 
