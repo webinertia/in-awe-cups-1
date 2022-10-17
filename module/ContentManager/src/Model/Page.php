@@ -27,6 +27,7 @@ final class Page extends AbstractGatewayModel implements ModelInterface
 {
     use ModelTrait;
 
+    /** @var PageGateway $gateway */
     protected $gateway;
     /** @var string $resourceId */
     protected $resourceId = 'page';
