@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+use Laminas\Form\View\HelperTrait;
+use Laminas\View\Renderer\PhpRenderer;
+
+/** @var PhpRenderer|HelperTrait $this */
+
+if (isset($form)) {
+    $form->setAttribute(
+        'action',
+        $this->url('admin.store/manage/products', ['action' => 'create', 'id' => '0'])
+    );
+    $form->addSubmit();
+    $form->prepare();
+    echo $this->form()->openTag($form);
+
+    echo $this->bootstrapForm($form);
+
+    echo $this->form()->closeTag($form);
+}

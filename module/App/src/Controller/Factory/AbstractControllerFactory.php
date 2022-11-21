@@ -1,12 +1,9 @@
 <?php
 
-/** This factory can be used to create the majority of controllers */
-
 declare(strict_types=1);
 
 namespace App\Controller\Factory;
 
-use App\Controller\ControllerInterface;
 use App\Form\FormManagerAwareInterface;
 use App\Service\AppSettingsAwareInterface;
 use App\Session\Container as SessionContainer;
@@ -15,26 +12,21 @@ use Laminas\Form\FormElementManager;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\Mvc\I18n\Translator;
 use Laminas\Permissions\Acl\AclInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
 use Laminas\Stdlib\DispatchableInterface;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Psr\Container\ContainerInterface;
 use User\Acl\AclAwareInterface;
 use User\Service\UserService;
 use User\Service\UserServiceAwareInterface;
 use User\Service\UserServiceInterface;
 
-class AppControllerFactory implements FactoryInterface
+class AbstractControllerFactory extends ReflectionBasedAbstractFactory
 {
-    protected ?ControllerInterface $controller;
-
     /** @inheritDoc */
-    public function __invoke(
-        ContainerInterface $container,
-        $requestedName,
-        ?array $options = null
-    ): DispatchableInterface {
-        $config     = $container->get('config');
-        $controller = new $requestedName($config);
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): DispatchableInterface
+    {
+        $controller  = parent::__invoke($container, $requestedName, $options);
+        $appSettings = $container->get('config')['app_settings'];
         if ($controller instanceof SessionContainerAwareInterface) {
             $controller->setSessionContainer($container->get(SessionContainer::class));
         }
@@ -42,7 +34,7 @@ class AppControllerFactory implements FactoryInterface
             $controller->setAcl($container->get(AclInterface::class));
         }
         if ($controller instanceof AppSettingsAwareInterface) {
-            $controller->setAppSettings($config['app_settings']);
+            $controller->setAppSettings($appSettings);
         }
         if ($controller instanceof FormManagerAwareInterface) {
             $controller->setFormManager($container->get(FormElementManager::class));

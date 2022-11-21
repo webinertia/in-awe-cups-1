@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Laminas\Form\Element\Submit;
-use Laminas\Form\Form;
+use Dojo\Form\Element\Submit;
+use Dojo\Form\Form;
 use Laminas\InputFilter\InputFilterProviderInterface;
 
 class BaseForm extends Form implements InputFilterProviderInterface
@@ -24,11 +24,11 @@ class BaseForm extends Form implements InputFilterProviderInterface
                 'name'       => 'submit',
                 'type'       => Submit::class,
                 'attributes' => [
-                    'value' => 'Submit',
-                    'id'    => 'submitbutton',
+                    'value' => 'Save',
+                    'id'    => 'save' . $this->getAttribute('name') . 'Button',
                 ],
             ],
-            ['priority' => -100]
+            ['priority' => 1]
         );
     }
 

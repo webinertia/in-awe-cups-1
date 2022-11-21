@@ -21,12 +21,12 @@ return [
         ],
         'seo' => [
             'key_words' => 'Aurora CMS, Webinertia.net, Laminas, Php, MySQL',
-            'description' => 'Aurora CMS',
+            'description' => 'In Awe Cups &amp; More',
         ],
         'view' => [
-            'site_name' => 'Aurora CMS',
-            'copyright_link' => 'http://webinertia.net/aurora',
-            'copyright_text' => 'Aurora CMS',
+            'site_name' => 'In Awe Cups &amp; More',
+            'copyright_link' => 'https://inawecups.com',
+            'copyright_text' => 'In Awe Cups &amp; More',
             'footer_text' => 'Developed by Webinertia',
             'show_breadcrumbs' => '0',
         ],

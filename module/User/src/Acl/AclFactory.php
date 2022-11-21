@@ -48,11 +48,14 @@ final class AclFactory implements FactoryInterface
 
         $acl->addResource('content');
         $acl->addResource('page', 'content');
+        $acl->addResource('widget', 'content');
+        $acl->addResource('imageslider', 'widget');
 
         $acl->allow('Guest', 'content', 'view'); // should allow reading of pages
         $acl->allow('Guest', 'account', ['register', 'login']); // should allow showing the register, login tabs
         $acl->allow('Guest', 'contact-us', ['view', 'send']); // view, send contact us form
         $acl->allow('Guest', ['messages', 'site-message'], ['message-Staff']);
+        $acl->allow('Guest', ['widget'], 'view');
         $acl->deny('Guest', 'account', 'logout'); // should prevent guest from seeing the logout
 
         $acl->allow('Member', null, ['view', 'edit', 'delete'], new Owner()); // view, edit, delete own account

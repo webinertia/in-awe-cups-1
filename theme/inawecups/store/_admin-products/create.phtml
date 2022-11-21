@@ -1,0 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+if (isset($form)) {
+    $form->prepare();
+    echo $this->form()->openTag($form);
+
+    echo $this->bootstrapForm($form);
+
+    echo $this->form()->closeTag($form);
+}
