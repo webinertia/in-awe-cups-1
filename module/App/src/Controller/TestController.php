@@ -20,6 +20,7 @@ use Store\Model\Category;
 use Store\Model\Image;
 use Laminas\Form\FormElementManager;
 use Store\Form\CategoryForm;
+use Store\Form\DojoTest;
 
 use function strpos;
 use function str_replace;
@@ -43,17 +44,21 @@ final class TestController extends AbstractAppController implements LoggerAwareI
         $this->category = $category;
         $this->formManager = $formElementManager;
         $this->imageModel  = $imageModel;
-        $this->form        = $this->formManager->get(CategoryForm::class);
+        $this->form        = $this->formManager->get(DojoTest::class);
     }
 
     public function indexAction(): ViewModel
     {
         $this->ajaxAction();
-        if ($this->request->isPost()) {
-            $post = $this->request->getPost();
-        } else {
+        $this->form->setAttribute('action', $this->url()->fromRoute('admin.store/manage/categories', ['action' => 'create']));
+        // $data = [
+        //     'label' => 'test category data    ',
+        //     //'description' => 'test description',
+        // ];
+        // $this->category->exchangeArray($data);
+        // $this->category->save($this->category);
+        $this->view->setVariable('form', $this->form);
 
-        }
         return $this->view;
     }
 }

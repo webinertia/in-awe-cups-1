@@ -25,7 +25,7 @@ use Laminas\View\Renderer\PhpRenderer;
         <?= $this->headLink([
                 'rel'  => 'shortcut icon',
                 'type' => 'image/vnd.microsoft.icon',
-                'href' => $this->basePath() . '/img/favicon.ico',
+                'href' => $this->basePath() . '/images/favicon.ico',
         ])
         ->appendStylesheet($this->basePath('/dashboard/js/dijit/themes/claro/claro.css'))
         ->appendStylesheet($this->basePath('/dashboard/css/dojo-dashboard.css'));
@@ -42,6 +42,7 @@ use Laminas\View\Renderer\PhpRenderer;
         //$this->navigation()->menu()->setPartial('partials/dashboard/sidebar-menu');
         $this->navigation()->setContainer('Laminas\Navigation\Admin');
         $menuData = $this->jsonifyMenu($this->navigation()->getContainer());
+        echo $this->dojo()->enable();
         ?>
         <script>
             var dojoConfig = {
@@ -97,7 +98,7 @@ use Laminas\View\Renderer\PhpRenderer;
                 design: "headline",
                 "class": "workSpaceLayout"
             }, "workSpace");
-            var noticeDialog = new Dialog({
+            let noticeDialog = new Dialog({
                     id: "systemMessage",
                     region: "top",
                     title: "System Notification"
@@ -124,7 +125,7 @@ use Laminas\View\Renderer\PhpRenderer;
             });
             const statusBar = new ProgressBar({
                 progress: "0",
-                label: "System Idle"
+                label: "&nbsp;"
             });
             statusPane.addChild(statusBar);
             notify("start", function(){
@@ -148,20 +149,36 @@ use Laminas\View\Renderer\PhpRenderer;
                 //console.log("done");
                 //statusBar.set("label", "Processing Response..");
                 //statusBar.set("value", "100%");
-                //console.log(data);
+                //console.log("notify done - dojo-admin.phtml: " + data);
                 if (data instanceof Error) {
-                    console.log(data);
-                    statusBar.set("label", "Unknown Error!");
-                    statusBar.set("value", Number.POSITIVE_INFINITY);
+
                 } else {
-                    //statusBar.set("value", "100%");
-                    statusBar.set("label", "Request Succesfully Processed.");
+                    try {
+                        if (typeof data === 'object') {
+                            //let response = JSON.parse(data);
+                            //console.log(data.data);
+                            if (typeof data.data === 'string') {
+                                let systemMessage = JSON.parse(data.data);
+                                if (systemMessage.success) {
+                                    noticeDialog.set("content", systemMessage.message);
+                                    noticeDialog.show();
+                                } else if(systemMessage.error) {
+                                    noticeDialog.set("content", systemMessage.message);
+                                    noticeDialog.show();
+                                }
+                            }
+                            //console.log(noticeDialog);
+                        }
+                    } catch (error) {
+                        //console.warn(error);
+                    }
                 }
             });
             notify("stop", function(){
                 //console.log("stop");
-                statusBar.set("label", "System Idle");
+                //statusBar.set("label", "System Idle");
                 statusBar.set("value", "0");
+                statusBar.set("label", "&nbsp;");
             });
             workSpace.addChild(statusPane);
             workSpace.addChild(headerPane);
@@ -222,16 +239,21 @@ use Laminas\View\Renderer\PhpRenderer;
                             pane.addChild(stackContainerButtonPane);
                             // // iterate pages and create a stack container for each child
                             array.forEach(menuItem.pages, function(child){
-                                stack.addChild(
-                                    new ContentPane({
-                                        id: child.widgetId,
-                                        title: child.label,
-                                        href: child.uri,
-                                        refreshOnShow: true,
-                                        executeScripts: true,
-                                        scriptHasHooks: true
-                                    })
-                                );
+
+                                if(child.pages.length === 0) {
+                                    stack.addChild(
+                                        new ContentPane({
+                                            id: child.widgetId,
+                                            title: child.label,
+                                            href: child.uri,
+                                            refreshOnShow: true,
+                                            executeScripts: true,
+                                            scriptHasHooks: true
+                                        })
+                                    );
+                                } else if (child.pages.length > 0) {
+                                    // handle grandchildren
+                                }
                                 pane.addChild(stack);
                             });
                             contentTabs.addChild(pane);

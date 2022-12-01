@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Store\Form\Fieldset;
 
+use Dojo\Form\Element\Editor;
+use Dojo\Form\Element\ComboBox;
+use Dojo\Form\Element\TextBox;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
+use Laminas\Filter\Callback;
 use Laminas\Filter\HtmlEntities;
 use Laminas\Filter\StripTags;
 use Laminas\Filter\StringTrim;
@@ -41,24 +45,24 @@ final class CategoryInfo extends Fieldset implements InputFilterProviderInterfac
     {
         $this->add([
             'name' => 'label',
-            'type' => Text::class,
-            'options' => [
-                'label' => 'Category Name:',
+            'type' => TextBox::class,
+            'attributes' => [
+                'placeholder' => 'Category Name:',
             ],
         ])->add([
+            'id'   => 'parentCategoryId',
             'name' => 'parentId',
             'type' => Select::class,
+            'attributes' => [
+                'data-dojo-type' => 'dijit/form/Select',
+            ],
             'options' => [
-                'label' => 'Parent Category?',
-                'empty_option' => 'No Parent',
+                'empty_option'  => 'No Parent',
                 'value_options' => $this->categoryValueOptions,
             ],
         ])->add([
             'name' => 'description',
-            'type' => TextArea::class,
-            'options' => [
-                'label' => 'Category Description:',
-            ],
+            'type' => Editor::class,
         ]);
     }
 

@@ -13,6 +13,6 @@ class ProductInfoFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
     {
-        return new ProductInfo($container->get(Category::class));
+        return new ProductInfo($container->get(Category::class), $container->get('config')['app_settings']);
     }
 }

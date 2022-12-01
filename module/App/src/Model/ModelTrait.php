@@ -123,4 +123,9 @@ trait ModelTrait
     {
         return $this->gateway->getAdapter();
     }
+
+    public function toArray()
+    {
+        return $this->getArrayCopy();
+    }
 }

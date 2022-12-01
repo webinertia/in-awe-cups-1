@@ -6,45 +6,52 @@ namespace Store\Controller;
 
 use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
-use Store\Db\TableGateway\CategoriesTable;
+use App\Filter\LabelToTitle;
+use App\Filter\TitleToLabel;
+use App\Upload\UploadEvent;
+use Laminas\Filter\FilterPluginManager;
 use Laminas\Form\FormElementManager;
 use Laminas\Session\Container;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ModelInterface;
-use Laminas\View\Model\ViewModel;
 use Store\Db\TableGateway\ProductsByCategoryTable;
-use Store\Db\TableGateway\ProductsTable;
+use Store\Model\Category;
+use Store\Model\Image;
 use Store\Model\Product;
 use Store\Form\ProductForm;
-use Uploader\Fieldset\UploaderAwareMultiFile;
 
 use function array_merge_recursive;
 
 class AdminProductsController extends AbstractAppController implements AdminControllerInterface
 {
-    protected CategoriesTable $categoriesTable;
-    protected ProductsTable $productsTable;
+    /** @var Category $category */
+    protected $category;
+    /** @var Image $image */
+    protected $image;
+    /** @var LabelToTitle $labelToTitleFilter */
+    protected $labelToTitleFilter;
+    /** @var Product $product */
+    protected $product;
+    /** @var ProductForm $form */
     protected ProductForm $form;
-    protected Product $product;
-    protected array $uploadConfig = [];
     /** @var string $resourceId */
     protected $resourceId = 'admin';
 
     /** @return void */
     public function __construct(
-        array $config,
-        CategoriesTable $categoriesTable,
-        ProductsTable $productsTable,
+        Category $category,
+        Image $image,
         Product $product,
-        FormElementManager $formElementManager
+        FilterPluginManager $filterPluginManager,
+        FormElementManager $formElementManager,
+        array $config,
     ) {
         parent::__construct($config);
-        $this->categoriesTable = $categoriesTable;
-        $this->productsTable   = $productsTable;
-        $this->product         = $product;
-        $this->form            = $formElementManager->get(ProductForm::class);
-        // $this->uploadConfig['upload-config']['module'] = 'store';
-        // $this->uploadConfig['upload-config']['type'] = 'products';
+        $this->category           = $category;
+        $this->image              = $image;
+        $this->product            = $product;
+        $this->labelToTitleFilter = $filterPluginManager->get(TitleToLabel::class);
+        $this->form               = $formElementManager->get(ProductForm::class);
     }
 
     public function indexAction(): ModelInterface
@@ -103,38 +110,40 @@ class AdminProductsController extends AbstractAppController implements AdminCont
 
     public function createAction()
     {
-        if ($this->request->isXmlHttpRequest()) {
-            $this->view->setTerminal(true);
-        }
+        $this->ajaxAction();
+        $this->form->setAttribute(
+            'action',
+            '/admin/store/manage/products/create'
+        );
         if ($this->request->isPost()) {
-            $postData = $this->request->getPost();
-            $this->form->setData($postData->toArray());
-            /**
-             * @var \Application\Form\Fieldset\FieldsetTrait $fieldset
-             */
-            $fieldset        = $this->form->get('product-info');
-            $validationGroup = $fieldset->getElementNames();
-            $this->form->setValidationGroup(['product-info' => $validationGroup]);
-            if ($this->form->isValid()) {
-                // get the data from the form
+            $posted = array_merge_recursive(
+                $this->request->getPost()->toArray(),
+                $this->request->getFiles()->toArray()
+            );
+            $this->form->setData(array_merge_recursive(
+                    $this->request->getPost()->toArray(),
+                    $this->request->getFiles()->toArray()
+                )
+            );
+            if ($this->form->isValid()) { // if form data is valid proceed
                 $data = $this->form->getData();
                 try {
-                    $this->product->exchangeArray($data['product-info']);
+                    $this->product->exchangeArray($data['product-data']);
+                    $this->product->title = $this->labelToTitleFilter->filter($data['product-data']['label']);
                     $this->product->save($this->product);
-                    $this->form->remove('product-info');
-                    $imageFieldset = $this->sm->get(UploaderAwareMultiFile::class);
-                    $imageFieldset->init();
-                    $this->form->add($imageFieldset);
-                    $this->form->setData($data['upload-config']);
+                    $this->image->productId = $this->product->getLastInsertId();
+                    $this->image->setUploadType(Image::PRODUCT_TYPE);
+                    $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['image-data']['images']);
+                    return new JsonModel([
+                        'success' => true,
+                        'message' => $this->product->label . ' was created successfully!',
+                    ]);
                 } catch (\Throwable $th) {
-                    $this->logger->log(6, $th->getMessage());
+                    //throw $th;
                 }
-                $step = 'upload-files';
             } else {
-
+                $messages = $this->form->getMessages();
             }
-        } else {
-
         }
         $this->view->setVariable('form', $this->form);
         return $this->view;

@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace Store\Form\Fieldset;
 
 use App\Form\Fieldset\FieldsetTrait;
-use Laminas\Form\Element\Checkbox;
-use Laminas\Form\Element\Date;
-use Laminas\Form\Element\Hidden;
-use Laminas\Form\Element\Number;
-use Laminas\Form\Element\Select;
+use Dojo\Form\Element\ComboBox;
+use Dojo\Form\Element\DateTextBox;
+use Dojo\Form\Element\Editor;
+use Dojo\Form\Element\TextBox;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\HtmlEntities;
 use Laminas\Form\Element\Text;
-use Laminas\Form\Element\Textarea;
+use Laminas\Form\Element\Checkbox;
+use Laminas\Form\Element\Hidden;
+use Laminas\Form\Element\Select;
 use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
+use Laminas\Validator\StringLength;
 use Store\Model\Category;
+
+use function date;
 
 class ProductInfo extends Fieldset implements InputFilterProviderInterface
 {
@@ -23,11 +29,11 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
     /** @var Category $category */
     protected $category;
 
-    public function __construct(Category $category)
+    public function __construct(Category $category, ?array $appSettings = [])
     {
         $this->category = $category;
         $this->categoryValueOptions = $this->category->fetchSelectValueOptions();
-        parent::__construct($name = null, []);
+        parent::__construct($name = null, $appSettings);
     }
 
     public function init()
@@ -44,129 +50,137 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
         $this->add([
             'name' => 'createdDate',
             'type' => Hidden::class,
+            'attributes' => [
+                'value' => date($this->getOptions()['server']['time_format']),
+            ],
         ]);
         $this->add([
-            'name' => 'name',
-            'type' => Text::class,
-            'options' => [
-                'label' => 'Product Name:',
+            'name' => 'label',
+            'type' => TextBox::class,
+            'attributes' => [
+                'placeholder' => 'Product Name:',
             ],
         ]);
         $this->add([
             'name' => 'categoryId',
             'type' => Select::class,
-            'options' => [
-                'label' => 'Product Category:',
-                'value_options' => $this->categoryValueOptions,
-            ],
-        ]);
-        $this->add([
-            'name' => 'description',
-            'type' => Textarea::class,
             'attributes' => [
-                'id' => 'description',
+                'data-dojo-type' => 'dijit/form/Select',
             ],
             'options' => [
-                'label' => 'Product Description:'
+                'empty_option'  => 'Category Required!',
+                'value_options' => $this->categoryValueOptions,
             ],
         ]);
         // cost decimal 10,2
         $this->add([
+            'id'   => 'cost',
             'name' => 'cost',
-            'type' => Number::class,
+            'type' => TextBox::class,
             'attributes' => [
-                'step' => '.01',
-            ],
-            'options' => [
-                'label' => 'Product Cost:'
+                'Placeholder' => 'Product Cost: (10.00)'
             ],
         ]);
         // weight decimal
         $this->add([
             'name' => 'weight',
-            'type' => Number::class,
+            'type' => TextBox::class,
             'attributes' => [
-                'step' => '.01',
-            ],
-            'options' => [
-                'label' => 'Product Weight:',
+                'placeholder' => 'Shipping weight: ex 10.5',
             ],
         ]);
         // manufacturer text
         $this->add([
             'name' => 'manufacturer',
-            'type' => Text::class,
-            'options' => [
-                'label' => 'Product Manufaturer:',
+            'type' => TextBox::class,
+            'attributes' => [
+                'placeholder' => 'Product Manufacturer',
+                'value'       => 'In Awe Cups & More',
             ],
         ]);
         // sku text
         $this->add([
             'name' => 'sku',
-            'type' => Text::class,
-            'options' => [
-                'label' => 'Product SKU:'
-            ],
-        ]);
-        // active bool checkbox
-        $this->add([
-            'name' => 'active',
-            'type' => Checkbox::class,
-            'options' => [
-                'label' => 'Is product active?',
-            ],
-        ]);
-        // onSale bool checkbox
-        $this->add([
-            'name' => 'onSale',
-            'type' => Checkbox::class,
-            'options' => [
-                'label' => 'On Sale?',
+            'type' => TextBox::class,
+            'attributes' => [
+                'placeholder' => 'Product SKU:'
             ],
         ]);
         // discount decimal 3,2
         $this->add([
             'name' => 'discount',
             'required' => false,
-            'type' => Number::class,
+            'type' => TextBox::class,
             'attributes' => [
-                'width' => '50%',
-            ],
-            'options' => [
-                'label' => 'Discount Amount:'
+                'placeholder' => 'Discount: ex 25 = 25%',
             ],
         ]);
         // saleStartDate datepicker
         $this->add([
+            'id'   => 'saleStartDate',
             'name' => 'saleStartDate',
-            'type' => Date::class,
-            'options' => [
-                'label' => 'Sale Start Date:',
-                'year_attributes' => [
-                    'min_year' => -1,
-                    'max_year' => 0,
-                ],
-                'month_attributes' => [],
-                'day_attributes' => [],
+            'type' => DateTextBox::class,
+            'attributes' => [
+                'placeholder' => 'Sale Start Date:',
             ],
         ]);
         // saleEndDate datepicker
         $this->add([
+            'id'   => 'saleEndDate',
             'name' => 'saleEndDate',
-            'type' => Date::class,
-            'options' => [
-                'label' => 'Sale End Date:',
-                'year_attributes' => [
-                    'min_year' => -1,
-                    'max_year' => 0,
-                ],
-                'month_attributes' => [],
-                'day_attributes' => [],
+            'type' => DateTextBox::class,
+            'attributes' => [
+                'placeholder' => 'Sale End Date:',
             ],
+        ]);
+        // active bool checkbox
+        $this->add([
+            'name' => 'active',
+            'type' => Checkbox::class,
+            'attributes' => [
+                'data-dojo-type' => 'dijit/form/CheckBox',
+            ],
+            'options' => [
+                'label' => 'Active ',
+            ],
+        ]);
+        // onSale bool checkbox
+        $this->add([
+            'name' => 'onSale',
+            'type' => Checkbox::class,
+            'attributes' => [
+                'data-dojo-type' => 'dijit/form/CheckBox',
+            ],
+            'options' => [
+                'checked_value' => '1',
+                'unchecked_value' => '0',
+                'label' => 'On Sale ',
+            ],
+        ]);
+        $this->add([
+            'name' => 'description',
+            'type' => Editor::class,
         ]);
     }
     public function getInputFilterSpecification()
     {
-        return [];
+        return [
+            'label' => [
+                'required' => true,
+                'filters'  => [
+                    ['name' => StringTrim::class],
+                    ['name' => HtmlEntities::class],
+                ],
+                'validators' => [
+                    [
+                        'name' => StringLength::class,
+                        'options' => [
+                            'min' => 1,
+                            'max' => 2,
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }

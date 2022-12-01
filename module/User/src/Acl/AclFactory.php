@@ -72,8 +72,23 @@ final class AclFactory implements FactoryInterface
 
         $acl->allow(
             'Staff',
-            ['account', 'profile', 'member-list', 'content'],
-            ['view', 'create', 'edit', 'delete', 'upload-images', 'staffActivate']
+            ['account', 'profile', 'member-list', 'content', 'store'], // resources
+            [// privileges
+                'view',
+                'create',
+                'edit',
+                'delete',
+                'upload-images',
+                'staffActivate',
+                'create-category',
+                'create-product',
+                'edit-category',
+                'edit-product',
+                'edit-order',
+                'create-shipping',
+                'edit-shipping',
+                'use-store-toolbar',
+            ]
         );
         $acl->allow('Staff', 'admin', 'view'); // should allow staff to view the admin page
         $acl->deny('Staff', ['settings']);

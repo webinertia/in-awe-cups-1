@@ -8,9 +8,6 @@ use App\Upload\UploadEvent;
 use Laminas\EventManager\EventInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\AbstractListenerAggregate;
-use Laminas\Filter\BaseName;
-use Laminas\Filter\File\RenameUpload;
-use Laminas\Stdlib\RequestInterface;
 
 class UploadListener extends AbstractListenerAggregate
 {

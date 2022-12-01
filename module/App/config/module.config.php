@@ -13,10 +13,13 @@ use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Session\Config\ConfigInterface;
 use Laminas\Session\SaveHandler\SaveHandlerInterface;
 use Psr\Log\LoggerInterface;
+
+use function rand;
 
 return [
     'app_settings'       => [ // app_settings that are not to be edited are stored here
@@ -24,6 +27,13 @@ return [
             'app_path'        => __DIR__ . '/../../../',
             'upload_basepath' => __DIR__ . '/../../../public/module',
             'scheme'          => $_SERVER['REQUEST_SCHEME'] ?? 'http',
+            'content_security_policy' => [
+                'directives' => [
+                    'default-src' => ['\'self\'', 'unsafe-inline'],
+                    'img-src'     => ['*'],
+                    'script-src'  => ['\'self\'', 'unsafe-inline'],
+                ],
+            ],
         ],
         'theme' => [
             'admin_template' => 'layout/dojo-admin',
@@ -214,23 +224,25 @@ return [
     ],
     'listeners'          => [
         Listener\MySqlGlobalAdapterInit::class,
+        Listener\ContentSecurityListener::class,
         Listener\AdminListener::class,
         Listener\ThemeLoader::class,
         Upload\UploadListener::class,
     ],
     'service_manager'    => [
         'factories' => [
-            Listener\MySqlGlobalAdapterInit::class => Listener\Factory\MySqlGlobalAdapterInitFactory::class,
-            ConfigInterface::class                 => Session\ConfigFactory::class,
-            Session\Container::class               => Session\ContainerFactory::class,
-            Db\DbGateway\LogGateway::class         => Db\DbGateway\Factory\LogGatewayFactory::class,
-            Listener\AdminListener::class          => Listener\Factory\AdminListenerFactory::class,
-            Listener\ThemeLoader::class            => Listener\Factory\ThemeLoaderFactory::class,
-            Model\Settings::class                  => Model\Factory\SettingsFactory::class,
-            Model\Theme::class                     => InvokableFactory::class,
-            Service\Email::class                   => Service\Factory\EmailFactory::class,
-            SaveHandlerInterface::class            => Session\SaveHandlerFactory::class,
-            Upload\UploadListener::class           => InvokableFactory::class,
+            Listener\MySqlGlobalAdapterInit::class  => Listener\Factory\MySqlGlobalAdapterInitFactory::class,
+            ConfigInterface::class                  => Session\ConfigFactory::class,
+            Session\Container::class                => Session\ContainerFactory::class,
+            Db\DbGateway\LogGateway::class          => Db\DbGateway\Factory\LogGatewayFactory::class,
+            Listener\AdminListener::class           => Listener\Factory\AdminListenerFactory::class,
+            Listener\ThemeLoader::class             => Listener\Factory\ThemeLoaderFactory::class,
+            Listener\ContentSecurityListener::class => ReflectionBasedAbstractFactory::class,
+            Model\Settings::class                   => Model\Factory\SettingsFactory::class,
+            Model\Theme::class                      => InvokableFactory::class,
+            Service\Email::class                    => Service\Factory\EmailFactory::class,
+            SaveHandlerInterface::class             => Session\SaveHandlerFactory::class,
+            Upload\UploadListener::class            => InvokableFactory::class,
         ],
     ],
     'controllers'        => [

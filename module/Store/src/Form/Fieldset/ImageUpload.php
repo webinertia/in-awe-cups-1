@@ -44,12 +44,10 @@ final class ImageUpload extends Fieldset implements InputFilterProviderInterface
             'type' => Hidden::class,
         ]);
         $this->add([
-            'name' => 'image-files',
+            'name' => 'images',
             'type' => File::class,
-            'options' => [
-                'label' => 'Upload Image:',
-            ],
             'attributes' => [
+                'id'   => 'imageUploader',
                 'multiple' => true,
             ],
         ]);
@@ -58,8 +56,8 @@ final class ImageUpload extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return [
-            // 'image-files' => [
-            //     'required' => true,
+            // 'images' => [
+            //     'required' => false,
             //     'validators' => [
             //         ['name' => IsImage::class],
             //         [

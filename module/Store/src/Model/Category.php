@@ -11,6 +11,16 @@ use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Where;
+use Laminas\Filter\HtmlEntities;
+use Laminas\Filter\StripTags;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StringToLower;
+use Laminas\Filter\Word\SeparatorToDash;
+use Laminas\Filter\ToInt;
+use Laminas\Filter\UpperCaseWords;
+use Laminas\InputFilter\InputFilter;
+use Laminas\Validator\Db\NoRecordExists;
+use Laminas\Validator\StringLength;
 use Store\Db\TableGateway\CategoriesTable;
 
 use function count;
@@ -45,7 +55,19 @@ final class Category extends AbstractGatewayModel implements ModelInterface
      */
     public function save($model, $where = null, ?array $joins = null): int
     {
+        if ($model->parentId === 'No Parent') {
+            unset($model->parentId);
+        }
         $set = $model->getArrayCopy();
+        $filter = $this->getInputFilter();
+        if ($filter instanceof InputFilter) {
+            $filter->setData($set);
+            if ($filter->isValid()) {
+                $set = $filter->getValues();
+            } else {
+                $errors = $filter->getMessages();
+            }
+        }
         if (isset($model->id)) {
             $result = $this->gateway->update($set, $where, $joins);
         } else {
@@ -80,5 +102,60 @@ final class Category extends AbstractGatewayModel implements ModelInterface
             $where->equalTo('parentId', $parentId);
         });
         return $this->gateway->selectWith($select);
+    }
+
+    public function fetchTreeStore(string $idColumn = 'label', int|string $catId)
+    {
+        $select = $this->gateway->getSql()->select();
+        $select->columns(['id', 'label', ]);
+    }
+
+    public function fetchGridStore(int|string $rootId = null)
+    {
+
+    }
+
+    public function getInputFilter()
+    {
+        // if (!$this->inputFilter) {
+        //     $this->inputFilter = new $this->inputFilterClass();
+        // }
+        // $this->inputFilter->add([
+        //         'name' => 'label',
+        //         'required' => false,
+        //         'allow_empty' => true,
+        //         'continue_if_empty' => true,
+        //         'filters' => [
+        //             ['name' => StripTags::class],
+        //             ['name' => StringTrim::class],
+        //             ['name' => UpperCaseWords::class],
+        //         ],
+        //         'validators' => [
+        //             [
+        //                 'name'    => StringLength::class,
+        //                 'options' => [
+        //                     'encoding' => 'UTF-8',
+        //                     'min'      => 1,
+        //                     'max'      => 255,
+        //                 ],
+        //             ],
+        //             [
+        //                 'name'    => NoRecordExists::class,
+        //                 'options' => [
+        //                     'table' => 'store_categories',
+        //                     'field' => 'label',
+        //                     'dbAdapter' => $this->gateway->getAdapter(),
+        //                     'messages' => [
+        //                         NoRecordExists::ERROR_RECORD_FOUND => 'Category by that name is already in use!',
+        //                     ],
+        //                 ],
+        //             ],
+        //         ],
+        //     ]);
+        //     $this->inputFilter->add([
+        //         'title' => 'label'
+        //     ]);
+
+        // return $this->inputFilter;
     }
 }

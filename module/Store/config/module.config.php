@@ -41,11 +41,13 @@ return [
             'StoreController'      => Controller\IndexController::class,
             'ProductsController'   => Controller\ProductsController::class,
             'ReviewController'     => Controller\ReviewController::class,
+            'StoreDataApi'         => Controller\DataApiController::class,
         ],
         'factories' => [
             Controller\AdminCategoriesController::class => AbstractControllerFactory::class,
             Controller\AdminController::class           => AbstractControllerFactory::class,
             Controller\AdminProductsController::class   => AbstractControllerFactory::class,
+            Controller\ApiController::class             => AbstractControllerFactory::class,
             Controller\CartController::class            => AbstractControllerFactory::class,
             Controller\CategoriesController::class      => AbstractControllerFactory::class,
             Controller\IndexController::class           => AbstractControllerFactory::class,
@@ -54,6 +56,7 @@ return [
             Controller\ProductSearchController::class   => AbstractControllerFactory::class,
             Controller\ReviewController::class          => AbstractControllerFactory::class,
             Controller\ShippingController::class        => AbstractControllerFactory::class,
+            Controller\DataApiController::class         => AbstractControllerFactory::class,
         ],
     ],
     'listeners' => [
@@ -75,6 +78,7 @@ return [
     ],
     'form_elements' => [
         'factories' => [
+            Form\DojoTest::class                => InvokableFactory::class,
             Form\CategoryForm::class            => InvokableFactory::class,
             Form\ProductForm::class             => InvokableFactory::class,
             Form\SearchForm::class              => InvokableFactory::class,
@@ -168,15 +172,15 @@ return [
             'admin.store' => [
                 'type'          => Placeholder::class,
                 'may_terminate' => true,
-                'options'       => [
-                    'route' => '/admin/store',
-                ],
+                // 'options'       => [
+                //     'route' => '/admin/store',
+                // ],
                 'child_routes'  => [
                     'overview'   => [
-                        'type'          => Literal::class,
+                        'type'          => Segment::class,
                         'may_terminate' => true,
                         'options'       => [
-                            'route'    => '/admin/store/overview',
+                            'route'    => '/admin/store[/:action]',
                             'defaults' => [
                                 'controller' => Controller\AdminController::class,
                                 'action'     => 'overview',
@@ -220,6 +224,30 @@ return [
                     ],
                 ],
             ],
+            'store.api' => [
+                'type' => Placeholder::class,
+                'may_terminate' => true,
+                'options' => [
+                    'route' => '/store/api',
+                ],
+                'child_routes' => [
+                    'category.data' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route'      => '/store/data/api/category[/:id[/:listType]]',
+                            'defaults' => [
+                                'controller' => Controller\DataApiController::class,
+                                'action'     => 'category-data',
+                            ],
+                            'constraints' => [
+                                'id'       => '[0-9]+',
+                                'listType' => '[a-zA-Z]*',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation'         => [
@@ -253,7 +281,7 @@ return [
                 'dojoType'  => 'StackContainer',
                 'widgetId'  => 'storeManager',
                 'label'     => 'Manage Store',
-                'uri'       => '/admin/store',
+                'uri'       => '/admin/store/overview',
                 'resource'  => 'admin',
                 'privilege' => 'admin.access',
                 'name'      => 'Manage Store',
@@ -271,17 +299,9 @@ return [
                     ],
                     [
                         'dojoType'  => 'ContentPane',
-                        'widgetId'  => 'productManager',
-                        'label'     => 'Manage Products',
-                        'uri'       => '/admin/store/manage/products',
-                        'resource'  => 'admin',
-                        'privilege' => 'admin.access',
-                    ],
-                    [
-                        'dojoType'  => 'ContentPane',
-                        'widgetId'  => 'categoryManager',
-                        'label'     => 'Manage Categories',
-                        'uri'       => '/admin/store/manage/categories',
+                        'widgetId'  => 'storeDataManager',
+                        'label'     => 'Manage Store Data',
+                        'uri'       => '/admin/store/manager',
                         'resource'  => 'admin',
                         'privilege' => 'admin.access',
                     ],
