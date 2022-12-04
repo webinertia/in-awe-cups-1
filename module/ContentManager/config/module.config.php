@@ -143,7 +143,7 @@ return [
     'navigation'        => [
         'admin' => [
             [
-                'dojoType'  => 'StackContainer',
+                'dojoType'  => 'TabContainer',
                 'widgetId'  => 'contentManager',
                 'label'     => 'Content Manager',
                 'uri'       => '/admin/content',

@@ -107,13 +107,14 @@ use Laminas\View\Renderer\PhpRenderer;
 
             //workSpace.addChild(noticeDialog);
             // create the TabContainer
-            const moduleStack = new StackContainer({
+            const moduleTabs = new TabContainer({
                 region: "center",
-                id: "moduleStack",
+                id: "moduleTabs",
+                tabPosition: "left",
                 "class": "centerPanel"
-            }, "moduleStack");
+            });
             // add the TabContainer as a child of the BorderContainer
-            workSpace.addChild(moduleStack);
+            workSpace.addChild(moduleTabs);
             // create and add the BorderContainer edge regions
             const headerPane = new ContentPane({
                 id: "headerPanel",
@@ -162,28 +163,25 @@ use Laminas\View\Renderer\PhpRenderer;
             });
             workSpace.addChild(headerPane);
             // get the json representation of laminas navigation so we can build the UI
-            let navigationData = <?=$menuData?>;
-            console.log(navigationData);
-            // we need a StackController for marshalling the ContentPanes
-            let workSpaceController = new StackController({containerId: "moduleStack"}, "controller");
-
+            var navigationData = <?=$menuData?>;
+            //console.log(navigationData);
             array.forEach(navigationData, function(menuItem){
                 //console.log(menuItem);
-                if (menuItem.pages.length === 0) { // main level, no children
+                if (menuItem.pages.length === 0) {
                     switch (menuItem.dojoType) {
                         case "Button":
                             // Add the buttons to the headerPanel
                             headerPane.addChild(new Button({
                                 label: menuItem.label,
                                 onClick: function() {
-                                    // if the laminas menu option has a dojoType of 'button' then send them there
+                                    //console.log("menuItem.uri" + menuItem.uri);
                                     window.location = menuItem.uri;
                                 }
                             }, "btn"));
                             break;
                         case "ContentPane":
-                            // Add moduleStack for all areas without children
-                            moduleStack.addChild(
+                            // Add moduleTabs for all areas without children
+                            moduleTabs.addChild(
                                 new ContentPane({
                                     id: menuItem.widgetId,
                                     href: menuItem.uri,
@@ -208,7 +206,7 @@ use Laminas\View\Renderer\PhpRenderer;
                                 scriptHasHooks: true
                             });
                             var moduleManager = new TabContainer({
-                                tabPosition: "top",
+                                tabPosition: "left",
                                 doLayout: true,
                             });
                             array.forEach(menuItem.pages, function(child) {
@@ -217,7 +215,7 @@ use Laminas\View\Renderer\PhpRenderer;
                                         let moduleSections = new TabContainer({
                                             id: child.widgetId,
                                             title: child.label,
-                                            tabPosition: "left",
+                                            tabPosition: "top",
                                             doLayout: true
                                         });
                                         array.forEach(child.pages, function(grandChild) {
@@ -246,13 +244,12 @@ use Laminas\View\Renderer\PhpRenderer;
                                 }
                                 pane.addChild(moduleManager);
                             });
-                            moduleStack.addChild(pane);
+                            moduleTabs.addChild(pane);
                             break;
                         default:
                             break;
                     }
                 }
-                headerPane.addChild(workSpaceController);
             });
             workSpace.startup();
             });

@@ -278,7 +278,7 @@ return [
         'admin'   => [
             [
                 'menuId'    => 'store',
-                'dojoType'  => 'StackContainer',
+                'dojoType'  => 'TabContainer',
                 'widgetId'  => 'storeManager',
                 'label'     => 'Manage Store',
                 'uri'       => '/admin/store/overview',
@@ -298,12 +298,30 @@ return [
                         'privilege' => 'admin.access',
                     ],
                     [
-                        'dojoType'  => 'ContentPane',
+                        'dojoType'  => 'TabContainer',
                         'widgetId'  => 'storeDataManager',
                         'label'     => 'Manage Store Data',
                         'uri'       => '/admin/store/manager',
                         'resource'  => 'admin',
                         'privilege' => 'admin.access',
+                        'pages' => [
+                            [
+                                'dojoType'  => 'ContentPane',
+                                'widgetId'  => 'createCategoryWidget',
+                                'label'     => 'Create Category',
+                                'uri'       => '/admin/store/manage/categories/create',
+                                'resource'  => 'store',
+                                'privilege' => 'use-store-toolbar',
+                            ],
+                            [
+                                'dojoType'  => 'ContentPane',
+                                'widgetId'  => 'createPageWidget',
+                                'label'     => 'Create Product',
+                                'uri'       => '/admin/store/manage/products/create',
+                                'resource'  => 'store',
+                                'privilege' => 'use-store-toolbar',
+                            ],
+                        ],
                     ],
                 ],
             ],
