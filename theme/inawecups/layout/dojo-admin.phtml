@@ -28,6 +28,7 @@ use Laminas\View\Renderer\PhpRenderer;
                 'href' => $this->basePath() . '/images/favicon.ico',
         ])
         ->appendStylesheet($this->basePath('/dashboard/js/dijit/themes/claro/claro.css'))
+        ->appendStylesheet($this->basePath('/dashboard/js/dgrid/css/dgrid.css'))
         ->appendStylesheet($this->basePath('/dashboard/css/dojo-dashboard.css'));
         ?>
         <!-- Scripts -->
@@ -56,6 +57,7 @@ use Laminas\View\Renderer\PhpRenderer;
             require(
                 [
                     "aurora/Aurora",
+                    "dojo/topic",
                     "dojo/request",
                     "dojo/request/notify",
                     "dijit/registry",
@@ -75,6 +77,7 @@ use Laminas\View\Renderer\PhpRenderer;
                 ],
                 function(
                     Aurora,
+                    topic,
                     request,
                     notify,
                     registry,
@@ -95,17 +98,18 @@ use Laminas\View\Renderer\PhpRenderer;
             const aurora = new Aurora({message: "layoutMessage"});
             // create a system message dialog so that the application can communicate with the user
             let noticeDialog = new Dialog({
-                    id: "systemMessage",
-                    region: "top",
                     title: "System Notification"
                 });
+            topic.subscribe("systemMessenger", function(e) {
+                noticeDialog.set("content", e.message);
+                noticeDialog.show();
+            });
             // create the BorderContainer and attach it to the workSpace div
             const workSpace = new BorderContainer({
                 design: "headline",
                 "class": "workSpaceLayout"
             }, "workSpace");
 
-            //workSpace.addChild(noticeDialog);
             // create the TabContainer
             const moduleStack = new StackContainer({
                 region: "center",
@@ -120,12 +124,12 @@ use Laminas\View\Renderer\PhpRenderer;
                 region: "top",
                 "class": "headerPanel"
             });
-            notify("load", function(data){
+            notify("load", function(data) {
                 //statusBar.set("label", "Loading Data....");
                 //statusBar.set("value", "100%");
                 //console.log("load");
             });
-            notify("done", function(data){
+            notify("done", function(data) {
                 //console.log("done");
                 //statusBar.set("label", "Processing Response..");
                 //statusBar.set("value", "100%");
@@ -133,28 +137,9 @@ use Laminas\View\Renderer\PhpRenderer;
                 if (data instanceof Error) {
 
                 } else {
-                    try {
-                        if (typeof data === 'object') {
-                            //let response = JSON.parse(data);
-                            //console.log(data.data);
-                            if (typeof data.data === 'string') {
-                                let systemMessage = JSON.parse(data.data);
-                                if (systemMessage.success) {
-                                    noticeDialog.set("content", systemMessage.message);
-                                    noticeDialog.show();
-                                } else if(systemMessage.error) {
-                                    noticeDialog.set("content", systemMessage.message);
-                                    noticeDialog.show();
-                                }
-                            }
-                            //console.log(noticeDialog);
-                        }
-                    } catch (error) {
-                        //console.warn(error);
-                    }
                 }
             });
-            notify("stop", function(){
+            notify("stop", function() {
                 //console.log("stop");
                 //statusBar.set("label", "System Idle");
                 // statusBar.set("value", "0");
@@ -163,7 +148,7 @@ use Laminas\View\Renderer\PhpRenderer;
             workSpace.addChild(headerPane);
             // get the json representation of laminas navigation so we can build the UI
             let navigationData = <?=$menuData?>;
-            console.log(navigationData);
+           // console.log(navigationData);
             // we need a StackController for marshalling the ContentPanes
             let workSpaceController = new StackController({containerId: "moduleStack"}, "controller");
 

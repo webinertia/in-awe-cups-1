@@ -11,29 +11,176 @@ use Laminas\View\Renderer\PhpRenderer;
 
 /** @var PhpRenderer|HelperTrait $this */
 ?>
-<div id="product-manager" class="row">
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                            <h5 class="mb-0">Create Product</h5>
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="icon icon-box-success">
-                            <a class="product-manager-control mdi mdi-arrow-top-right icon-item" href="<?=$this->url('admin.store/manage/products', ['action' => 'create'])?>"></a>
-                        </div>
-                    </div>
-                </div>
-                <h6 class="text-muted font-weight-normal">Potential growth</h6>
-            </div>
-        </div>
-    </div>
-</div><!-- end product-manager row -->
-<div id="product-search" class="container">
-    <form class="form-inline">
-        <input id="product-search" name="product-search" class="form-control mr-sm-2" type="search" placeholder="<?=$this->translate('product_search_placeholder', 'default')?>" aria-label="Search">
-    </form>
-</div>
+<div id="grid"></div>
+<script>
+require([
+    "dojo/on",
+    "dojo/request",
+    "dojo/_base/array",
+    "dojo/_base/window",
+    "dojo/_base/lang",
+    "dojo/query",
+    "dojo/_base/declare",
+    "dojo-dstore/SimpleQuery",
+    "dojo-dstore/Trackable",
+    "dojo-dstore/Rest",
+    "dgrid/OnDemandGrid",
+    "dgrid/Keyboard",
+    "dgrid/Selection",
+    "dgrid/extensions/DijitRegistry",
+    "dijit/Dialog",
+    "dijit/registry",
+    "dijit/Menu",
+    "dijit/MenuItem",
+    "dijit/CheckedMenuItem",
+    "dijit/MenuSeparator",
+    "dijit/PopupMenuItem",
+    "dojox/validate",
+    "dojox/validate/web",
+    "dijit/_editor/RichText",
+    "dijit/_editor/plugins/FontChoice",
+    "dijit/_editor/plugins/TextColor",
+    "dojo/domReady!"
+], function(on, request, arrayUtil, window, lang, query, declare, SimpleQuery, Trackable, Rest, OnDemandGrid, Keyboard, Selection, DijitRegistry, Dialog, registry,
+            Menu, MenuItem, CheckedMenuItem, PopupMenuItem) {
+    // create a trackable Rest store that is query enabled
+    let store = new (declare([Rest, SimpleQuery, Trackable]))({
+        target: '/api/store/product'
+    });
+    let contextMenuData = request.get('/api/store/product/options').then(
+        function(response) {
+            return response;
+        },
+        function(error) {
+
+        }
+    );
+    console.log('contextMenuData:', contextMenuData);
+    // create the grid for handling products
+    let grid = new (declare([OnDemandGrid, Keyboard, Selection, DijitRegistry]))({
+        collection: store,
+        // only wanna show what will actually fit in a grid
+        columns: {
+            label: 'Product Name',
+            sku: 'Product SKU',
+            cost: 'Cost',
+            weight: 'Shipping Weight',
+            createdDate: 'Created On',
+            active: 'Active Status',
+            onSale: 'On Sale',
+            discount: 'Sale Discount',
+            saleStartDate: 'Sale start date',
+            saleEndDate: 'Sale end date'
+        },
+        loadingMessage: "Loading data..."
+    }, 'grid');
+    // delegated event for clicking a row
+    grid.on('.dgrid-row:click', function(event) {
+        // get the row from the grid we just clicked on
+        let row = grid.row(event);
+        let formDialog = new Dialog({
+            id: "gridEditor",
+            title: "Editing " + row.data.label,
+            // get us a form for modifying the product data
+            href: '/admin/store/manage/products/form',
+            onLoad: function(data) {
+                // get an instance of the form manager
+                let formManager = this.getChildren()[0];
+                // set the row data in the form so we can edit it
+                formManager.setFormValues(row.data);
+                formManager.on('submit', function(event) {
+                    // prevent a page reload
+                    event.preventDefault();
+                    // get a FormData instance
+                    let formData = new FormData(formManager.srcNodeRef);
+                    // format the data and send it
+                    store.put(formDataToJson(formData));
+                    // refresh the grid so that the data updates in the grid
+                    grid.refresh(true);
+                });
+            },
+            onHide: function() {
+                // when we hide the dialog we have to destroy the form manager
+                // or it bitches when we try to edit another row
+                this.destroyDescendants();
+                // the dialog itself must be destroyed because if we navigate to another section and come back
+                // the dialog will still exist in the registry and it will bitch bout it
+                this.destroy();
+            }
+        });
+        // show the dialog with the edit form
+        formDialog.show();
+    });
+    // get the options data
+
+
+    // create the context menu
+    let contextMenu = new Menu({
+        targetNodeIds: [grid.domNode],
+        selector: 'div.dgrid-row'
+    });
+    contextMenu.addChild(new MenuItem({
+        label: "Sizes",
+        onClick: function(event) {
+            console.log('Sizes', event);
+            alert("clicked " + this.label);
+        }
+    }));
+    contextMenu.addChild(new MenuItem({
+        label: "Sizes",
+        onClick: function(event) {
+            console.log('Sizes', event);
+            alert("clicked " + this.label);
+        }
+    }));
+    contextMenu.addChild(new MenuItem({
+        label: "Shapes",
+        onClick: function(event) {
+            console.log('Shapes', event)
+        }
+    }));
+    contextMenu.addChild(new MenuItem({
+        label: "Treatments",
+        onClick: function(event) {
+            let row = grid.row(event);
+            console.log('Treatments', contextMenu.productGroup); // this works
+        }
+    }));
+    contextMenu.addChild(new MenuItem({
+        label: "Type"
+    })); //////// end context menu
+    contextMenu.startup();
+    grid.on('.dgrid-row:contextmenu', function(event) {
+        // prevent the system right click menu from showing
+        // so that we can tie a dijit context menu to this event
+        // will give us access to load a preview of thumbnails and
+        // allow us to update the images via a different dialog
+        event.preventDefault();
+        // start up the contextMenu, must be create outside of the handler
+        // or the first time the handler fires its not shown
+        // contextMenu.open();
+        //let eventData = grid.row(event);
+        let rowData = grid.row(event);
+        let mixedInMenu = lang.mixin(contextMenu, rowData.data);
+        console.log("mixedInMenu", mixedInMenu.id);
+    });
+    store.on('update', function(event) {
+        // get the dialog from the registry so we can hide it
+        let dialog = registry.byId('gridEditor');
+        dialog.hide();
+    });
+
+    // helper function to format formManager data for the Rest Service
+    // TODO: move to the aurora mixin that is planned
+    function formDataToJson(formData) {
+            let json = {};
+            if(!(formData instanceof FormData)) return json;
+            formData.forEach((value, key) => {
+                json[key] = value;
+            });
+            return json;
+    }
+    // startup the grid
+    grid.startup();
+});
+</script>

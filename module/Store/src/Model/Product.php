@@ -6,8 +6,10 @@ namespace Store\Model;
 
 use App\Db\TableGateway\AbstractGatewayModel;
 use App\Model\ModelTrait;
+use Laminas\Db\Sql\Select;
 use Store\Db\TableGateway\ProductsByCategoryTable;
 use Store\Db\TableGateway\ProductsTable;
+use Store\Model\ProductOptions;
 
 class Product extends AbstractGatewayModel
 {
@@ -25,6 +27,16 @@ class Product extends AbstractGatewayModel
         if ($productsByCategoryTable !== null) {
             $this->productsByCategoryTable = $productsByCategoryTable;
         }
+    }
+
+    public function fetchWithOptions(int $id)
+    {
+        $select = new Select();
+        $select->from(['p' => 'store_products'])
+        ->join(['o' => 'store_options_per_product'], 'p.id = o.productId', ['p.id', 'p.label', 'o.optionValue'], Select::JOIN_OUTER)
+        ->where('p.id > 0');// this errors because of the where clause,
+        $result = $this->gateway->selectWith($select);
+        return $result;
     }
 
     public function save(Product $product)
@@ -46,6 +58,7 @@ class Product extends AbstractGatewayModel
             }
             else {
                 // we need to run an update with a join
+                $this->gateway->update($data, ['id' => $data['id']]);
             }
 
         } catch (\Throwable $th) {

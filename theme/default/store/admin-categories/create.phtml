@@ -44,14 +44,16 @@ require(
         "dijit/form/Form",
         "dijit/form/Button",
         "dijit/form/Select",
+        "dijit/form/ValidationTextBox",
+        "dojox/validate/web",
         "dijit/_editor/RichText",
         "dijit/_editor/plugins/FontChoice",
         "dijit/_editor/plugins/TextColor",
         "aurora/editor/plugins/Save",
         "dojo/domReady!",
         "dijit/_WidgetBase",
-    "dijit/form/_ButtonMixin",
-    "dijit/form/_FormWidgetMixin"
+        "dijit/form/_ButtonMixin",
+        "dijit/form/_FormWidgetMixin"
     ], function(Aurora, Editor, dom, request, on, Manager, registry, FilteringSelect, ComboBox, ContentPane, dijitForm, Button){
     // registry.byId should target the widgetId configured in the module.config admin navigation array
     const aurora = new Aurora();

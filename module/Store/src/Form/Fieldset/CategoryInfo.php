@@ -7,6 +7,8 @@ namespace Store\Form\Fieldset;
 use Dojo\Form\Element\Editor;
 use Dojo\Form\Element\ComboBox;
 use Dojo\Form\Element\TextBox;
+use Dojo\Form\Element\ResetButton;
+use Dojo\Form\Element\ValidationTextBox;
 use Laminas\Db\Adapter\AdapterAwareInterface;
 use Laminas\Db\Adapter\AdapterAwareTrait;
 use Laminas\Filter\Callback;
@@ -16,6 +18,7 @@ use Laminas\Filter\StringTrim;
 use Laminas\Filter\StringToLower;
 use Laminas\Filter\Word\SeparatorToDash;
 use Laminas\Filter\ToInt;
+use Laminas\Filter\ToNull;
 use Laminas\Filter\UpperCaseWords;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Select;
@@ -45,9 +48,10 @@ final class CategoryInfo extends Fieldset implements InputFilterProviderInterfac
     {
         $this->add([
             'name' => 'label',
-            'type' => TextBox::class,
+            'type' => ValidationTextBox::class,
             'attributes' => [
                 'placeholder' => 'Category Name:',
+                'data-dojo-props' => 'validator:dojox.validate.isText, constraints:{minLength:1, maxLength:255}, invalidMessage:\'Category name must be between 1 and 255 Characters\'',
             ],
         ])->add([
             'id'   => 'parentCategoryId',
@@ -100,6 +104,14 @@ final class CategoryInfo extends Fieldset implements InputFilterProviderInterfac
             ],
             'parentId' => [
                 'required' =>  false,
+                'filters' => [
+                    [
+                        'name' => ToNull::class,
+                        'options' => [
+                            'type' => ToNull::TYPE_ALL,
+                        ],
+                    ]
+                ],
             ],
         ];
     }

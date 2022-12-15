@@ -55,12 +55,12 @@ class AbstractApiController extends AbstractRestfulController implements Control
      * */
     public function __construct(array $config) {
         $this->config   = $config;
-        $this->view     = new JsonModel();
+        //$this->view     = new JsonModel();
         $this->appPath  = $this->config['app_settings']['server']['app_path'];
-        $this->basePath = $this->appPath;
+        //$this->basePath = $this->appPath;
 
-        $this->view->setVariables([
-            'resourceId' => null,
-        ]);
+        // $this->view->setVariables([
+        //     'resourceId' => null,
+        // ]);
     }
 }

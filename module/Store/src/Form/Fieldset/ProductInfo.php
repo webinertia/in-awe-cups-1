@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Store\Form\Fieldset;
 
 use App\Form\Fieldset\FieldsetTrait;
-use Dojo\Form\Element\ComboBox;
+use Dojo\Form\Element\CurrencyTextBox;
 use Dojo\Form\Element\DateTextBox;
 use Dojo\Form\Element\Editor;
 use Dojo\Form\Element\TextBox;
+use Dojo\Form\Element\ValidationTextBox;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\HtmlEntities;
 use Laminas\Form\Element\Text;
@@ -56,15 +57,17 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
         ]);
         $this->add([
             'name' => 'label',
-            'type' => TextBox::class,
+            'type' => ValidationTextBox::class,
             'attributes' => [
-                'placeholder' => 'Product Name:',
+                'placeholder'     => 'Product Name:',
+                'data-dojo-props' => 'validator:dojox.validate.isText, constraints:{minLength:1, maxLength:255}, invalidMessage:\'Must be between 1 and 255 characters.\'',
             ],
         ]);
         $this->add([
             'name' => 'categoryId',
             'type' => Select::class,
             'attributes' => [
+                'required' => true,
                 'data-dojo-type' => 'dijit/form/Select',
             ],
             'options' => [
@@ -76,16 +79,18 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
         $this->add([
             'id'   => 'cost',
             'name' => 'cost',
-            'type' => TextBox::class,
+            'type' => CurrencyTextBox::class,
             'attributes' => [
-                'Placeholder' => 'Product Cost: (10.00)'
+                'required'    => true,
+                'Placeholder' => 'Product Cost: (10.00)',
             ],
         ]);
         // weight decimal
         $this->add([
             'name' => 'weight',
-            'type' => TextBox::class,
+            'type' => ValidationTextBox::class,
             'attributes' => [
+                'required'    => true,
                 'placeholder' => 'Shipping weight: ex 10.5',
             ],
         ]);

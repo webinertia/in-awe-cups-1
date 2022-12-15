@@ -78,9 +78,9 @@ implements AdminControllerInterface, UploadAwareInterface
 
         if ($this->request->isPost()) {
 
-            $posted = array_merge_recursive(
-                $this->request->getPost()->toArray(), $this->request->getFiles()->toArray()
-            );
+            // $posted = array_merge_recursive(
+            //     $this->request->getPost()->toArray(), $this->request->getFiles()->toArray()
+            // );
 
             $this->form->setData(
                 array_merge_recursive(
@@ -96,8 +96,8 @@ implements AdminControllerInterface, UploadAwareInterface
                     $this->imageModel->categoryId = $this->category->getLastInsertId();
                     $this->imageModel->setUploadType(IMAGE::CATEGORY_TYPE);
                     $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->imageModel, $data['image-data']['images']);
-                    $jsonModel->setVariables(['success' => true, 'message' => $this->category->label . ' was created successfully.']);
-                    return $jsonModel;
+                    //$jsonModel->setVariables(['success' => true, 'message' => $this->category->label . ' was created successfully.']);
+                    //return $jsonModel;
                 } catch (Throwable $th) {
                     $jsonModel->setVariables(['success' => false, 'message' => $th->getMessage()]);
                 }

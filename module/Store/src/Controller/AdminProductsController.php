@@ -15,6 +15,7 @@ use Laminas\Session\Container;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ModelInterface;
 use Store\Db\TableGateway\ProductsByCategoryTable;
+use Store\Api\Form\ApiProductForm;
 use Store\Model\Category;
 use Store\Model\Image;
 use Store\Model\Product;
@@ -52,6 +53,7 @@ class AdminProductsController extends AbstractAppController implements AdminCont
         $this->product            = $product;
         $this->labelToTitleFilter = $filterPluginManager->get(TitleToLabel::class);
         $this->form               = $formElementManager->get(ProductForm::class);
+        $this->formManager        = $formElementManager;
     }
 
     public function indexAction(): ModelInterface
@@ -166,6 +168,13 @@ class AdminProductsController extends AbstractAppController implements AdminCont
             );
             $this->form->setdata(array_merge_recursive($this->uploadConfig, $this->product->toArray()));
         }
+        return $this->view;
+    }
+
+    public function formAction()
+    {
+        $this->ajaxAction();
+        $this->view->setVariable('form', $this->formManager->get(ApiProductForm::class));
         return $this->view;
     }
 

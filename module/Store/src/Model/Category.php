@@ -55,7 +55,7 @@ final class Category extends AbstractGatewayModel implements ModelInterface
      */
     public function save($model, $where = null, ?array $joins = null): int
     {
-        if ($model->parentId === 'No Parent') {
+        if ($model->parentId === 'No Parent' || $model->parentId === '') {
             unset($model->parentId);
         }
         $set = $model->getArrayCopy();
@@ -104,7 +104,7 @@ final class Category extends AbstractGatewayModel implements ModelInterface
         return $this->gateway->selectWith($select);
     }
 
-    public function fetchTreeStore(string $idColumn = 'label', int|string $catId)
+    public function fetchTreeStore(int|string $catId, string $idColumn = 'label')
     {
         $select = $this->gateway->getSql()->select();
         $select->columns(['id', 'label', ]);

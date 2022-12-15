@@ -44,19 +44,20 @@ return [
             'StoreDataApi'         => Controller\DataApiController::class,
         ],
         'factories' => [
-            Controller\AdminCategoriesController::class => AbstractControllerFactory::class,
-            Controller\AdminController::class           => AbstractControllerFactory::class,
-            Controller\AdminProductsController::class   => AbstractControllerFactory::class,
-            Controller\ApiController::class             => AbstractControllerFactory::class,
-            Controller\CartController::class            => AbstractControllerFactory::class,
-            Controller\CategoriesController::class      => AbstractControllerFactory::class,
-            Controller\IndexController::class           => AbstractControllerFactory::class,
-            Controller\OrderController::class           => AbstractControllerFactory::class,
-            Controller\ProductsController::class        => AbstractControllerFactory::class,
-            Controller\ProductSearchController::class   => AbstractControllerFactory::class,
-            Controller\ReviewController::class          => AbstractControllerFactory::class,
-            Controller\ShippingController::class        => AbstractControllerFactory::class,
-            Controller\DataApiController::class         => AbstractControllerFactory::class,
+            Controller\AdminCategoriesController::class   => AbstractControllerFactory::class,
+            Controller\AdminController::class             => AbstractControllerFactory::class,
+            Controller\AdminProductsController::class     => AbstractControllerFactory::class,
+            Controller\ProductsApiController::class       => AbstractControllerFactory::class,
+            Controller\CartController::class              => AbstractControllerFactory::class,
+            Controller\CategoriesController::class        => AbstractControllerFactory::class,
+            Controller\IndexController::class             => AbstractControllerFactory::class,
+            Controller\OrderController::class             => AbstractControllerFactory::class,
+            Controller\ProductsController::class          => AbstractControllerFactory::class,
+            Controller\ProductSearchController::class     => AbstractControllerFactory::class,
+            Controller\ReviewController::class            => AbstractControllerFactory::class,
+            Controller\ShippingController::class          => AbstractControllerFactory::class,
+            Controller\DataApiController::class           => AbstractControllerFactory::class,
+            Controller\ProductOptionsApiController::class => AbstractControllerFactory::class,
         ],
     ],
     'listeners' => [
@@ -69,15 +70,18 @@ return [
             Db\TableGateway\ProductsTable::class               => Db\TableGateway\Service\ProductsTableFactory::class,
             Db\TableGateway\CategoriesTable::class             => Db\TableGateway\Service\CategoriesTableFactory::class,
             Db\TableGateway\ProductsByCategoryTable::class     => Db\TableGateway\Service\ProductsByCategoryTableFactory::class,
+            Db\TableGateway\ProductOptionsTable::class         => Db\TableGateway\Service\ProductOptionsTableFactory::class,
             Db\TableGateway\OrdersTable::class                 => Db\TableGateway\Service\OrdersTableFactory::class,
             Model\Cart::class                                  => Model\Factory\CartFactory::class,
             Model\Category::class                              => Model\Factory\CategoryFactory::class,
             Model\Image::class                                 => Model\Factory\ImageFactory::class,
             Model\Product::class                               => Model\Factory\ProductFactory::class,
+            Model\ProductOptions::class                        => Model\Factory\ProductOptionsFactory::class,
         ],
     ],
     'form_elements' => [
         'factories' => [
+            Api\Form\ApiProductForm::class      => InvokableFactory::class,
             Form\DojoTest::class                => InvokableFactory::class,
             Form\CategoryForm::class            => InvokableFactory::class,
             Form\ProductForm::class             => InvokableFactory::class,
@@ -224,25 +228,61 @@ return [
                     ],
                 ],
             ],
-            'store.api' => [
+            'store.category.api' => [
                 'type' => Placeholder::class,
                 'may_terminate' => true,
                 'options' => [
-                    'route' => '/store/api',
+                    'route' => '/store/api/category',
                 ],
                 'child_routes' => [
                     'category.data' => [
                         'type' => Segment::class,
                         'may_terminate' => true,
                         'options' => [
-                            'route'      => '/store/data/api/category[/:id[/:listType]]',
+                            'route'      => '/store/data/api/category',
                             'defaults' => [
                                 'controller' => Controller\DataApiController::class,
                                 'action'     => 'category-data',
                             ],
                             'constraints' => [
                                 'id'       => '[0-9]+',
-                                'listType' => '[a-zA-Z]*',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'store.product.api' => [
+                'type' => Placeholder::class,
+                'may_terminate' => true,
+                'options' => [
+                    'route' => '/api/store',
+                ],
+                'child_routes' => [
+                    'product.options' => [
+                        'type' => Segment::class,
+                        //'may_terminate' => true,
+                        'options' => [
+                            'route' => '/api/store/product/options[/:productGroup[/:id]]',
+                            'defaults' => [
+                                'controller' => Controller\ProductOptionsApiController::class,
+                                'action'     => 'options',
+                            ],
+                            'contraints' => [
+                                'productGroup' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'           => '[0-9]+',
+                            ],
+                        ],
+                    ],
+                    'product.data' => [
+                        'type' => Segment::class,
+                        'may_terminate' => true,
+                        'options' => [
+                            'route'      => '/api/store/product[/:id]',
+                            'defaults' => [
+                                'controller' => Controller\ProductsApiController::class,
+                            ],
+                            'constraints' => [
+                                'id'       => '[0-9]+',
                             ],
                         ],
                     ],
@@ -300,7 +340,7 @@ return [
                     [
                         'dojoType'  => 'TabContainer',
                         'widgetId'  => 'storeDataManager',
-                        'label'     => 'Manage Store Data',
+                        'label'     => 'Add Categories / Products',
                         'uri'       => '/admin/store/manager',
                         'resource'  => 'admin',
                         'privilege' => 'admin.access',
@@ -318,6 +358,32 @@ return [
                                 'widgetId'  => 'createPageWidget',
                                 'label'     => 'Create Product',
                                 'uri'       => '/admin/store/manage/products/create',
+                                'resource'  => 'store',
+                                'privilege' => 'use-store-toolbar',
+                            ],
+                        ],
+                    ],
+                    [
+                        'dojoType'  => 'TabContainer',
+                        'widgetId'  => 'storeDataEditor',
+                        'label'     => 'Modify Categories / Products',
+                        'uri'       => '/admin/store/manager',
+                        'resource'  => 'admin',
+                        'privilege' => 'admin.access',
+                        'pages' => [
+                            [
+                                'dojoType'  => 'ContentPane',
+                                'widgetId'  => 'editCategoryWidget',
+                                'label'     => 'Manage Categories',
+                                'uri'       => '/admin/store/manage/categories',
+                                'resource'  => 'store',
+                                'privilege' => 'use-store-toolbar',
+                            ],
+                            [
+                                'dojoType'  => 'ContentPane',
+                                'widgetId'  => 'editPageWidget',
+                                'label'     => 'Manage Products',
+                                'uri'       => '/admin/store/manage/products',
                                 'resource'  => 'store',
                                 'privilege' => 'use-store-toolbar',
                             ],
