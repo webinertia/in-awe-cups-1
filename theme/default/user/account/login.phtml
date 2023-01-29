@@ -39,7 +39,7 @@ $buttonOptions = [
                 <p>
                 <?php
                     if ($this->config('app_settings')['security']['enable_login'] && isset($this->form)) {
-                        $this->form->addSubmit();
+                        $this->form->addSubmit(-1, 'Login');
                         echo $this->bootstrapForm($this->form);
                     }
                     else {
