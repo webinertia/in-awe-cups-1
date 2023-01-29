@@ -26,7 +26,8 @@ final class ImageFactory implements FactoryInterface
             $container->get(UserServiceInterface::class),
             $renameUpload,
             $filterManager->get(BaseName::class),
-            $container->get(ImageTable::class)
+            $container->get(ImageTable::class),
+            $container->get('config')
         );
     }
 }

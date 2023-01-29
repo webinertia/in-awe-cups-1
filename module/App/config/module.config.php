@@ -223,26 +223,24 @@ return [
         ],
     ],
     'listeners'          => [
-        Listener\MySqlGlobalAdapterInit::class,
-        Listener\ContentSecurityListener::class,
+        Log\LogListener::class,
         Listener\AdminListener::class,
         Listener\ThemeLoader::class,
         Upload\UploadListener::class,
     ],
     'service_manager'    => [
         'factories' => [
-            Listener\MySqlGlobalAdapterInit::class  => Listener\Factory\MySqlGlobalAdapterInitFactory::class,
             ConfigInterface::class                  => Session\ConfigFactory::class,
             Session\Container::class                => Session\ContainerFactory::class,
             Db\DbGateway\LogGateway::class          => Db\DbGateway\Factory\LogGatewayFactory::class,
+            Log\LogListener::class                  => Log\LogListenerFactory::class,
             Listener\AdminListener::class           => Listener\Factory\AdminListenerFactory::class,
             Listener\ThemeLoader::class             => Listener\Factory\ThemeLoaderFactory::class,
-            Listener\ContentSecurityListener::class => ReflectionBasedAbstractFactory::class,
             Model\Settings::class                   => Model\Factory\SettingsFactory::class,
             Model\Theme::class                      => InvokableFactory::class,
             Service\Email::class                    => Service\Factory\EmailFactory::class,
             SaveHandlerInterface::class             => Session\SaveHandlerFactory::class,
-            Upload\UploadListener::class            => InvokableFactory::class,
+            Upload\UploadListener::class            => Upload\UploadListenerFactory::class,
         ],
     ],
     'controllers'        => [
@@ -280,6 +278,7 @@ return [
             Filter\FqcnToModuleName::class     => InvokableFactory::class,
             Filter\TitleToLabel::class         => InvokableFactory::class,
             Filter\LabelToTitle::class         => InvokableFactory::class,
+            Filter\PadFloatString::class       => InvokableFactory::class,
         ],
     ],
     'navigation'         => [

@@ -12,6 +12,7 @@ use Laminas\Http\PhpEnvironment\Response;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Mvc\Controller\AbstractRestfulController;
 use User\Acl\AclAwareTrait;
@@ -21,12 +22,9 @@ use User\Service\UserServiceAwareTrait;
 
 class AbstractApiController extends AbstractRestfulController implements ControllerInterface
 {
-    use AclAwareTrait, CheckActionAccessTrait {
-        CheckActionAccessTrait::isAllowed insteadof AclAwareTrait;
-    }
+    use AclAwareTrait;
     use AjaxActionTrait;
     use AppSettingsAwareTrait;
-    use CheckActionAccessTrait;
     use ResourceAwareTrait;
     use SessionContainerAwareTrait;
     use TranslatorAwareTrait;
@@ -55,7 +53,7 @@ class AbstractApiController extends AbstractRestfulController implements Control
      * */
     public function __construct(array $config) {
         $this->config   = $config;
-        //$this->view     = new JsonModel();
+        $this->view = new ViewModel();
         $this->appPath  = $this->config['app_settings']['server']['app_path'];
         //$this->basePath = $this->appPath;
 

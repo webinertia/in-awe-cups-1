@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Store\Form\Fieldset;
 
+use App\Filter\PadFloatString;
 use App\Form\Fieldset\FieldsetTrait;
 use Dojo\Form\Element\CurrencyTextBox;
 use Dojo\Form\Element\DateTextBox;
@@ -12,7 +13,8 @@ use Dojo\Form\Element\TextBox;
 use Dojo\Form\Element\ValidationTextBox;
 use Laminas\Filter\StringTrim;
 use Laminas\Filter\HtmlEntities;
-use Laminas\Form\Element\Text;
+use Laminas\Filter\ToFloat;
+use Laminas\Filter\ToNull;
 use Laminas\Form\Element\Checkbox;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Select;
@@ -20,6 +22,7 @@ use Laminas\Form\Fieldset;
 use Laminas\InputFilter\InputFilterProviderInterface;
 use Laminas\Validator\StringLength;
 use Store\Model\Category;
+use User\Form\Element\UserId;
 
 use function date;
 
@@ -27,13 +30,18 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
 {
     use FieldsetTrait;
 
+    /** @var array<mixed> $bundleValueOptions */
+    protected $bundleValueOptions;
     /** @var Category $category */
     protected $category;
+    /** @var array<mixed> $categoryValueOptions */
+    protected $categoryValueOptions;
 
     public function __construct(Category $category, ?array $appSettings = [])
     {
         $this->category = $category;
-        $this->categoryValueOptions = $this->category->fetchSelectValueOptions();
+        $this->categoryValueOptions = $this->category->fetchSelectValueOptions(false);
+        $this->bundleValueOptions   = $this->category->fetchSelectValueOptions(true, true);
         parent::__construct($name = null, $appSettings);
     }
 
@@ -45,7 +53,7 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
         ]);
         $this->add([
             'name' => 'userId',
-            'type' => Hidden::class,
+            'type' => UserId::class,
         ]);
         // createdDate autogen timestamp
         $this->add([
@@ -64,7 +72,7 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
             ],
         ]);
         $this->add([
-            'name' => 'categoryId',
+            'name' => 'category',
             'type' => Select::class,
             'attributes' => [
                 'required' => true,
@@ -73,6 +81,18 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
             'options' => [
                 'empty_option'  => 'Category Required!',
                 'value_options' => $this->categoryValueOptions,
+            ],
+        ]);
+        $this->add([
+            'name' => 'bundleId',
+            'type' => Select::class,
+            'attributes' => [
+                'required' => false,
+                'data-dojo-type' => 'dijit/form/Select',
+            ],
+            'options' => [
+                'empty_option'  => 'Bundle',
+                'value_options' => $this->bundleValueOptions,
             ],
         ]);
         // cost decimal 10,2
@@ -170,6 +190,17 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return [
+            'id' => [
+                'required' => false,
+                'filters' => [
+                    ['name' => ToNull::class]
+                ],
+            ],
+            'weight' => [
+                'filters' => [
+                    ['name' => PadFloatString::class],
+                ],
+            ],
             'label' => [
                 'required' => true,
                 'filters'  => [
@@ -181,9 +212,31 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
                         'name' => StringLength::class,
                         'options' => [
                             'min' => 1,
-                            'max' => 2,
+                            'max' => 255,
                         ],
                     ],
+                ],
+            ],
+            'bundleId' => [
+                'required' => false,
+                'allow_empty' => true,
+            ],
+            'discount' => [
+                'required' =>  false,
+                'filters' => [
+                    ['name' => ToNull::class],
+                ],
+            ],
+            'saleStartDate' => [
+                'required' => false,
+                'filters' => [
+                    ['name' => ToNull::class],
+                ],
+            ],
+            'saleEndDate' => [
+                'required' => false,
+                'filters' => [
+                    ['name' => ToNull::class],
                 ],
             ],
         ];

@@ -8,9 +8,13 @@ use App\Controller\AbstractApiController;
 use Dojo\Data;
 use Laminas\Form\FormElementManager;
 use Laminas\Http\Header\ContentRange;
+use App\Upload\UploadEvent;
 use Laminas\View\Model\JsonModel;
 use Store\Api\Form\APiProductForm;
+use Store\Model\Image;
 use Store\Model\Product;
+
+use function array_merge_recursive;
 
 final class ProductsApiController extends AbstractApiController
 {
@@ -18,6 +22,8 @@ final class ProductsApiController extends AbstractApiController
     protected $dojoData;
     /** @var FormElementManager $formManager */
     protected $formManager;
+    /** @var Image $image */
+    protected $image;
     /** @var JsonModel $view */
     protected $view;
     /** @var Product $product */
@@ -25,11 +31,12 @@ final class ProductsApiController extends AbstractApiController
     /** @var ProductOptions $productOptions */
     protected $productOptions;
 
-    public function __construct(FormElementManager $formManager, Product $product, array $config)
+    public function __construct(FormElementManager $formManager, Product $product, Image $image, array $config)
     {
         parent::__construct($config);
         $this->setIdentifierName('id');
         $this->formManager = $formManager;
+        $this->image       = $image;
         $this->product     = $product;
         $this->dojoData    = new Data($this->getIdentifierName(), null, 'label');
     }
@@ -49,28 +56,42 @@ final class ProductsApiController extends AbstractApiController
     {
         $this->product->exchangeArray($data);
         try {
-            $this->product->save($this->product);
-            $this->response->setStatusCode(202);
+            if ($this->product->save($this->product)) {
+                $this->response->setStatusCode(202);
+            }
             return new JsonModel($this->dojoData->setItem($this->product->fetchByColumn('id', $id))->toArray());
         } catch (\Throwable $th) {
             $this->response->setStatusCode(500);
         }
     }
 
-    public function create($data)
-    {
-        // send success header
-
-        // send failure header
-    }
+    // public function create($data)
+    // {
+    //     $this->product->exchangeArray($data);
+    //     $files = $this->request->getFiles()->toArray();
+    //     try {
+    //         $result = $this->product->save($this->product);
+    //         $this->image->productId = $id = $this->product->getLastInsertId();
+    //         //$this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, )
+    //         $this->response->setStatusCode(202);
+    //         return new JsonModel($this->dojoData->setItem($this->product->fetchByColumn('id', $id))->toArray());
+    //     } catch (\Throwable $th) {
+    //         $this->response->setStatusCode(500);
+    //     }
+    // }
 
     public function delete($id)
     {
         // delete resource
         // set response code $this->response->setStatusCode($int);
         $result = $this->product->delete(['id' => $id]);
+        //$result = true;
         if ($result) {
             $this->response->setStatusCode(204);
+            return new JsonModel();
+        } else {
+            $this->response->setStatusCode(500);
+            return new JsonModel();
         }
     }
 
@@ -78,6 +99,7 @@ final class ProductsApiController extends AbstractApiController
     {
         $this->dojoData->setItems($this->product->fetchAll(true));
         $headers = $this->response->getHeaders();
+        // todo: verify how the store expects this to be formatted within the data returned
         $headers->addHeaderLine('Content-Range', '0-1/1');
 
         return new JsonModel($this->dojoData->toArray());

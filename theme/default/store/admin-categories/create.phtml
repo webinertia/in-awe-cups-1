@@ -13,21 +13,10 @@ use Laminas\View\Renderer\PhpRenderer;
 ?>
 <?php
 if (isset($this->form)) {
-    //$this->form->addSubmit();
     $this->form->prepare();
     echo $this->dijitForm($this->form);
 }
 ?>
-<!-- <form id="categoryForm" data-dojo-type="dojox/form/Manager" enctype="multipart/form-data" action="/admin/store/manage/categories/create">
-    <textarea id="description" name="description" data-dojo-type="dijit/Editor"
-        data-dojo-props="extraPlugins:
-        [
-            'foreColor',
-            'hiliteColor',
-            {name:'dijit/_editor/plugins/FontChoice', command:'fontName', generic:true},
-            {name: 'dojox/editor/plugins/Save', url:'/admin/store/manage/categories/create', iconClassPrefix:'dijitIcon', command:'Save'}
-        ]"></textarea>
-</form> -->
 <script>
 require(
     [
@@ -38,23 +27,21 @@ require(
         "dojo/on",
         "dojox/form/Manager",
         "dijit/registry",
-        "dijit/form/FilteringSelect",
         "dijit/form/ComboBox",
+        "dijit/form/CheckBox",
         "dojox/layout/ContentPane",
         "dijit/form/Form",
         "dijit/form/Button",
         "dijit/form/Select",
         "dijit/form/ValidationTextBox",
-        "dojox/validate/web",
         "dijit/_editor/RichText",
         "dijit/_editor/plugins/FontChoice",
         "dijit/_editor/plugins/TextColor",
         "aurora/editor/plugins/Save",
-        "dojo/domReady!",
-        "dijit/_WidgetBase",
-        "dijit/form/_ButtonMixin",
-        "dijit/form/_FormWidgetMixin"
-    ], function(Aurora, Editor, dom, request, on, Manager, registry, FilteringSelect, ComboBox, ContentPane, dijitForm, Button){
+        "dojox/validate/web",
+        "dojo/domReady!"
+    ], function(Aurora, Editor, dom, request, on, Manager, registry, ComboBox, CheckBox, ContentPane, dijitForm, Button, Select,
+                ValidationTextBox){
     // registry.byId should target the widgetId configured in the module.config admin navigation array
     const aurora = new Aurora();
     aurora.set("serviceManager", registry);

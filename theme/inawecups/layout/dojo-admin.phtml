@@ -27,14 +27,15 @@ use Laminas\View\Renderer\PhpRenderer;
                 'type' => 'image/vnd.microsoft.icon',
                 'href' => $this->basePath() . '/images/favicon.ico',
         ])
-        ->appendStylesheet($this->basePath('/dashboard/js/dijit/themes/claro/claro.css'))
-        ->appendStylesheet($this->basePath('/dashboard/js/dgrid/css/dgrid.css'))
-        ->appendStylesheet($this->basePath('/dashboard/css/dojo-dashboard.css'));
+        ->appendStylesheet($this->basePath('/js/dijit/themes/claro/claro.css'))
+        ->appendStylesheet($this->basePath('/js/dgrid/css/dgrid.css'))
+        ->appendStylesheet($this->basePath('/js/dgrid/css/skins/claro.css'))
+        ->appendStylesheet($this->basePath('/dashboard/css/dashboard.css'));
         ?>
         <!-- Scripts -->
         <?php
         $this->headScript()->prependFile(
-            $this->basePath('/dashboard/js/dojo/dojo.js'),
+            $this->basePath('/js/dojo/dojo.js'),
             'text/javascript',
             ['data-dojo-config' => 'async: true'])->setAllowArbitraryAttributes(true);
         ?>
@@ -49,7 +50,7 @@ use Laminas\View\Renderer\PhpRenderer;
             var dojoConfig = {
                 async: true,
                 selectorEngine: "acme",
-                baseUrl: "/dashboard/js/",
+                baseUrl: "/js/",
                 packages: [
                     {name: "dojo", location: "/dojo"}
                 ]
@@ -71,7 +72,6 @@ use Laminas\View\Renderer\PhpRenderer;
                     "dojo/parser",
                     "dojox/form/Manager",
                     "dojo/dom",
-                    "dijit/ProgressBar",
                     "dojo/_base/array",
                     "dojo/domReady!"
                 ],
@@ -91,16 +91,16 @@ use Laminas\View\Renderer\PhpRenderer;
                     parser,
                     Manager,
                     dom,
-                    ProgressBar,
                     array
                 ) {
             // create an instance of Aurora
             const aurora = new Aurora({message: "layoutMessage"});
             // create a system message dialog so that the application can communicate with the user
             let noticeDialog = new Dialog({
+                    id: "systemMessage",
                     title: "System Notification"
                 });
-            topic.subscribe("systemMessenger", function(e) {
+            topic.subscribe("system/message", function(e) {
                 noticeDialog.set("content", e.message);
                 noticeDialog.show();
             });
@@ -130,14 +130,17 @@ use Laminas\View\Renderer\PhpRenderer;
                 //console.log("load");
             });
             notify("done", function(data) {
-                //console.log("done");
-                //statusBar.set("label", "Processing Response..");
-                //statusBar.set("value", "100%");
-                //console.log("notify done - dojo-admin.phtml: " + data);
-                if (data instanceof Error) {
-
-                } else {
-                }
+                // if (data.options !== undefined && data.options.handleAs !== undefined && data.options.handleAs === 'json') {
+                //     console.log('dojo-admin.phtml data.options', data.options.handleAs);
+                //     if (data.message !== undefined) {
+                //         /**
+                //          * well we got a message, publish it
+                //          * expects data.message to be formatted as follows
+                //          * {message: 'message to display, will already be translated'}
+                //          */
+                //         topic.publish('system/message', data.message);
+                //     }
+                // } // errors should be handled at the point of request since the will be applicable to that context
             });
             notify("stop", function() {
                 //console.log("stop");
@@ -210,7 +213,7 @@ use Laminas\View\Renderer\PhpRenderer;
                                                 id: grandChild.widgetId,
                                                 title: grandChild.label,
                                                 href: grandChild.uri,
-                                                refreshOnShow: false,
+                                                refreshOnShow: grandChild.refreshOnShow,
                                                 executeScripts: true,
                                                 scriptHasHooks: true
                                             }));
@@ -222,7 +225,7 @@ use Laminas\View\Renderer\PhpRenderer;
                                             id: child.widgetId,
                                             title: child.label,
                                             href: child.uri,
-                                            refreshOnShow: false,
+                                            refreshOnShow: true,
                                             executeScripts: true,
                                             scriptHasHooks: true
                                         });

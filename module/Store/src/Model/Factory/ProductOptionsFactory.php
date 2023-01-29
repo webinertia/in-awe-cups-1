@@ -18,7 +18,7 @@ class ProductOptionsFactory implements FactoryInterface
     /** @inheritDoc */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): ProductOptions
     {
-       // $filterFactory = new Factory($container->get(InputFilterPluginManager::class));
+        //$optionsPerProduct = new TableGateway('store_options_per_product', $container->get(AdapterInterface::class));
         return new $requestedName(
             $container->get(ProductOptionsTable::class)
         );

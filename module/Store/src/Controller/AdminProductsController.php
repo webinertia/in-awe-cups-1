@@ -8,12 +8,14 @@ use App\Controller\AbstractAppController;
 use App\Controller\AdminControllerInterface;
 use App\Filter\LabelToTitle;
 use App\Filter\TitleToLabel;
+use App\Log\LogEvent;
 use App\Upload\UploadEvent;
 use Laminas\Filter\FilterPluginManager;
 use Laminas\Form\FormElementManager;
 use Laminas\Session\Container;
 use Laminas\View\Model\JsonModel;
 use Laminas\View\Model\ModelInterface;
+use Laminas\View\Model\ViewModel;
 use Store\Db\TableGateway\ProductsByCategoryTable;
 use Store\Api\Form\ApiProductForm;
 use Store\Model\Category;
@@ -21,12 +23,16 @@ use Store\Model\Image;
 use Store\Model\Product;
 use Store\Form\ProductForm;
 
+use Throwable;
+
 use function array_merge_recursive;
 
 class AdminProductsController extends AbstractAppController implements AdminControllerInterface
 {
     /** @var Category $category */
     protected $category;
+    /** @var FormElementManager $formManager */
+    protected $formManager;
     /** @var Image $image */
     protected $image;
     /** @var LabelToTitle $labelToTitleFilter */
@@ -51,7 +57,7 @@ class AdminProductsController extends AbstractAppController implements AdminCont
         $this->category           = $category;
         $this->image              = $image;
         $this->product            = $product;
-        $this->labelToTitleFilter = $filterPluginManager->get(TitleToLabel::class);
+        $this->labelToTitleFilter = $filterPluginManager->get(LabelToTitle::class);
         $this->form               = $formElementManager->get(ProductForm::class);
         $this->formManager        = $formElementManager;
     }
@@ -68,6 +74,7 @@ class AdminProductsController extends AbstractAppController implements AdminCont
     {
     }
 
+    /** @deprecated */
     public function managerAction(): ModelInterface
     {
         // Refactor this into individual action since were using ajax
@@ -115,13 +122,9 @@ class AdminProductsController extends AbstractAppController implements AdminCont
         $this->ajaxAction();
         $this->form->setAttribute(
             'action',
-            '/admin/store/manage/products/create'
+            '/admin/store/products/create'
         );
         if ($this->request->isPost()) {
-            $posted = array_merge_recursive(
-                $this->request->getPost()->toArray(),
-                $this->request->getFiles()->toArray()
-            );
             $this->form->setData(array_merge_recursive(
                     $this->request->getPost()->toArray(),
                     $this->request->getFiles()->toArray()
@@ -133,31 +136,31 @@ class AdminProductsController extends AbstractAppController implements AdminCont
                     $this->product->exchangeArray($data['product-data']);
                     $this->product->title = $this->labelToTitleFilter->filter($data['product-data']['label']);
                     $this->product->save($this->product);
-                    $this->image->productId = $this->product->getLastInsertId();
-                    $this->image->setUploadType(Image::PRODUCT_TYPE);
-                    $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['image-data']['images']);
-                    return new JsonModel([
-                        'success' => true,
-                        'message' => $this->product->label . ' was created successfully!',
-                    ]);
-                } catch (\Throwable $th) {
-                    //throw $th;
+                    $data['image-data']['productId'] = $this->product->getLastInsertId();
+                    $eventResponse = $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['image-data']);
+                    if ($eventResponse->last()) {
+                        $this->response->setStatusCode(201);
+                        return new JsonModel(['message' => $data['product-data']['label'] . ' was successfully created']);
+                    }
+                } catch (Throwable $th) {
+                    $this->response->setStatusCode(513)->setReasonPhrase('Data Could not be saved');
+                    return new JsonModel(['message' => $th->getMessage()]);
                 }
             } else {
-                $messages = $this->form->getMessages();
+                $this->response->setStatusCode(406);
+                return new JsonModel($this->form->getMessages());
             }
         }
         $this->view->setVariable('form', $this->form);
         return $this->view;
     }
 
+    /** @deprecated */
     public function editAction(): ModelInterface
     {
         $id            = $this->params('id');
         $this->product = $this->product->fetchByColumn('id', $id);
-        if ($this->request->isXmlHttpRequest()) {
-            $this->view->setTerminal(true);
-        }
+        $this->ajaxAction();
         if (! $this->request->isPost()) {
             $this->form->setAttribute(
                 'action',
@@ -178,11 +181,22 @@ class AdminProductsController extends AbstractAppController implements AdminCont
         return $this->view;
     }
 
-    public function uploadImagesAction()
+    public function manageImagesAction()
     {
+        $this->ajaxAction();
+        return new ViewModel();
     }
 
-    public function deleteAction()
+    public function updateOptionsAction()
     {
+        $this->ajaxAction();
+        $params = $this->params()->fromQuery();
+        return new JsonModel(['id' => $params['id'], 'data' => ['option_one' => 'Value One']]);
+    }
+
+    public function manageProductOptionsAction()
+    {
+        $this->ajaxAction();
+        return new ViewModel();
     }
 }

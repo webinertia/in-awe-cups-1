@@ -11,9 +11,13 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\Exception\RuntimeException;
 use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\TableGateway\Exception\InvalidArgumentException;
 use Laminas\Db\TableGateway\Exception\RuntimeException as TableGatewayRuntimeException;
+use Laminas\Db\TableGateway\TableGatewayInterface;
+use Laminas\Stdlib\ArrayUtils;
 
 /**
  * AbstractGatewayModel
@@ -27,7 +31,7 @@ use function sprintf;
 
 trait ModelTrait
 {
-    /** @var TableGatewayInterface $gateway */
+    /** @var AbstractTableGateway $gateway */
     protected $gateway;
     /** @var ResultSet $resultSet */
     protected $resultSet;
@@ -54,10 +58,13 @@ trait ModelTrait
     }
 
     /** @throws RuntimeException */
-    public function fetchByColumn(string $column, mixed $value): self
+    public function fetchByColumn(string $column, mixed $value, bool $fetchResultSet = false): ResultSetInterface|self
     {
         $column    = (string) $column;
         $resultSet = $this->gateway->select([$column => $value]);
+        if ($fetchResultSet) {
+            return $resultSet;
+        }
         $row       = $resultSet->current();
         if (! $row) {
             throw new RuntimeException(sprintf('Could not fetch column: ' . $column . ' with value: ' . $value));
@@ -73,7 +80,7 @@ trait ModelTrait
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    public function fetchColumns($column, $value, ?array $columns = ['*']): self
+    public function fetchColumns($column, $value, ?array $columns = ['*'], ?bool $fetchArray = true): self
     {
         $select = $this->gateway->getSql()->select();
         $select->columns($columns);
@@ -84,6 +91,9 @@ trait ModelTrait
             throw new RuntimeException(
                 sprintf('Could not fetch row with column: ' . $column . ' with value: ' . $value)
             );
+        }
+        if ($fetchArray) {
+            return $row->toArray();
         }
         return $row;
     }
@@ -96,15 +106,48 @@ trait ModelTrait
         return $this->gateway->select();
     }
 
+    public function recordExists(array $data): bool
+    {
+        if (ArrayUtils::hasNumericKeys($data) || $data === []) {
+            throw new InvalidArgumentException('$data must be a non empty associative array with only string keys');
+        }
+        $where  = new Where();
+        foreach ($data as $column => $value) {
+            $where->equalTo($column, $value);
+        }
+        $check = $this->gateway->select($where);
+        $result = $check->current();
+        if($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function noRecordExists(array $data): bool
+    {
+        if (ArrayUtils::hasNumericKeys($data) || $data === []) {
+            throw new InvalidArgumentException('$data must be a non empty associative array with only string keys');
+        }
+        $where  = new Where();
+        foreach ($data as $column => $value) {
+            $where->equalTo($column, $value);
+        }
+        $check = $this->gateway->select($where);
+        $result = $check->current();
+        if($result) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function getLastInsertId(): int|string
     {
         return $this->gateway->getLastInsertValue();
     }
 
-    /**
-     * @param Where|Closure|string|array $where
-     */
-    public function delete($where): int
+    public function delete(Where|Closure|array $where): int
     {
         return $this->gateway->delete($where);
     }
@@ -127,5 +170,15 @@ trait ModelTrait
     public function toArray()
     {
         return $this->getArrayCopy();
+    }
+
+    public function getTable(): string
+    {
+        return $this->gateway->getTable();
+    }
+
+    public function getGateway(): TableGatewayInterface
+    {
+        return $this->gateway;
     }
 }

@@ -11,14 +11,5 @@ use Store\Model\Category;
 
 class CategoriesTable extends TableGateway
 {
-    public function fetchSelectValueOptions()
-    {
-        $data = [];
-        $resultSet = $this->select();
-        foreach($resultSet as $row)
-        {
-            $data[$row->id] = $row->label;
-        }
-        return $data;
-    }
+
 }

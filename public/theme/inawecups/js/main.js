@@ -1,6 +1,6 @@
 (function ($) {
     "use strict";
-    
+
     // Dropdown on mouse hover
     $(document).ready(function () {
         function toggleNavbarMethod() {
@@ -17,8 +17,8 @@
         toggleNavbarMethod();
         $(window).resize(toggleNavbarMethod);
     });
-    
-    
+
+
     // Back to top button
     $(window).scroll(function () {
         if ($(this).scrollTop() > 100) {
@@ -99,6 +99,29 @@
         }
         button.parent().parent().find('input').val(newVal);
     });
-    
-})(jQuery);
+    // handle the product search filtering
+    $('form#product-search').on("submit", function(event){
+        event.preventDefault();
+        let form = $(event.target);
+        let formData = new FormData(document.getElementById('product-search'));
+        console.log(document.getElementById('product-search'));
+        console.log('formData', formData);
+        let location = $(form).attr("action");
+        let fdata    = $(form).serialize();
+        console.log('fdata', fdata);
+        let fmethod  = $(form).attr("method");
+        let request  = $.ajax({
+            url: location,
+            method: fmethod,
+            data: fdata
+        });
+        request.done(function(response, textStatus, jqXHR) {
+            $('div#product-workspace').html(response);
+           // alert('done');
+        });
+        request.fail(function() {
+            alert('fail');
+        });
+    });
 
+})(jQuery);
