@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Store\Model;
 
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
 use ArrayObject;
@@ -32,7 +32,7 @@ use function array_values;
 use function count;
 use function explode;
 
-class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
+class OptionsPerProduct extends AbstractModel implements ModelInterface
 {
     use ModelTrait;
 

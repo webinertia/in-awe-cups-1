@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Store\Model;
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
 use Laminas\Db\Exception\InvalidArgumentException;
@@ -27,7 +27,7 @@ use Store\Model\Exception\OptionExistsException;
 use function is_array;
 use function implode;
 
-class ProductOptions extends AbstractGatewayModel implements ModelInterface
+class ProductOptions extends AbstractModel implements ModelInterface
 {
     use ModelTrait;
 

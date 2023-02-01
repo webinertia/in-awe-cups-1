@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Store\Model;
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Log\LogEvent;
 use App\Model\ModelTrait;
 use App\Upload\UploadEvent;
@@ -22,7 +22,7 @@ use Store\Model\Image;
 use Store\Model\OptionsPerProduct;
 use Store\Model\ProductOptions;
 
-class Product extends AbstractGatewayModel
+class Product extends AbstractModel
 {
     use ModelTrait;
 

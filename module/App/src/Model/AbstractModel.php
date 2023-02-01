@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Db\TableGateway;
+namespace App\Model;
 
 use App\Log\LoggerAwareInterface;
 use App\Log\LoggerAwareInterfaceTrait;
@@ -17,7 +17,7 @@ use Laminas\Stdlib\ArrayObject;
 use DateTimeImmutable;
 use DateTimeZone;
 
-abstract class AbstractGatewayModel extends ArrayObject implements InputFilterAwareInterface, LoggerAwareInterface
+abstract class AbstractModel extends ArrayObject implements InputFilterAwareInterface, LoggerAwareInterface
 {
     use InputFilterAwareTrait;
     use LoggerAwareInterfaceTrait;

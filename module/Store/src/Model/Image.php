@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Store\Model;
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Log\LogEvent;
 use App\Model\ModelTrait;
 use App\Upload\UploadHandlerInterface;
@@ -36,7 +36,7 @@ use function strlen;
 use function strpos;
 use function unlink;
 
-final class Image extends AbstractGatewayModel implements UploadHandlerInterface
+final class Image extends AbstractModel implements UploadHandlerInterface
 {
     use ModelTrait;
 

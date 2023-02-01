@@ -20,7 +20,7 @@ use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Stdlib\ArrayUtils;
 
 /**
- * AbstractGatewayModel
+ * AbstractModel
  * Trait method signatures for static analysis
  * @codingStandardsIgnoreStart
  * @method \Laminas\Db\TableGateway\AbstractTableGateway getAdapter()
