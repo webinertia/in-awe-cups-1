@@ -18,16 +18,16 @@ return [
     'app_settings'       => [
         'load_store_as_homepage' => '1',
     ],
-    // 'module_settings'    => [
-    //     'store' => [
-    //         'upload' => [
-    //             'renameUploadConfig' => [
-    //                 'randomize'            => true,
-    //                 'use_upload_extension' => true,
-    //             ],
-    //         ],
-    //     ],
-    // ],
+    'module_settings'    => [
+        'store' => [
+            'upload' => [
+                'renameUploadConfig' => [
+                    'randomize'            => true,
+                    'use_upload_extension' => true,
+                ],
+            ],
+        ],
+    ],
     'db'                 => [
         'products_table_name'                  => 'store_products',
         'store_image_table_name'               => 'store_images',
@@ -398,11 +398,10 @@ return [
                     ],
                 ],
             ],
+            // Not currently in use
             'product.search' => [
                 'type' => Segment::class,
-                //'may_terminate' => true,
                 'options' => [
-                    // id = category
                     'route' => '/product/search[/:category]',
                     'defaults' => [
                         'controller' => Controller\ProductSearchController::class,
@@ -417,14 +416,6 @@ return [
     ],
     'navigation'         => [
         'default' => [
-            // [
-            //     'label'     => 'Store',
-            //     'route'     => 'store',
-            //     'class'     => 'nav-link',
-            //     //'resource'  => 'store', // todo: add store resource and privileges
-            //     //'privilege' => 'view',
-            //     'action'    => 'index',
-            // ],
             [
                 'label'     => 'Shop',
                 'route'     => 'store/product',
@@ -433,12 +424,6 @@ return [
                 'class'     => 'nav-link',
                 'params'    => ['category' => 'all'],
             ],
-            // [
-            //     'label'     => 'Products',
-            //     'route'     => 'store/products',
-            //     'resource'  => 'store',
-            //     'privilege' => 'view',
-            // ],
         ],
         'admin'   => [
             [

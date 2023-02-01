@@ -86,16 +86,10 @@ trait ModelTrait
         $select->columns($columns);
         $select->where([$column => $value]);
         $resultSet = $this->gateway->selectWith($select);
-        $row       = $resultSet->current();
-        if (! $row) {
-            throw new RuntimeException(
-                sprintf('Could not fetch row with column: ' . $column . ' with value: ' . $value)
-            );
-        }
         if ($fetchArray) {
-            return $row->toArray();
+            return $resultSet->toArray();
         }
-        return $row;
+        return $resultSet;
     }
 
     public function fetchAll($fetchArray = false): ResultSetInterface|array

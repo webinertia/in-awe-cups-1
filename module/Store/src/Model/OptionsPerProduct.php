@@ -16,6 +16,7 @@ use Laminas\Db\Sql\Predicate\In;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Paginator\Adapter\ArrayAdapter;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\AdapterPluginManager;
 use Laminas\Paginator\Paginator;
@@ -35,8 +36,16 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
 {
     use ModelTrait;
 
+    /** @var string $resourceId */
     protected $resourceId = 'store';
-
+    /** @var AdapterPluginManager $adapterManager */
+    protected $adapterManager;
+    /** @var Paginator $paginator */
+    protected $paginator;
+    /** @var bool $paginated */
+    protected $paginated;
+    /** @var int|string $itemCountPerPage */
+    protected $itemCountPerPage;
     /** @var TableGateway $productTable */
     protected $productTable;
     /** @var ProductOptions $productOptions */
@@ -54,7 +63,12 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
     /** @var string $i */
     protected $i;
 
-    public function __construct(?ProductOptions $productOptions = null, ?TableGateway $gateway = null, ?array $config = null) {
+    public function __construct(
+        ?ProductOptions $productOptions = null,
+        ?TableGateway $gateway = null,
+        ?array $config = null,
+        ?AdapterPluginManager $adapterManager = null
+        ) {
         parent::__construct([]);
         if ($gateway !== null) {
             $this->gateway = $gateway;
@@ -62,13 +76,18 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if ($productOptions !== null) {
             $this->productOptions = $productOptions;
         }
+        if ($adapterManager !== null) {
+            $this->adapterManager = $adapterManager;
+        }
         if ($config !== null) {
-            $this->config = $config;
-            $this->t    = $this->config['db']['store_options_per_product_table_name'];
-            $this->c    = $this->config['db']['store_categories_table_name'];
-            $this->p    = $this->config['db']['products_table_name'];
-            $this->i    = $this->config['db']['store_image_table_name'];
-            $this->step = $this->config['module_settings']['store']['search_options']['price_step_value'];
+            $this->config    = $config;
+            $this->t         = $this->config['db']['store_options_per_product_table_name'];
+            $this->c         = $this->config['db']['store_categories_table_name'];
+            $this->p         = $this->config['db']['products_table_name'];
+            $this->i         = $this->config['db']['store_image_table_name'];
+            $this->step      = $this->config['module_settings']['store']['search_options']['price_step_value'];
+            $this->paginated = $this->config['module_settings']['store']['pagination']['enabled'];
+            $this->itemCountPerPage = $this->config['module_settings']['store']['pagination']['items_per_page'];
         }
         $this->productTable = new TableGateway('store_products', $this->gateway->getAdapter());
     }
@@ -76,10 +95,9 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
     public function productSearch(
         ?int $productId,
         ?string $category,
-        array $params,
-        bool $fetchArray = true
-    ): ResultSetInterface|array {
-        return $this->search($productId, $category, $this->sortParams($params), null, $fetchArray);
+        array $params
+    ): Paginator {
+        return $this->search($productId, $category, $this->sortParams($params), null);
     }
 
     private function sortParams(array $params): array
@@ -118,10 +136,8 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         ?string $category,
         ?array $params,
         ?array $sort,
-        bool $fetchArray = true,
-        bool $onlyActive = true,
-        bool $paginated = false
-    ): ResultSetInterface|array {
+        bool $onlyActive = true
+    ): Paginator {
 
         $select = new Select();
         $where  = new Where();
@@ -144,7 +160,6 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if (isset($params['costRange'])) {
             $where->between('p.cost', $params['costRange']['min'], $params['costRange']['max']);
         }
-
         $select->join(
             ['p' => $this->p],
             'o.productId = p.id',
@@ -168,12 +183,12 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if ($sort !== null) {
 
         }
+        $query = $select->getSqlString();
         $select->where($where);
-        $result = $this->gateway->selectWith($select);
-        if ($fetchArray) {
-            return $result->toArray();
-        }
-        return $result;
+        $adapter   = $this->adapterManager->get(DbSelect::class, [$select, $this->gateway->getSql()]);
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage($this->paginated ? $this->itemCountPerPage : $paginator->getTotalItemCount());
+        return $paginator;
     }
 
     public function fetchByOptionGroup(

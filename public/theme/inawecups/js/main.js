@@ -123,5 +123,19 @@
             alert('fail');
         });
     });
-
+    // pagination control
+    $(document).on('click', 'ul#pagination-control > li.page-item > a.page-link', function(event) {
+        event.preventDefault();
+        //alert('clicked');
+        console.log('making request');
+        let href = $(this).attr("href");
+        let request = $.ajax({
+            url:href,
+            dataType:"html",
+        });
+        request.done(function(response, textStatus, jqXHR){
+            console.log('updating html');
+            $('div#product-workspace').html(response);
+        });
+    });
 })(jQuery);

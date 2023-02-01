@@ -10,6 +10,7 @@ use Laminas\Navigation\Navigation;
 use Laminas\Filter\FilterPluginManager;
 use Laminas\Filter\UpperCaseWords;
 use Laminas\Navigation\Page\AbstractPage;
+use Laminas\Paginator\Paginator;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Model\ViewModel;
 use Store\Model\Category;
@@ -61,37 +62,44 @@ final class ProductsController extends AbstractAppController
     public function indexAction(): ModelInterface
     {
         $navigation = $this->getService(Navigation::class);
-        // this is navigation tab as active
+        // set shop navigation tab as active
         $page = $navigation->findOneBy('label', 'Shop');
         $page->active = true;
         $params = $this->params()->fromRoute();
+        $category = $this->titleToLabelFilter->filter($params['category']);
         $this->view->setVariable('showHeader', true);
         switch($params['product']) {
             case 'all':
-                $queryParams = $this->params()->fromQuery();
+                $queryParams = $this->getQuery(exclude:['page']);
                 $this->view->setVariables([
-                    'headerTitle' => $this->titleToLabelFilter->filter($params['category']),
+                    'headerTitle' => 'Shopping ' . $category,
                 ]);
                 $sidebar = new ViewModel(
                     [
-                        'supported_search_filters' => ['cost', 'onSale'],
                         'productOptions' => $this->optionLookup->fetchSearchableOptions($params['category']),
                         'category'       => $params['category'],
                         'query'          => $queryParams,
                         'maxPrice'       => $this->product->fetchMaxCost($this->titleToLabelFilter->filter($params['category']), true),
                     ]
                 );
+                // this only gets rendered for non ajax request
                 $sidebar->setTemplate('/store/products/children/product-search-sidebar');
                 $this->view->addChild($sidebar, 'sidebar');
+                // only products that have been assigned options will show up in the return data
+                $products = $this->optionLookup->productSearch(null, $params['category'], $queryParams);
+                /** @var Paginator $products */
+                $products->setCurrentPageNumber($this->params()->fromQuery('page', 1));
                 $this->view->setVariables(
                     [
-                        'products' => $this->image->fetchAllProductsByMultiColumns(
-                            true,
-                            true,
-                            ['i.categoryTitle' => $params['category']]
-                        ),
+                        'products' => $products,
+                        'category' => $params['category'],
+                        'route'    => 'store/product',
                     ]
                 );
+                if ($this->ajaxAction()) {
+                    // we set this as the response for ajax request so that it will only update the html that needs replaced
+                    $this->view->setTemplate('/store/products/json-response');
+                }
                 break;
             default:
                 $this->view->setVariables([

@@ -84,7 +84,7 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
             ],
         ]);
         $this->add([
-            'name' => 'bundleId',
+            'name' => 'bundleLabel',
             'type' => Select::class,
             'attributes' => [
                 'required' => false,
@@ -217,9 +217,12 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
                     ],
                 ],
             ],
-            'bundleId' => [
+            'bundleLabel' => [
                 'required' => false,
                 'allow_empty' => true,
+                'filters' => [
+                    ['name' => ToNull::class],
+                ],
             ],
             'discount' => [
                 'required' =>  false,

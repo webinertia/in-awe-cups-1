@@ -6,6 +6,7 @@ namespace App\Db\TableGateway;
 
 use App\Log\LoggerAwareInterface;
 use App\Log\LoggerAwareInterfaceTrait;
+use App\Upload\UploadAwareInterface;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\InputFilter\InputFilter;

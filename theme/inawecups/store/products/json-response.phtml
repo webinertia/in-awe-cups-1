@@ -44,14 +44,13 @@ if ($this->products) :
                         $this->products,
                         'Sliding',
                         $this->config('module_settings')['store']['pagination']['control_partial'],
-                        ['category' => $this->category, 'route' => 'product.search']
+                        ['category' => $this->category, 'route' => $this->route]
                     );
                 }
                 ?>
                 <!-- end control -->
             </div>
         </div>
-
     <!-- Shop Product End -->
 <?php
 endif;

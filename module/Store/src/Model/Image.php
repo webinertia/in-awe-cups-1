@@ -15,12 +15,18 @@ use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\Exception\RuntimeException;
 use Laminas\Filter\BaseName;
 use Laminas\Filter\File\RenameUpload;
+use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
+use Laminas\Paginator\AdapterPluginManager;
+use Laminas\Paginator\Paginator;
 use Laminas\Stdlib\ArrayUtils;
 use Store\Db\TableGateway\ImageTable;
 use Store\Model\Exception;
 use User\Service\UserService;
 
+use const ARRAY_FILTER_USE_KEY;
+
 use function array_flip;
+use function array_filter;
 use function array_intersect_key;
 use function count;
 use function file_exists;
@@ -54,10 +60,20 @@ final class Image extends AbstractGatewayModel implements UploadHandlerInterface
     protected $renameUpload;
     /** @var null|string $uploadType */
     protected $uploadType;
+    /** @var array<int, string> $deletableKeys */
+    protected $deletableKeys = ['id', 'productId', 'categoryId'];
     /** @var string $targetFileName */
     protected $targetFileName = '%sImage';
     /** @var string $target */
     protected $target;
+    /** @var AdapterPluginManager $adapterManager */
+    protected $adapterManager;
+    /** @var Paginator $paginator */
+    protected $paginator;
+    /** @var bool $paginated */
+    protected $paginated;
+    /** @var int|string $itemCountPerPage */
+    protected $itemCountPerPage;
     /** @var array<int, array> $persistedData */
     protected $persistedData = [];
     /** @var array<mixed> $fileData */
@@ -74,7 +90,8 @@ final class Image extends AbstractGatewayModel implements UploadHandlerInterface
         RenameUpload $renameUpload,
         BaseName $baseName,
         ?ImageTable $imageTable = null,
-        array $config = []
+        array $config = [],
+        ?AdapterPluginManager $adapterManager = null
     ) {
         parent::__construct([], $config);
         $this->userId       = $userService->id;
@@ -84,10 +101,15 @@ final class Image extends AbstractGatewayModel implements UploadHandlerInterface
             $this->gateway = $imageTable;
             $this->t       = $this->gateway->getTable();
         }
+        if ($adapterManager !== null) {
+            $this->adapterManager = $adapterManager;
+        }
         if ($config !== []) {
             $this->config = $config;
             $this->c = $this->config['db']['store_categories_table_name'];
             $this->p = $this->config['db']['products_table_name'];
+            $this->paginated = $this->config['module_settings']['store']['pagination']['enabled'];
+            $this->itemCountPerPage = $this->config['module_settings']['store']['pagination']['items_per_page'];
         }
     }
 
@@ -105,10 +127,9 @@ final class Image extends AbstractGatewayModel implements UploadHandlerInterface
      * @throws Exception\InvalidArgumentException
      */
     public function fetchAllProductsByMultiColumns(
-        bool $fetchArray,
         bool $onlyActive,
         ...$columns
-        ): ResultSetInterface|array {
+        ): Paginator {
 
         if (ArrayUtils::isList($columns)) {
             $where = new Where();
@@ -126,28 +147,24 @@ final class Image extends AbstractGatewayModel implements UploadHandlerInterface
             }
             $select = new Select();
             // alias for store_images table
-            $select->from(['i' => $this->getTable()]);
-            // join store_categories as c
-            $select->join(
-                ['c' => 'store_categories'],
-                'i.categoryId = c.id',
-                ['id', 'title', 'label', 'active'],
-                Select::JOIN_LEFT_OUTER
-            );
-            // join store_products as p
+            $select->from(['i' => $this->getTable()])->columns([
+                'productId', 'productTitle', 'categoryId', 'categoryTitle', 'fileName', 'uploadedTime'
+            ]);
+
+            //join store_products as p
             $select->join(
                 ['p' => 'store_products'],
                 'productId = p.id',
-                ['id', 'title', 'label', 'cost', 'category'],
             );
             // group prevents duplicates from multiple images
-            $select->group(['p.id', 'i.productId']);
-            $select->order(['p.label ASC', 'i.productId ASC']);
+            $select->group(['p.id']);
+            $select->order(['label ASC', 'productId ASC']);
             $select->where($where);
-            if (! $fetchArray) {
-                return $this->gateway->selectWith($select);
-            }
-            return $this->gateway->selectWith($select)->toArray();
+            $paginator = new Paginator($this->adapterManager->get(DbSelect::class, [$select, $this->gateway->getSql()]));
+            $paginator->setDefaultItemCountPerPage(
+                $this->paginated ? $this->itemCountPerPage : $paginator->getTotalItemCount()
+            );
+            return $paginator;
         } else {
             throw new Exception\InvalidArgumentException('Expects ...$columns to be ArrayUtils::isList acceptable');
         }
@@ -175,15 +192,45 @@ final class Image extends AbstractGatewayModel implements UploadHandlerInterface
         }
     }
 
+    /**
+     * @param $fileData
+     * */
     public function handleDelete(array $fileData)
     {
-        $record = $this->fetchColumns('id', $fileData['id'], ['fileName', 'productId', 'categoryId'], false);
-        $target = sprintf(self::IMAGE_TARGET_PATH, $record->getUploadType()) . '/' . $record->fileName;
-        if (file_exists($target) && unlink($target) && $this->delete(['id' => $fileData['id']])) {
+        // TODO: Debug
+        try {
+            $this->exchangeArray($fileData);
+            if (! isset($this->id)) {
+                $records = $this->fetchInternal(false);
+            }
+            foreach ($records as $record) {
+                $target = sprintf(self::IMAGE_TARGET_PATH, $record->getUploadType()) . '/' . $record->fileName;
+                if (file_exists($target)) {
+                    if (unlink($target)) {
+                        $this->delete($record->id);
+                    }
+                }
+            }
             return true;
-        } else {
+        } catch (\Throwable $th) {
             return false;
         }
+
+    }
+
+    private function fetchInternal($fetchArray = true)
+    {
+        // TODO
+        $where = new Where();
+        $predicates = array_intersect_key(array_flip($this->deletableKeys), $this->storage);
+        foreach ($predicates as $column => $value) {
+            $where->equalTo($column, $value);
+        }
+        $records = $this->gateway->select($where);
+        if ($fetchArray) {
+            return $records->toArray();
+        }
+        return $records;
     }
 
     public function exchangeArray($data)

@@ -84,7 +84,9 @@ final class ProductsApiController extends AbstractApiController
     {
         // delete resource
         // set response code $this->response->setStatusCode($int);
-        $result = $this->product->delete(['id' => $id]);
+        if ($this->product->delete((int) $id)) {
+            $this->getEventManager()->trigger(UploadEvent::EVENT_DELETE, $this->image, ['productId' => $id]);
+        }
         //$result = true;
         if ($result) {
             $this->response->setStatusCode(204);

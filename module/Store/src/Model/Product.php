@@ -7,11 +7,15 @@ namespace Store\Model;
 use App\Db\TableGateway\AbstractGatewayModel;
 use App\Log\LogEvent;
 use App\Model\ModelTrait;
+use App\Upload\UploadEvent;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
+use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
+use Laminas\Paginator\AdapterPluginManager;
+use Laminas\Paginator\Paginator;
 use Store\Db\TableGateway\ProductsByCategoryTable;
 use Store\Db\TableGateway\ProductsTable;
 use Store\Model\Image;
@@ -28,6 +32,14 @@ class Product extends AbstractGatewayModel
     protected $optionsLookup;
     /** @var Image $image*/
     protected $image;
+    /** @var AdapterPluginManager $adapterManager */
+    protected $adapterManager;
+    /** @var Paginator $paginator */
+    protected $paginator;
+    /** @var bool $paginated */
+    protected $paginated;
+    /** @var int|string $itemCountPerPage */
+    protected $itemCountPerPage;
 
     // string table names for use within queries
     /** @var string $c */
@@ -42,7 +54,8 @@ class Product extends AbstractGatewayModel
         ?ProductsByCategoryTable $productsByCategoryTable = null,
         ?OptionsPerProduct $optionsLookup = null,
         ?Image $image = null,
-        ?array $config = null
+        ?array $config = null,
+        ?AdapterPluginManager $adapterManager = null
         ) {
         parent::__construct([]);
         if ($gateway !== null) {
@@ -59,6 +72,9 @@ class Product extends AbstractGatewayModel
         }
         if ($image !== null) {
             $this->image = $image;
+        }
+        if ($adapterManager !== null) {
+            $this->adapterManager = $adapterManager;
         }
     }
 
@@ -177,5 +193,14 @@ class Product extends AbstractGatewayModel
     public function toArray()
     {
         return $this->getArrayCopy();
+    }
+
+    public function delete(int $id): int
+    {
+        $result = $this->gateway->delete(['id' => $id]);
+        if ($result) {
+            $this->optionsLookup->delete(['productId' => $id]);
+        }
+        return $result;
     }
 }

@@ -6,6 +6,7 @@ namespace Store\Model\Factory;
 
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Paginator\AdapterPluginManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Store\Model\OptionsPerProduct;
@@ -22,7 +23,8 @@ class OptionsPerProductFactory implements FactoryInterface
                 $container->get('config')['db']['store_options_per_product_table_name'],
                 $container->get(AdapterInterface::class)
             ),
-            $container->get('config')
+            $container->get('config'),
+            $container->get(AdapterPluginManager::class)
         );
     }
 }

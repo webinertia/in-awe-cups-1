@@ -9,12 +9,14 @@
         enctype="multipart/form-data"
         name="product-search"
         method="get"
-        action="<?=$this->url('product.search', ['action' => 'index', 'category' => $this->category])?>">
+        action="<?=$this->url('store/product', ['action' => 'index', 'category' => $this->category, 'product' => 'all'], ['query' => ['page' => 1]])?>">
+        <input type="hidden" name="page" value="1">
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
         <!-- product options Start -->
-        <div class="border-bottom mb-4 pb-4">
+        <?php if ($this->config('module_settings')['store']['search_options']['price_filtering_enabled']) :?>
+            <div class="border-bottom mb-4 pb-4">
                 <fieldset name="cost">
-                    <legend><h5 class="font-weight-semi-bold mb-4">Filter by Price</h5></legend>
+                    <legend>Price</legend>
                     <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
                                 <input
                                     type="radio"
@@ -27,13 +29,13 @@
                                     Any Price
                                 </label>
                             </div>
-                    <?php
+                        <?php
                         $step = $this->config('module_settings')['store']['search_options']['price_step_value'];
                         $inputCount = $this->maxPrice / $step;
                         for ($i=0; $i < $inputCount; $i++) :
                             $start = $i === 0 ? $i : $i * $step;
                             $end = $start + $step;
-                    ?>
+                        ?>
                             <div class="custom-control custom-radio d-flex align-items-center justify-content-between mb-3">
                                 <input
                                     type="radio"
@@ -52,6 +54,7 @@
                     ?>
                 </fieldset>
             </div>
+        <?php endif; ?>
             <!-- Product Options End -->
         <?php
         foreach ($this->productOptions as $optionGroup => $options) :
@@ -59,7 +62,7 @@
             <!-- Options Start -->
             <div class="border-bottom mb-4 pb-4">
                 <fieldset name="<?=$optionGroup?>">
-                    <legend><h5 class="font-weight-semi-bold mb-4">Filter by <?=$optionGroup?></h5></legend>
+                    <legend><?=$optionGroup?></legend>
                     <?php
                     foreach($options as $option) :
                     ?>

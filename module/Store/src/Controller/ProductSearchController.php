@@ -33,17 +33,21 @@ final class ProductSearchController extends AbstractAppController
         $this->ajaxAction();
         $params = $this->params()->fromRoute();
         $queryParams = $this->params()->fromQuery();
+        if (isset($queryParams['page'])) {
+            unset($queryParams['page']);
+        }
         if ($queryParams === ['cost' => 'all']) {
             $products = $this->image->fetchAllProductsByMultiColumns(
-                true,
                 true,
                 ['i.categoryTitle' => $params['category']]
             );
         } else {
             $products = $this->optionLookup->productSearch(null, $params['category'], $queryParams);
+            $products->setCurrentPageNumber($this->params()->fromQuery('page', '1'));
         }
         $this->view->setVariables([
             'products' => $products,
+            'category' => $params['category'],
         ]);
         return $this->view;
     }
