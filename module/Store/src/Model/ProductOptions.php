@@ -7,6 +7,7 @@ namespace Store\Model;
 use App\Model\AbstractModel;
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
+use Dojo\Data;
 use Laminas\Db\Exception\InvalidArgumentException;
 use Laminas\Db\ResultSet\AbstractResultSet;
 use Laminas\Db\ResultSet\ResultSet;
@@ -45,20 +46,20 @@ class ProductOptions extends AbstractModel implements ModelInterface
             $this->gateway = $productOptionsTable;
         }
     }
-
-    public function fetchGrid($fetchArray= true): ResultSetInterface|array
+    // create and return dojo data object
+    public function fetchGrid(): Data
     {
+        $dojoData = new Data();
+        $dojoData->setIdentifier('id');
+
         /** @var Where $where */
         $this->where  = new Where();
         $this->where->greaterThanOrEqualTo('id', 1);
         $select = $this->gateway->getSql()->select();
         $select->order(['category ASC', 'optionGroup ASC', 'option ASC']);
         $select->where($this->where);
-        $result = $this->gateway->selectWith($select);
-        if ($result instanceof AbstractResultSet && $fetchArray) {
-            return $result->toArray();
-        }
-        return $result;
+        $dojoData->setItems($this->gateway->selectWith($select)->toArray());
+        return $dojoData;
     }
 
     public function fetchOptions(

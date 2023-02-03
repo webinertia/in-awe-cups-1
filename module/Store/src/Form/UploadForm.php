@@ -17,7 +17,7 @@ final class UploadForm extends Form
     public function init(): void
     {
         $this->add([
-            'name' => 'image-data',
+            'name' => 'file-data',
             'type' => ImageUpload::class,
         ]);
         $this->addSubmit();

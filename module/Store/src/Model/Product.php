@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Store\Model;
 
 use App\Model\AbstractModel;
+use App\Filter\LabelToTitle;
+use App\Filter\TitleToLabel;
 use App\Log\LogEvent;
 use App\Model\ModelTrait;
+use App\Stdlib\ArrayUtils;
 use App\Upload\UploadEvent;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
+use Laminas\Filter\FilterPluginManager;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\AdapterPluginManager;
 use Laminas\Paginator\Paginator;
@@ -22,18 +26,26 @@ use Store\Model\Image;
 use Store\Model\OptionsPerProduct;
 use Store\Model\ProductOptions;
 
+use function array_intersect_key;
+
 class Product extends AbstractModel
 {
     use ModelTrait;
 
+    public const FIELDSET = 'product-data';
+
+    /** @var AdapterPluginManager $adapterManager */
+    protected $adapterManager;
+    /** @var FilterPluginManager $filterManager*/
+    protected $filterManager;
+    /** @var Image $image*/
+    protected $image;
+    /** @var array<mixed> $fileData */
+    protected $fileData;
     /** @var ProductsByCategoryTable $productsByCategoryTable */
     protected $productsByCategoryTable;
     /** @var OptionsPerProduct $optionsLookup*/
     protected $optionsLookup;
-    /** @var Image $image*/
-    protected $image;
-    /** @var AdapterPluginManager $adapterManager */
-    protected $adapterManager;
     /** @var Paginator $paginator */
     protected $paginator;
     /** @var bool $paginated */
@@ -55,7 +67,8 @@ class Product extends AbstractModel
         ?OptionsPerProduct $optionsLookup = null,
         ?Image $image = null,
         ?array $config = null,
-        ?AdapterPluginManager $adapterManager = null
+        ?AdapterPluginManager $adapterManager = null,
+        ?FilterPluginManager $filterManager = null
         ) {
         parent::__construct([]);
         if ($gateway !== null) {
@@ -75,6 +88,9 @@ class Product extends AbstractModel
         }
         if ($adapterManager !== null) {
             $this->adapterManager = $adapterManager;
+        }
+        if ($filterManager !== null) {
+            $this->filterManager = $filterManager;
         }
     }
 
@@ -169,30 +185,28 @@ class Product extends AbstractModel
         return $max;
     }
 
-    public function save(Product|array $data)
+    public function save()
     {
-        if ($data instanceof Product) {
-            $data = $data->getArrayCopy();
-        }
+        $data = $this->getArrayCopy();
         try {
             // decide if this is insert or update
-            if(empty($data['id']) || $data['id'] === 0 || $data['id'] === '0') {
-                unset($data['id']);
-                return $this->gateway->insert($data);
+            if($data['id'] !== null) {
+                $this->gateway->update($data, ['id' => $data['id']]);
+                return $data['id'];
             }
-            else {
-                return $this->gateway->update($data, ['id' => $data['id']]);
-            }
-
+            // from here we should be inserting a new row
+            $labelToTitleFilter = $this->filterManager->get(LabelToTitle::class);
+            // normalize a title from the label
+            $data['title'] = $labelToTitleFilter->filter($data['label']);
+            // insert the row
+            $this->gateway->insert($data);
+            // get the created id
+            return $this->gateway->getLastInsertValue();
         } catch (\Throwable $th) {
             $this->getEventManager()->trigger(LogEvent::NOTICE, $th->getMessage());
+            throw $th;
         }
 
-    }
-
-    public function toArray()
-    {
-        return $this->getArrayCopy();
     }
 
     public function delete(int $id): int

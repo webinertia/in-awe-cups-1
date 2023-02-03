@@ -278,9 +278,9 @@ class OptionsPerProduct extends AbstractModel implements ModelInterface
 
     public function save($set)
     {
-        // if (isset($set['id'])) {
-        //     unset($set['id']);
-        // }
+        if (isset($set['optionId'])) {
+
+        }
         if (ArrayUtils::isList($set['productOptions'])) {
             $pSelect = $this->productTable->getSql()->select();
             $pSelect->columns(['category']);

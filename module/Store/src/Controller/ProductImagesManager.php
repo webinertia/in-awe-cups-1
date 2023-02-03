@@ -45,7 +45,7 @@ final class ProductImagesManager extends AbstractApiController implements AdminC
             $data = $form->getData();
             try {
                 // TODO: return url from the event
-                $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['image-data']);
+                $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['file-data']);
                 $this->response->setStatusCode(201);
                 return new JsonModel([]);
             } catch (\Throwable $th) {
@@ -75,7 +75,7 @@ final class ProductImagesManager extends AbstractApiController implements AdminC
     {
         $this->ajaxAction();
         $form = $this->formManager->get(UploadForm::class);
-        $data['image-data']['productId'] = $id;
+        $data['file-data']['productId'] = $id;
         $form->setData($data);
         $this->view->setVariable('form', $form);
         return $this->view;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Store\Form\Fieldset;
 
 use App\Filter\PadFloatString;
+use App\Filter\UserIdFilter;
 use App\Form\Fieldset\FieldsetTrait;
 use Dojo\Form\Element\CurrencyTextBox;
 use Dojo\Form\Element\DateTextBox;
@@ -195,6 +196,10 @@ class ProductInfo extends Fieldset implements InputFilterProviderInterface
                 'filters' => [
                     ['name' => ToNull::class]
                 ],
+            ],
+            'userId' => [
+                'required' => false,
+                'allow_empty' => true,
             ],
             'weight' => [
                 'filters' => [

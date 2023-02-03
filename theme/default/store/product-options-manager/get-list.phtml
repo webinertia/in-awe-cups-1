@@ -60,11 +60,49 @@ require([
     let optionGrid = new (declare([OnDemandGrid, Keyboard, Selection, DijitRegistry]))({
         collection: optionStore,
         // only wanna show what will actually fit in a grid
+        // columns: {
+        //     label: {
+        //         label: 'Product Name'
+        //     },
+        //     cost: {
+        //         label: 'Cost'
+        //     },
+        //     weight: {
+        //         label: 'Shipping Weight'
+        //     },
+        //     createdDate: {
+        //         label: 'Created On'
+        //     },
+        //     active: {
+        //         label: 'Active',
+        //         get: function(object) {
+        //             return object.active ? 'Yes' : 'No';
+        //         }
+        //     },
+        // }
         columns: {
-            category: 'Category',
-            optionGroup: 'Option Group',
-            option: 'Option',
-            id: 'Option Id',
+            category: {
+                label: 'Category',
+            },
+            optionGroup: {
+                label: 'Option Group',
+            },
+            option: {
+                label: 'Option Value',
+            },
+            cost: {
+                label: 'Cost',
+                // get: function(object) {
+                //     return object.cost === null ? '0.00' : object.cost;
+                // }
+            },
+            id: {
+                label: 'System {Record Id}',
+            }
+            // optionGroup: 'Option Group',
+            // option: 'Option',
+            // cost: 'Cost',
+            // id: 'Record Id',
         },
         loadingMessage: "Loading data..."
     }, 'optionGrid');

@@ -11,7 +11,7 @@ class ProductForm extends Form
     public function init()
     {
         $this->add([
-            'name' => 'image-data',
+            'name' => 'file-data',
             'type' => ImageUpload::class,
         ])->add([
             'name' => 'product-data',

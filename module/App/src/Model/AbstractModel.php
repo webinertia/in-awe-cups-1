@@ -6,8 +6,6 @@ namespace App\Model;
 
 use App\Log\LoggerAwareInterface;
 use App\Log\LoggerAwareInterfaceTrait;
-use App\Upload\UploadAwareInterface;
-use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
@@ -17,10 +15,10 @@ use Laminas\Stdlib\ArrayObject;
 use DateTimeImmutable;
 use DateTimeZone;
 
-abstract class AbstractModel extends ArrayObject implements InputFilterAwareInterface, LoggerAwareInterface
+abstract class AbstractModel extends ArrayObject implements LoggerAwareInterface, InputFilterAwareInterface
 {
-    use InputFilterAwareTrait;
     use LoggerAwareInterfaceTrait;
+    use InputFilterAwareTrait;
 
     /** @var array<mixed> $config */
     protected $config;
@@ -66,5 +64,10 @@ abstract class AbstractModel extends ArrayObject implements InputFilterAwareInte
             $multiplier *= 10;
         }
         return round($number, $digit) * $multiplier;
+    }
+
+    public function toArray()
+    {
+        return $this->getArrayCopy();
     }
 }

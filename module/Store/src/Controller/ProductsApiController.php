@@ -56,7 +56,7 @@ final class ProductsApiController extends AbstractApiController
     {
         $this->product->exchangeArray($data);
         try {
-            if ($this->product->save($this->product)) {
+            if ($this->product->save()) {
                 $this->response->setStatusCode(202);
             }
             return new JsonModel($this->dojoData->setItem($this->product->fetchByColumn('id', $id))->toArray());

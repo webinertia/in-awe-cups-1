@@ -94,8 +94,8 @@ implements AdminControllerInterface
                     $this->category->exchangeArray($data['category-data']);
                     $this->category->title = $this->labelToTitleFilter->filter($this->category->label);
                     $this->category->save($this->category->toArray());
-                    $data['image-data']['categoryId'] = $this->category->getLastInsertId();
-                    $eventResponse = $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->imageModel, $data['image-data']);
+                    $data['file-data']['categoryId'] = $this->category->getLastInsertId();
+                    $eventResponse = $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->imageModel, $data['file-data']);
                     if ($eventResponse->last()) {
                         $this->response->setStatusCode(201);
                         return new JsonModel(['message' => $data['category-data']['label'] . ' was successfully created']);

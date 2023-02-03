@@ -8,6 +8,7 @@ use App\Model\AbstractModel;
 use App\Log\LogEvent;
 use App\Model\ModelTrait;
 use App\Upload\UploadHandlerInterface;
+use Exception as GlobalException;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
@@ -197,17 +198,17 @@ final class Image extends AbstractModel implements UploadHandlerInterface
      * */
     public function handleDelete(array $fileData)
     {
-        // TODO: Debug
         try {
-            $this->exchangeArray($fileData);
-            if (! isset($this->id)) {
-                $records = $this->fetchInternal(false);
-            }
+            //$this->exchangeArray($fileData);
+            $records = $this->fetchInternal($fileData);
+            // this was skipped, TODO: Debug
             foreach ($records as $record) {
                 $target = sprintf(self::IMAGE_TARGET_PATH, $record->getUploadType()) . '/' . $record->fileName;
                 if (file_exists($target)) {
                     if (unlink($target)) {
-                        $this->delete($record->id);
+                        if (! $this->delete(['id' => $record->id])) {
+                            throw new Exception\ImageManagerException('Image with file name: ' . $record->fileName . ' could not be deleted');
+                        }
                     }
                 }
             }
@@ -218,11 +219,10 @@ final class Image extends AbstractModel implements UploadHandlerInterface
 
     }
 
-    private function fetchInternal($fetchArray = true)
+    private function fetchInternal(array $predicates, $fetchArray = false)
     {
         // TODO
         $where = new Where();
-        $predicates = array_intersect_key(array_flip($this->deletableKeys), $this->storage);
         foreach ($predicates as $column => $value) {
             $where->equalTo($column, $value);
         }

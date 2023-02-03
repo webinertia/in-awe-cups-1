@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Store\Form;
 
-use Dojo\Form\Element\ValidationTextBox;
 use Dojo\Form;
-use Laminas\Filter\Boolean;
+use Dojo\Form\Element\ValidationTextBox;
+use Dojo\Form\Element\CurrencyTextBox;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\ToFloat;
+use Laminas\Filter\ToInt;
 use Laminas\Filter\ToNull;
 use Laminas\Filter\UpperCaseWords;
-use Laminas\Filter\StringTrim;
-use Laminas\Filter\ToInt;
 use Laminas\Form\Element\Hidden;
 use Laminas\Form\Element\Select;
-use Laminas\Validator\Db\NoRecordExists;
 use Store\Model\Category;
 
 class OptionGroupForm extends Form
@@ -66,6 +66,16 @@ class OptionGroupForm extends Form
                 'placeholder' => 'Option: ',
             ],
         ]);
+        // cost decimal 10,2
+        $this->add([
+            'id'   => 'cost',
+            'name' => 'cost',
+            'type' => CurrencyTextBox::class,
+            'attributes' => [
+                'required'    => true,
+                'Placeholder' => 'Option Cost: (10.00)',
+            ],
+        ]);
         $this->addSubmit();
     }
     public function getInputFilterSpecification(): array
@@ -94,6 +104,15 @@ class OptionGroupForm extends Form
                 'filters'  => [
                     ['name' => StringTrim::class],
                     ['name' => UpperCaseWords::class],
+                ],
+            ],
+            [
+                'name'     => 'cost',
+                'required'    => false,
+                'allow_empty' => true,
+                'filters'  => [
+                    ['name' => ToFloat::class],
+                    ['name' => ToNull::class],
                 ],
             ],
         ];
