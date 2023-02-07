@@ -309,6 +309,7 @@ class OptionsPerProduct extends AbstractModel implements ModelInterface
         );
         $select->order('optionGroup');
         $select->quantifier(Select::QUANTIFIER_DISTINCT);
+        $select->where($where);
         $groups = $this->gateway->selectWith($select)->toArray();
         $return = [];
         foreach ($groups as $option) {

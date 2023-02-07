@@ -77,7 +77,7 @@ final class ProductsController extends AbstractAppController
                 $sidebar = new ViewModel(
                     [
                         'productOptions' => $this->optionLookup->fetchSearchableOptions($params['category']),
-                        'category'       => $params['category'],
+                        'category'       => $category,
                         'query'          => $queryParams,
                         'maxPrice'       => $this->product->fetchMaxCost($this->titleToLabelFilter->filter($params['category']), true),
                     ]
@@ -86,7 +86,7 @@ final class ProductsController extends AbstractAppController
                 $sidebar->setTemplate('/store/products/children/product-search-sidebar');
                 $this->view->addChild($sidebar, 'sidebar');
                 // only products that have been assigned options will show up in the return data
-                $products = $this->optionLookup->productSearch(null, $params['category'], $queryParams);
+                $products = $this->optionLookup->productSearch(null, $category, $queryParams);
                 /** @var Paginator $products */
                 if (count($queryParams) > 0) {
                     $pages = $products->getPages();
