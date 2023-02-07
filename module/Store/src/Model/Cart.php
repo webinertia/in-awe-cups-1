@@ -7,10 +7,12 @@ namespace Store\Model;
 use App\Model\ModelInterface;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Session\Container;
+use Laminas\Stdlib\ArrayObject;
+use Store\Model\OptionsPerProduct;
 use Store\Model\Order;
 use Store\Model\Product;
 
-class Cart implements ModelInterface
+class Cart extends ArrayObject implements ModelInterface
 {
     /** @var Container $session */
     private $session;
@@ -20,6 +22,8 @@ class Cart implements ModelInterface
     protected $auth;
     /** @var UserService $user */
     protected $user;
+    /** @var OptionsPerProduct $optionLookup */
+    protected $optionLookup;
     /** @var Order $order */
     protected $order;
     /** @var Product $product */
@@ -42,14 +46,18 @@ class Cart implements ModelInterface
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
-    public function __construct(Container $session)
-    {
+    public function __construct(
+        Container $session,
+        OptionsPerProduct $optionLookup,
+        Order $order,
+        Product $product
+    ) {
        // $this->acl = $container->get('Acl');
        // $this->auth = $container->get(AuthenticationService::class);
-       // $this->product = $container->get(Product::class);
-       // $this->order = $container->get(Order::class);
-       // $this->userTable = $container->get(UserTable::class);
-        $this->session = $session;
+        $this->optionLookup = $optionLookup;
+        $this->order        = $order;
+        $this->product      = $product;
+        $this->session      = $session;
     }
 
     public function setItems(array $items)

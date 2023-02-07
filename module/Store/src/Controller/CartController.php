@@ -28,6 +28,9 @@ final class CartController extends AbstractAppController
 
     public function addItemAction(): ModelInterface
     {
+        if ($this->ajaxAction()) {
+            $this->view = new JsonModel();
+        }
         return $this->view;
     }
 }

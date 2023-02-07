@@ -33,6 +33,7 @@ return [
         'store_image_table_name'               => 'store_images',
         'store_categories_table_name'          => 'store_categories',
         'store_options_per_product_table_name' => 'store_options_per_product',
+        'store_order_table_name'               => 'store_orders',
     ],
     'session_containers' => [
         'Cart_Context',
@@ -89,6 +90,7 @@ return [
             Model\Category::class                              => Model\Factory\CategoryFactory::class,
             Model\Image::class                                 => Model\Factory\ImageFactory::class,
             Model\OptionsPerProduct::class                     => Model\Factory\OptionsPerProductFactory::class,
+            Model\Order::class                                 => Model\Factory\OrderFactory::class,
             Model\Product::class                               => Model\Factory\ProductFactory::class,
             Model\ProductByCategory::class                     => Model\Factory\ProductByCategoryFactory::class,
             Model\ProductOptions::class                        => Model\Factory\ProductOptionsFactory::class,
