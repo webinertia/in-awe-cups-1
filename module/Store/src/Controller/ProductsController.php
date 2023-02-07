@@ -88,6 +88,12 @@ final class ProductsController extends AbstractAppController
                 // only products that have been assigned options will show up in the return data
                 $products = $this->optionLookup->productSearch(null, $params['category'], $queryParams);
                 /** @var Paginator $products */
+                if (count($queryParams) > 0) {
+                    $pages = $products->getPages();
+                    $products->setItemCountPerPage($pages->totalItemCount);
+                } else {
+                    $products->setItemCountPerPage($this->config['module_settings']['store']['pagination']['items_per_page']);
+                }
                 $products->setCurrentPageNumber($this->params()->fromQuery('page', 1));
                 $this->view->setVariables(
                     [
@@ -102,7 +108,11 @@ final class ProductsController extends AbstractAppController
                 }
                 break;
             default:
+                $product = $this->product->fetchDetail($params['product']);
                 $this->view->setVariables([
+                    'product'     => $product,
+                    'options'     => $this->optionLookup->fetchOptionsByProductId($product->id),
+                    'images'      => $this->image->fetchProductImagesById($product->id),
                     'headerTitle' => $this->titleToLabelFilter->filter($params['product']),
                 ]);
                 // override the template so we only show one product, the product detail page

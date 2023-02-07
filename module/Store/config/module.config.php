@@ -119,11 +119,13 @@ return [
             'label'         => View\Helper\LabelHelper::class,
             'prepareLabel'  => View\Helper\LabelHelper::class,
             'productRating' => View\Helper\ProductRating::class,
+            'productCount'  => View\Helper\ProductCount::class,
         ],
         'factories' => [
             View\Helper\Categories::class    => AbstractFactory::class,
             View\Helper\LabelHelper::class   => View\Helper\Factory\LabelHelperFactory::class,
             View\Helper\ProductRating::class => InvokableFactory::class,
+            View\Helper\ProductCount::class  => View\Helper\Factory\ProductCountFactory::class,
         ],
     ],
     'router'             => [

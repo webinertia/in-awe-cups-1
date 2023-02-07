@@ -11,6 +11,7 @@ use App\Log\LogEvent;
 use App\Model\ModelTrait;
 use App\Stdlib\ArrayUtils;
 use App\Upload\UploadEvent;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\PredicateSet;
@@ -94,6 +95,30 @@ class Product extends AbstractModel
         }
     }
 
+    public function fetchDetail(string $title, ?bool $fetchArray = false): self
+    {
+        $where  = new Where();
+        $select = new Select();
+        $select->from(['p' => $this->t]);
+        $where->equalTo('title', $title);
+        $select->columns(['*']);
+        $select->where($where);
+        return $this->gateway->selectWith($select)->current();
+    }
+
+    public function fetchProductOptions(int $id, ?bool $fetchArray = false): ResultSet|array
+    {
+        $where = new Where();
+        $select = new Select();
+        $select->from('store_options_per_product');
+        $where->equalTo('productId', $id);
+        $result = $this->optionsLookup->getGateway()->selectWith($select);
+        if ($fetchArray) {
+            return $result->toArray();
+        }
+        return $result;
+    }
+
     public function fetchAllByCategory(string $category, bool $fetchArray = true): ResultSetInterface|array
     {
         $where  = new Where();
@@ -109,26 +134,6 @@ class Product extends AbstractModel
         $select->where($where);
         $result = $this->image->getGateway()->selectWith($select)->toArray();
         return $result;
-
-        // $where = new Where();
-        // $where->equalTo($this->t . '.category', $category);
-        // $select = $this->gateway->getSql()->select();
-        // $select->join(
-        //     ['i' => $this->i],
-        //     $this->t . '.id = i.productId',
-        //     //$this->i . '.productId = ' . $this->t . '.id',
-        //     ['fileName', 'productId', 'type'],
-        //    Select::JOIN_LEFT_OUTER
-        // );
-        // $select->order(['fileName', 'label']);
-        // $select->columns(
-        //     [
-        //         'label','id', 'cost', 'title', 'category'
-        //     ]
-        // );
-        //$select->quantifier(Select::QUANTIFIER_DISTINCT);
-        //$select->where($where);
-        return $fetchArray ? $this->gateway->selectWith($select)->toArray() : $this->gateway->selectWith($select);
     }
 
     public function fetchAllFiltered(): ResultSetInterface|array

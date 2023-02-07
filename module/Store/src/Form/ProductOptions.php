@@ -32,7 +32,7 @@ class ProductOptions extends Form
                 'productId'   => $options['productId'],
                 'category'    => $options['category'],
                 'optionGroup' => $options['optionGroup'],
-                'idAsValue'   => false,
+                'idAsValue'   => true,
             ]
         );
         $optionCheckBox->setOptions([

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Store\Form;
 
+use App\Filter\PadFloatString;
 use Dojo\Form;
 use Dojo\Form\Element\ValidationTextBox;
 use Dojo\Form\Element\CurrencyTextBox;

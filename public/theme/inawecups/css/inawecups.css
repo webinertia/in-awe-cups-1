@@ -1,3 +1,6 @@
 .navbar-light .navbar-nav li.active a.nav-link {
     color: #D19C97;
 }
+.product-search-fieldsets {
+    margin-top: 10px;
+}

@@ -40,7 +40,8 @@ final class OptionCheckbox extends MultiCheckbox
         $currentOptions  = $this->optionsPerProduct->fetchMultiCheckboxValues(
                                                                             $options['productId'],
                                                                             $options['category'],
-                                                                            $options['optionGroup']
+                                                                            $options['optionGroup'],
+                                                                            true
                                                                         );
         //$valuesOptionArray = $this->normalizeValueOptions($possibleOptions, $options['idAsValue']);
         $this->setInitialValues($currentOptions);

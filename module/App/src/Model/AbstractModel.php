@@ -6,6 +6,8 @@ namespace App\Model;
 
 use App\Log\LoggerAwareInterface;
 use App\Log\LoggerAwareInterfaceTrait;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\InputFilter\InputFilter;
 use Laminas\InputFilter\InputFilterAwareInterface;
@@ -29,6 +31,10 @@ abstract class AbstractModel extends ArrayObject implements LoggerAwareInterface
     protected $gateway;
     /** @var int|string $timeStamp */
     protected $timeStamp;
+    /** @var Select $select */
+    protected $select;
+    /** @var Where $where*/
+    protected $where;
     /**
      * type can one of ['insert', 'update', 'delete']
      * result will be one of the following,
@@ -43,6 +49,8 @@ abstract class AbstractModel extends ArrayObject implements LoggerAwareInterface
     {
         parent::__construct($data, ArrayObject::ARRAY_AS_PROPS);
         $this->config = $config;
+        $this->select = new Select();
+        $this->where  = new Where();
     }
 
     public function getTimeStamp(bool $useConfigFormat = true): int|string

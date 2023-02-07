@@ -28,9 +28,10 @@ use Webinertia\Utils\Debug;
                 'type' => 'image/vnd.microsoft.icon',
                 'href' => $this->basePath() . '/images/favicon.ico',
             ]
-        )->appendStylesheet($this->basePath('css/bootstrap.min.css'))
-             ->appendStylesheet($this->basePath('css/style.css'))
-             ->appendStylesheet($this->basePath('vendors/mdi/css/materialdesignicons.min.css'));
+        )->appendStylesheet($this->basePath('/theme/default/css/bootstrap.min.css'))
+        ->appendStylesheet($this->basePath('/theme/default/lib/owlcarousel/assets/owl.carousel.min.css'))
+        ->appendStylesheet($this->basePath('/theme/default/css/style.css'))
+        ->appendStylesheet($this->basePath('/vendors/mdi/css/materialdesignicons.min.css'));
         ?>
         <!-- Scripts -->
         <?= $this->headScript() ?>
@@ -102,11 +103,11 @@ use Webinertia\Utils\Debug;
             </footer>
         </div>
         <?= $this->inlineScript()
-            ->appendFile($this->basePath('js/jquery-3.5.1.min.js'))
-            ->appendFile($this->basePath('js/bootstrap.bundle.js'))
-            ->appendFile($this->basePath('/js/tinymce/tinymce.min.js'))
-            ->appendFile($this->basePath('/js/tinymce/jquery.tinymce.min.js'))
-            ->appendFile($this->basePath('/js/cms.js'));
+            ->appendFile($this->basePath('/theme/default/js/jquery-3.5.1.min.js'))
+            ->appendFile($this->basePath('/theme/default/js/bootstrap.bundle.js'))
+            //->appendFile($this->basePath('/theme/inawecups/lib/easing/easing.min.js'))
+            ->appendFile($this->basePath('/theme/default/lib/owlcarousel/owl.carousel.js'))
+            ->appendFile($this->basePath('/theme/default/js/main.js'));
         ?>
     </body>
 </html>

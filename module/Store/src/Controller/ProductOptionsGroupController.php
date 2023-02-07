@@ -83,7 +83,7 @@ class ProductOptionsGroupController extends AbstractApiController
     {
         $form = $this->formManager->get(OptionGroupForm::class);
         $form->setData($data);
-        $form->setValidationGroup(['category', 'optionGroup', 'option']);
+        $form->setValidationGroup(['category', 'optionGroup', 'option', 'cost']);
         if ($form->isValid()) {
             $data = $form->getData();
             if ($this->productOptions->noRecordExists($data)) {
@@ -112,7 +112,7 @@ class ProductOptionsGroupController extends AbstractApiController
             // we only send the id as an array because the validation method will add a where for every column that is present
             // since we have the primary key, its all we need ;)
             if ($this->productOptions->recordExists(['id' => $data['id']])) {
-                if ($this->productOptions->save($data) && $this->optionLookup->save($data)) {
+                if ($this->productOptions->save($data) && $this->optionLookup->update($data)) {
                     $this->response->setStatusCode(202);
                     return new JsonModel(['message' => $data['category'] . ' Option ' . $data['optionGroup'] . ' ' . $data['option'] . ' was updated.']);
                 } else {

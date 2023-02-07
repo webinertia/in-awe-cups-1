@@ -2,7 +2,9 @@
 return [
     'module_settings' => [
         'store' => [
-            //'enable_product_bundles' => '1',
+            'social_media' => [
+                'enabled' => true,
+            ],
             'category' => [
                 'home_display_count' => 6,
                 'show_images' => 1,
@@ -15,8 +17,11 @@ return [
 
             ],
             'search_options' => [
-                'price_filtering_enabled' => true,
+                'price_filtering_enabled' => false,
                 'price_step_value' => 15,
+            ],
+            'product_reviews' => [
+                'enabled' => false,
             ],
             // Aggregate configuration for uploads
             'upload_settings' => [

@@ -188,13 +188,13 @@ require([
            // console.log('contextMenu', contextMenu);
             let optionGroupDialog = new Dialog({
                 id: 'optionUtil',
-                title: 'Editing( Category:' + contextMenu.category + ' OptionGroup: ' + contextMenu.optionGroup + ' Option: ' + contextMenu.option + ' )',
+                title: 'Editing {Category:' + contextMenu.category + ' OptionGroup: ' + contextMenu.optionGroup + ' Option: ' + contextMenu.option + ' }',
                 href: '/admin/store/manage/categories/option-group-form',
                 onLoad: function(data) {
                     //console.log('data', data);
                     // get an instance of the form manager
                     let formManager = this.getChildren()[0];
-                    let setData = {id: contextMenu.id, category: contextMenu.category, optionGroup: contextMenu.optionGroup, option: contextMenu.option};
+                    let setData = {id: contextMenu.id, category: contextMenu.category, optionGroup: contextMenu.optionGroup, option: contextMenu.option, cost: contextMenu.cost};
                     formManager.setFormValues(setData);
                     formManager.on('submit', function(event) {
                         // prevent a page reload

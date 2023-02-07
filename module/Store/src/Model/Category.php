@@ -121,7 +121,7 @@ final class Category extends AbstractModel implements ModelInterface
         $where = new Where();
         if ($fetchBundles) {
             if (! $idAsValue) {
-                $idAsValue = true; // if were getting bundles then we just need the ids as values
+                //$idAsValue = true; // if were getting bundles then we just need the ids as values
             }
             $where->equalTo('isBundle', 1);
             $resultSet = $this->gateway->select($where);

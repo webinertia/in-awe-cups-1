@@ -41,7 +41,7 @@ class ApiProductForm extends BaseForm
         $options['server']['time_format'] = DateTimeInterface::RFC3339;
         parent::__construct($name, $options);
         $this->categoryValueOptions = $this->category->fetchSelectValueOptions(false);
-        $this->bundleValueOptions   = $this->category->fetchSelectValueOptions(true, true);
+        $this->bundleValueOptions   = $this->category->fetchSelectValueOptions(false, true);
     }
 
     public function init(): void
@@ -86,7 +86,7 @@ class ApiProductForm extends BaseForm
             ],
         ]);
         $this->add([
-            'name' => 'bundleId',
+            'name' => 'bundleLabel',
             'type' => Select::class,
             'attributes' => [
                 'required' => false,

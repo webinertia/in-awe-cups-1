@@ -9,6 +9,7 @@ use App\Log\LogEvent;
 use App\Model\ModelTrait;
 use App\Upload\UploadHandlerInterface;
 use Exception as GlobalException;
+use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Select;
@@ -112,6 +113,19 @@ final class Image extends AbstractModel implements UploadHandlerInterface
             $this->paginated = $this->config['module_settings']['store']['pagination']['enabled'];
             $this->itemCountPerPage = $this->config['module_settings']['store']['pagination']['items_per_page'];
         }
+    }
+
+    public function fetchProductImagesById(int $productId, ?array $columns = ['fileName'], ?bool $fetchArray = true): ResultSet|array
+    {
+        $where = new Where();
+        $where->equalTo('productId', $productId)->equalTo('active', 1);
+        $select = new Select();
+        $select->from($this->gateway->getTable())->columns($columns)->where($where);
+        $result = $this->gateway->selectWith($select);
+        if ($fetchArray) {
+            return $result->toArray();
+        }
+        return $result;
     }
 
     /**

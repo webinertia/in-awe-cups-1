@@ -110,6 +110,7 @@ class ProductOptions extends AbstractModel implements ModelInterface
 
     }
 
+    /** @deprecated */
     public function fetchSearchableOptions(string $category, bool $fetchArray = true): ResultSetInterface|array
     {
         $data = [];
@@ -127,6 +128,11 @@ class ProductOptions extends AbstractModel implements ModelInterface
             'o.optionGroup = ' . $t .'.optionGroup',
             ['option'],
             Select::JOIN_LEFT_OUTER
+        );
+        $select->join(
+            ['l' => $lookup],
+            'o.option = l.option',
+            ['productCount' => new Expression('COUNT(i.productId)')]
         );
         $select->order(['optionGroup']);
         $groups = $this->gateway->selectWith($select)->toArray();
