@@ -92,7 +92,7 @@
                             id="<?=$optionGroup . '_' . $option?>"
                             <?=in_array($option, $this->query) ? 'checked' : ''?>>
                         <label class="custom-control-label" for="<?=$optionGroup . '_' . $option?>"><?=$option?></label>
-                        <span class="badge border font-weight-normal"><?=$this->productCount($option)?></span>
+                        <span class="badge border font-weight-normal"><?=$this->productCount($this->category, $option)?></span>
                     </div>
                     <?php
                     endforeach;

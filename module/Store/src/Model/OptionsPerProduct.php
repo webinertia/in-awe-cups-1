@@ -240,10 +240,10 @@ class OptionsPerProduct extends AbstractModel implements ModelInterface
         return $resultSet->toArray();
     }
 
-    public function fetchProductCountByOption(string $option): int|string
+    public function fetchProductCountByOption(string $category, string $option): int|string
     {
         $this->select->from($this->t);
-        $this->select->where((new Where())->equalTo('option', $option));
+        $this->select->where((new Where())->equalTo('category', $category)->equalTo('option', $option));
         $count = count($this->gateway->selectWith($this->select)->toArray());
         return $count;
     }

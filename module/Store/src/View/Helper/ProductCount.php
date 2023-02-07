@@ -17,8 +17,8 @@ final class ProductCount extends AbstractHelper
         $this->lookup = $lookup;
     }
 
-    public function __invoke(string $option)
+    public function __invoke(string $category, string $option)
     {
-        return $this->lookup->fetchProductCountByOption($option);
+        return $this->lookup->fetchProductCountByOption($category, $option);
     }
 }
