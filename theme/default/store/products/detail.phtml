@@ -58,43 +58,57 @@ $socialMediaEnabled = $this->config('module_settings')['store']['social_media'][
             </div>
         <?php endif; ?>
             <h3 class="font-weight-semi-bold mb-4">$<?=$this->product->cost?></h3>
+            <form id="add-product" enctype="multipart/form-data" method="post" action="<?=$this->url('store/cart', ['action' => 'add-item'])?>">
                 <?php
-                    foreach ($this->options as $optionGroup => $options) :
+                foreach ($this->options as $optionGroup => $options) :
                 ?>
-                    <div class="d-flex mb-3">
-                        <p class="text-dark font-weight-medium mb-0 mr-3"><?=$optionGroup?>:</p>
-                        <form>
-                            <?php
-                            $i = 0;
-                            foreach ($options as $column => $option) : ?>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input" id="<?=$option['option'] . '-' . $i?>" name="<?=$optionGroup?>">
-                                    <label class="custom-control-label" for="<?=$option['option'] . '-' . $i?>"><?=$option['option']?></label>
-                                </div>
-                            <?php
-                            $i++;
-                            endforeach; ?>
-                        </form>
-                    </div>
-                <?php
-                    endforeach;
-                ?>
-            <div class="d-flex align-items-center mb-4 pt-2">
-                <div class="input-group quantity mr-3" style="width: 130px;">
-                    <div class="input-group-btn">
-                        <button class="btn btn-primary btn-minus" >
-                        <i class="mdi mdi-minus"></i>
-                        </button>
-                    </div>
-                    <input type="text" class="form-control bg-secondary text-center" value="1">
-                    <div class="input-group-btn">
-                        <button class="btn btn-primary btn-plus">
-                            <i class="mdi mdi-plus"></i>
-                        </button>
-                    </div>
+                <div class="d-flex mb-3">
+                    <p class="text-dark font-weight-medium mb-0 mr-3"><?=$optionGroup?>:</p>
+                        <?php
+                        $i = 0;
+                        foreach ($options as $column => $option) : ?>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input
+                                type="radio"
+                                class="custom-control-input"
+                                id="<?=$option['option'] . '-' . $i?>"
+                                name="<?=$optionGroup?>"
+                                value="<?=$option['option']?>">
+                                <label
+                                class="custom-control-label"
+                                for="<?=$option['option'] . '-' . $i?>"><?=$option['option']?></label>
+                            </div>
+                        <?php
+                        $i++;
+                        endforeach; ?>
                 </div>
-                <button class="btn btn-primary px-3"><i class="mdi mdi-cart mr-1"></i> Add To Cart</button>
-            </div>
+                <?php
+                endforeach;
+                ?>
+                <input type="hidden" name="id" value="<?=$this->product->id?>">
+                <input type="hidden" name="label" value="<?=$this->product->label?>">
+                <input type="hidden" name="weight" value="<?=$this->product->weight?>">
+                <input type="hidden" name="cost" value="<?=$this->product->cost?>">
+                <input type="hidden" name="onSale" value="<?=$this->product->onSale?>">
+                <input type="hidden" name="sku" value="<?=$this->product->sku?>">
+                <input type="hidden" name="image" value="<?=$this->images[0]['fileName']?>">
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-minus" >
+                            <i class="mdi mdi-minus"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control bg-secondary text-center" name="quantity" value="1">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-primary btn-plus">
+                                <i class="mdi mdi-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-item btn btn-primary px-3"><i class="mdi mdi-cart mr-1"></i>Add To Cart</button>
+                </div>
+            </form>
         <?php if ($socialMediaEnabled) :?>
             <div class="d-flex pt-2">
                 <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>

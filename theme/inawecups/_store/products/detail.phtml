@@ -58,12 +58,14 @@ $socialMediaEnabled = $this->config('module_settings')['store']['social_media'][
             </div>
         <?php endif; ?>
             <h3 class="font-weight-semi-bold mb-4">$<?=$this->product->cost?></h3>
+            <form id="add-product">
+                <input type="hidden" name="productId" value="<?=$this->product->id?>">
+                <input type="hidden" name="base-cost" value="<?=$this->product->cost?>"
                 <?php
                     foreach ($this->options as $optionGroup => $options) :
                 ?>
                     <div class="d-flex mb-3">
                         <p class="text-dark font-weight-medium mb-0 mr-3"><?=$optionGroup?>:</p>
-                        <form>
                             <?php
                             $i = 0;
                             foreach ($options as $column => $option) : ?>
@@ -74,11 +76,11 @@ $socialMediaEnabled = $this->config('module_settings')['store']['social_media'][
                             <?php
                             $i++;
                             endforeach; ?>
-                        </form>
                     </div>
                 <?php
                     endforeach;
                 ?>
+            </form>
             <div class="d-flex align-items-center mb-4 pt-2">
                 <div class="input-group quantity mr-3" style="width: 130px;">
                     <div class="input-group-btn">

@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Store\Model;
 
 use App\Model\ModelInterface;
-use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\Session\Container;
-use Laminas\Stdlib\ArrayObject;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
+use Store\Exception;
 use Store\Model\OptionsPerProduct;
 use Store\Model\Order;
 use Store\Model\Product;
 
-class Cart extends ArrayObject implements ModelInterface
+class Cart implements ModelInterface
 {
-    /** @var Container $session */
-    private $session;
+    /** @var Container $container */
+    protected $container;
     /**  @var Acl $acl */
     protected $acl;
     /** @var AuthenticationService $auth */
@@ -31,14 +31,7 @@ class Cart extends ArrayObject implements ModelInterface
     /** @var int $itemCount */
     protected $itemCount;
     protected float $total;
-    /**
-     * Array of Product instances
-     *
-     * @var array<int, Product> $items
-     */
-    protected $items = [];
 
-    protected array $data = [];
     /**
      *
      * @param ContainerInterface $container
@@ -47,7 +40,7 @@ class Cart extends ArrayObject implements ModelInterface
      * @throws ContainerExceptionInterface
      */
     public function __construct(
-        Container $session,
+        Container $container,
         OptionsPerProduct $optionLookup,
         Order $order,
         Product $product
@@ -57,17 +50,47 @@ class Cart extends ArrayObject implements ModelInterface
         $this->optionLookup = $optionLookup;
         $this->order        = $order;
         $this->product      = $product;
-        $this->session      = $session;
+        $this->container    = $container;
+        $this->container->setExpirationSeconds(604800);
     }
 
-    public function setItems(array $items)
+    public function addItem(array $item): void
     {
-        $this->session->items = $items;
+        if (! isset($item['id'])) {
+            throw new Exception\DomainException('Item must contain an id.');
+        }
+        if ($this->container->offsetExists('items')) {
+            $items = $this->container->offsetGet('items');
+            // $items[][$item['id']] = $item;
+            $items[] = $item;
+            $this->container->offsetSet('items', $items);
+        } else {
+            $items = [];
+            $items[] = $item;
+            $this->container->offsetSet('items', $items);
+        }
+    }
+
+    public function addItems(array $items)
+    {
+        foreach ($items as $item) {
+            $this->addItem($item);
+        }
+    }
+
+    public function getItems()
+    {
+        return $this->container->offsetGet('items');
     }
 
     public function getResourceId(): ResourceInterface|string
     {
         return 'Cart';
+    }
+
+    public function emptyCart(): void
+    {
+        $this->container->offsetUnset('items');
     }
 
     public function getOwnerId(): mixed

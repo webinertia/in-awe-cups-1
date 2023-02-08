@@ -14,6 +14,7 @@ final class CartController extends AbstractAppController
 {
     /** @var Cart $cart */
     protected $cart;
+    protected $session;
 
     public function __construct(Cart $cart, array $config)
     {
@@ -23,6 +24,11 @@ final class CartController extends AbstractAppController
 
     public function indexAction(): ModelInterface
     {
+        $this->view->setVariables(
+            [
+                'products' => $this->cart->getItems()
+            ]
+        );
         return $this->view;
     }
 
@@ -31,6 +37,29 @@ final class CartController extends AbstractAppController
         if ($this->ajaxAction()) {
             $this->view = new JsonModel();
         }
+        if ($this->request->isPost()) {
+            $this->cart->addItem($this->request->getPost()->toArray());
+        }
+        $items = $this->cart->getItems();
+        return $this->view;
+    }
+
+    public function removeItemAction(): ModelInterface
+    {
+        if ($this->ajaxAction()) {
+            $this->view = new JsonModel();
+        }
+        return $this->view;
+    }
+
+    public function checkoutAction(): ModelInterface
+    {
+        return $this->view;
+    }
+
+    public function emptyCartAction(): ModelInterface
+    {
+        $this->cart->emptyCart();
         return $this->view;
     }
 }
