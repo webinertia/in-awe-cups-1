@@ -118,6 +118,8 @@ return [
     'view_helpers' => [
         'aliases' => [
             'categories'    => View\Helper\Categories::class,
+            'cartCount'     => View\Helper\CartItemCount::class,
+            'cartItemCount' => View\Helper\CartItemCount::class,
             'label'         => View\Helper\LabelHelper::class,
             'prepareLabel'  => View\Helper\LabelHelper::class,
             'productRating' => View\Helper\ProductRating::class,
@@ -125,6 +127,7 @@ return [
         ],
         'factories' => [
             View\Helper\Categories::class    => AbstractFactory::class,
+            View\Helper\CartItemCount::class => View\Helper\Factory\CartItemCountFactory::class,
             View\Helper\LabelHelper::class   => View\Helper\Factory\LabelHelperFactory::class,
             View\Helper\ProductRating::class => InvokableFactory::class,
             View\Helper\ProductCount::class  => View\Helper\Factory\ProductCountFactory::class,

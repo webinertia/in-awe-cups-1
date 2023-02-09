@@ -61,7 +61,6 @@ class Cart implements ModelInterface
         }
         if ($this->container->offsetExists('items')) {
             $items = $this->container->offsetGet('items');
-            // $items[][$item['id']] = $item;
             $items[] = $item;
             $this->container->offsetSet('items', $items);
         } else {
@@ -83,6 +82,26 @@ class Cart implements ModelInterface
         return $this->container->offsetGet('items');
     }
 
+    public function getItemCount(): int
+    {
+        if (! $this->container->offsetExists('items')) {
+            $this->setItemCount(0);
+            return $this->itemCount;
+        }
+        $items = $this->container->offsetGet('items');
+        $count = 0;
+        foreach ($items as $item) {
+            $total = $count + (int) $item['quantity'];
+        }
+        $this->setItemCount($total);
+        return $this->itemCount;
+    }
+
+    protected function setItemCount(int $itemCount): void
+    {
+        $this->itemCount = $itemCount;
+    }
+
     public function getResourceId(): ResourceInterface|string
     {
         return 'Cart';
@@ -95,6 +114,6 @@ class Cart implements ModelInterface
 
     public function getOwnerId(): mixed
     {
-        return $this->session->userId;
+        return $this->container->userId;
     }
 }

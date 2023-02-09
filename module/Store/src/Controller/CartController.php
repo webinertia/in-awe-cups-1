@@ -62,4 +62,12 @@ final class CartController extends AbstractAppController
         $this->cart->emptyCart();
         return $this->view;
     }
+
+    public function applyCouponAction(): ModelInterface
+    {
+        if ($this->ajaxAction()) {
+            $this->view = new JsonModel();
+        }
+        return $this->view;
+    }
 }

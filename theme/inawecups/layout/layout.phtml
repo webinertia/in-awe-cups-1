@@ -94,7 +94,7 @@ use Laminas\View\Renderer\PhpRenderer;
                     </a>
                     <a href="<?=$this->url('store/cart', ['action' => 'index'])?>" class="btn border">
                         <i class="mdi mdi-cart text-primary"></i>
-                        <span class="badge">0</span>
+                        <span class="badge"><?=$this->cartItemCount()?></span>
                     </a>
                 </div>
             </div>

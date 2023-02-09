@@ -56,7 +56,7 @@
                         <label class="custom-control-label" for="cost_<?=$end?>">
                             <?php echo '$' . $start . ' - $' . $end;?>
                         </label>
-                        <span class="badge border font-weight-normal">150</span>
+                        <span class="badge border font-weight-normal"><?=$this->productCount($this->category, 'cost')?></span>
                     </div>
                     <?php
                         endfor;
