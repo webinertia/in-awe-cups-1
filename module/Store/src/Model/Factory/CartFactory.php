@@ -17,7 +17,7 @@ class CartFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Cart
     {
         return new $requestedName(
-            $container->get('Cart_Context'),
+            $container->get('Cart'),
             $container->get(OptionsPerProduct::class),
             $container->get(Order::class),
             $container->get(Product::class),

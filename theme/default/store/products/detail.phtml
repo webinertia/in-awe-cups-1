@@ -76,7 +76,9 @@ $socialMediaEnabled = $this->config('module_settings')['store']['social_media'][
                                 value="<?=$option['option']?>">
                                 <label
                                 class="custom-control-label"
-                                for="<?=$option['option'] . '-' . $i?>"><?=$option['option']?></label>
+                                for="<?=$option['option'] . '-' . $i?>">
+                                    <?=$option['option']?><?=$option['cost'] !== null ? ' $' .$option['cost'] : ''?>
+                                </label>
                             </div>
                         <?php
                         $i++;

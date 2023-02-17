@@ -14,7 +14,7 @@ return [
                 'per_page_count' => 12,
             ],
             'order' => [
-
+                'enable_coupons' => false,
             ],
             'search_options' => [
                 'price_filtering_enabled' => false,

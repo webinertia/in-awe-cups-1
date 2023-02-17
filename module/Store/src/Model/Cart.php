@@ -5,15 +5,22 @@ declare(strict_types=1);
 namespace Store\Model;
 
 use App\Model\ModelInterface;
+use App\Stdlib\ArrayUtils;
 use Laminas\Session\Container;
+use Laminas\Stdlib\SplStack;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Store\Exception;
 use Store\Model\OptionsPerProduct;
 use Store\Model\Order;
 use Store\Model\Product;
 
+use function serialize;
+use function sha1;
+
 class Cart implements ModelInterface
 {
+    /** temp shipping per pound */
+    public const SHIP_COST = 2.65;
     /** @var Container $container */
     protected $container;
     /**  @var Acl $acl */
@@ -51,30 +58,70 @@ class Cart implements ModelInterface
         $this->order        = $order;
         $this->product      = $product;
         $this->container    = $container;
-        $this->container->setExpirationSeconds(604800);
     }
 
-    public function addItem(array $item): void
+    protected function addItem(array $item): void
     {
-        if (! isset($item['id'])) {
-            throw new Exception\DomainException('Item must contain an id.');
-        }
+        $item['cartId'] = sha1(serialize($item));
         if ($this->container->offsetExists('items')) {
             $items = $this->container->offsetGet('items');
-            $items[] = $item;
-            $this->container->offsetSet('items', $items);
         } else {
             $items = [];
-            $items[] = $item;
-            $this->container->offsetSet('items', $items);
+        }
+        $items[$item['id']][] = $item;
+        $this->container->offsetSet('items', $items);
+    }
+
+    public function addToCart(array $item): void
+    {
+        if (! isset($item['id']) || ! isset($item['quantity'])) {
+            throw new Exception\DomainException('Item can not be added to the cart.');
+        }
+        if (isset($item['quantity'])) {
+            $itemCount = $item['quantity'];
+            unset($item['quantity']);
+            for ($i=0; $i < $itemCount; $i++) {
+                $this->addItem($item);
+            }
         }
     }
 
-    public function addItems(array $items)
+    public function removeItem($id, $cartId): bool
     {
-        foreach ($items as $item) {
-            $this->addItem($item);
+        $removed = false;
+        if (! $this->container->offsetExists('items')) {
+            throw new Exception\DomainException('Cart is currently empty, please add an item before removing one');
         }
+        $items = $this->container->offsetGet('items');
+        if (isset($items[$id])) {
+            $count = count($items[$id]);
+            for ($i=0; $i < $count; $i++) {
+                if (isset($items[$id][$i]['cartId']) && $items[$id][$i]['cartId'] === $cartId) {
+                    unset($items[$id][$i]);
+                    $removed = true;
+                    break;
+                }
+            }
+        }
+        $this->container->offsetSet('items', $items);
+        return $removed;
+    }
+
+    public function getSubTotal(): float
+    {
+        $items = $this->container->offsetGet('items');
+        $subTotal = 0.00;
+        if (null !== $items && count($items) > 0) {
+            foreach ($items as $group) {
+                foreach ($group as $item) {
+                    if (isset($item['cost'])) {
+                        $cost = (float) $item['cost'];
+                        $subTotal = $subTotal + $cost;
+                    }
+                }
+            }
+        }
+        return $subTotal;
     }
 
     public function getItems()
@@ -88,13 +135,32 @@ class Cart implements ModelInterface
             $this->setItemCount(0);
             return $this->itemCount;
         }
-        $items = $this->container->offsetGet('items');
-        $count = 0;
-        foreach ($items as $item) {
-            $total = $count + (int) $item['quantity'];
+        // stopped work here
+        $items     = $this->container->offsetGet('items');
+        $itemCount = 0;
+        foreach ($items as $id => $itemGroup) {
+            $itemCount = $itemCount + count($itemGroup);
         }
-        $this->setItemCount($total);
+        $this->setItemCount($itemCount);
         return $this->itemCount;
+    }
+
+    public function getShippingCost(): float
+    {
+        // method will be replaced
+        $items = $this->container->offsetGet('items');
+        $shipping = 0.00;
+        $rate = self::SHIP_COST;
+        if (null !== $items && count($items) > 0) {
+            foreach ($items as $group) {
+                foreach ($group as $item) {
+                    if (isset($item['weight'])) {
+                        $shipping = $shipping + $rate * $item['weight'];
+                    }
+                }
+            }
+        }
+        return $shipping;
     }
 
     protected function setItemCount(int $itemCount): void

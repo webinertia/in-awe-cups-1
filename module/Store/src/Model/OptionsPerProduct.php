@@ -216,7 +216,7 @@ class OptionsPerProduct extends AbstractModel implements ModelInterface
             $this->select->where(
                 (new Where())->equalTo('optionGroup', $group['optionGroup'])->equalTo('productId', $productId)
             );
-            $this->select->columns(['option']);
+            $this->select->columns(['option', 'cost']);
             $data[$group['optionGroup']] = $this->gateway->selectWith($this->select)->toArray();
         }
         return $data;

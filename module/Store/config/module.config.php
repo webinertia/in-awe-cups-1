@@ -36,8 +36,8 @@ return [
         'store_order_table_name'               => 'store_orders',
     ],
     'session_containers' => [
-        'Cart_Context',
-        'Search_Filter',
+        'Cart',
+        'Search',
     ],
     'controllers'        => [
         'aliases'   => [
@@ -91,6 +91,7 @@ return [
             Model\Image::class                                 => Model\Factory\ImageFactory::class,
             Model\OptionsPerProduct::class                     => Model\Factory\OptionsPerProductFactory::class,
             Model\Order::class                                 => Model\Factory\OrderFactory::class,
+            Model\OrderData::class                             => Model\Factory\OrderDataFactory::class,
             Model\Product::class                               => Model\Factory\ProductFactory::class,
             Model\ProductByCategory::class                     => Model\Factory\ProductByCategoryFactory::class,
             Model\ProductOptions::class                        => Model\Factory\ProductOptionsFactory::class,
@@ -118,8 +119,7 @@ return [
     'view_helpers' => [
         'aliases' => [
             'categories'    => View\Helper\Categories::class,
-            'cartCount'     => View\Helper\CartItemCount::class,
-            'cartItemCount' => View\Helper\CartItemCount::class,
+            'cart'          => View\Helper\Cart::class,
             'label'         => View\Helper\LabelHelper::class,
             'prepareLabel'  => View\Helper\LabelHelper::class,
             'productRating' => View\Helper\ProductRating::class,
@@ -127,7 +127,7 @@ return [
         ],
         'factories' => [
             View\Helper\Categories::class    => AbstractFactory::class,
-            View\Helper\CartItemCount::class => View\Helper\Factory\CartItemCountFactory::class,
+            View\Helper\Cart::class          => View\Helper\Factory\CartFactory::class,
             View\Helper\LabelHelper::class   => View\Helper\Factory\LabelHelperFactory::class,
             View\Helper\ProductRating::class => InvokableFactory::class,
             View\Helper\ProductCount::class  => View\Helper\Factory\ProductCountFactory::class,
