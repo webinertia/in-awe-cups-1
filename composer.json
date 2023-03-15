@@ -9,6 +9,12 @@
         "mvc",
         "framework"
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/webinertia/bootstrap"
+        }
+    ],
     "require": {
         "php": "~8.0.0 || ~8.1.0",
         "laminas/laminas-component-installer": "^2.6",
@@ -30,7 +36,10 @@
         "laminas/laminas-paginator": "^2.12",
         "laminas/laminas-paginator-adapter-laminasdb": "^1.2",
         "laminas/laminas-authentication": "2.11.0",
-        "webinertia/dojo": "0.0.1"
+        "webinertia/dojo": "0.0.1",
+        "ramsey/uuid": "^4.7",
+        "braintree/braintree_php": "^6.11",
+        "webinertia/bootstrap": "0.0.3"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +47,7 @@
             "ContentManager\\": "module/ContentManager/src/",
             "User\\": "module/User/src/",
             "Store\\": "module/Store/src/",
+            "Payment\\": "module/Payment/src/",
             "Widget\\": "module/Widget/src/",
             "InAweCups\\": "module/InAweCups/src/"
         }

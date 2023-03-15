@@ -7,13 +7,15 @@ namespace Store\Model;
 use App\Model\ModelInterface;
 use App\Stdlib\ArrayUtils;
 use Laminas\Session\Container;
-use Laminas\Stdlib\SplStack;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Store\Exception;
 use Store\Model\OptionsPerProduct;
 use Store\Model\Order;
 use Store\Model\Product;
 
+use const PHP_ROUND_HALF_UP;
+
+use function round;
 use function serialize;
 use function sha1;
 
@@ -23,7 +25,7 @@ class Cart implements ModelInterface
     public const SHIP_COST = 2.65;
     /** @var Container $container */
     protected $container;
-    /**  @var Acl $acl */
+    /** @var Acl $acl */
     protected $acl;
     /** @var AuthenticationService $auth */
     protected $auth;
@@ -52,8 +54,6 @@ class Cart implements ModelInterface
         Order $order,
         Product $product
     ) {
-       // $this->acl = $container->get('Acl');
-       // $this->auth = $container->get(AuthenticationService::class);
         $this->optionLookup = $optionLookup;
         $this->order        = $order;
         $this->product      = $product;
@@ -90,16 +90,23 @@ class Cart implements ModelInterface
     {
         $removed = false;
         if (! $this->container->offsetExists('items')) {
-            throw new Exception\DomainException('Cart is currently empty, please add an item before removing one');
+            throw new Exception\DomainException('Cart is empty.');
         }
         $items = $this->container->offsetGet('items');
         if (isset($items[$id])) {
             $count = count($items[$id]);
-            for ($i=0; $i < $count; $i++) {
-                if (isset($items[$id][$i]['cartId']) && $items[$id][$i]['cartId'] === $cartId) {
-                    unset($items[$id][$i]);
-                    $removed = true;
-                    break;
+            // if there is only a single item in the cart with this id then just remove
+            // it as it has to be the target. Prevents $items[$id][]
+            if ($count === 1) {
+                unset($items[$id]);
+                $removed = true;
+            } else {
+                for ($i=0; $i < $count; $i++) {
+                    if (isset($items[$id][$i]['cartId']) && $items[$id][$i]['cartId'] === $cartId) {
+                        unset($items[$id][$i]);
+                        $removed = true;
+                        break;
+                    }
                 }
             }
         }
@@ -122,6 +129,11 @@ class Cart implements ModelInterface
             }
         }
         return $subTotal;
+    }
+
+    public function getTotal(): float
+    {
+        return $this->getSubTotal() + $this->getShippingCost();
     }
 
     public function getItems()
@@ -150,16 +162,19 @@ class Cart implements ModelInterface
         // method will be replaced
         $items = $this->container->offsetGet('items');
         $shipping = 0.00;
-        $rate = self::SHIP_COST;
         if (null !== $items && count($items) > 0) {
             foreach ($items as $group) {
                 foreach ($group as $item) {
                     if (isset($item['weight'])) {
-                        $shipping = $shipping + $rate * $item['weight'];
+                        // if ($shipping !== 0.00) {
+                        //     $shipping = round($shipping, 2, PHP_ROUND_HALF_UP);
+                        // }
+                        $shipping = $shipping + self::SHIP_COST * $item['weight'];
                     }
                 }
             }
         }
+        $shipping = round($shipping, 2, PHP_ROUND_HALF_UP);
         return $shipping;
     }
 

@@ -20,6 +20,11 @@ trait QueryParamsTrait
         if ($param !== null) {
             return $this->request->getQuery($param, $default);
         }
+
+        if ($param === null && $exclude === []) {
+            return $this->request->getQuery($param, $default)->toArray();
+        }
+
         if ($exclude !== []) {
             return array_filter($this->request->getQuery($param, $default)->toArray(), function($k) use($exclude) {
                 return !in_array($k, $exclude);

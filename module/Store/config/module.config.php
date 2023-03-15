@@ -187,20 +187,6 @@ return [
                             ],
                         ],
                     ],
-                    'order' => [
-                        'type' => Segment::class,
-                        'options' => [
-                            'route' => '/store/order[/:action[/:orderId]]',
-                            'defaults' => [
-                                'controller' => Controller\OrderController::class,
-                                'action'     => 'index',
-                            ],
-                            'constraints' => [
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'orderId' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                        ],
-                    ],
                 ],
             ],
             'product.options.group' => [
@@ -402,6 +388,16 @@ return [
                     ],
                     'contraints' => [
                         'id'          => '[0-9]+',
+                    ],
+                ],
+            ],
+            'order' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/store/api/order',
+                    'defaults' => [
+                        'controller' => Controller\OrderController::class,
+                        'action'     => 'index',
                     ],
                 ],
             ],

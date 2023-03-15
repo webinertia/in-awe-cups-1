@@ -14,7 +14,7 @@ return [
     'shipping'             => 'Shipping',
     'total'                => 'Total',
     'go_to_checkout'       => 'Proceed to Checkout',
-    'products'             => 'Products',
+    'products'             => 'Product',
     'options'              => 'Options',
     'price'                => 'Price',
     'quantity'             => 'Quantity',
@@ -31,4 +31,5 @@ return [
     'filter_label'         => 'Filter',
     'coupon_control_label' => 'Apply Coupon',
     'coupon_placeholder'   => 'Coupon Code',
+    'product_image'        => 'Product Image',
 ];

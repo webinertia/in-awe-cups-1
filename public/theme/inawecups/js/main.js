@@ -151,7 +151,6 @@
             dataType: 'html'
         });
         request.done(function(response, textStatus, jqXHR) {
-            // TODO: Move these to a single controller action, return json, update innerHtml
             let updateBadge    = updateCartBadge();
             let updateSubtotal = updateCartSubtotal();
             let updateShipping = updateCartShipping();
@@ -171,6 +170,13 @@
             url: '/store/cart/remove-item?id=' + id + '&cartId=' + cartId,
             dataType: 'html',
             method: 'get'
+        });
+        get.done(function(response, textStatus,jqXHR) {
+            let updateBadge    = updateCartBadge();
+            let updateSubtotal = updateCartSubtotal();
+            let updateShipping = updateCartShipping();
+            let updateTotal    = updateCartTotal();
+            $('#cart-checkout-workspace').html(response);
         });
         console.log('cartId', cartId);
     });
