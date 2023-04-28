@@ -18,11 +18,14 @@ use Laminas\View\Model\JsonModel;
 use Store\Form\OptionGroupForm;
 use Store\Model\Exception\OptionExistsException;
 use Store\Model\ProductOptions;
+use Store\Model\OptionsPerProduct;
 
 class ProductOptionsGroupController extends AbstractApiController
 {
     /** @var string $resourceId */
     protected $resourceId = 'store';
+    /** @var OptionPerProduct $optionLookup */
+    protected $optionLookup;
     /** @var ProductOptions $productOptions */
     protected $productOptions;
     /** @var DojoData $dojoData */
@@ -30,12 +33,16 @@ class ProductOptionsGroupController extends AbstractApiController
     /** @var FormElementManager $formManager */
     protected $formManager;
 
-    public function __construct(ProductOptions $productOptions, FormElementManager $formElementManager, array $config)
-    {
+    public function __construct(
+        ProductOptions $productOptions,
+        OptionsPerProduct $optionLookup,
+        FormElementManager $formElementManager,
+        array $config) {
         parent::__construct($config);
         $this->setIdentifierName('id');
         $this->formManager    = $formElementManager;
         $this->productOptions = $productOptions;
+        $this->optionLookup   = $optionLookup;
     }
 
     public function get($id)
@@ -76,7 +83,7 @@ class ProductOptionsGroupController extends AbstractApiController
     {
         $form = $this->formManager->get(OptionGroupForm::class);
         $form->setData($data);
-        $form->setValidationGroup(['category', 'optionGroup', 'option']);
+        $form->setValidationGroup(['category', 'optionGroup', 'option', 'cost']);
         if ($form->isValid()) {
             $data = $form->getData();
             if ($this->productOptions->noRecordExists($data)) {
@@ -99,13 +106,13 @@ class ProductOptionsGroupController extends AbstractApiController
     {
         $form = $this->formManager->get(OptionGroupForm::class);
         $form->setData($data);
-        $form->setValidationGroup(['id', 'category', 'optionGroup', 'option']);
+        $form->setValidationGroup(['id', 'category', 'optionGroup', 'option', 'cost']);
         if ($form->isValid()) {
             $data = $form->getData();
             // we only send the id as an array because the validation method will add a where for every column that is present
             // since we have the primary key, its all we need ;)
             if ($this->productOptions->recordExists(['id' => $data['id']])) {
-                if ($this->productOptions->save($data)) {
+                if ($this->productOptions->save($data) && $this->optionLookup->update($data)) {
                     $this->response->setStatusCode(202);
                     return new JsonModel(['message' => $data['category'] . ' Option ' . $data['optionGroup'] . ' ' . $data['option'] . ' was updated.']);
                 } else {

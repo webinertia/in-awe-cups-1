@@ -56,7 +56,7 @@ final class ProductsApiController extends AbstractApiController
     {
         $this->product->exchangeArray($data);
         try {
-            if ($this->product->save($this->product)) {
+            if ($this->product->save()) {
                 $this->response->setStatusCode(202);
             }
             return new JsonModel($this->dojoData->setItem($this->product->fetchByColumn('id', $id))->toArray());
@@ -84,7 +84,9 @@ final class ProductsApiController extends AbstractApiController
     {
         // delete resource
         // set response code $this->response->setStatusCode($int);
-        $result = $this->product->delete(['id' => $id]);
+        if ($this->product->delete((int) $id)) {
+            $this->getEventManager()->trigger(UploadEvent::EVENT_DELETE, $this->image, ['productId' => $id]);
+        }
         //$result = true;
         if ($result) {
             $this->response->setStatusCode(204);

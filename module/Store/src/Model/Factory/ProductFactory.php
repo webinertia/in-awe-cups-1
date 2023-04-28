@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Store\Model\Factory;
 
 use Laminas\Db\Adapter\AdapterInterface;
+use Laminas\Filter\FilterPluginManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\Paginator\AdapterPluginManager;
 use Psr\Container\ContainerInterface;
 use Store\Db\TableGateway\ProductsTable;
 use Store\Db\TableGateway\ProductsByCategoryTable;
@@ -23,7 +25,9 @@ final class ProductFactory implements FactoryInterface
             $container->get(ProductsByCategoryTable::class),
             $container->get(OptionsPerProduct::class),
             $container->get(Image::class),
-            $container->get('config')
+            $container->get('config'),
+            $container->get(AdapterPluginManager::class),
+            $container->get(FilterPluginManager::class)
         );
     }
 }

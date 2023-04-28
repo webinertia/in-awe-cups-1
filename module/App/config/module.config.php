@@ -36,7 +36,7 @@ return [
             ],
         ],
         'theme' => [
-            'admin_template' => 'layout/dojo-admin',
+            'admin_template' => 'layout/admin',
         ],
     ],
     'base_dir'           => __DIR__ . '/../../../',

@@ -18,25 +18,26 @@ return [
     'app_settings'       => [
         'load_store_as_homepage' => '1',
     ],
-    // 'module_settings'    => [
-    //     'store' => [
-    //         'upload' => [
-    //             'renameUploadConfig' => [
-    //                 'randomize'            => true,
-    //                 'use_upload_extension' => true,
-    //             ],
-    //         ],
-    //     ],
-    // ],
+    'module_settings'    => [
+        'store' => [
+            'upload' => [
+                'renameUploadConfig' => [
+                    'randomize'            => true,
+                    'use_upload_extension' => true,
+                ],
+            ],
+        ],
+    ],
     'db'                 => [
         'products_table_name'                  => 'store_products',
         'store_image_table_name'               => 'store_images',
         'store_categories_table_name'          => 'store_categories',
         'store_options_per_product_table_name' => 'store_options_per_product',
+        'store_order_table_name'               => 'store_orders',
     ],
     'session_containers' => [
-        'Cart_Context',
-        'Search_Filter',
+        'Cart',
+        'Search',
     ],
     'controllers'        => [
         'aliases'   => [
@@ -89,6 +90,8 @@ return [
             Model\Category::class                              => Model\Factory\CategoryFactory::class,
             Model\Image::class                                 => Model\Factory\ImageFactory::class,
             Model\OptionsPerProduct::class                     => Model\Factory\OptionsPerProductFactory::class,
+            Model\Order::class                                 => Model\Factory\OrderFactory::class,
+            Model\OrderData::class                             => Model\Factory\OrderDataFactory::class,
             Model\Product::class                               => Model\Factory\ProductFactory::class,
             Model\ProductByCategory::class                     => Model\Factory\ProductByCategoryFactory::class,
             Model\ProductOptions::class                        => Model\Factory\ProductOptionsFactory::class,
@@ -116,14 +119,18 @@ return [
     'view_helpers' => [
         'aliases' => [
             'categories'    => View\Helper\Categories::class,
+            'cart'          => View\Helper\Cart::class,
             'label'         => View\Helper\LabelHelper::class,
             'prepareLabel'  => View\Helper\LabelHelper::class,
             'productRating' => View\Helper\ProductRating::class,
+            'productCount'  => View\Helper\ProductCount::class,
         ],
         'factories' => [
             View\Helper\Categories::class    => AbstractFactory::class,
+            View\Helper\Cart::class          => View\Helper\Factory\CartFactory::class,
             View\Helper\LabelHelper::class   => View\Helper\Factory\LabelHelperFactory::class,
             View\Helper\ProductRating::class => InvokableFactory::class,
+            View\Helper\ProductCount::class  => View\Helper\Factory\ProductCountFactory::class,
         ],
     ],
     'router'             => [
@@ -177,20 +184,6 @@ return [
                             ],
                             'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ],
-                        ],
-                    ],
-                    'order' => [
-                        'type' => Segment::class,
-                        'options' => [
-                            'route' => '/store/order[/:action[/:orderId]]',
-                            'defaults' => [
-                                'controller' => Controller\OrderController::class,
-                                'action'     => 'index',
-                            ],
-                            'constraints' => [
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'orderId' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ],
                         ],
                     ],
@@ -398,11 +391,20 @@ return [
                     ],
                 ],
             ],
+            'order' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/store/api/order',
+                    'defaults' => [
+                        'controller' => Controller\OrderController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            // Not currently in use
             'product.search' => [
                 'type' => Segment::class,
-                //'may_terminate' => true,
                 'options' => [
-                    // id = category
                     'route' => '/product/search[/:category]',
                     'defaults' => [
                         'controller' => Controller\ProductSearchController::class,
@@ -417,14 +419,6 @@ return [
     ],
     'navigation'         => [
         'default' => [
-            // [
-            //     'label'     => 'Store',
-            //     'route'     => 'store',
-            //     'class'     => 'nav-link',
-            //     //'resource'  => 'store', // todo: add store resource and privileges
-            //     //'privilege' => 'view',
-            //     'action'    => 'index',
-            // ],
             [
                 'label'     => 'Shop',
                 'route'     => 'store/product',
@@ -433,12 +427,6 @@ return [
                 'class'     => 'nav-link',
                 'params'    => ['category' => 'all'],
             ],
-            // [
-            //     'label'     => 'Products',
-            //     'route'     => 'store/products',
-            //     'resource'  => 'store',
-            //     'privilege' => 'view',
-            // ],
         ],
         'admin'   => [
             [

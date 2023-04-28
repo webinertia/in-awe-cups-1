@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Controller\ControllerInterface;
 use App\Controller\Trait\AjaxActionTrait;
+use App\Controller\Trait\QueryParamsTrait;
 use App\Service\AppSettingsAwareTrait;
 use App\Session\SessionContainerAwareTrait;
 use Laminas\Http\PhpEnvironment\Response;
@@ -29,6 +30,7 @@ class AbstractApiController extends AbstractRestfulController implements Control
     use SessionContainerAwareTrait;
     use TranslatorAwareTrait;
     use UserServiceAwareTrait;
+    use QueryParamsTrait;
 
     /** @var Request $request */
     protected $request;

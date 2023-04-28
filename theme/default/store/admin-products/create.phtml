@@ -6,6 +6,7 @@
 
 declare(strict_types=1);
 
+use Dojo\Form\View\Helper\DijitFormEditor;
 use Laminas\Form\View\HelperTrait;
 use Laminas\View\Renderer\PhpRenderer;
 
@@ -13,6 +14,7 @@ use Laminas\View\Renderer\PhpRenderer;
 ?>
 <?php
 if (isset($this->form)) {
+    $this->formElement()->addType('editor', DijitFormEditor::class);
     echo $this->dijitForm($this->form);
 }
 ?>

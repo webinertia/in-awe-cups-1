@@ -37,7 +37,7 @@ final class ProductOptionsController extends AbstractApiController implements Ad
         return new JsonModel(['id' => $id]);
     }
 
-    // get a list of all of the options
+    // (Manage) Categories | Products | Options ui
     public function getList()
     {
         $this->dojoData->setItems($this->productOptions->fetchGrid());

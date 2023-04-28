@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Store\Model;
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
 use Laminas\Db\ResultSet\ResultSetInterface;
@@ -32,7 +32,7 @@ use function explode;
 use function is_array;
 use function strpos;
 
-final class Category extends AbstractGatewayModel implements ModelInterface
+final class Category extends AbstractModel implements ModelInterface
 {
     use ModelTrait;
 
@@ -121,7 +121,7 @@ final class Category extends AbstractGatewayModel implements ModelInterface
         $where = new Where();
         if ($fetchBundles) {
             if (! $idAsValue) {
-                $idAsValue = true; // if were getting bundles then we just need the ids as values
+                //$idAsValue = true; // if were getting bundles then we just need the ids as values
             }
             $where->equalTo('isBundle', 1);
             $resultSet = $this->gateway->select($where);

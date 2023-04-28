@@ -35,6 +35,7 @@ return [
     'User',
     'Widget',
     'Store',
+    'Payment',
     'InAweCups',
     'Dojo',
 ];

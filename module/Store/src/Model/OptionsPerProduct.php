@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Store\Model;
 
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
 use ArrayObject;
@@ -13,14 +13,18 @@ use Laminas\Db\ResultSet\ResultSet;
 use Laminas\Db\ResultSet\ResultSetInterface;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Predicate\In;
+use Laminas\Db\Sql\Predicate\Predicate;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Where;
 use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Paginator\Adapter\ArrayAdapter;
 use Laminas\Paginator\Adapter\LaminasDb\DbSelect;
 use Laminas\Paginator\AdapterPluginManager;
 use Laminas\Paginator\Paginator;
 use Laminas\Stdlib\ArrayObject as Ao;
 use Laminas\Stdlib\ArrayUtils;
+use PhpParser\Node\Stmt\For_;
+use PhpParser\Node\Stmt\TryCatch;
 use Store\Model\Product;
 use Store\Model\ProductOptions;
 
@@ -31,12 +35,20 @@ use function array_values;
 use function count;
 use function explode;
 
-class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
+class OptionsPerProduct extends AbstractModel implements ModelInterface
 {
     use ModelTrait;
 
+    /** @var string $resourceId */
     protected $resourceId = 'store';
-
+    /** @var AdapterPluginManager $adapterManager */
+    protected $adapterManager;
+    /** @var Paginator $paginator */
+    protected $paginator;
+    /** @var bool $paginated */
+    protected $paginated;
+    /** @var int|string $itemCountPerPage */
+    protected $itemCountPerPage;
     /** @var TableGateway $productTable */
     protected $productTable;
     /** @var ProductOptions $productOptions */
@@ -54,7 +66,12 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
     /** @var string $i */
     protected $i;
 
-    public function __construct(?ProductOptions $productOptions = null, ?TableGateway $gateway = null, ?array $config = null) {
+    public function __construct(
+        ?ProductOptions $productOptions = null,
+        ?TableGateway $gateway = null,
+        ?array $config = null,
+        ?AdapterPluginManager $adapterManager = null
+        ) {
         parent::__construct([]);
         if ($gateway !== null) {
             $this->gateway = $gateway;
@@ -62,13 +79,18 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if ($productOptions !== null) {
             $this->productOptions = $productOptions;
         }
+        if ($adapterManager !== null) {
+            $this->adapterManager = $adapterManager;
+        }
         if ($config !== null) {
-            $this->config = $config;
-            $this->t    = $this->config['db']['store_options_per_product_table_name'];
-            $this->c    = $this->config['db']['store_categories_table_name'];
-            $this->p    = $this->config['db']['products_table_name'];
-            $this->i    = $this->config['db']['store_image_table_name'];
-            $this->step = $this->config['module_settings']['store']['search_options']['price_step_value'];
+            $this->config    = $config;
+            $this->t         = $this->config['db']['store_options_per_product_table_name'];
+            $this->c         = $this->config['db']['store_categories_table_name'];
+            $this->p         = $this->config['db']['products_table_name'];
+            $this->i         = $this->config['db']['store_image_table_name'];
+            $this->step      = $this->config['module_settings']['store']['search_options']['price_step_value'];
+            $this->paginated = $this->config['module_settings']['store']['pagination']['enabled'];
+            $this->itemCountPerPage = $this->config['module_settings']['store']['pagination']['items_per_page'];
         }
         $this->productTable = new TableGateway('store_products', $this->gateway->getAdapter());
     }
@@ -76,10 +98,9 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
     public function productSearch(
         ?int $productId,
         ?string $category,
-        array $params,
-        bool $fetchArray = true
-    ): ResultSetInterface|array {
-        return $this->search($productId, $category, $this->sortParams($params), null, $fetchArray);
+        array $params
+    ): Paginator {
+        return $this->search($productId, $category, $this->sortParams($params), null);
     }
 
     private function sortParams(array $params): array
@@ -118,10 +139,8 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         ?string $category,
         ?array $params,
         ?array $sort,
-        bool $fetchArray = true,
-        bool $onlyActive = true,
-        bool $paginated = false
-    ): ResultSetInterface|array {
+        bool $onlyActive = true
+    ): Paginator {
 
         $select = new Select();
         $where  = new Where();
@@ -135,14 +154,21 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if ($category !== null) {
             $where->equalTo('o.category', $category);
         }
+        if (isset($params['costRange'])) {
+            $where->between('o.cost', $params['costRange']['min'], $params['costRange']['max']);
+        }
         if (isset($params['groupSet'])) {
-            $where->in('optionGroup', $params['groupSet']);
+            //$where->in('optionGroup', $params['groupSet']);
+            // foreach ($params['groupSet'] as $optionGroup) {
+            //     $where->or->equalTo('optionGroup', $optionGroup);
+            // }
         }
         if (isset($params['optionSet'])) {
+
             $where->in('option', $params['optionSet']);
-        }
-        if (isset($params['costRange'])) {
-            $where->between('p.cost', $params['costRange']['min'], $params['costRange']['max']);
+            // foreach ($params['optionSet'] as $option) {
+            //     $where->like('option', $option);
+            // }
         }
 
         $select->join(
@@ -168,12 +194,32 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if ($sort !== null) {
 
         }
+        //$query = $select->getSqlString();
         $select->where($where);
-        $result = $this->gateway->selectWith($select);
-        if ($fetchArray) {
-            return $result->toArray();
+        $adapter   = $this->adapterManager->get(DbSelect::class, [$select, $this->gateway->getSql()]);
+        $paginator = new Paginator($adapter);
+        //$paginator->setDefaultItemCountPerPage($this->paginated ? $this->itemCountPerPage : $paginator->getTotalItemCount());
+        return $paginator;
+    }
+
+    public function fetchOptionsByProductId(int $productId): array
+    {
+        $data = [];
+        $this->where->equalTo('productId', $productId);
+        $this->select->from($this->t);
+        $this->select->columns(['optionGroup']);
+        $this->select->where($this->where);
+        $this->select->quantifier(Select::QUANTIFIER_DISTINCT);
+        $groups = $this->gateway->selectWith($this->select)->toArray();
+
+        foreach ($groups as $group) {
+            $this->select->where(
+                (new Where())->equalTo('optionGroup', $group['optionGroup'])->equalTo('productId', $productId)
+            );
+            $this->select->columns(['option', 'cost']);
+            $data[$group['optionGroup']] = $this->gateway->selectWith($this->select)->toArray();
         }
-        return $result;
+        return $data;
     }
 
     public function fetchByOptionGroup(
@@ -194,6 +240,14 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         return $resultSet->toArray();
     }
 
+    public function fetchProductCountByOption(string $category, string $option): int|string
+    {
+        $this->select->from($this->t);
+        $this->select->where((new Where())->equalTo('category', $category)->equalTo('option', $option));
+        $count = count($this->gateway->selectWith($this->select)->toArray());
+        return $count;
+    }
+
     public function fetchMultiCheckboxValues(
         int|string $productId,
         string $category,
@@ -202,7 +256,7 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
     ): array {
         $mergedOptions      = [];
         $temp               = [];
-        $columns            = ['category', 'optionGroup', 'option'];
+        $columns            = ['id', 'category', 'optionGroup', 'option'];
         $totalOptions       = $this->productOptions->fetchOptions($category, $optionGroup, true, $columns);
         $totalOptionCount   = count($totalOptions);
         $currentOptions     = $this->fetchByOptionGroup($productId, $optionGroup, true, $columns);
@@ -211,13 +265,13 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         if ($currentOptionCount <= $totalOptionCount && $currentOptionCount > 0) {
             for ($i=0; $i < $totalOptionCount; $i++) {
                 foreach($currentOptions as $option) {
-                    if ($option === $totalOptions[$i]) {
-                        $mergedOptions[$i]['value'] = $option['option'];
+                    if ($option['option'] === $totalOptions[$i]['option']) {
+                        $mergedOptions[$i]['value'] = $idAsValue ? $option['id'] : $option['option'];
                         $mergedOptions[$i]['selected'] = true;
                         $mergedOptions[$i]['label'] = $option['option'];
                         break;
                     } else {
-                        $mergedOptions[$i]['value'] = $totalOptions[$i]['option'];
+                        $mergedOptions[$i]['value'] = $idAsValue ? $totalOptions[$i]['id'] : $totalOptions[$i]['option'];
                         $mergedOptions[$i]['selected'] = false;
                         $mergedOptions[$i]['label'] = $totalOptions[$i]['option'];
                     }
@@ -225,7 +279,7 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
             }
         } elseif ($currentOptionCount === 0) {
             for ($i=0; $i < $totalOptionCount; $i++) {
-                $mergedOptions[$i]['value'] = $totalOptions[$i]['option'];
+                $mergedOptions[$i]['value'] = $idAsValue ? $totalOptions[$i]['id'] : $totalOptions[$i]['option'];
                 $mergedOptions[$i]['selected'] = false;
                 $mergedOptions[$i]['label'] = $totalOptions[$i]['option'];
             }
@@ -233,7 +287,7 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         return $mergedOptions;
     }
 
-        /**
+    /**
      * We only want to allow filtering based on options that have actually been assigned
      * to a particular product that belongs to a particular category
      * @param string $category
@@ -247,9 +301,15 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         $where  = new Where();
         $where->equalTo('category', $category);
         $select = $this->gateway->getSql()->select();
-        $select->columns(['optionGroup', 'option']);
+        $select->columns(
+            [
+                'optionGroup',
+                'option',
+            ]
+        );
         $select->order('optionGroup');
         $select->quantifier(Select::QUANTIFIER_DISTINCT);
+        $select->where($where);
         $groups = $this->gateway->selectWith($select)->toArray();
         $return = [];
         foreach ($groups as $option) {
@@ -261,25 +321,55 @@ class OptionsPerProduct extends AbstractGatewayModel implements ModelInterface
         return new Ao($return, Ao::ARRAY_AS_PROPS);
     }
 
+    public function update(array $set): int
+    {
+        $where = new Where();
+        $optionId = $set['id'];
+        unset($set['id']);
+        $where->equalTo('optionId', $optionId);
+        $select = $this->gateway->getSql()->select();
+        $select->where($where);
+        $resultCount = 0;
+        try {
+            $records = $this->gateway->selectWith($select);
+            if (count($records) > 0) {
+                foreach ($records as $record) {
+                    $resultCount = $resultCount + (int) $this->gateway->update($set, ['id' => $record->id]);
+                }
+                return $resultCount;
+            } else {
+                return 1;
+            }
+        } catch(\Throwable $th) {
+            throw $th;
+        }
+        // return $this->gateway->update($set, ['optionId' => $set['id']]);
+    }
+
     public function save($set)
     {
-        // if (isset($set['id'])) {
-        //     unset($set['id']);
-        // }
         if (ArrayUtils::isList($set['productOptions'])) {
             $pSelect = $this->productTable->getSql()->select();
             $pSelect->columns(['category']);
             $pWhere  = new Where();
             $pWhere->equalTo('id', $set['productId']);
             $pSelect->where($pWhere);
+            try {
+
+            } catch (\Throwable $th) {
+
+            }
             foreach ($set['productOptions'] as $key => $value) {
-                if (! $this->hasRecord($set['productId'], $set['optionGroup'], $value)) {
+                $optionData = $this->productOptions->fetchByColumn('id', $value);
+                if (! $this->hasRecord($optionData['productId'], $optionData['optionGroup'], $optionData['option'])) {
                     $category = $this->productTable->selectWith($pSelect)->current()->category;
                     $this->gateway->insert([
                         'productId'   => $set['productId'],
                         'category'    => $category,
-                        'optionGroup' => $set['optionGroup'],
-                        'option'      => $value,
+                        'optionGroup' => $optionData['optionGroup'],
+                        'option'      => $optionData['option'],
+                        'cost'        => $optionData['cost'],
+                        'optionId'    => $optionData['id'],
                     ]);
                 }
             }

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Store\Model;
 
-use App\Db\TableGateway\AbstractGatewayModel;
+use App\Model\AbstractModel;
 use App\Model\ModelInterface;
 use App\Model\ModelTrait;
+use Dojo\Data;
 use Laminas\Db\Exception\InvalidArgumentException;
 use Laminas\Db\ResultSet\AbstractResultSet;
 use Laminas\Db\ResultSet\ResultSet;
@@ -27,7 +28,7 @@ use Store\Model\Exception\OptionExistsException;
 use function is_array;
 use function implode;
 
-class ProductOptions extends AbstractGatewayModel implements ModelInterface
+class ProductOptions extends AbstractModel implements ModelInterface
 {
     use ModelTrait;
 
@@ -45,20 +46,20 @@ class ProductOptions extends AbstractGatewayModel implements ModelInterface
             $this->gateway = $productOptionsTable;
         }
     }
-
-    public function fetchGrid($fetchArray= true): ResultSetInterface|array
+    // create and return dojo data object
+    public function fetchGrid(): Data
     {
+        $dojoData = new Data();
+        $dojoData->setIdentifier('id');
+
         /** @var Where $where */
         $this->where  = new Where();
         $this->where->greaterThanOrEqualTo('id', 1);
         $select = $this->gateway->getSql()->select();
         $select->order(['category ASC', 'optionGroup ASC', 'option ASC']);
         $select->where($this->where);
-        $result = $this->gateway->selectWith($select);
-        if ($result instanceof AbstractResultSet && $fetchArray) {
-            return $result->toArray();
-        }
-        return $result;
+        $dojoData->setItems($this->gateway->selectWith($select)->toArray());
+        return $dojoData;
     }
 
     public function fetchOptions(
@@ -109,6 +110,7 @@ class ProductOptions extends AbstractGatewayModel implements ModelInterface
 
     }
 
+    /** @deprecated */
     public function fetchSearchableOptions(string $category, bool $fetchArray = true): ResultSetInterface|array
     {
         $data = [];
@@ -126,6 +128,11 @@ class ProductOptions extends AbstractGatewayModel implements ModelInterface
             'o.optionGroup = ' . $t .'.optionGroup',
             ['option'],
             Select::JOIN_LEFT_OUTER
+        );
+        $select->join(
+            ['l' => $lookup],
+            'o.option = l.option',
+            ['productCount' => new Expression('COUNT(i.productId)')]
         );
         $select->order(['optionGroup']);
         $groups = $this->gateway->selectWith($select)->toArray();

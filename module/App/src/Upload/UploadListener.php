@@ -81,12 +81,13 @@ class UploadListener extends AbstractListenerAggregate implements LoggerAwareInt
         if (! method_exists($target, 'handleDelete')) {
             throw new UnknownHandlerException('EventHandler handleDelete is not a method of target: ' . $target::class);
         }
-        if($target->handleDelete(['id' => $params['id']])) {
+        if($target->handleDelete($event->getParams())) {
             $this->getEventManager()->trigger(
                 LogEvent::INFO,
                 'User: {firstName} {lastName} deleted an image',
                 $this->userService->getLogData()
             );
+            return true;
         } else {
             $this->getEventManager()->trigger(
                 LogEvent::INFO,

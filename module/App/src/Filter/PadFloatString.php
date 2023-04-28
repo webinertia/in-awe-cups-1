@@ -20,7 +20,7 @@ class PadFloatString implements FilterInterface
      * */
     public function filter($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             $value = (string) $value;
         }
         if (strpos($value, '.', -1) === 2) {

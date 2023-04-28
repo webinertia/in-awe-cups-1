@@ -20,7 +20,7 @@ use Laminas\Db\TableGateway\TableGatewayInterface;
 use Laminas\Stdlib\ArrayUtils;
 
 /**
- * AbstractGatewayModel
+ * AbstractModel
  * Trait method signatures for static analysis
  * @codingStandardsIgnoreStart
  * @method \Laminas\Db\TableGateway\AbstractTableGateway getAdapter()
@@ -57,19 +57,27 @@ trait ModelTrait
         return $result;
     }
 
+    public function fetchRow(string $column, mixed $value, ?array $columns = null): self
+    {
+        $where = new Where();
+        $where->equalTo($column, $value);
+        $select = $this->gateway->getSql()->select();
+        $select->where($where);
+        if (!empty($columns)) {
+            return $this->gateway->selectWith($select)->current();
+        }
+        return $this->gateway->select($where)->current();
+    }
+
     /** @throws RuntimeException */
-    public function fetchByColumn(string $column, mixed $value, bool $fetchResultSet = false): ResultSetInterface|self
+    public function fetchByColumn(string $column, mixed $value, bool $fetchResultSet = false): ResultSetInterface|self|array
     {
         $column    = (string) $column;
         $resultSet = $this->gateway->select([$column => $value]);
         if ($fetchResultSet) {
             return $resultSet;
         }
-        $row       = $resultSet->current();
-        if (! $row) {
-            throw new RuntimeException(sprintf('Could not fetch column: ' . $column . ' with value: ' . $value));
-        }
-        return $row;
+        return $resultSet->current();
     }
 
     /**
@@ -86,16 +94,10 @@ trait ModelTrait
         $select->columns($columns);
         $select->where([$column => $value]);
         $resultSet = $this->gateway->selectWith($select);
-        $row       = $resultSet->current();
-        if (! $row) {
-            throw new RuntimeException(
-                sprintf('Could not fetch row with column: ' . $column . ' with value: ' . $value)
-            );
-        }
         if ($fetchArray) {
-            return $row->toArray();
+            return $resultSet->toArray();
         }
-        return $row;
+        return $resultSet;
     }
 
     public function fetchAll($fetchArray = false): ResultSetInterface|array

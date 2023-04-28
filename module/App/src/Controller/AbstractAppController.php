@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Controller\ControllerInterface;
 use App\Controller\Trait\AjaxActionTrait;
+use App\Controller\Trait\QueryParamsTrait;
 use App\Service\AppSettingsAwareTrait;
 use App\Session\SessionContainerAwareTrait;
 use Laminas\Form\FormElementManager;
@@ -47,6 +48,7 @@ abstract class AbstractAppController extends AbstractActionController implements
     use SessionContainerAwareTrait;
     use TranslatorAwareTrait;
     use UserServiceAwareTrait;
+    use QueryParamsTrait;
 
     /** @var Request $request */
     protected $request;

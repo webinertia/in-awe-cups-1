@@ -133,12 +133,12 @@ class AdminProductsController extends AbstractAppController implements AdminCont
             if ($this->form->isValid()) { // if form data is valid proceed
                 $data = $this->form->getData();
                 try {
+                    $data['product-data']['userId'] = $data['product-data']['userId'] === null ? $this->identity()->getIdentity()->userId : $data['product-data']['userId'];
                     $this->product->exchangeArray($data['product-data']);
-                    $this->product->title = $this->labelToTitleFilter->filter($data['product-data']['label']);
-                    $this->product->save($this->product);
-                    $data['image-data']['productId'] = $this->product->getLastInsertId();
-                    $eventResponse = $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['image-data']);
-                    if ($eventResponse->last()) {
+                    if ($this->product->save()) {
+                        $data['file-data']['productId'] = $this->product->getLastInsertId();
+                        $data['file-data']['productTitle'] = $this->product->title;
+                        $eventResponse = $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['file-data']);
                         $this->response->setStatusCode(201);
                         return new JsonModel(['message' => $data['product-data']['label'] . ' was successfully created']);
                     }

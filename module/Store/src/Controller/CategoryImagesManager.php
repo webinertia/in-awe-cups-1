@@ -35,7 +35,7 @@ final class CategoryImagesManager extends AbstractApiController implements Admin
     {
         $this->ajaxAction();
         $form = $this->formManager->get(UploadForm::class);
-        $data['image-data']['categoryId'] = $id;
+        $data['file-data']['categoryId'] = $id;
         $form->setData($data);
         $this->view->setVariable('form', $form);
         return $this->view;
@@ -51,7 +51,7 @@ final class CategoryImagesManager extends AbstractApiController implements Admin
         if ($form->isValid()) {
             $data = $form->getData();
             try {
-                $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['image-data']);
+                $this->getEventManager()->trigger(UploadEvent::EVENT_UPLOAD, $this->image, $data['file-data']);
                 $this->response->setStatusCode(201);
                 return new JsonModel([]);
             } catch (\Throwable $th) {
