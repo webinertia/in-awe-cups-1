@@ -33,4 +33,8 @@ return [
     'App',
     'ContentManager',
     'User',
+    'Widget',
+    'Store',
+    'InAweCups',
+    'Dojo',
 ];

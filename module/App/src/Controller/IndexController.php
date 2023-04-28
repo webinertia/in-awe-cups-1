@@ -29,13 +29,37 @@ final class IndexController extends AbstractAppController implements FormManager
     /** @var Page $page */
     protected $page;
 
+    public function __construct(Page $page, array $config)
+    {
+        parent::__construct($config);
+        $this->page = $page;
+    }
+
     public function indexAction(): mixed
     {
-        $this->page = $this->getService(Page::class);
-        $homePage   = $this->page->getLandingPage();
-        $this->view->setVariables([
-            'page' => $homePage,
-        ]);
+        if (! $this->appSettings['load_store_as_homepage']) {
+            $homePage   = $this->page->getLandingPage();
+            $this->view->setVariables([
+                'page' => $homePage,
+            ]);
+        } else {
+            $this->view->setVariable(
+                'store',
+                $this->forward()->dispatch(
+                    'CategoriesController',
+                    ['action' => 'index', 'name' => 'all', 'showHeader' => false, 'setActive' => false]
+                )
+            );
+        }
+        if ($this->config['module_settings']['widget']['imageslider']['enable_imageslider']) {
+            $this->layout()->setVariables([
+                'isHomePage' => true,
+                'slider'     => $this->forward()->dispatch(
+                    'ImageSliderController',
+                    ['action' => 'index', 'slideCount' => '2']
+                ),
+            ]);
+        }
         return $this->view;
     }
 
