@@ -1,0 +1,20 @@
+/* ProgressBar
+ *
+ * Styling of the ProgressBar when RTL direction is specified
+ */
+
+@import "variables";
+
+.inawe  .dijitProgressBarRtl .dijitProgressBarFull {
+	border-left-width: 1px;
+	border-right-width: 0px;
+}
+
+.inawe .dijitProgressBarIndeterminateRtl .dijitProgressBarTile {
+	-moz-transform: scaleX(-1);
+	-o-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+	filter: FlipH;
+	-ms-filter: "FlipH";
+}

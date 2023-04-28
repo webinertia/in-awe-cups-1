@@ -1,0 +1,55 @@
+/* Editor
+ *
+ * Styling Editor means styling the Editor inside iframe container (dijitEditorIFrameContainer)
+ *
+ * 1. Editor iframe container (default styling):
+ * 		.dijitEditorIFrameContainer - normal state styles: background-color, border, padding
+ *
+ * 2. hovered Editor iframe container (ie, mouse hover on editor)
+ * 		.dijitEditorHover .dijitEditorIFrameContainer/dijitEditorIFrame - styles when mouse hover on the container
+ *
+ * 3. focused Editor iframe container (ie, mouse focus on the editor pane)
+ * 		.dijitEditorFocused .dijitEditorIFrameContainer/dijitEditorIFrame - styles when container focused
+ *
+ * 3. disabled Editor iframe container
+ * 		.dijitEditorDisabled - editor's inner iframe container disable status styles: background, border
+ */
+.inawe .dijitEditorIFrameContainer {
+  padding: 3px 3px 1px 10px;
+}
+.inawe .dijitEditorIFrame {
+  background-color: #edf1ff;
+}
+.inawe .dijitEditor {
+  border: 1px solid #c0c3df;
+}
+.inawe .dijitEditor .dijitEditorIFrameContainer {
+  background-color: #edf1ff;
+  background-repeat: repeat-x;
+}
+.inawe .dijitEditorHover .dijitEditorIFrameContainer,
+.inawe .dijitEditorHover .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #dfa8a2;
+}
+.inawe .dijitEditorFocused .dijitEditorIFrameContainer,
+.inawe .dijitEditorFocused .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #edf1ff;
+}
+.inawe .dijitEditorHover .dijitEditorIFrameContainer,
+.inawe .dijitEditorFocused .dijitEditorIFrameContainer {
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+}
+/* Disabled */
+.inawe .dijitEditorDisabled {
+  border: 1px solid #d3d3d3;
+  color: #62302b;
+}
+.inawe .dijitDisabled .dijitEditorIFrame,
+.inawe .dijitDisabled .dijitEditorIFrameContainer,
+.inawe .dijitDisabled .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #d19c97;
+  background-image: none;
+}
