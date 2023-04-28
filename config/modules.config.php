@@ -38,5 +38,4 @@ return [
     'Payment',
     'InAweCups',
     'Dojo',
-    'Bootstrap',
 ];
