@@ -1,226 +1,166 @@
-define(["../_base/lang", "../when", "../_base/array" /*=====, "./api/Store" =====*/
-], function(lang, when, array /*=====, Store =====*/){
+/*
+	Copyright (c) 2004-2016, The JS Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
-function findObject(store, data, id, start, end){
-	var i;
-
-	start = start == undefined ? 0 : start;
-	end = end == undefined ? data.length : end;
-
-	for (i = start; i < end; ++i) {
-		if (store.getIdentity(data[i]) === id) {
-			return i;
-		}
-	}
-
-	return -1;
+//>>built
+define("dojo/store/Observable",["../_base/lang","../when","../_base/array"],function(_1,_2,_3){
+function _4(_5,_6,id,_7,_8){
+var i;
+_7=_7==undefined?0:_7;
+_8=_8==undefined?_6.length:_8;
+for(i=_7;i<_8;++i){
+if(_5.getIdentity(_6[i])===id){
+return i;
 }
-
-// module:
-//		dojo/store/Observable
-
-var Observable = function(/*Store*/ store){
-	// summary:
-	//		The Observable store wrapper takes a store and sets an observe method on query()
-	//		results that can be used to monitor results for changes.
-	//
-	// description:
-	//		Observable wraps an existing store so that notifications can be made when a query
-	//		is performed.
-	//
-	// example:
-	//		Create a Memory store that returns an observable query, and then log some
-	//		information about that query.
-	//
-	//	|	var store = Observable(new Memory({
-	//	|		data: [
-	//	|			{id: 1, name: "one", prime: false},
-	//	|			{id: 2, name: "two", even: true, prime: true},
-	//	|			{id: 3, name: "three", prime: true},
-	//	|			{id: 4, name: "four", even: true, prime: false},
-	//	|			{id: 5, name: "five", prime: true}
-	//	|		]
-	//	|	}));
-	//	|	var changes = [], results = store.query({ prime: true });
-	//	|	var observer = results.observe(function(object, previousIndex, newIndex){
-	//	|		changes.push({previousIndex:previousIndex, newIndex:newIndex, object:object});
-	//	|	});
-	//
-	//		See the Observable tests for more information.
-
-	var undef, queryUpdaters = [], revision = 0;
-	// a Comet driven store could directly call notify to notify observers when data has
-	// changed on the backend
-	// create a new instance
-	store = lang.delegate(store);
-
-	store.notify = function(object, existingId, storeMethodOptions){
-		revision++;
-		var updaters = queryUpdaters.slice();
-		for(var i = 0, l = updaters.length; i < l; i++){
-			updaters[i](object, existingId, storeMethodOptions);
-		}
-	};
-	var originalQuery = store.query;
-	store.query = function(query, options){
-		options = options || {};
-		var results = originalQuery.apply(this, arguments);
-		if(results && results.forEach){
-			var nonPagedOptions = lang.mixin({}, options);
-			delete nonPagedOptions.start;
-			delete nonPagedOptions.count;
-
-			var queryExecutor = store.queryEngine && store.queryEngine(query, nonPagedOptions);
-			var queryRevision = revision;
-			var listeners = [], queryUpdater;
-			results.observe = function(listener, includeObjectUpdates){
-				if(listeners.push(listener) == 1){
-					// first listener was added, create the query checker and updater
-					queryUpdaters.push(queryUpdater = function(changed, existingId, storeMethodOptions){
-						var beforeId =  storeMethodOptions &&
-							storeMethodOptions.before &&
-							store.getIdentity(storeMethodOptions.before);
-
-						when(results, function(resultsArray){
-							var atEnd = resultsArray.length != options.count;
-							var i, l, listener;
-							if(++queryRevision != revision){
-								throw new Error("Query is out of date, you must observe() the query prior to any data modifications");
-							}
-							var removedObject, removedFrom = -1, insertedInto = -1;
-							var beforeIndex;
-							if(existingId !== undef){
-								// remove the old one
-								var filteredArray = [].concat(resultsArray);
-								if(queryExecutor && !changed){
-									filteredArray = queryExecutor(resultsArray);
-								}
-								for(i = 0, l = resultsArray.length; i < l; i++){
-									var object = resultsArray[i];
-									if(store.getIdentity(object) == existingId){
-										if(filteredArray.indexOf(object)<0) continue;
-										removedObject = object;
-										removedFrom = i;
-										if(queryExecutor || !changed){// if it was changed and we don't have a queryExecutor, we shouldn't remove it because updated objects would be eliminated
-											resultsArray.splice(i, 1);
-										}
-										break;
-									}
-								}
-							}
-							if(queryExecutor){
-								// add the new one
-								if(changed &&
-										// if a matches function exists, use that (probably more efficient)
-										(queryExecutor.matches ? queryExecutor.matches(changed) : queryExecutor([changed]).length)){
-
-									var firstInsertedInto = removedFrom > -1 ?
-										removedFrom : // put back in the original slot so it doesn't move unless it needs to (relying on a stable sort below)
-										resultsArray.length;
-									resultsArray.splice(firstInsertedInto, 0, changed); // add the new item
-									insertedInto = array.indexOf(queryExecutor(resultsArray), changed); // sort it
-									// we now need to push the change back into the original results array
-									resultsArray.splice(firstInsertedInto, 1); // remove the inserted item from the previous index
-
-									if((options.start && insertedInto == 0) ||
-										(!atEnd && insertedInto == resultsArray.length)){
-										// if it is at the end of the page, assume it goes into the prev or next page
-										insertedInto = -1;
-									}else{
-										if(storeMethodOptions && storeMethodOptions.before !== undefined){
-											beforeIndex = storeMethodOptions.before === null ?
-												resultsArray.length :
-												findObject(store, resultsArray, beforeId);
-
-											if(beforeIndex !== -1){
-												insertedInto = beforeIndex;
-											}
-										}
-										resultsArray.splice(insertedInto, 0, changed); // and insert into the results array with the correct index
-									}
-								}
-							}else if(changed){
-								// we don't have a queryEngine, so we can't provide any information about where it
-								// was inserted or moved to. If it is an update, we leave it's position alone,
-								// otherwise we at least indicate a new object
-								if(existingId !== undef){
-									// an update, keep the index the same
-									insertedInto = removedFrom;
-								}else if(!options.start){
-									// a new object
-									insertedInto = store.defaultIndex || 0;
-									resultsArray.splice(insertedInto, 0, changed);
-								}
-							}
-							if((removedFrom > -1 || insertedInto > -1) &&
-									(includeObjectUpdates || !queryExecutor || (removedFrom != insertedInto))){
-								var copyListeners = listeners.slice();
-								for(i = 0;listener = copyListeners[i]; i++){
-									listener(changed || removedObject, removedFrom, insertedInto);
-								}
-							}
-						});
-					});
-				}
-				var handle = {};
-				// TODO: Remove cancel in 2.0.
-				handle.remove = handle.cancel = function(){
-					// remove this listener
-					var index = array.indexOf(listeners, listener);
-					if(index > -1){ // check to make sure we haven't already called cancel
-						listeners.splice(index, 1);
-						if(!listeners.length){
-							// no more listeners, remove the query updater too
-							queryUpdaters.splice(array.indexOf(queryUpdaters, queryUpdater), 1);
-						}
-					}
-				};
-				return handle;
-			};
-		}
-		return results;
-	};
-	var inMethod;
-	function whenFinished(method, action){
-		var original = store[method];
-		if(original){
-			store[method] = function(value, storeMethodOptions){
-				var originalId;
-				if(method === 'put'){
-					originalId = store.getIdentity(value);
-				}
-				if(inMethod){
-					// if one method calls another (like add() calling put()) we don't want two events
-					return original.apply(this, arguments);
-				}
-				inMethod = true;
-				try{
-					var results = original.apply(this, arguments);
-					when(results, function(results){
-						action((typeof results == "object" && results) || value, originalId, storeMethodOptions);
-					});
-					return results;
-				}finally{
-					inMethod = false;
-				}
-			};
-		}
-	}
-	// monitor for updates by listening to these methods
-	whenFinished("put", function(object, originalId, storeMethodOptions){
-		store.notify(object, originalId, storeMethodOptions);
-	});
-	whenFinished("add", function(object, originalId, storeMethodOptions){
-		store.notify(object, originalId, storeMethodOptions);
-	});
-	whenFinished("remove", function(id){
-		store.notify(undefined, id);
-	});
-
-	return store;
+}
+return -1;
 };
-
-lang.setObject("dojo.store.Observable", Observable);
-
-return Observable;
+var _9=function(_a){
+var _b,_c=[],_d=0;
+_a=_1.delegate(_a);
+_a.notify=function(_e,_f,_10){
+_d++;
+var _11=_c.slice();
+for(var i=0,l=_11.length;i<l;i++){
+_11[i](_e,_f,_10);
+}
+};
+var _12=_a.query;
+_a.query=function(_13,_14){
+_14=_14||{};
+var _15=_12.apply(this,arguments);
+if(_15&&_15.forEach){
+var _16=_1.mixin({},_14);
+delete _16.start;
+delete _16.count;
+var _17=_a.queryEngine&&_a.queryEngine(_13,_16);
+var _18=_d;
+var _19=[],_1a;
+_15.observe=function(_1b,_1c){
+if(_19.push(_1b)==1){
+_c.push(_1a=function(_1d,_1e,_1f){
+var _20=_1f&&_1f.before&&_a.getIdentity(_1f.before);
+_2(_15,function(_21){
+var _22=_21.length!=_14.count;
+var i,l,_1b;
+if(++_18!=_d){
+throw new Error("Query is out of date, you must observe() the query prior to any data modifications");
+}
+var _23,_24=-1,_25=-1;
+var _26;
+if(_1e!==_b){
+var _27=[].concat(_21);
+if(_17&&!_1d){
+_27=_17(_21);
+}
+for(i=0,l=_21.length;i<l;i++){
+var _28=_21[i];
+if(_a.getIdentity(_28)==_1e){
+if(_27.indexOf(_28)<0){
+continue;
+}
+_23=_28;
+_24=i;
+if(_17||!_1d){
+_21.splice(i,1);
+}
+break;
+}
+}
+}
+if(_17){
+if(_1d&&(_17.matches?_17.matches(_1d):_17([_1d]).length)){
+var _29=_24>-1?_24:_21.length;
+_21.splice(_29,0,_1d);
+_25=_3.indexOf(_17(_21),_1d);
+_21.splice(_29,1);
+if((_14.start&&_25==0)||(!_22&&_25==_21.length)){
+_25=-1;
+}else{
+if(_1f&&_1f.before!==undefined){
+_26=_1f.before===null?_21.length:_4(_a,_21,_20);
+if(_26!==-1){
+_25=_26;
+}
+}
+_21.splice(_25,0,_1d);
+}
+}
+}else{
+if(_1d){
+if(_1e!==_b){
+_25=_24;
+}else{
+if(!_14.start){
+_25=_a.defaultIndex||0;
+_21.splice(_25,0,_1d);
+}
+}
+}
+}
+if((_24>-1||_25>-1)&&(_1c||!_17||(_24!=_25))){
+var _2a=_19.slice();
+for(i=0;_1b=_2a[i];i++){
+_1b(_1d||_23,_24,_25);
+}
+}
+});
+});
+}
+var _2b={};
+_2b.remove=_2b.cancel=function(){
+var _2c=_3.indexOf(_19,_1b);
+if(_2c>-1){
+_19.splice(_2c,1);
+if(!_19.length){
+_c.splice(_3.indexOf(_c,_1a),1);
+}
+}
+};
+return _2b;
+};
+}
+return _15;
+};
+var _2d;
+function _2e(_2f,_30){
+var _31=_a[_2f];
+if(_31){
+_a[_2f]=function(_32,_33){
+var _34;
+if(_2f==="put"){
+_34=_a.getIdentity(_32);
+}
+if(_2d){
+return _31.apply(this,arguments);
+}
+_2d=true;
+try{
+var _35=_31.apply(this,arguments);
+_2(_35,function(_36){
+_30((typeof _36=="object"&&_36)||_32,_34,_33);
+});
+return _35;
+}
+finally{
+_2d=false;
+}
+};
+}
+};
+_2e("put",function(_37,_38,_39){
+_a.notify(_37,_38,_39);
+});
+_2e("add",function(_3a,_3b,_3c){
+_a.notify(_3a,_3b,_3c);
+});
+_2e("remove",function(id){
+_a.notify(undefined,id);
+});
+return _a;
+};
+_1.setObject("dojo.store.Observable",_9);
+return _9;
 });

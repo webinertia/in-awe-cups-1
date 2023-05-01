@@ -14,6 +14,7 @@ use Laminas\Http\PhpEnvironment\Response;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\I18n\Translator\TranslatorAwareTrait;
 use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\Mvc\MvcEvent;
 use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Laminas\View\Model\ViewModel;
 use User\Acl\AclAwareTrait;
@@ -84,5 +85,11 @@ abstract class AbstractAppController extends AbstractActionController implements
         $this->view->setVariables([
             'resourceId' => null,
         ]);
+    }
+
+    public function onDispatch(MvcEvent $e)
+    {
+        $this->ajaxAction();
+        parent::onDispatch($e);
     }
 }

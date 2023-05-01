@@ -1,214 +1,163 @@
-define([
-	'exports',
-	'../errors/RequestError',
-	'../errors/CancelError',
-	'../Deferred',
-	'../io-query',
-	'../_base/array',
-	'../_base/lang',
-	'../promise/Promise',
-	'../has'
-], function(exports, RequestError, CancelError, Deferred, ioQuery, array, lang, Promise, has){
+/*
+	Copyright (c) 2004-2016, The JS Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
-	function isArrayBuffer(value) {
-		return has('native-arraybuffer') && value instanceof ArrayBuffer
-	}
-
-	function isBlob(value) {
-		return has('native-blob') && value instanceof Blob
-	}
-	
-	function isElement(value) {
-		if(typeof Element !== 'undefined') { //all other
-			return value instanceof Element;
-		}
-
-		//IE<=7
-		return value.nodeType === 1;
-	}
-
-	function isFormData(value) {
-		return has('native-formdata') && value instanceof FormData;
-	}
-
-	function shouldDeepCopy(value) {
-		return value &&
-			typeof value === 'object' &&
-			!isFormData(value) &&
-			!isElement(value) &&
-			!isBlob(value) &&
-			!isArrayBuffer(value)
-	}
-
-	exports.deepCopy = function(target, source) {
-		for (var name in source) {
-			var tval = target[name],
-  			    sval = source[name];
-			if (name !== '__proto__' && tval !== sval) {
-				if (shouldDeepCopy(sval)) {
-					if (Object.prototype.toString.call(sval) === '[object Date]') { // use this date test to handle crossing frame boundaries
-						target[name] = new Date(sval);
-					} else if (lang.isArray(sval)) {
- 						  target[name] = exports.deepCopyArray(sval);
-					} else {
-						if (tval && typeof tval === 'object') {
-							exports.deepCopy(tval, sval);
-						} else {
-							target[name] = exports.deepCopy({}, sval);
-						}
-					}
-				} else {
-					target[name] = sval;
-				}
-			}
-		}
-		return target;
-	};
-
-	exports.deepCopyArray = function(source) {
-		var clonedArray = [];
-		for (var i = 0, l = source.length; i < l; i++) {
-			var svalItem = source[i];
-			if (typeof svalItem === 'object') {
-				clonedArray.push(exports.deepCopy({}, svalItem));
-			} else {
-				clonedArray.push(svalItem);
-			}
-		}
-
-		return clonedArray;
-	};
-
-	exports.deepCreate = function deepCreate(source, properties){
-		properties = properties || {};
-		var target = lang.delegate(source),
-			name, value;
-
-		for(name in source){
-			value = source[name];
-
-			if(value && typeof value === 'object'){
-				target[name] = exports.deepCreate(value, properties[name]);
-			}
-		}
-		return exports.deepCopy(target, properties);
-	};
-
-	var freeze = Object.freeze || function(obj){ return obj; };
-	function okHandler(response){
-		return freeze(response);
-	}
-	function dataHandler (response) {
-		return response.data !== undefined ? response.data : response.text;
-	}
-
-	exports.deferred = function deferred(response, cancel, isValid, isReady, handleResponse, last){
-		var def = new Deferred(function(reason){
-			cancel && cancel(def, response);
-
-			if(!reason || !(reason instanceof RequestError) && !(reason instanceof CancelError)){
-				return new CancelError('Request canceled', response);
-			}
-			return reason;
-		});
-
-		def.response = response;
-		def.isValid = isValid;
-		def.isReady = isReady;
-		def.handleResponse = handleResponse;
-
-		function errHandler(error){
-			error.response = response;
-			throw error;
-		}
-		var responsePromise = def.then(okHandler).otherwise(errHandler);
-
-		if(exports.notify){
-			responsePromise.then(
-				lang.hitch(exports.notify, 'emit', 'load'),
-				lang.hitch(exports.notify, 'emit', 'error')
-			);
-		}
-
-		var dataPromise = responsePromise.then(dataHandler);
-
-		// http://bugs.dojotoolkit.org/ticket/16794
-		// The following works around a leak in IE9 through the
-		// prototype using lang.delegate on dataPromise and
-		// assigning the result a property with a reference to
-		// responsePromise.
-		var promise = new Promise();
-		for (var prop in dataPromise) {
-			if (dataPromise.hasOwnProperty(prop)) {
-				promise[prop] = dataPromise[prop];
-			}
-		}
-		promise.response = responsePromise;
-		freeze(promise);
-		// End leak fix
-
-
-		if(last){
-			def.then(function(response){
-				last.call(def, response);
-			}, function(error){
-				last.call(def, response, error);
-			});
-		}
-
-		def.promise = promise;
-		def.then = promise.then;
-
-		return def;
-	};
-
-	exports.addCommonMethods = function addCommonMethods(provider, methods){
-		array.forEach(methods||['GET', 'POST', 'PUT', 'DELETE'], function(method){
-			provider[(method === 'DELETE' ? 'DEL' : method).toLowerCase()] = function(url, options){
-				options = lang.delegate(options||{});
-				options.method = method;
-				return provider(url, options);
-			};
-		});
-	};
-
-	exports.parseArgs = function parseArgs(url, options, skipData){
-		var data = options.data,
-			query = options.query;
-
-		if(data && !skipData){
-			if(typeof data === 'object' && (!(has('native-xhr2')) || !(isArrayBuffer(data) || isBlob(data) ))){
-				options.data = ioQuery.objectToQuery(data);
-			}
-		}
-
-		if(query){
-			if(typeof query === 'object'){
-				query = ioQuery.objectToQuery(query);
-			}
-			if(options.preventCache){
-				query += (query ? '&' : '') + 'request.preventCache=' + (+(new Date));
-			}
-		}else if(options.preventCache){
-			query = 'request.preventCache=' + (+(new Date));
-		}
-
-		if(url && query){
-			url += (~url.indexOf('?') ? '&' : '?') + query;
-		}
-
-		return {
-			url: url,
-			options: options,
-			getHeader: function(headerName){ return null; }
-		};
-	};
-
-	exports.checkStatus = function(stat){
-		stat = stat || 0;
-		return (stat >= 200 && stat < 300) || // allow any 2XX response code
-			stat === 304 ||                 // or, get it out of the cache
-			stat === 1223 ||                // or, Internet Explorer mangled the status code
-			!stat;                         // or, we're Titanium/browser chrome/chrome extension requesting a local file
-	};
+//>>built
+define("dojo/request/util",["exports","../errors/RequestError","../errors/CancelError","../Deferred","../io-query","../_base/array","../_base/lang","../promise/Promise","../has"],function(_1,_2,_3,_4,_5,_6,_7,_8,_9){
+function _a(_b){
+return _9("native-arraybuffer")&&_b instanceof ArrayBuffer;
+};
+function _c(_d){
+return _9("native-blob")&&_d instanceof Blob;
+};
+function _e(_f){
+if(typeof Element!=="undefined"){
+return _f instanceof Element;
+}
+return _f.nodeType===1;
+};
+function _10(_11){
+return _9("native-formdata")&&_11 instanceof FormData;
+};
+function _12(_13){
+return _13&&typeof _13==="object"&&!_10(_13)&&!_e(_13)&&!_c(_13)&&!_a(_13);
+};
+_1.deepCopy=function(_14,_15){
+for(var _16 in _15){
+var _17=_14[_16],_18=_15[_16];
+if(_16!=="__proto__"&&_17!==_18){
+if(_12(_18)){
+if(Object.prototype.toString.call(_18)==="[object Date]"){
+_14[_16]=new Date(_18);
+}else{
+if(_7.isArray(_18)){
+_14[_16]=_1.deepCopyArray(_18);
+}else{
+if(_17&&typeof _17==="object"){
+_1.deepCopy(_17,_18);
+}else{
+_14[_16]=_1.deepCopy({},_18);
+}
+}
+}
+}else{
+_14[_16]=_18;
+}
+}
+}
+return _14;
+};
+_1.deepCopyArray=function(_19){
+var _1a=[];
+for(var i=0,l=_19.length;i<l;i++){
+var _1b=_19[i];
+if(typeof _1b==="object"){
+_1a.push(_1.deepCopy({},_1b));
+}else{
+_1a.push(_1b);
+}
+}
+return _1a;
+};
+_1.deepCreate=function deepCreate(_1c,_1d){
+_1d=_1d||{};
+var _1e=_7.delegate(_1c),_1f,_20;
+for(_1f in _1c){
+_20=_1c[_1f];
+if(_20&&typeof _20==="object"){
+_1e[_1f]=_1.deepCreate(_20,_1d[_1f]);
+}
+}
+return _1.deepCopy(_1e,_1d);
+};
+var _21=Object.freeze||function(obj){
+return obj;
+};
+function _22(_23){
+return _21(_23);
+};
+function _24(_25){
+return _25.data!==undefined?_25.data:_25.text;
+};
+_1.deferred=function deferred(_26,_27,_28,_29,_2a,_2b){
+var def=new _4(function(_2c){
+_27&&_27(def,_26);
+if(!_2c||!(_2c instanceof _2)&&!(_2c instanceof _3)){
+return new _3("Request canceled",_26);
+}
+return _2c;
+});
+def.response=_26;
+def.isValid=_28;
+def.isReady=_29;
+def.handleResponse=_2a;
+function _2d(_2e){
+_2e.response=_26;
+throw _2e;
+};
+var _2f=def.then(_22).otherwise(_2d);
+if(_1.notify){
+_2f.then(_7.hitch(_1.notify,"emit","load"),_7.hitch(_1.notify,"emit","error"));
+}
+var _30=_2f.then(_24);
+var _31=new _8();
+for(var _32 in _30){
+if(_30.hasOwnProperty(_32)){
+_31[_32]=_30[_32];
+}
+}
+_31.response=_2f;
+_21(_31);
+if(_2b){
+def.then(function(_33){
+_2b.call(def,_33);
+},function(_34){
+_2b.call(def,_26,_34);
+});
+}
+def.promise=_31;
+def.then=_31.then;
+return def;
+};
+_1.addCommonMethods=function addCommonMethods(_35,_36){
+_6.forEach(_36||["GET","POST","PUT","DELETE"],function(_37){
+_35[(_37==="DELETE"?"DEL":_37).toLowerCase()]=function(url,_38){
+_38=_7.delegate(_38||{});
+_38.method=_37;
+return _35(url,_38);
+};
+});
+};
+_1.parseArgs=function parseArgs(url,_39,_3a){
+var _3b=_39.data,_3c=_39.query;
+if(_3b&&!_3a){
+if(typeof _3b==="object"&&(!(_9("native-xhr2"))||!(_a(_3b)||_c(_3b)))){
+_39.data=_5.objectToQuery(_3b);
+}
+}
+if(_3c){
+if(typeof _3c==="object"){
+_3c=_5.objectToQuery(_3c);
+}
+if(_39.preventCache){
+_3c+=(_3c?"&":"")+"request.preventCache="+(+(new Date));
+}
+}else{
+if(_39.preventCache){
+_3c="request.preventCache="+(+(new Date));
+}
+}
+if(url&&_3c){
+url+=(~url.indexOf("?")?"&":"?")+_3c;
+}
+return {url:url,options:_39,getHeader:function(_3d){
+return null;
+}};
+};
+_1.checkStatus=function(_3e){
+_3e=_3e||0;
+return (_3e>=200&&_3e<300)||_3e===304||_3e===1223||!_3e;
+};
 });

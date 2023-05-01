@@ -1,274 +1,127 @@
-define([
-	"./_base/kernel",	// kernel.global
-	"./_base/lang"
-], function(kernel, lang){
+/*
+	Copyright (c) 2004-2016, The JS Foundation All Rights Reserved.
+	Available via Academic Free License >= 2.1 OR the modified BSD license.
+	see: http://dojotoolkit.org/license for details
+*/
 
-// module:
-//		dojo/string
-var ESCAPE_REGEXP = /[&<>'"\/]/g;
-var ESCAPE_MAP = {
-	'&': '&amp;',
-	'<': '&lt;',
-	'>': '&gt;',
-	'"': '&quot;',
-	"'": '&#x27;',
-	'/': '&#x2F;'
+//>>built
+define("dojo/string",["./_base/kernel","./_base/lang"],function(_1,_2){
+var _3=/[&<>'"\/]/g;
+var _4={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#x27;","/":"&#x2F;"};
+var _5={};
+_2.setObject("dojo.string",_5);
+_5.escape=function(_6){
+if(!_6){
+return "";
+}
+return _6.replace(_3,function(c){
+return _4[c];
+});
 };
-var string = {
-	// summary:
-	//		String utilities for Dojo
+_5.codePointAt=String.prototype.codePointAt?function(_7,_8){
+return String.prototype.codePointAt.call(_7,_8);
+}:function(_9,_a){
+if(_9==null){
+throw new TypeError("codePointAt called on null or undefined");
+}
+var _b;
+var _c;
+var _d;
+var _e;
+_9=String(_9);
+_b=_9.length;
+_e=_a?Number(_a):0;
+if(_e!=_e){
+_e=0;
+}
+if(_e<0||_e>=_b){
+return undefined;
+}
+_c=_9.charCodeAt(_e);
+if(_c>=55296&&_c<=56319&&_b>_e+1){
+_d=_9.charCodeAt(_e+1);
+if(_d>=56320&&_d<=57343){
+return (_c-55296)*1024+_d-56320+65536;
+}
+}
+return _c;
 };
-lang.setObject("dojo.string", string);
-
-string.escape = function(/*String*/str){
-	// summary:
-	//		Efficiently escape a string for insertion into HTML (innerHTML or attributes), replacing &, <, >, ", ', and / characters.
-	// str:
-	//		the string to escape
-	if(!str){ return ""; }
-	return str.replace(ESCAPE_REGEXP, function(c) {
-		return ESCAPE_MAP[c];
-	});
+_5.fromCodePoint=String.fromCodePoint||function(){
+var _f=[];
+var _10=0;
+var _11="";
+var _12;
+var _13;
+for(_13=0,len=arguments.length;_13!==len;++_13){
+_12=+arguments[_13];
+if(!(_12<1114111&&(_12>>>0)===_12)){
+throw RangeError("Invalid code point: "+_12);
+}
+if(_12<=65535){
+_10=_f.push(_12);
+}else{
+_12-=65536;
+_10=_f.push((_12>>10)+55296,(_12%1024)+56320);
+}
+if(_10>=16383){
+_11+=String.fromCharCode.apply(null,_f);
+_f.length=0;
+}
+}
+return _11+String.fromCharCode.apply(null,_f);
 };
-
-// Adapted from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/codePointAt#Polyfill
-string.codePointAt = String.prototype.codePointAt ?
-	function (str, position) {
-		return String.prototype.codePointAt.call(str, position);
-	} :
-	function(str, position) {
-		if (str == null) {
-			throw new TypeError('codePointAt called on null or undefined');
-		}
-
-		var size;
-		var first;
-		var second;
-		var index;
-
-		str = String(str);
-		size = str.length;
-		// `ToInteger`
-		index = position ? Number(position) : 0;
-
-		if (index != index) { // better `isNaN`
-			index = 0;
-		}
-
-		// Account for out-of-bounds indices:
-		if (index < 0 || index >= size) {
-			return undefined;
-		}
-
-		// Get the first code unit
-		first = str.charCodeAt(index);
-
-		// check if it's the start of a surrogate pair
-		if (first >= 0xD800 && first <= 0xDBFF && // high surrogate
-			size > index + 1 // there is a next code unit
-		) {
-			second = str.charCodeAt(index + 1);
-			if (second >= 0xDC00 && second <= 0xDFFF) { // low surrogate
-				// https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-				return (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
-			}
-		}
-
-		return first;
-	};
-
-// Adapted from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCodePoint#Polyfill
-string.fromCodePoint = String.fromCodePoint || function () {
-	var codeUnits = [];
-	var codeLen = 0;
-	var result = "";
-	var codePoint;
-	var index;
-
-	for (index = 0, len = arguments.length; index !== len; ++index) {
-		codePoint = +arguments[index];
-		// correctly handles all cases including `NaN`, `-Infinity`, `+Infinity`
-		// The surrounding `!(...)` is required to correctly handle `NaN` cases
-		// The (codePoint>>>0) === codePoint clause handles decimals and negatives
-		if (!(codePoint < 0x10FFFF && (codePoint>>>0) === codePoint)) {
-			throw RangeError("Invalid code point: " + codePoint);
-		}
-
-		if (codePoint <= 0xFFFF) { // BMP code point
-			codeLen = codeUnits.push(codePoint);
-		} else { // Astral code point; split in surrogate halves
-			// https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-			codePoint -= 0x10000;
-			codeLen = codeUnits.push(
-				(codePoint >> 10) + 0xD800,  // highSurrogate
-				(codePoint % 0x400) + 0xDC00 // lowSurrogate
-			);
-		}
-
-		if (codeLen >= 0x3fff) {
-			result += String.fromCharCode.apply(null, codeUnits);
-			codeUnits.length = 0;
-		}
-	}
-
-	return result + String.fromCharCode.apply(null, codeUnits);
+_5.rep=function(str,num){
+if(num<=0||!str){
+return "";
+}
+var buf=[];
+for(;;){
+if(num&1){
+buf.push(str);
+}
+if(!(num>>=1)){
+break;
+}
+str+=str;
+}
+return buf.join("");
 };
-
-string.rep = function(/*String*/str, /*Integer*/num){
-	// summary:
-	//		Efficiently replicate a string `n` times.
-	// str:
-	//		the string to replicate
-	// num:
-	//		number of times to replicate the string
-
-	if(num <= 0 || !str){ return ""; }
-
-	var buf = [];
-	for(;;){
-		if(num & 1){
-			buf.push(str);
-		}
-		if(!(num >>= 1)){ break; }
-		str += str;
-	}
-	return buf.join("");	// String
+_5.pad=function(_14,_15,ch,end){
+if(!ch){
+ch="0";
+}
+var out=String(_14),pad=_5.rep(ch,Math.ceil((_15-out.length)/ch.length));
+return end?out+pad:pad+out;
 };
-
-string.pad = function(/*String*/text, /*Integer*/size, /*String?*/ch, /*Boolean?*/end){
-	// summary:
-	//		Pad a string to guarantee that it is at least `size` length by
-	//		filling with the character `ch` at either the start or end of the
-	//		string. Pads at the start, by default.
-	// text:
-	//		the string to pad
-	// size:
-	//		length to provide padding
-	// ch:
-	//		character to pad, defaults to '0'
-	// end:
-	//		adds padding at the end if true, otherwise pads at start
-	// example:
-	//	|	// Fill the string to length 10 with "+" characters on the right.  Yields "Dojo++++++".
-	//	|	string.pad("Dojo", 10, "+", true);
-
-	if(!ch){
-		ch = '0';
-	}
-	var out = String(text),
-		pad = string.rep(ch, Math.ceil((size - out.length) / ch.length));
-	return end ? out + pad : pad + out;	// String
+_5.substitute=function(_16,map,_17,_18){
+_18=_18||_1.global;
+_17=_17?_2.hitch(_18,_17):function(v){
+return v;
 };
-
-string.substitute = function(	/*String*/		template,
-									/*Object|Array*/map,
-									/*Function?*/	transform,
-									/*Object?*/		thisObject){
-	// summary:
-	//		Performs parameterized substitutions on a string. Throws an
-	//		exception if any parameter is unmatched.
-	// template:
-	//		a string with expressions in the form `${key}` to be replaced or
-	//		`${key:format}` which specifies a format function. keys are case-sensitive.
-	//		The special sequence `${}` can be used escape `$`.
-	// map:
-	//		hash to search for substitutions
-	// transform:
-	//		a function to process all parameters before substitution takes
-	//		place, e.g. mylib.encodeXML
-	// thisObject:
-	//		where to look for optional format function; default to the global
-	//		namespace
-	// example:
-	//		Substitutes two expressions in a string from an Array or Object
-	//	|	// returns "File 'foo.html' is not found in directory '/temp'."
-	//	|	// by providing substitution data in an Array
-	//	|	string.substitute(
-	//	|		"File '${0}' is not found in directory '${1}'.",
-	//	|		["foo.html","/temp"]
-	//	|	);
-	//	|
-	//	|	// also returns "File 'foo.html' is not found in directory '/temp'."
-	//	|	// but provides substitution data in an Object structure.  Dotted
-	//	|	// notation may be used to traverse the structure.
-	//	|	string.substitute(
-	//	|		"File '${name}' is not found in directory '${info.dir}'.",
-	//	|		{ name: "foo.html", info: { dir: "/temp" } }
-	//	|	);
-	// example:
-	//		Use a transform function to modify the values:
-	//	|	// returns "file 'foo.html' is not found in directory '/temp'."
-	//	|	string.substitute(
-	//	|		"${0} is not found in ${1}.",
-	//	|		["foo.html","/temp"],
-	//	|		function(str){
-	//	|			// try to figure out the type
-	//	|			var prefix = (str.charAt(0) == "/") ? "directory": "file";
-	//	|			return prefix + " '" + str + "'";
-	//	|		}
-	//	|	);
-	// example:
-	//		Use a formatter
-	//	|	// returns "thinger -- howdy"
-	//	|	string.substitute(
-	//	|		"${0:postfix}", ["thinger"], null, {
-	//	|			postfix: function(value, key){
-	//	|				return value + " -- howdy";
-	//	|			}
-	//	|		}
-	//	|	);
-
-	thisObject = thisObject || kernel.global;
-	transform = transform ?
-		lang.hitch(thisObject, transform) : function(v){ return v; };
-
-	return template.replace(/\$\{([^\s\:\}]*)(?:\:([^\s\:\}]+))?\}/g,
-		function(match, key, format){
-			if (key == ''){
-				return '$';
-			}
-			var value = lang.getObject(key, false, map);
-			if(format){
-				value = lang.getObject(format, false, thisObject).call(thisObject, value, key);
-			}
-			var result = transform(value, key);
-
-			if (typeof result === 'undefined') {
-				throw new Error('string.substitute could not find key "' + key + '" in template');
-			}
-
-			return result.toString();
-		}); // String
+return _16.replace(/\$\{([^\s\:\}]*)(?:\:([^\s\:\}]+))?\}/g,function(_19,key,_1a){
+if(key==""){
+return "$";
+}
+var _1b=_2.getObject(key,false,map);
+if(_1a){
+_1b=_2.getObject(_1a,false,_18).call(_18,_1b,key);
+}
+var _1c=_17(_1b,key);
+if(typeof _1c==="undefined"){
+throw new Error("string.substitute could not find key \""+key+"\" in template");
+}
+return _1c.toString();
+});
 };
-
-string.trim = String.prototype.trim ?
-	lang.trim : // aliasing to the native function
-	function(str){
-		str = str.replace(/^\s+/, '');
-		for(var i = str.length - 1; i >= 0; i--){
-			if(/\S/.test(str.charAt(i))){
-				str = str.substring(0, i + 1);
-				break;
-			}
-		}
-		return str;
-	};
-
-/*=====
- string.trim = function(str){
-	 // summary:
-	 //		Trims whitespace from both sides of the string
-	 // str: String
-	 //		String to be trimmed
-	 // returns: String
-	 //		Returns the trimmed string
-	 // description:
-	 //		This version of trim() was taken from [Steven Levithan's blog](http://blog.stevenlevithan.com/archives/faster-trim-javascript).
-	 //		The short yet performant version of this function is dojo/_base/lang.trim(),
-	 //		which is part of Dojo base.  Uses String.prototype.trim instead, if available.
-	 return "";	// String
- };
- =====*/
-
-	return string;
+_5.trim=String.prototype.trim?_2.trim:function(str){
+str=str.replace(/^\s+/,"");
+for(var i=str.length-1;i>=0;i--){
+if(/\S/.test(str.charAt(i))){
+str=str.substring(0,i+1);
+break;
+}
+}
+return str;
+};
+return _5;
 });
