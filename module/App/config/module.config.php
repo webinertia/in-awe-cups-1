@@ -25,7 +25,8 @@ return [
     'app_settings'       => [ // app_settings that are not to be edited are stored here
         'server' => [
             'app_path'        => __DIR__ . '/../../../',
-            'upload_basepath' => __DIR__ . '/../../../public/module',
+            'upload_basepath' => __DIR__ . '/../../../public/modules',
+            'captcha_path'    => __DIR__ . '/../../../public/modules/app/captcha',
             'scheme'          => $_SERVER['REQUEST_SCHEME'] ?? 'http',
             'content_security_policy' => [
                 'directives' => [
@@ -321,15 +322,15 @@ return [
             //     'iconClass' => 'mdi mdi-speedometer text-success',
             //     'order'     => -99,
             // ],
-            [
-                'dojoType'  => 'ContentPane',
-                'widgetId'  => 'settingManager',
-                'label'     => 'Manage Settings',
-                'uri'       => '/admin/settings',
-                'iconClass' => 'mdi mdi-cogs text-danger',
-                'resource'  => 'settings',
-                'privilege' => 'edit',
-            ],
+            // [
+            //     'dojoType'  => 'ContentPane',
+            //     'widgetId'  => 'settingManager',
+            //     'label'     => 'Manage Settings',
+            //     'uri'       => '/admin/settings',
+            //     'iconClass' => 'mdi mdi-cogs text-danger',
+            //     'resource'  => 'settings',
+            //     'privilege' => 'edit',
+            // ],
             [
                 'dojoType'  => 'ContentPane',
                 'widgetId'  => 'themeManager',

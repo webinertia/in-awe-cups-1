@@ -37,7 +37,7 @@ final class IndexController extends AbstractAppController implements FormManager
 
     public function indexAction(): mixed
     {
-        if (! $this->appSettings['load_store_as_homepage']) {
+        if (! isset($this->appSettings['load_store_as_homepage']) || ! $this->appSettings['load_store_as_homepage']) {
             $homePage   = $this->page->getLandingPage();
             $this->view->setVariables([
                 'page' => $homePage,

@@ -33,7 +33,8 @@
         "webinertia/dojo": "0.0.1",
         "ramsey/uuid": "^4.7",
         "braintree/braintree_php": "^6.11",
-        "laminas/laminas-hydrator": "4.13.0"
+        "laminas/laminas-hydrator": "4.13.0",
+        "webinertia/limatus": "^0.0.11"
     },
     "autoload": {
         "psr-4": {
