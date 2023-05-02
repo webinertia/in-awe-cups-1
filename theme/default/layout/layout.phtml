@@ -36,21 +36,31 @@ $view = $this->config('app_settings')['view'];
         <?php
             $this->inlineScript()
             //->appendFile($this->basePath('theme/default/js/jquery-3.6.4.min.js'))
-            ->appendFile('https://unpkg.com/@popperjs/core@2.11.7/dist/umd/popper.min.js')
-            ->appendFile($this->basePath('theme/default/js/bootstrap.min.js'))
+            ->appendFile($this->basePath('js/popper/popper.min.js'))
+            ->appendFile($this->basePath('js/bs/bootstrap.min.js'))
             ->appendFile(
-                'https://ajax.googleapis.com/ajax/libs/dojo/1.13.0/dojo/dojo.js',
+                $this->basePath('js/dojo/dojo.js'),
                 'text/javascript',
                 ['data-dojo-config' => 'async: true']
-                )->setAllowArbitraryAttributes(true)
-            //->appendFile($this->basePath('theme/default/js/pubsub.js'));
-            //->appendFile($this->basePath('theme/default/js/app.js'))
+            )->setAllowArbitraryAttributes(true)
+            ->appendScript('var dojoConfig = {
+                async: true,
+                selectorEngine: "acme",
+                baseUrl: "/js/",
+                packages: [
+                    {name: "dojo", location: "/dojo"}
+                ]
+            };
+            require(["app/app"], function(App) {
+                const app = new App();
+                app.init();
+            });')
         ?>
         <!-- Scripts -->
         <?= $this->headScript() ?>
     </head>
     <body class="d-flex flex-column h-100">
-        <nav class="navbar navbar-expand-md pt-0">
+        <nav id="main-nav" class="navbar navbar-expand-md pt-0">
             <div class="container rounded-bottom bg-body-secondary shadow-sm mt-0">
                 <div class="navbar-header">
                     <button
@@ -78,8 +88,8 @@ $view = $this->config('app_settings')['view'];
             </div>
         </nav>
         <main class="flex-shrink-0 mt-5 mb-5">
-            <?=$this->modal()->systemMessage('test')?>
             <div class="container">
+                <div id="system-message"></div>
                 <?php
                     $flash = $this->flashMessenger();
                     $flash->setMessageOpenFormat('<div%s role="alert">
@@ -103,18 +113,6 @@ $view = $this->config('app_settings')['view'];
                     if ((int) $this->config('app_settings')['view']['show_breadcrumbs']) :
                         echo $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
                     endif;
-                    ?>
-                    <p id="greeting">Hello</p>
-                    <?php
-                        $this->inlineScript()->appendScript(
-                            'require([
-                                \'dojo/dom\',
-                                \'dojo/dom-construct\'
-                            ], function (dom, domConstruct) {
-                                var greetingNode = dom.byId(\'greeting\');
-                                domConstruct.place(\'<em> Dojo!</em>\', greetingNode);
-                            });'
-                        );
                     ?>
                 <div id="app-workspace">
                     <?= $this->content ?>

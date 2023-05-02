@@ -27,15 +27,15 @@ use Laminas\View\Renderer\PhpRenderer;
                 'type' => 'image/vnd.microsoft.icon',
                 'href' => $this->basePath() . '/images/favicon.ico',
         ])
-        ->appendStylesheet($this->basePath('/js/dijit/themes/claro/claro.css'))
-        ->appendStylesheet($this->basePath('/js/dgrid/css/dgrid.css'))
-        ->appendStylesheet($this->basePath('/js/dgrid/css/skins/claro.css'))
-        ->appendStylesheet($this->basePath('/theme/default/css/dashboard/style.css'));
+        ->appendStylesheet($this->basePath('js/dijit/themes/claro/claro.css'))
+        ->appendStylesheet($this->basePath('js/dgrid/css/dgrid.css'))
+        ->appendStylesheet($this->basePath('js/dgrid/css/skins/claro.css'))
+        ->appendStylesheet($this->basePath('theme/default/css/admin.css'));
         ?>
         <!-- Scripts -->
         <?php
         $this->headScript()->prependFile(
-            $this->basePath('/js/dojo/dojo.js'),
+            $this->basePath('js/dojo/dojo.js'),
             'text/javascript',
             ['data-dojo-config' => 'async: true'])->setAllowArbitraryAttributes(true);
         ?>
