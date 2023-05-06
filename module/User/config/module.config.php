@@ -471,4 +471,9 @@ return [
             'widget_name'    => 'Administrators',
         ],
     ],
+    'view_manager' => [
+        'template_path_stack'      => [
+            __DIR__ . '/../view',
+        ],
+    ],
 ];

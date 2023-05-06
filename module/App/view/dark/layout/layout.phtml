@@ -12,13 +12,14 @@ use Webinertia\Utils\Debug;
 $view = $this->config('app_settings')['view'];
 ?>
 <?= $this->doctype() ?>
-<html class="h-100" data-bs-theme="light" lang="en" prefix="og: http://ogp.me/ns#">
+<html class="h-100" data-bs-theme="dark" lang="en" prefix="og: http://ogp.me/ns#">
     <head>
-        <?= $this->headTitle($view['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?= $this->headTitle($view['site_name'] ?? '')->setSeparator(' - ')->setAutoEscape(false); ?>
         <?php
         $this->headMeta()
         ->setCharSet('UTF-8')
-        ->appendName('viewport', 'width=device-width, initial-scale=1.0')->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
         ?>
 
         <?= $this->headMeta(); ?>
@@ -35,13 +36,9 @@ $view = $this->config('app_settings')['view'];
         ?>
         <?php
             $this->inlineScript()
-            //->appendFile($this->basePath('theme/default/js/jquery-3.6.4.min.js'))
             ->appendFile($this->basePath('js/popper/popper.min.js'))
             ->appendFile($this->basePath('js/bs/bootstrap.min.js'))
-            ->appendFile(
-                $this->basePath('js/dojo/dojo.js'),
-                'text/javascript',
-                ['data-dojo-config' => 'async: true']
+            ->appendFile($this->basePath('js/dojo/dojo.js'), 'text/javascript', ['data-dojo-config' => 'async: true']
             )->setAllowArbitraryAttributes(true)
             ->appendScript('var dojoConfig = {
                 async: true,
@@ -54,7 +51,7 @@ $view = $this->config('app_settings')['view'];
             require(["app/app"], function(App) {
                 const app = new App();
                 app.init();
-            });')
+            });');
         ?>
         <!-- Scripts -->
         <?= $this->headScript() ?>
@@ -89,7 +86,24 @@ $view = $this->config('app_settings')['view'];
         </nav>
         <main class="flex-shrink-0 mt-5 mb-5">
             <div class="container">
-                <div id="system-message"></div>
+                <div
+                    class="modal success"
+                    id="system-message-modal"
+                    tabindex="-1"
+                    aria-labelledby="system-message-title"
+                    aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <span class="modal-title fs-5" id="system-message-title">System Message</span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div id="system-message" class="modal-body">
+                                    <div id="sys-message-alert" class="alert" role="alert"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <?php
                     $flash = $this->flashMessenger();
                     $flash->setMessageOpenFormat('<div%s role="alert">
@@ -108,12 +122,12 @@ $view = $this->config('app_settings')['view'];
                     if ($plugin->hasCurrentSuccessMessages()) {
                         echo $flash->render('success', ['alert', 'alert-dismissible', 'alert-success']);
                     }
-                    ?>
-                    <?php
-                    if ((int) $this->config('app_settings')['view']['show_breadcrumbs']) :
+                ?>
+                <?php
+                    if ((bool) $view['show_breadcrumbs']) {
                         echo $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
-                    endif;
-                    ?>
+                    }
+                ?>
                 <div id="app-workspace">
                     <?= $this->content ?>
                 </div>

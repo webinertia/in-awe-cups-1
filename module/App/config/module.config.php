@@ -10,6 +10,7 @@ use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\I18n\Translator\Loader\PhpArray;
 use Laminas\Log\Logger;
 use Laminas\Mvc\I18n\Router\TranslatorAwareTreeRouteStack;
+use Laminas\Mvc\Service\ViewTemplatePathStackFactory;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Placeholder;
 use Laminas\Router\Http\Segment;
@@ -226,22 +227,29 @@ return [
     'listeners'          => [
         Log\LogListener::class,
         Listener\AdminListener::class,
-        Listener\ThemeLoader::class,
         Upload\UploadListener::class,
     ],
     'service_manager'    => [
+        'aliases' => [
+            'ViewTemplatePathStack' => View\Resolver\TemplatePathStack::class,
+        ],
         'factories' => [
-            ConfigInterface::class                  => Session\ConfigFactory::class,
-            Session\Container::class                => Session\ContainerFactory::class,
-            Db\DbGateway\LogGateway::class          => Db\DbGateway\Factory\LogGatewayFactory::class,
-            Log\LogListener::class                  => Log\LogListenerFactory::class,
-            Listener\AdminListener::class           => Listener\Factory\AdminListenerFactory::class,
-            Listener\ThemeLoader::class             => Listener\Factory\ThemeLoaderFactory::class,
-            Model\Settings::class                   => Model\Factory\SettingsFactory::class,
-            Model\Theme::class                      => InvokableFactory::class,
-            Service\Email::class                    => Service\Factory\EmailFactory::class,
-            SaveHandlerInterface::class             => Session\SaveHandlerFactory::class,
-            Upload\UploadListener::class            => Upload\UploadListenerFactory::class,
+            ConfigInterface::class                 => Session\ConfigFactory::class,
+            Session\Container::class               => Session\ContainerFactory::class,
+            Db\DbGateway\LogGateway::class         => Db\DbGateway\Factory\LogGatewayFactory::class,
+            Log\LogListener::class                 => Log\LogListenerFactory::class,
+            Listener\AdminListener::class          => Listener\Factory\AdminListenerFactory::class,
+            Model\Settings::class                  => Model\Factory\SettingsFactory::class,
+            Model\Theme::class                     => InvokableFactory::class,
+            Service\Email::class                   => Service\Factory\EmailFactory::class,
+            SaveHandlerInterface::class            => Session\SaveHandlerFactory::class,
+            Upload\UploadListener::class           => Upload\UploadListenerFactory::class,
+            View\Resolver\TemplatePathStack::class => ViewTemplatePathStackFactory::class
+        ],
+        'delegators' => [
+            View\Resolver\TemplatePathStack::class => [
+                View\Resolver\TemplatePathStackFactory::class
+            ],
         ],
     ],
     'controllers'        => [
@@ -376,9 +384,17 @@ return [
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
-        'template_map'             => [],
+        'template_map' => [
+            // 'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            // // 'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            // 'error/404'               => __DIR__ . '/../view/error/404.phtml',
+            // 'error/index'             => __DIR__ . '/../view/error/index.phtml',
+        ],
         'strategies'               => [
             'ViewJsonStrategy',
+        ],
+        'template_path_stack'      => [
+            __DIR__ . '/../view',
         ],
     ],
     'translator'         => [

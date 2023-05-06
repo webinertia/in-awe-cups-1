@@ -2,14 +2,14 @@
 return [
     'default' => [
         'id' => '1',
-        'active' => '1',
+        'active' => '0',
         'name' => 'default',
         'fallback' => 'default',
     ],
-    'inawecups' => [
+    'dark' => [
         'id' => '2',
-        'active' => '0',
-        'name' => 'inawecups',
+        'active' => '1',
+        'name' => 'dark',
         'fallback' => 'default',
     ],
 ];
